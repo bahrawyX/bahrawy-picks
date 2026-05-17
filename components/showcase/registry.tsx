@@ -150,14 +150,117 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['react-day-picker', 'date-fns', 'framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '08',
+    slug: 'file-upload',
+    name: 'File upload',
+    description:
+      'Drag-and-drop file upload with per-file progress, MIME filtering, and animated file cards.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
 
-  { kind: 'soon', id: '08', slug: 'magnetic-cursor', name: 'Magnetic cursor', category: 'cursor' },
-  { kind: 'soon', id: '09', slug: 'spotlight-card', name: 'Spotlight card', category: 'card' },
-  { kind: 'soon', id: '10', slug: 'bento-grid', name: 'Bento grid', category: 'layout' },
-  { kind: 'soon', id: '11', slug: 'marquee-row', name: 'Marquee row', category: 'motion' },
-  { kind: 'soon', id: '12', slug: 'floating-dock', name: 'Floating dock', category: 'navigation' },
-  { kind: 'soon', id: '13', slug: 'reveal-on-scroll', name: 'Reveal on scroll', category: 'motion' },
-  { kind: 'soon', id: '14', slug: 'command-palette', name: 'Command palette', category: 'overlay' },
+  {
+    kind: 'docs',
+    id: '09',
+    slug: 'magnetic-cursor',
+    name: 'Magnetic cursor',
+    description:
+      'Wraps any element and makes it magnetically attract toward the cursor on hover with spring physics.',
+    category: 'cursor',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '10',
+    slug: 'spotlight-card',
+    name: 'Spotlight card',
+    description:
+      'Card with a radial spotlight glow that follows the cursor. Zero dependencies.',
+    category: 'card',
+    hasOptions: true,
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '11',
+    slug: 'bento-grid',
+    name: 'Bento grid',
+    description:
+      'Responsive bento-style grid with animated cards that span multiple columns and rows.',
+    category: 'layout',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '12',
+    slug: 'marquee-row',
+    name: 'Marquee row',
+    description:
+      'Infinite scrolling marquee with seamless looping. Pure CSS animation, pause on hover.',
+    category: 'motion',
+    hasOptions: true,
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '13',
+    slug: 'floating-dock',
+    name: 'Floating dock',
+    description:
+      'macOS-style dock that magnifies icons near the cursor with spring physics and tooltips.',
+    category: 'navigation',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '14',
+    slug: 'reveal-on-scroll',
+    name: 'Reveal on scroll',
+    description:
+      'Animate elements into view on scroll. Directional slides, stagger groups, and one-shot mode.',
+    category: 'motion',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '15',
+    slug: 'command-palette',
+    name: 'Command palette',
+    description:
+      'Spotlight-style command palette with fuzzy search, keyboard nav, and grouped actions.',
+    category: 'overlay',
+    hasOptions: true,
+    dependencies: ['cmdk', 'framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '16',
+    slug: 'data-table',
+    name: 'Data table',
+    description:
+      'Production-grade data table with sorting, filtering, pagination, row selection, virtualization, and column resizing. Built on TanStack Table.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['@tanstack/react-table', '@tanstack/react-virtual', 'framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '17',
+    slug: 'autocomplete',
+    name: 'Autocomplete',
+    description:
+      'Static, async, and creatable combobox with single and multi-select, debounced search, and chip UI.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'cmdk', '@radix-ui/react-popover'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {
@@ -171,7 +274,6 @@ export function getEntry(slug: string): RegistryEntry | undefined {
  * - 'soon'   → null
  */
 export function getEntryHref(entry: RegistryEntry): string | null {
-  if (entry.kind === 'ready') return `/components/${entry.slug}`
-  if (entry.kind === 'docs') return `/docs/${entry.slug}`
-  return null
+  if (entry.kind === 'soon') return null
+  return `/components/${entry.slug}`
 }

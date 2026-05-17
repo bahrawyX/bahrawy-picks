@@ -35,4 +35,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Two-month range picker with preset shortcuts, popover on desktop, and drawer on mobile.',
   },
+  {
+    title: 'Autocomplete',
+    slug: 'autocomplete',
+    description:
+      'Static, async, and creatable combobox with single and multi-select, debounced search, and chip UI.',
+  },
 ]

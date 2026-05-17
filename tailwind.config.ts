@@ -20,10 +20,6 @@ const config: Config = {
         'm3-exit': '200ms',
       },
       keyframes: {
-        'page-in': {
-          '0%': { opacity: '0', transform: 'translateY(6px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
         'shimmer': {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
@@ -53,15 +49,19 @@ const config: Config = {
           '0%': { opacity: '0', transform: 'translateX(-28px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
+        'marquee': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
       },
       animation: {
-        'page-in': 'page-in 300ms cubic-bezier(0.2, 0, 0, 1) both',
         'shimmer': 'shimmer 2s linear infinite',
         'favorite-pop': 'favorite-pop 460ms cubic-bezier(0.2, 0, 0, 1)',
         'favorite-burst':
           'favorite-burst 620ms cubic-bezier(0.2, 0, 0, 1) forwards',
         'slide-in-right': 'slide-in-right 300ms cubic-bezier(0.2, 0, 0, 1) both',
         'slide-in-left': 'slide-in-left 300ms cubic-bezier(0.2, 0, 0, 1) both',
+        'marquee': 'marquee var(--duration, 30s) linear infinite',
       },
     },
   },

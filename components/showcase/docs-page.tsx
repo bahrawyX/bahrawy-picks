@@ -1,14 +1,18 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { FavoriteButton } from '@/components/favorite-button'
+import { InstallCommand } from '@/components/showcase/install-command'
 
 export function DocsPage({
   category,
   title,
+  slug,
   description,
   children,
 }: {
   category?: string
   title: string
+  slug: string
   description: string
   children: ReactNode
 }) {
@@ -20,12 +24,18 @@ export function DocsPage({
             {category}
           </p>
         )}
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-          {title}
-        </h1>
+        <div className="mt-2 flex items-center gap-3">
+          <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            {title}
+          </h1>
+          <FavoriteButton slug={slug} />
+        </div>
         <p className="mt-3 max-w-2xl text-pretty text-sm text-white/60">
           {description}
         </p>
+        <div className="mt-4">
+          <InstallCommand componentName={slug} />
+        </div>
       </header>
       {children}
     </article>

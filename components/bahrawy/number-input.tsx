@@ -290,6 +290,7 @@ export function NumberInput({
             className={cn(
               'h-full w-full border-0 bg-transparent text-center font-mono tabular-nums shadow-none',
               'focus-visible:ring-0',
+              !focused && value !== null && 'text-transparent caret-transparent',
               prefix && 'pl-1',
               suffix && 'pr-1'
             )}

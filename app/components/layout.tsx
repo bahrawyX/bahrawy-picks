@@ -1,5 +1,4 @@
 import { Sidebar } from '@/components/showcase/sidebar'
-import { PageTransition } from '@/components/page-transition'
 
 export default function ComponentsLayout({
   children,
@@ -13,9 +12,7 @@ export default function ComponentsLayout({
           <Sidebar />
         </aside>
         <main className="min-w-0 flex-1">
-          <PageTransition scope="pathname" skipFirst>
-            {children}
-          </PageTransition>
+          {children}
         </main>
       </div>
     </div>

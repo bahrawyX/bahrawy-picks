@@ -70,7 +70,7 @@ export function FavoriteButton({
       {/* Radial burst — only renders briefly when adding (keyed so it replays) */}
       {burstKey > 0 && (
         <span
-          key={burstKey}
+          key={`burst-${burstKey}`}
           aria-hidden
           className="pointer-events-none absolute inset-0"
         >
@@ -96,7 +96,7 @@ export function FavoriteButton({
 
       {/* Heart — keyed by popKey so the pop animation replays on every toggle */}
       <Heart
-        key={popKey}
+        key={`heart-${popKey}`}
         className={cn(
           iconDims,
           popKey > 0 && 'animate-favorite-pop',

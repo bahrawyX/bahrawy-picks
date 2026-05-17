@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Navbar } from '@/components/navbar'
-import { PageTransition } from '@/components/page-transition'
+import { NavigationProgress } from '@/components/navigation-progress'
 import './globals.css'
 
 const inter = Inter({
@@ -32,8 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${inter.variable} bg-black`}>
       <body className="bg-black font-sans text-white antialiased">
+        <NavigationProgress />
         <Navbar />
-        <PageTransition scope="segment">{children}</PageTransition>
+        {children}
       </body>
     </html>
   )

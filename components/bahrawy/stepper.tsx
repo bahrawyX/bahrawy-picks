@@ -108,19 +108,27 @@ export function Stepper({
         const isLast = index === steps.length - 1
         const canJump = clickable && status === 'completed'
 
+        // Connector between step i and i+1 is filled only when the
+        // current step is completed AND the next step is NOT in error.
+        const nextStatus = !isLast
+          ? computeStatus(index + 1, currentStep, steps[index + 1].status)
+          : undefined
+        const connectorFilled =
+          status === 'completed' && nextStatus !== 'error'
+
         return (
           <li
             key={index}
             className={cn(
-              'group flex',
+              'group',
               isHorizontal
-                ? 'flex-1 items-start'
-                : 'flex-row items-stretch gap-3',
+                ? 'relative flex flex-1 flex-col items-center'
+                : 'flex flex-row items-stretch gap-3',
             )}
             aria-current={status === 'current' ? 'step' : undefined}
           >
-            {/* ---- Indicator column (circle + vertical connector) ---- */}
-            <div className="flex shrink-0 flex-col items-center">
+            {/* ---- Circle (z-10 so connectors never overlap it) ---- */}
+            <div className="relative z-10 flex shrink-0 flex-col items-center">
               <StepCircle
                 step={step}
                 index={index}
@@ -130,13 +138,13 @@ export function Stepper({
               />
 
               {!isLast && !isHorizontal && (
-                <VerticalConnector status={status} />
+                <VerticalConnector filled={connectorFilled} />
               )}
             </div>
 
-            {/* ---- Label (+ horizontal connector for horizontal layout) ---- */}
+            {/* ---- Label ---- */}
             {isHorizontal ? (
-              <div className="flex flex-1 flex-col items-center px-2 pb-1 text-center">
+              <div className="w-full px-1 text-center">
                 <StepLabel step={step} status={status} compact />
               </div>
             ) : (
@@ -145,8 +153,9 @@ export function Stepper({
               </div>
             )}
 
+            {/* ---- Horizontal connector (absolute, between circle edges) ---- */}
             {isHorizontal && !isLast && (
-              <HorizontalConnector status={status} />
+              <HorizontalConnector filled={connectorFilled} />
             )}
           </li>
         )
@@ -300,13 +309,14 @@ function StepLabel({
 // Connectors
 // ---------------------------------------------------------------------------
 
-function HorizontalConnector({ status }: { status: StepStatus }) {
-  const filled = status === 'completed'
-
+function HorizontalConnector({ filled }: { filled: boolean }) {
+  // Absolutely positioned to span from the right edge of the current
+  // circle (50% + 18px) to the left edge of the next circle (-50% + 18px
+  // past the li boundary).  Circle radius = 18px (h-9 = 36px diameter).
   return (
     <div
       aria-hidden
-      className="-mx-2 mt-[18px] h-px flex-1 self-start overflow-hidden bg-zinc-800"
+      className="absolute top-[18px] left-[calc(50%+18px)] right-[calc(-50%+18px)] h-px overflow-hidden bg-zinc-800"
     >
       <motion.div
         className="h-full bg-emerald-500"
@@ -318,9 +328,7 @@ function HorizontalConnector({ status }: { status: StepStatus }) {
   )
 }
 
-function VerticalConnector({ status }: { status: StepStatus }) {
-  const filled = status === 'completed'
-
+function VerticalConnector({ filled }: { filled: boolean }) {
   return (
     <div
       aria-hidden

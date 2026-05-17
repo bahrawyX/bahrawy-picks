@@ -1,0 +1,42 @@
+{
+  "name": "bahrawy",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Add Bahrawy components to your project — copy, paste, ship.",
+  "bin": {
+    "bahrawy": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "react",
+    "nextjs",
+    "components",
+    "ui",
+    "tailwindcss",
+    "shadcn",
+    "framer-motion"
+  ],
+  "author": "bahrawy",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "fs-extra": "^11.3.0",
+    "ora": "^8.2.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.9.0",
+    "@types/prompts": "^2.4.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
