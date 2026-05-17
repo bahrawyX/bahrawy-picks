@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { ArrowRight, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import LineWaves from '@/components/line-waves'
@@ -96,10 +97,10 @@ export function Hero() {
           style={{ transitionDelay: mounted ? '240ms' : '0ms' }}
         >
           <Button size="lg" asChild className="group gap-2">
-            <a href="#components">
+            <Link href="/components">
               Browse components
               <ArrowRight className="h-4 w-4 transition-transform duration-m3-enter ease-m3-enter group-hover:translate-x-0.5" />
-            </a>
+            </Link>
           </Button>
           <Button size="lg" variant="outline" asChild className="gap-2">
             <a href="https://github.com" target="_blank" rel="noreferrer noopener">
