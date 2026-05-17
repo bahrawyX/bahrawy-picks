@@ -101,10 +101,10 @@ export const registry: RegistryEntry[] = [
     slug: 'phone-input',
     name: 'Phone input',
     description:
-      'International phone input with flag + dial-code dropdown, E.164 output, and shadcn Input styling.',
+      'International phone input with searchable country selector, as-you-type formatting, and E.164 output.',
     category: 'form',
     hasOptions: true,
-    dependencies: ['libphonenumber-js', 'cmdk'],
+    dependencies: ['libphonenumber-js', 'framer-motion', 'cmdk'],
   },
   {
     kind: 'docs',
@@ -112,10 +112,10 @@ export const registry: RegistryEntry[] = [
     slug: 'stepper',
     name: 'Stepper',
     description:
-      'Horizontal or vertical step indicator with completed / current / upcoming / error states and clickable backward navigation.',
+      'Multi-step progress indicator with spring-animated state transitions and clickable navigation.',
     category: 'navigation',
     hasOptions: true,
-    dependencies: [],
+    dependencies: ['framer-motion'],
   },
   {
     kind: 'docs',
@@ -123,10 +123,10 @@ export const registry: RegistryEntry[] = [
     slug: 'number-input',
     name: 'Number input',
     description:
-      'Stepper-flanked numeric input with +/- buttons, long-press, keyboard nav, and Intl number formatting.',
+      'Stepper-flanked numeric input with animated value transitions, long-press, and Intl formatting.',
     category: 'form',
     hasOptions: true,
-    dependencies: [],
+    dependencies: ['framer-motion'],
   },
   {
     kind: 'docs',
@@ -134,10 +134,10 @@ export const registry: RegistryEntry[] = [
     slug: 'multi-step-form',
     name: 'Multi-step form',
     description:
-      'React Hook Form wizard with per-step Zod validation, shared-axis transitions, and persisted field values across steps.',
+      'React Hook Form wizard with per-step Zod validation and Framer Motion slide transitions.',
     category: 'form',
     hasOptions: true,
-    dependencies: ['react-hook-form', 'zod', '@hookform/resolvers'],
+    dependencies: ['react-hook-form', 'zod', '@hookform/resolvers', 'framer-motion'],
   },
   {
     kind: 'docs',
@@ -145,10 +145,10 @@ export const registry: RegistryEntry[] = [
     slug: 'date-range-picker',
     name: 'Date range picker',
     description:
-      'Two-month range picker with preset shortcuts. Popover on desktop, drawer on mobile.',
+      'Two-month range picker with animated preset shortcuts. Popover on desktop, drawer on mobile.',
     category: 'form',
     hasOptions: true,
-    dependencies: ['react-day-picker', 'date-fns', '@radix-ui/react-popover', 'vaul'],
+    dependencies: ['react-day-picker', 'date-fns', 'framer-motion'],
   },
 
   { kind: 'soon', id: '08', slug: 'magnetic-cursor', name: 'Magnetic cursor', category: 'cursor' },

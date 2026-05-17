@@ -54,9 +54,9 @@ export default function StepperDocs() {
 
   return (
     <DocsPage
-      category="04 · navigation"
+      category="02 · navigation"
       title="Stepper"
-      description="Multi-step progress indicator. Horizontal or vertical, with completed / current / upcoming / error states. Each step can be clickable to jump backwards."
+      description="Multi-step progress indicator with spring-animated state transitions. Horizontal or vertical, with completed / current / upcoming / error states."
     >
       <DocsSection title="Horizontal">
         <DemoCard className="min-h-[180px]">

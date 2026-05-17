@@ -52,9 +52,9 @@ export default function PhoneInputDocs() {
 
   return (
     <DocsPage
-      category="03 · form"
+      category="01 · form"
       title="Phone input"
-      description="International phone input with flag + dial-code dropdown. Formats as you type and outputs an E.164-formatted string. Drops into React Hook Form via Controller."
+      description="International phone input with searchable country selector, as-you-type formatting, and E.164 output. Built on libphonenumber-js + shadcn Command."
     >
       <DocsSection title="Live demo">
         <DemoCard>
@@ -117,7 +117,7 @@ export default function PhoneInputDocs() {
             { name: 'onChange', type: '(value) => void', description: 'Fires when the parsed value changes.' },
             { name: 'defaultCountry', type: 'CountryCode', default: '"US"', description: 'Initial country (ISO-3166 alpha-2).' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable input and country select.' },
-            { name: 'error', type: 'boolean', default: 'false', description: 'Apply shadcn error styling.' },
+            { name: 'error', type: 'boolean', default: 'false', description: 'Apply error styling.' },
             { name: 'placeholder', type: 'string', description: 'Number input placeholder.' },
           ]}
         />

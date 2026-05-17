@@ -37,9 +37,9 @@ export default function NumberInputDocs() {
 
   return (
     <DocsPage
-      category="05 · form"
+      category="03 · form"
       title="Number input"
-      description="Stepper-flanked numeric input with +/- buttons, long-press to spin, arrow-key support (shift × 10), and Intl.NumberFormat blur formatting."
+      description="Stepper-flanked numeric input with +/- buttons, long-press to spin, arrow-key support (shift x 10), and Intl.NumberFormat blur formatting."
     >
       <DocsSection title="Live demo">
         <DemoCard>
@@ -133,23 +133,23 @@ export default function NumberInputDocs() {
         <ul className="space-y-1.5 text-sm text-white/70">
           <li>
             <kbd className="mr-2 rounded border border-white/10 bg-white/[0.05] px-1.5 py-0.5 font-mono text-[11px]">
-              ↑
+              Up
             </kbd>
             Increment by step
           </li>
           <li>
             <kbd className="mr-2 rounded border border-white/10 bg-white/[0.05] px-1.5 py-0.5 font-mono text-[11px]">
-              ↓
+              Down
             </kbd>
             Decrement by step
           </li>
           <li>
             <kbd className="mr-2 rounded border border-white/10 bg-white/[0.05] px-1.5 py-0.5 font-mono text-[11px]">
-              Shift + ↑/↓
+              Shift + Up/Down
             </kbd>
-            Step × 10
+            Step x 10
           </li>
-          <li>Hold + / − for long-press auto-repeat.</li>
+          <li>Hold + / - for long-press auto-repeat.</li>
         </ul>
       </DocsSection>
 
@@ -158,8 +158,8 @@ export default function NumberInputDocs() {
           props={[
             { name: 'value', type: 'number | null', description: 'Controlled value (null = empty).' },
             { name: 'onChange', type: '(next) => void', description: 'Fires on any value change.' },
-            { name: 'min', type: 'number', default: '-∞', description: 'Minimum allowed value.' },
-            { name: 'max', type: 'number', default: '+∞', description: 'Maximum allowed value.' },
+            { name: 'min', type: 'number', default: '-Infinity', description: 'Minimum allowed value.' },
+            { name: 'max', type: 'number', default: '+Infinity', description: 'Maximum allowed value.' },
             { name: 'step', type: 'number', default: '1', description: 'Increment for buttons + arrow keys.' },
             { name: 'precision', type: 'number', default: '0', description: 'Decimal places to clamp to.' },
             { name: 'prefix', type: 'string', description: 'Leading symbol (e.g. "$").' },

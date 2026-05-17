@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import * as z from 'zod'
 import { isValidPhoneNumber } from 'libphonenumber-js/min'
 import { Check } from 'lucide-react'
@@ -99,25 +99,20 @@ function AccountStep() {
 
 function ContactStep() {
   const {
-    control,
+    watch,
+    setValue,
     formState: { errors },
   } = useFormContext<FormData>()
+  const phone = watch('phone')
   return (
     <div className="max-w-sm">
       <Field label="Phone" htmlFor="phone" error={errors.phone?.message}>
-        <Controller
-          name="phone"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <PhoneInput
-              value={field.value}
-              onChange={(v) => field.onChange(v ?? '')}
-              defaultCountry="US"
-              error={!!errors.phone}
-              placeholder="Phone number"
-            />
-          )}
+        <PhoneInput
+          value={phone}
+          onChange={(v) => setValue('phone', v ?? '', { shouldValidate: false })}
+          defaultCountry="US"
+          error={!!errors.phone}
+          placeholder="Phone number"
         />
       </Field>
     </div>
@@ -139,7 +134,7 @@ function PasswordStep() {
         <Input
           id="password"
           type="password"
-          placeholder="••••••••"
+          placeholder="********"
           error={!!errors.password}
           {...register('password')}
         />
@@ -152,7 +147,7 @@ function PasswordStep() {
         <Input
           id="confirm"
           type="password"
-          placeholder="••••••••"
+          placeholder="********"
           error={!!errors.confirm}
           {...register('confirm')}
         />
@@ -210,9 +205,9 @@ export default function MultiStepFormDocs() {
 
   return (
     <DocsPage
-      category="06 · form"
+      category="04 · form"
       title="Multi-step form"
-      description="A wizard built on React Hook Form with per-step Zod validation. Slides between steps with shared-axis motion and persists field values when navigating back."
+      description="A wizard built on React Hook Form with per-step Zod validation. Slides between steps with Framer Motion and persists field values when navigating back."
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[460px] items-start">

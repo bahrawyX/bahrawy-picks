@@ -3,21 +3,21 @@
 /**
  * <DateRangePicker />
  *
- * Two-month range picker built on react-day-picker v9. Includes preset
- * shortcuts, popover on desktop, drawer on mobile, and a formatted trigger.
+ * Two-month range picker built on shadcn Calendar (react-day-picker v9).
+ * Includes animated preset shortcuts, popover on desktop, drawer on mobile,
+ * and a formatted trigger button.
  *
- * | Prop          | Type                              | Default                          | Description                                  |
- * | ------------- | --------------------------------- | -------------------------------- | -------------------------------------------- |
- * | value         | DateRange \| undefined            | required                         | Currently selected range.                    |
- * | onChange      | (value: DateRange \| undefined) => void | required                   | Fires when the selection changes.            |
- * | minDate       | Date                              | —                                | Earliest selectable date.                    |
- * | maxDate       | Date                              | —                                | Latest selectable date.                      |
- * | disabledDates | Date[]                            | []                               | Specific dates to disable.                   |
- * | presets       | DateRangePreset[]                 | Today / 7d / 30d / This month    | Quick-pick shortcuts shown in the side rail. |
- * | placeholder   | string                            | 'Select date range'              | Trigger text when nothing is selected.       |
- * | disabled      | boolean                           | false                            | Disable the trigger.                         |
- * | className     | string                            | —                                | Applied to the trigger button.               |
- * | align         | 'start' \| 'center' \| 'end'      | 'start'                          | Popover alignment relative to trigger.       |
+ * @param value - Currently selected date range (`DateRange | undefined`).
+ * @param onChange - Callback fired when the selection changes.
+ * @param minDate - Earliest selectable date. Dates before this are disabled.
+ * @param maxDate - Latest selectable date. Dates after this are disabled.
+ * @param disabledDates - Array of specific dates to disable.
+ * @param presets - Quick-pick shortcuts shown alongside the calendar.
+ *   Defaults to Today, Last 7 days, Last 30 days, and This month.
+ * @param placeholder - Trigger text when nothing is selected. Defaults to "Select date range".
+ * @param disabled - Disables the trigger button.
+ * @param align - Popover alignment relative to trigger (`'start' | 'center' | 'end'`).
+ * @param className - Additional class names applied to the trigger button.
  */
 
 import * as React from 'react'
@@ -30,8 +30,10 @@ import {
   startOfToday,
   subDays,
 } from 'date-fns'
+import { motion } from 'framer-motion'
 import { CalendarIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
+import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Drawer,
@@ -45,12 +47,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { springSnappy } from '@/lib/motion'
 import { cn } from '@/lib/utils'
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
 
 export interface DateRangePreset {
   label: string
   range: () => DateRange
 }
+
+export interface DateRangePickerProps {
+  value: DateRange | undefined
+  onChange: (value: DateRange | undefined) => void
+  minDate?: Date
+  maxDate?: Date
+  disabledDates?: Date[]
+  presets?: DateRangePreset[]
+  placeholder?: string
+  disabled?: boolean
+  align?: 'start' | 'center' | 'end'
+  className?: string
+}
+
+/* ------------------------------------------------------------------ */
+/*  Default presets                                                     */
+/* ------------------------------------------------------------------ */
 
 const DEFAULT_PRESETS: DateRangePreset[] = [
   {
@@ -74,26 +98,25 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
   },
 ]
 
-export interface DateRangePickerProps {
-  value: DateRange | undefined
-  onChange: (value: DateRange | undefined) => void
-  minDate?: Date
-  maxDate?: Date
-  disabledDates?: Date[]
-  presets?: DateRangePreset[]
-  placeholder?: string
-  disabled?: boolean
-  className?: string
-  align?: 'start' | 'center' | 'end'
-}
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
-function formatRange(range: DateRange | undefined, placeholder: string) {
+/**
+ * Formats a `DateRange` into human-readable text for the trigger button.
+ * Omits the year on the "from" side when both dates share the same year.
+ */
+function formatRange(range: DateRange | undefined, placeholder: string): string {
   if (!range?.from) return placeholder
   if (!range.to) return format(range.from, 'MMM d, yyyy')
   const sameYear = range.from.getFullYear() === range.to.getFullYear()
   const fromPattern = sameYear ? 'MMM d' : 'MMM d, yyyy'
   return `${format(range.from, fromPattern)} – ${format(range.to, 'MMM d, yyyy')}`
 }
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
 
 export function DateRangePicker({
   value,
@@ -104,19 +127,20 @@ export function DateRangePicker({
   presets = DEFAULT_PRESETS,
   placeholder = 'Select date range',
   disabled = false,
-  className,
   align = 'start',
+  className,
 }: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
-  // `mounted` keeps SSR + first client render aligned (both render the
-  // desktop Popover). After hydration we read the media query and may swap
-  // to the Drawer — by then React no longer compares against server HTML.
+
+  // `mounted` keeps SSR and the first client render aligned (both render the
+  // desktop Popover). After hydration we read the media query and may swap to
+  // the Drawer — by then React no longer compares against server HTML.
   const [mounted, setMounted] = React.useState(false)
   const [isMobile, setIsMobile] = React.useState(false)
 
   React.useEffect(() => {
     setMounted(true)
-    const mq = window.matchMedia('(max-width: 640px)')
+    const mq = window.matchMedia('(max-width: 767px)')
     const update = () => setIsMobile(mq.matches)
     update()
     mq.addEventListener('change', update)
@@ -140,44 +164,51 @@ export function DateRangePicker({
   const labelText = formatRange(value, placeholder)
   const hasSelection = !!value?.from
 
-  const Trigger = (
-    <button
-      type="button"
+  /* ---- Trigger --------------------------------------------------- */
+
+  const TriggerButton = (
+    <Button
+      variant="outline"
       disabled={disabled}
-      aria-haspopup="dialog"
-      aria-expanded={open}
       className={cn(
-        'inline-flex h-10 w-full max-w-sm items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 text-left text-sm transition-colors duration-m3-enter ease-m3-enter',
-        'hover:bg-white/[0.06] focus-visible:outline-none focus-visible:border-white/40',
-        hasSelection ? 'text-white' : 'text-white/40',
-        disabled && 'cursor-not-allowed opacity-50',
+        'w-full max-w-sm justify-start gap-2 text-left font-normal',
+        !hasSelection && 'text-zinc-400',
         className
       )}
     >
-      <CalendarIcon className="h-4 w-4 text-white/50" />
+      <CalendarIcon className="h-4 w-4" />
       <span className="truncate">{labelText}</span>
-    </button>
+    </Button>
   )
+
+  /* ---- Presets sidebar / strip ------------------------------------ */
+
+  const PresetButtons = presets.length > 0 && (
+    <div className="flex shrink-0 flex-wrap gap-1 border-b border-zinc-800 p-3 sm:w-36 sm:flex-col sm:flex-nowrap sm:border-b-0 sm:border-r">
+      {presets.map((preset) => (
+        <motion.button
+          key={preset.label}
+          type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          transition={springSnappy}
+          onClick={() => {
+            onChange(preset.range())
+            setOpen(false)
+          }}
+          className="rounded-md px-2 py-1.5 text-left text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+        >
+          {preset.label}
+        </motion.button>
+      ))}
+    </div>
+  )
+
+  /* ---- Body (calendar + presets) ---------------------------------- */
 
   const Body = (
     <div className="flex flex-col sm:flex-row">
-      {presets.length > 0 && (
-        <div className="flex shrink-0 flex-wrap gap-1 border-b border-white/10 p-3 sm:flex-col sm:flex-nowrap sm:border-b-0 sm:border-r sm:w-36">
-          {presets.map((preset) => (
-            <button
-              key={preset.label}
-              type="button"
-              onClick={() => {
-                onChange(preset.range())
-                setOpen(false)
-              }}
-              className="rounded-md px-2 py-1.5 text-left text-xs text-white/70 transition-colors duration-m3-enter ease-m3-enter hover:bg-white/[0.06] hover:text-white"
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {PresetButtons}
       <Calendar
         mode="range"
         selected={value}
@@ -189,10 +220,12 @@ export function DateRangePicker({
     </div>
   )
 
+  /* ---- Mobile: Drawer -------------------------------------------- */
+
   if (mounted && isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>{Trigger}</DrawerTrigger>
+        <DrawerTrigger asChild>{TriggerButton}</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Select date range</DrawerTitle>
@@ -203,9 +236,11 @@ export function DateRangePicker({
     )
   }
 
+  /* ---- Desktop: Popover ------------------------------------------ */
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>{Trigger}</PopoverTrigger>
+      <PopoverTrigger asChild>{TriggerButton}</PopoverTrigger>
       <PopoverContent className="w-auto p-0" align={align}>
         {Body}
       </PopoverContent>

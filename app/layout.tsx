@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Navbar } from '@/components/navbar'
 import { PageTransition } from '@/components/page-transition'
-import { FlagEmojiPolyfill } from '@/components/flag-emoji-polyfill'
 import './globals.css'
 
 const inter = Inter({
@@ -31,9 +30,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} bg-black`}>
+    <html lang="en" className={`dark ${inter.variable} bg-black`}>
       <body className="bg-black font-sans text-white antialiased">
-        <FlagEmojiPolyfill />
         <Navbar />
         <PageTransition scope="segment">{children}</PageTransition>
       </body>

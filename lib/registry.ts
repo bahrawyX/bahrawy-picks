@@ -1,0 +1,38 @@
+export interface RegistryItem {
+  title: string
+  slug: string
+  description: string
+}
+
+export const componentRegistry: RegistryItem[] = [
+  {
+    title: 'Phone Input',
+    slug: 'phone-input',
+    description:
+      'International phone input with searchable country selector, as-you-type formatting, and E.164 output.',
+  },
+  {
+    title: 'Stepper',
+    slug: 'stepper',
+    description:
+      'Multi-step progress indicator with horizontal/vertical layout, clickable navigation, and error states.',
+  },
+  {
+    title: 'Number Input',
+    slug: 'number-input',
+    description:
+      'Stepper-flanked numeric input with long-press, keyboard nav, and Intl number formatting.',
+  },
+  {
+    title: 'Multi-Step Form',
+    slug: 'multi-step-form',
+    description:
+      'Wizard built on React Hook Form with per-step Zod validation and animated transitions.',
+  },
+  {
+    title: 'Date Range Picker',
+    slug: 'date-range-picker',
+    description:
+      'Two-month range picker with preset shortcuts, popover on desktop, and drawer on mobile.',
+  },
+]

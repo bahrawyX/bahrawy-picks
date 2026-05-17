@@ -60,9 +60,9 @@ export default function DateRangePickerDocs() {
 
   return (
     <DocsPage
-      category="07 · form"
+      category="05 · form"
       title="Date range picker"
-      description="Two-month range picker built on react-day-picker v9. Includes preset shortcuts, popover on desktop, drawer on mobile, and a formatted trigger button."
+      description="Two-month range picker built on react-day-picker v9 with Framer Motion animations. Includes preset shortcuts, popover on desktop, drawer on mobile."
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[180px]">
@@ -105,7 +105,7 @@ export default function DateRangePickerDocs() {
             variant={withBounds ? 'default' : 'outline'}
             onClick={() => setWithBounds((v) => !v)}
           >
-            ±90 day bounds
+            90 day bounds
           </Button>
           <Button
             size="sm"
@@ -147,9 +147,8 @@ export default function DateRangePickerDocs() {
 
       <DocsSection title="Mobile">
         <p className="text-sm text-white/60">
-          On viewports under 640px the picker opens in a bottom drawer
-          (Vaul-based) instead of a popover, and collapses to a single month
-          for usability.
+          On viewports under 768px the picker opens in a bottom drawer
+          instead of a popover, and collapses to a single month for usability.
         </p>
       </DocsSection>
     </DocsPage>
