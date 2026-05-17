@@ -47,4 +47,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Four variants: vertical, alternating, horizontal, and activity feed. Scroll-driven line animation, live updates, expandable events.',
   },
+  {
+    title: 'OTP Input',
+    slug: 'otp-input',
+    description:
+      'One-time password input with animated character boxes, paste support, auto-focus navigation, and error/success states.',
+  },
 ]

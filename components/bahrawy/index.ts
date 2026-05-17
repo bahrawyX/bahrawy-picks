@@ -51,3 +51,6 @@ export type { AutocompleteProps, Option as AutocompleteOption } from './autocomp
 
 export { Timeline } from './timeline'
 export type { TimelineProps, TimelineVariant, TimelineEventData } from './timeline'
+
+export { OTPInput } from './otp-input'
+export type { OTPInputProps } from './otp-input'
