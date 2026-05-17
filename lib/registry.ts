@@ -59,4 +59,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Multi-tag text input with chip UI, auto-suggestions, validation, and animated add/remove transitions.',
   },
+  {
+    title: 'Color Picker',
+    slug: 'color-picker',
+    description:
+      'Full-featured color picker with saturation canvas, hue slider, swatches palette, format switching, and color history.',
+  },
 ]

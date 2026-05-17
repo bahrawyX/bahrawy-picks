@@ -57,3 +57,6 @@ export type { OTPInputProps } from './otp-input'
 
 export { TagsInput } from './tags-input'
 export type { TagsInputProps } from './tags-input'
+
+export { ColorPicker } from './color-picker'
+export type { ColorPickerProps } from './color-picker'
