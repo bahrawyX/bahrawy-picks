@@ -38,9 +38,10 @@ import { PropsTable } from '@/components/showcase/props-table'
 // Mock data
 // ---------------------------------------------------------------------------
 
-const now = Date.now()
-const h = (hours: number) => new Date(now - hours * 3600_000).toISOString()
-const d = (days: number) => new Date(now - days * 86400_000).toISOString()
+// Fixed anchor so server and client produce identical HTML
+const ANCHOR = new Date('2026-05-17T12:00:00Z').getTime()
+const h = (hours: number) => new Date(ANCHOR - hours * 3600_000).toISOString()
+const d = (days: number) => new Date(ANCHOR - days * 86400_000).toISOString()
 
 const DEFAULT_EVENTS: TimelineEventData[] = [
   {
@@ -119,7 +120,7 @@ const DEFAULT_EVENTS: TimelineEventData[] = [
     id: '8',
     title: 'v1.0 public release',
     description: 'Ship to npm, publish docs, announce on socials.',
-    timestamp: new Date(now + 7 * 86400_000).toISOString(),
+    timestamp: new Date(ANCHOR + 7 * 86400_000).toISOString(),
     status: 'upcoming',
     icon: <Rocket className="h-3 w-3" />,
     badge: 'Milestone',
@@ -133,7 +134,7 @@ const ROADMAP_EVENTS: TimelineEventData[] = [
   { id: 'r3', title: 'RC 1', description: 'Release candidate', timestamp: d(10), status: 'current', color: 'bg-white' },
   { id: 'r4', title: 'RC 2', description: 'Bug fixes', timestamp: d(5), status: 'upcoming' },
   { id: 'r5', title: 'v1.0', description: 'Stable release', timestamp: d(0), status: 'upcoming' },
-  { id: 'r6', title: 'v1.1', description: 'New components', timestamp: new Date(now + 14 * 86400_000).toISOString(), status: 'upcoming' },
+  { id: 'r6', title: 'v1.1', description: 'New components', timestamp: new Date(ANCHOR + 14 * 86400_000).toISOString(), status: 'upcoming' },
 ]
 
 const ACTIVITY_EVENTS: TimelineEventData[] = [

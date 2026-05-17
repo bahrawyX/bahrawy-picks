@@ -53,6 +53,18 @@ const config: Config = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-100%)' },
         },
+        'tl-fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'tl-scale-in': {
+          '0%': { opacity: '0', transform: 'scale(0.8)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'tl-grow-y': {
+          '0%': { transform: 'scaleY(0)' },
+          '100%': { transform: 'scaleY(1)' },
+        },
       },
       animation: {
         'shimmer': 'shimmer 2s linear infinite',
@@ -62,6 +74,9 @@ const config: Config = {
         'slide-in-right': 'slide-in-right 300ms cubic-bezier(0.2, 0, 0, 1) both',
         'slide-in-left': 'slide-in-left 300ms cubic-bezier(0.2, 0, 0, 1) both',
         'marquee': 'marquee var(--duration, 30s) linear infinite',
+        'tl-fade-up': 'tl-fade-up 400ms cubic-bezier(0.2, 0, 0, 1) both',
+        'tl-scale-in': 'tl-scale-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
+        'tl-grow-y': 'tl-grow-y 500ms cubic-bezier(0.2, 0, 0, 1) both',
       },
     },
   },

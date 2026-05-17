@@ -1,9 +1,9 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { springGentle, springSnappy, scaleIn } from '@/lib/motion'
+import { springSnappy } from '@/lib/motion'
 import { type TimelineEventData, TimelineEventCard } from './timeline-event'
 import { TimelineDot } from './timeline-dot'
 
@@ -17,27 +17,23 @@ interface CenteredTimelineProps {
 
 function CenteredItem({
   event,
+  index,
   isActive,
   showTimestamps,
   timestampFormat,
   onEventClick,
 }: {
   event: TimelineEventData
+  index: number
   isActive: boolean
   showTimestamps?: boolean
   timestampFormat?: 'relative' | 'absolute' | 'both'
   onEventClick?: (event: TimelineEventData) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-60px' })
-
   return (
-    <motion.div
-      ref={ref}
-      {...scaleIn}
-      animate={isInView ? scaleIn.animate : scaleIn.initial}
-      transition={springGentle}
-      className="flex w-[280px] shrink-0 snap-center flex-col items-center gap-3"
+    <div
+      className="flex w-[280px] shrink-0 snap-center flex-col items-center gap-3 animate-tl-scale-in"
+      style={{ animationDelay: `${index * 80}ms` }}
     >
       {/* Dot */}
       <motion.div
@@ -69,7 +65,7 @@ function CenteredItem({
           onClick={onEventClick}
         />
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -100,6 +96,7 @@ export function CenteredTimeline({
           <CenteredItem
             key={event.id}
             event={event}
+            index={i}
             isActive={i === activeIndex}
             showTimestamps={showTimestamps}
             timestampFormat={timestampFormat}

@@ -4,7 +4,6 @@ import { type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { Check, X, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { scaleIn, springSnappy } from '@/lib/motion'
 
 export type EventStatus = 'completed' | 'current' | 'upcoming' | 'error' | 'warning'
 
@@ -60,10 +59,9 @@ export function TimelineDot({
   const isUpcoming = status === 'upcoming'
 
   return (
-    <motion.div
-      {...scaleIn}
-      transition={{ ...springSnappy, delay }}
-      className="relative z-10 flex items-center justify-center"
+    <div
+      className="relative z-10 flex items-center justify-center animate-tl-scale-in"
+      style={{ animationDelay: `${Math.round(delay * 1000)}ms` }}
     >
       {/* Pulse ring for current */}
       {status === 'current' && (
@@ -84,11 +82,11 @@ export function TimelineDot({
         // Error shake on mount
         {...(status === 'error' && {
           animate: { x: [0, -3, 3, -3, 3, 0] },
-          transition: { ...springSnappy, delay: delay + 0.1 },
+          transition: { type: 'tween', duration: 0.4, ease: 'easeInOut', delay: delay + 0.1 },
         })}
       >
         {icon ?? config.icon}
       </motion.div>
-    </motion.div>
+    </div>
   )
 }

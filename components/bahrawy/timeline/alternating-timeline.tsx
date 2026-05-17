@@ -1,9 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { springGentle } from '@/lib/motion'
 import { type TimelineEventData, TimelineEventCard } from './timeline-event'
 import { TimelineDot } from './timeline-dot'
 import { TimelineConnector } from './timeline-connector'
@@ -31,20 +28,16 @@ function AlternatingRow({
   timestampFormat?: 'relative' | 'absolute' | 'both'
   onEventClick?: (event: TimelineEventData) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
   const isLeft = index % 2 === 0
 
   return (
-    <div ref={ref} className="relative grid grid-cols-[1fr_auto_1fr] gap-4">
+    <div className="relative grid grid-cols-[1fr_auto_1fr] gap-4">
       {/* Left cell */}
       <div className={cn('flex', isLeft ? 'justify-end' : '')}>
         {isLeft && (
-          <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -60 }}
-            transition={springGentle}
-            className="w-full max-w-sm pb-8"
+          <div
+            className="w-full max-w-sm pb-8 animate-slide-in-left"
+            style={{ animationDelay: `${index * 80}ms` }}
           >
             <TimelineEventCard
               event={event}
@@ -52,7 +45,7 @@ function AlternatingRow({
               timestampFormat={timestampFormat}
               onClick={onEventClick}
             />
-          </motion.div>
+          </div>
         )}
       </div>
 
@@ -63,11 +56,11 @@ function AlternatingRow({
           icon={event.icon}
           iconBackground={event.iconBackground}
           color={event.color}
-          delay={0.15}
+          delay={index * 0.08 + 0.15}
         />
         {!isLast && (
           <div className="flex-1 py-2">
-            <TimelineConnector color={event.color} />
+            <TimelineConnector color={event.color} delay={index * 0.08} />
           </div>
         )}
       </div>
@@ -75,11 +68,9 @@ function AlternatingRow({
       {/* Right cell */}
       <div className={cn('flex', !isLeft ? 'justify-start' : '')}>
         {!isLeft && (
-          <motion.div
-            initial={{ opacity: 0, x: 60 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 60 }}
-            transition={springGentle}
-            className="w-full max-w-sm pb-8"
+          <div
+            className="w-full max-w-sm pb-8 animate-slide-in-right"
+            style={{ animationDelay: `${index * 80}ms` }}
           >
             <TimelineEventCard
               event={event}
@@ -87,7 +78,7 @@ function AlternatingRow({
               timestampFormat={timestampFormat}
               onClick={onEventClick}
             />
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

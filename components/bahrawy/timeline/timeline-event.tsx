@@ -95,12 +95,12 @@ export function TimelineEventCard({
 
           {/* Timestamp */}
           {showTimestamp && (
-            <p className="mt-0.5 text-xs text-white/30" title={absoluteTime}>
+            <p className="mt-0.5 text-xs text-white/30" title={absoluteTime} suppressHydrationWarning>
               {timestampFormat === 'absolute'
                 ? absoluteTime
                 : relativeTime}
               {timestampFormat === 'both' && (
-                <span className="ml-1.5 text-white/15">· {absoluteTime}</span>
+                <span className="ml-1.5 text-white/15" suppressHydrationWarning>· {absoluteTime}</span>
               )}
             </p>
           )}

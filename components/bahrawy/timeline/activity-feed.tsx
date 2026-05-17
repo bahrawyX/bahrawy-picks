@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion, useInView } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { springSnappy, springGentle, fadeUp } from '@/lib/motion'
+import { springSnappy } from '@/lib/motion'
 import { Badge } from '@/components/ui/badge'
 import {
   Avatar,
@@ -40,8 +40,6 @@ function ActivityItem({
   timestampFormat?: 'relative' | 'absolute' | 'both'
   onEventClick?: (event: TimelineEventData) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-40px' })
   const [relativeTime, setRelativeTime] = useState(() =>
     formatRelative(event.timestamp)
   )
@@ -62,25 +60,48 @@ function ActivityItem({
     warning: 'border-l-amber-500/40',
   }
 
+  // New items get Framer Motion animation; existing items use CSS
+  if (isNew) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -40, height: 0 }}
+        animate={{ opacity: 1, x: 0, height: 'auto' }}
+        transition={springSnappy}
+        onClick={() => onEventClick?.(event)}
+        className={cn(
+          'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-white/[0.02]',
+          statusBorder[event.status ?? 'completed'],
+          onEventClick && 'cursor-pointer'
+        )}
+      >
+        {renderContent(event, showTimestamps, timestampFormat, relativeTime, absoluteTime)}
+      </motion.div>
+    )
+  }
+
   return (
-    <motion.div
-      ref={ref}
-      initial={isNew ? { opacity: 0, x: -40, height: 0 } : { opacity: 0, y: 8 }}
-      animate={
-        isNew
-          ? { opacity: 1, x: 0, height: 'auto' }
-          : isInView
-            ? { opacity: 1, y: 0 }
-            : { opacity: 0, y: 8 }
-      }
-      transition={isNew ? springSnappy : springGentle}
+    <div
       onClick={() => onEventClick?.(event)}
       className={cn(
-        'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-white/[0.02]',
+        'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-white/[0.02] animate-tl-fade-up',
         statusBorder[event.status ?? 'completed'],
         onEventClick && 'cursor-pointer'
       )}
     >
+      {renderContent(event, showTimestamps, timestampFormat, relativeTime, absoluteTime)}
+    </div>
+  )
+}
+
+function renderContent(
+  event: TimelineEventData,
+  showTimestamps?: boolean,
+  timestampFormat?: 'relative' | 'absolute' | 'both',
+  relativeTime?: string,
+  absoluteTime?: string,
+) {
+  return (
+    <>
       {/* Avatar or icon */}
       <div className="shrink-0 pt-0.5">
         {event.avatar ? (
@@ -133,11 +154,12 @@ function ActivityItem({
         <span
           className="shrink-0 pt-0.5 text-[11px] tabular-nums text-white/20"
           title={absoluteTime}
+          suppressHydrationWarning
         >
           {timestampFormat === 'absolute' ? absoluteTime : relativeTime}
         </span>
       )}
-    </motion.div>
+    </>
   )
 }
 
@@ -196,7 +218,7 @@ export function ActivityFeed({
   return (
     <div className={cn('flex flex-col', className)}>
       {groupByDate && grouped ? (
-        <AnimatePresence>
+        <>
           {grouped.map((group) => {
             const visibleInGroup = maxVisible && !showAll
               ? group.events.filter((e) => visibleEvents.includes(e))
@@ -205,20 +227,22 @@ export function ActivityFeed({
             return (
               <div key={group.label}>
                 <DateSeparator label={group.label} />
-                {visibleInGroup.map((event) => (
-                  <ActivityItem
-                    key={event.id}
-                    event={event}
-                    isNew={live && newIdsRef.current.has(event.id)}
-                    showTimestamps={showTimestamps}
-                    timestampFormat={timestampFormat}
-                    onEventClick={onEventClick}
-                  />
-                ))}
+                <AnimatePresence>
+                  {visibleInGroup.map((event) => (
+                    <ActivityItem
+                      key={event.id}
+                      event={event}
+                      isNew={live && newIdsRef.current.has(event.id)}
+                      showTimestamps={showTimestamps}
+                      timestampFormat={timestampFormat}
+                      onEventClick={onEventClick}
+                    />
+                  ))}
+                </AnimatePresence>
               </div>
             )
           })}
-        </AnimatePresence>
+        </>
       ) : (
         <AnimatePresence>
           {visibleEvents.map((event) => (
@@ -236,15 +260,13 @@ export function ActivityFeed({
 
       {/* Show more button */}
       {hiddenCount > 0 && (
-        <motion.button
+        <button
           type="button"
-          {...fadeUp}
-          transition={springSnappy}
           onClick={() => setShowAll(true)}
-          className="mt-2 self-start border-l-2 border-l-white/[0.06] py-2 pl-4 text-xs font-medium text-white/30 transition-colors hover:text-white/60"
+          className="mt-2 self-start border-l-2 border-l-white/[0.06] py-2 pl-4 text-xs font-medium text-white/30 transition-colors hover:text-white/60 animate-tl-fade-up"
         >
           Show {hiddenCount} more
-        </motion.button>
+        </button>
       )}
     </div>
   )

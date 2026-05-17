@@ -1,9 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { springGentle } from '@/lib/motion'
 import { type TimelineEventData, TimelineEventCard } from './timeline-event'
 import { TimelineDot } from './timeline-dot'
 import { TimelineConnector } from './timeline-connector'
@@ -18,22 +15,21 @@ interface DefaultTimelineProps {
 
 function EventRow({
   event,
+  index,
   isLast,
   showTimestamps,
   timestampFormat,
   onEventClick,
 }: {
   event: TimelineEventData
+  index: number
   isLast: boolean
   showTimestamps?: boolean
   timestampFormat?: 'relative' | 'absolute' | 'both'
   onEventClick?: (event: TimelineEventData) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
-
   return (
-    <div ref={ref} className="relative flex gap-4">
+    <div className="relative flex gap-4">
       {/* Left column — dot + connector */}
       <div className="flex flex-col items-center">
         <TimelineDot
@@ -41,21 +37,19 @@ function EventRow({
           icon={event.icon}
           iconBackground={event.iconBackground}
           color={event.color}
-          delay={0.15}
+          delay={index * 0.08 + 0.15}
         />
         {!isLast && (
           <div className="flex-1 py-2">
-            <TimelineConnector color={event.color} />
+            <TimelineConnector color={event.color} delay={index * 0.08} />
           </div>
         )}
       </div>
 
       {/* Right column — event card */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-        transition={springGentle}
-        className="flex-1 pb-8"
+      <div
+        className="flex-1 pb-8 animate-slide-in-right"
+        style={{ animationDelay: `${index * 80}ms` }}
       >
         <TimelineEventCard
           event={event}
@@ -63,7 +57,7 @@ function EventRow({
           timestampFormat={timestampFormat}
           onClick={onEventClick}
         />
-      </motion.div>
+      </div>
     </div>
   )
 }
@@ -81,6 +75,7 @@ export function DefaultTimeline({
         <EventRow
           key={event.id}
           event={event}
+          index={i}
           isLast={i === events.length - 1}
           showTimestamps={showTimestamps}
           timestampFormat={timestampFormat}
