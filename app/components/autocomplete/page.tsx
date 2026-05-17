@@ -57,16 +57,25 @@ const HOBBIES: Option[] = [
   { label: 'Volunteering', value: 'volunteering', icon: <Heart className="h-4 w-4" />, description: 'Give back' },
 ]
 
+function ColorDot({ color }: { color: string }) {
+  return (
+    <span
+      className="inline-block h-3 w-3 shrink-0 rounded-full border border-white/10"
+      style={{ backgroundColor: color }}
+    />
+  )
+}
+
 const COLORS: Option[] = [
-  { label: 'Red', value: 'red' },
-  { label: 'Orange', value: 'orange' },
-  { label: 'Yellow', value: 'yellow' },
-  { label: 'Green', value: 'green' },
-  { label: 'Blue', value: 'blue' },
-  { label: 'Purple', value: 'purple' },
-  { label: 'Pink', value: 'pink' },
-  { label: 'Black', value: 'black' },
-  { label: 'White', value: 'white' },
+  { label: 'Red', value: 'red', icon: <ColorDot color="#ef4444" /> },
+  { label: 'Orange', value: 'orange', icon: <ColorDot color="#f97316" /> },
+  { label: 'Yellow', value: 'yellow', icon: <ColorDot color="#eab308" /> },
+  { label: 'Green', value: 'green', icon: <ColorDot color="#22c55e" /> },
+  { label: 'Blue', value: 'blue', icon: <ColorDot color="#3b82f6" /> },
+  { label: 'Purple', value: 'purple', icon: <ColorDot color="#a855f7" /> },
+  { label: 'Pink', value: 'pink', icon: <ColorDot color="#ec4899" /> },
+  { label: 'Black', value: 'black', icon: <ColorDot color="#171717" /> },
+  { label: 'White', value: 'white', icon: <ColorDot color="#f5f5f5" /> },
 ]
 
 // Fake async search — simulates API

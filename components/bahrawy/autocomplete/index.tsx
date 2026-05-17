@@ -142,7 +142,7 @@ export function Autocomplete({
   popoverWidth = 'trigger',
 }: AutocompleteProps) {
   const instanceId = useId()
-  const triggerRef = useRef<HTMLButtonElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // ---- State ----
@@ -346,14 +346,14 @@ export function Autocomplete({
     <div className={cn('relative', className)}>
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild disabled={disabled}>
-          <button
+          <div
             ref={triggerRef}
-            type="button"
             role="combobox"
+            tabIndex={0}
             aria-expanded={open}
             aria-controls={`${instanceId}-list`}
             className={cn(
-              'flex w-full min-h-[40px] items-center rounded-lg border bg-white/[0.03] px-3 text-sm text-white/80 outline-none transition-colors',
+              'flex w-full min-h-[40px] cursor-pointer items-center rounded-lg border bg-white/[0.03] px-3 text-sm text-white/80 outline-none transition-colors',
               'hover:bg-white/[0.05] focus:border-white/20 focus:bg-white/[0.05]',
               error
                 ? 'border-red-500/60 focus:border-red-500/80'
@@ -422,12 +422,12 @@ export function Autocomplete({
                 )}
               />
             </div>
-          </button>
+          </div>
         </PopoverTrigger>
 
         <PopoverContent
           id={`${instanceId}-list`}
-          className="p-0"
+          className="p-0 border-white/[0.08]"
           align="start"
           style={
             popoverWidth === 'trigger'
@@ -465,8 +465,21 @@ export function Autocomplete({
               {/* Loading */}
               {isLoading && <Loading message={loadingMessage} />}
 
-              {/* Empty */}
-              {!isLoading && displayOptions.length === 0 && !showCreate && (
+              {/* Async idle — prompt to type */}
+              {!isLoading &&
+                onSearch &&
+                search.length < minChars &&
+                displayOptions.length === 0 && (
+                <div className="py-6 text-center text-sm text-white/25">
+                  Type to search...
+                </div>
+              )}
+
+              {/* Empty — hide in async mode when user hasn't typed yet */}
+              {!isLoading &&
+                displayOptions.length === 0 &&
+                !showCreate &&
+                !(onSearch && search.length < minChars) && (
                 <Empty message={emptyMessage} />
               )}
 
