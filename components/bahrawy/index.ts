@@ -48,3 +48,6 @@ export type { DataTableProps } from './data-table'
 
 export { Autocomplete } from './autocomplete'
 export type { AutocompleteProps, Option as AutocompleteOption } from './autocomplete'
+
+export { Timeline } from './timeline'
+export type { TimelineProps, TimelineVariant, TimelineEventData } from './timeline'

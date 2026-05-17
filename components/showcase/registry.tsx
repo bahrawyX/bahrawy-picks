@@ -261,6 +261,17 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion', 'cmdk', '@radix-ui/react-popover'],
   },
+  {
+    kind: 'docs',
+    id: '18',
+    slug: 'timeline',
+    name: 'Timeline',
+    description:
+      'Four variants: vertical, alternating, horizontal, and activity feed. Scroll-driven line animation, live updates, expandable events.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['framer-motion', '@radix-ui/react-avatar'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

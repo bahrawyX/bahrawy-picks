@@ -41,4 +41,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Static, async, and creatable combobox with single and multi-select, debounced search, and chip UI.',
   },
+  {
+    title: 'Timeline',
+    slug: 'timeline',
+    description:
+      'Four variants: vertical, alternating, horizontal, and activity feed. Scroll-driven line animation, live updates, expandable events.',
+  },
 ]
