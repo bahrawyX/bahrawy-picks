@@ -65,6 +65,13 @@ const config: Config = {
           '0%': { transform: 'scaleY(0)' },
           '100%': { transform: 'scaleY(1)' },
         },
+        'tl-shake': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '20%': { transform: 'translateX(-3px)' },
+          '40%': { transform: 'translateX(3px)' },
+          '60%': { transform: 'translateX(-3px)' },
+          '80%': { transform: 'translateX(3px)' },
+        },
       },
       animation: {
         'shimmer': 'shimmer 2s linear infinite',
@@ -77,6 +84,7 @@ const config: Config = {
         'tl-fade-up': 'tl-fade-up 400ms cubic-bezier(0.2, 0, 0, 1) both',
         'tl-scale-in': 'tl-scale-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
         'tl-grow-y': 'tl-grow-y 500ms cubic-bezier(0.2, 0, 0, 1) both',
+        'tl-shake': 'tl-shake 400ms ease-in-out both',
       },
     },
   },

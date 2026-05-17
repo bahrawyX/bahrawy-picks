@@ -73,20 +73,17 @@ export function TimelineDot({
       )}
 
       {/* Dot */}
-      <motion.div
+      <div
         className={cn(
           'flex h-6 w-6 items-center justify-center rounded-full ring-4',
           isUpcoming ? 'border-2 border-white/20 bg-transparent ring-white/[0.04]' : bgClass,
-          !isUpcoming && config.ring
+          !isUpcoming && config.ring,
+          status === 'error' && 'animate-tl-shake'
         )}
-        // Error shake on mount
-        {...(status === 'error' && {
-          animate: { x: [0, -3, 3, -3, 3, 0] },
-          transition: { type: 'tween', duration: 0.4, ease: 'easeInOut', delay: delay + 0.1 },
-        })}
+        style={status === 'error' && delay > 0 ? { animationDelay: `${Math.round((delay + 0.1) * 1000)}ms` } : undefined}
       >
         {icon ?? config.icon}
-      </motion.div>
+      </div>
     </div>
   )
 }

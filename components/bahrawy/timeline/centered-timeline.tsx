@@ -84,12 +84,12 @@ export function CenteredTimeline({
   return (
     <div className={cn('relative', className)}>
       {/* Horizontal connector */}
-      <div className="absolute left-0 right-0 top-3 z-0 h-0.5 bg-white/[0.06]" />
+      <div className="absolute left-0 right-0 top-8 z-0 h-0.5 bg-white/[0.06]" />
 
       {/* Scrollable row */}
       <div
         ref={scrollRef}
-        className="relative z-[1] flex gap-6 overflow-x-auto pb-4 pt-0 snap-x snap-mandatory scrollbar-none"
+        className="relative z-[1] flex gap-6 overflow-x-auto pb-4 pt-5 snap-x snap-mandatory scrollbar-none"
         style={{ scrollbarWidth: 'none' }}
       >
         {events.map((event, i) => (

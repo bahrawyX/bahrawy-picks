@@ -359,7 +359,7 @@ export default function TimelineDocs() {
 
       {/* ---- Centered horizontal ---- */}
       <DocsSection title="Centered horizontal">
-        <DemoCard className="p-6 overflow-hidden">
+        <DemoCard className="p-6 overflow-x-clip">
           <Timeline
             events={ROADMAP_EVENTS}
             variant="centered"
