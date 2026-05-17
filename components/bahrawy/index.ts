@@ -60,3 +60,6 @@ export type { TagsInputProps } from './tags-input'
 
 export { ColorPicker } from './color-picker'
 export type { ColorPickerProps } from './color-picker'
+
+export { ImageCropper } from './image-cropper'
+export type { ImageCropperProps, CropResult } from './image-cropper'

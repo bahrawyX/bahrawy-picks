@@ -65,4 +65,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Full-featured color picker with saturation canvas, hue slider, swatches palette, format switching, and color history.',
   },
+  {
+    title: 'Image Cropper',
+    slug: 'image-cropper',
+    description:
+      'Canvas-based image cropper with drag-to-crop, zoom, rotation, flip, aspect ratio presets, and file output.',
+  },
 ]
