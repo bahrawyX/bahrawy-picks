@@ -53,4 +53,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'One-time password input with animated character boxes, paste support, auto-focus navigation, and error/success states.',
   },
+  {
+    title: 'Tags Input',
+    slug: 'tags-input',
+    description:
+      'Multi-tag text input with chip UI, auto-suggestions, validation, and animated add/remove transitions.',
+  },
 ]

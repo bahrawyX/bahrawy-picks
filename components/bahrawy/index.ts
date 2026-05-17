@@ -54,3 +54,6 @@ export type { TimelineProps, TimelineVariant, TimelineEventData } from './timeli
 
 export { OTPInput } from './otp-input'
 export type { OTPInputProps } from './otp-input'
+
+export { TagsInput } from './tags-input'
+export type { TagsInputProps } from './tags-input'
