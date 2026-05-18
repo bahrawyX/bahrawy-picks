@@ -20,9 +20,10 @@ export default function ComponentsLayout({
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close sheet on route change
+  // Close sheet + scroll to top on route change
   useEffect(() => {
     setOpen(false)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
 
   return (

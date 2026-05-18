@@ -481,6 +481,50 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '38',
+    slug: 'twitter-card',
+    name: 'Twitter Card',
+    description:
+      'Tweet-style social post card with content parsing, verified badges, metric formatting, and platform branding.',
+    category: 'card',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '39',
+    slug: 'shining-border',
+    name: 'Shining Border',
+    description:
+      'Animated conic-gradient beam that travels around any element\'s border. Supports multiple color variants, multi-beam, glow, and pause on hover.',
+    category: 'decoration',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '40',
+    slug: 'kanban',
+    name: 'Kanban',
+    description:
+      'Full-featured drag and drop Kanban board with columns, cards, WIP limits, search, filters, and detail dialogs.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['@dnd-kit/core', '@dnd-kit/sortable', 'framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '41',
+    slug: 'virtual-list',
+    name: 'Virtual List',
+    description:
+      'High-performance virtualized list handling millions of rows. Fixed/variable height, grid, infinite scroll, grouped, table mode.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['@tanstack/react-virtual', 'framer-motion', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

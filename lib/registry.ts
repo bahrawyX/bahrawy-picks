@@ -161,4 +161,16 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Mini Excel-style editable grid with cell types, formulas, virtualization, CSV import/export, and clipboard support.',
   },
+  {
+    title: 'Kanban',
+    slug: 'kanban',
+    description:
+      'Full-featured drag and drop Kanban board with columns, cards, WIP limits, search, filters, and detail dialogs.',
+  },
+  {
+    title: 'Virtual List',
+    slug: 'virtual-list',
+    description:
+      'High-performance virtualized list handling millions of rows. Fixed/variable height, grid, infinite scroll, grouped, table mode.',
+  },
 ]
