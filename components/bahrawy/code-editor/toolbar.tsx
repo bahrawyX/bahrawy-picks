@@ -143,7 +143,7 @@ export function Toolbar({
       className={cn(
         'flex items-center justify-between px-2 py-1.5',
         isDark
-          ? 'bg-[#252525]'
+          ? 'bg-white/[0.02]'
           : 'border-b border-black/[0.06] bg-black/[0.02]',
       )}
     >

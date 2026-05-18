@@ -286,7 +286,7 @@ export function CodeEditor({
       className={cn(
         'overflow-hidden rounded-xl',
         isDark
-          ? 'ring-1 ring-white/[0.08] bg-[#1e1e1e]'
+          ? 'ring-1 ring-white/[0.06] bg-black'
           : 'border border-black/[0.12] bg-white',
         isFullscreen && 'rounded-none ring-0 border-none',
         className,
@@ -336,7 +336,7 @@ export function CodeEditor({
             options={{ fontSize, readOnly, wordWrap: wordWrap ? 'on' : 'off' }}
           />
         ) : (
-          <div className={isDark ? 'bg-[#1e1e1e]' : 'bg-white'}>
+          <div className={isDark ? 'bg-black' : 'bg-white'}>
             <Editor
               height={isFullscreen ? 'calc(100vh - 160px)' : height}
               language={language}
@@ -397,7 +397,7 @@ export function CodeEditor({
           transition={springGentle}
           className={cn(
             'fixed inset-0 z-50 flex flex-col',
-            isDark ? 'bg-[#1e1e1e]' : 'bg-white',
+            isDark ? 'bg-black' : 'bg-white',
           )}
         >
           {editorContent}

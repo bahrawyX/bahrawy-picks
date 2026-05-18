@@ -63,7 +63,7 @@ export function StatusBar({
       className={cn(
         'flex items-center justify-between px-3 py-1 text-[11px] font-medium select-none',
         isDark
-          ? 'bg-[#252525] text-white/40'
+          ? 'bg-white/[0.02] text-white/40'
           : 'border-t border-black/[0.06] bg-black/[0.02] text-black/40',
       )}
     >
