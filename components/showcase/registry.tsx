@@ -272,6 +272,50 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion', '@radix-ui/react-avatar'],
   },
+  {
+    kind: 'docs',
+    id: '19',
+    slug: 'otp-input',
+    name: 'OTP Input',
+    description:
+      'One-time password input with animated character boxes, paste support, auto-focus navigation, and error/success states.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '20',
+    slug: 'tags-input',
+    name: 'Tags Input',
+    description:
+      'Multi-tag text input with chip UI, auto-suggestions, validation, and animated add/remove transitions.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '21',
+    slug: 'color-picker',
+    name: 'Color Picker',
+    description:
+      'Full-featured color picker with saturation canvas, hue slider, swatches palette, format switching, and color history.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '22',
+    slug: 'image-cropper',
+    name: 'Image Cropper',
+    description:
+      'Canvas-based image cropper with drag-to-crop, zoom, rotation, flip, aspect ratio presets, and file output.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

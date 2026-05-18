@@ -72,6 +72,10 @@ const config: Config = {
           '60%': { transform: 'translateX(-3px)' },
           '80%': { transform: 'translateX(3px)' },
         },
+        'tl-pulse-ring': {
+          '0%': { transform: 'scale(1)', opacity: '0.45' },
+          '100%': { transform: 'scale(2.2)', opacity: '0' },
+        },
       },
       animation: {
         'shimmer': 'shimmer 2s linear infinite',
@@ -85,6 +89,7 @@ const config: Config = {
         'tl-scale-in': 'tl-scale-in 350ms cubic-bezier(0.2, 0, 0, 1) both',
         'tl-grow-y': 'tl-grow-y 500ms cubic-bezier(0.2, 0, 0, 1) both',
         'tl-shake': 'tl-shake 400ms ease-in-out both',
+        'tl-pulse-ring': 'tl-pulse-ring 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite',
       },
     },
   },

@@ -1,7 +1,6 @@
 'use client'
 
 import { type ReactNode } from 'react'
-import { motion } from 'framer-motion'
 import { Check, X, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -63,12 +62,13 @@ export function TimelineDot({
       className="relative z-10 flex items-center justify-center animate-tl-scale-in"
       style={{ animationDelay: `${Math.round(delay * 1000)}ms` }}
     >
-      {/* Pulse ring for current */}
+      {/* Pulse ring for current — pure CSS for smooth infinite loop */}
       {status === 'current' && (
-        <motion.div
-          className={cn('absolute h-8 w-8 rounded-full', color ?? 'bg-white/40')}
-          animate={{ scale: [1, 2], opacity: [0.5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+        <div
+          className={cn(
+            'absolute h-7 w-7 rounded-full animate-tl-pulse-ring',
+            color ?? 'bg-white/40',
+          )}
         />
       )}
 
@@ -76,7 +76,9 @@ export function TimelineDot({
       <div
         className={cn(
           'flex h-6 w-6 items-center justify-center rounded-full ring-4',
-          isUpcoming ? 'border-2 border-white/20 bg-transparent ring-white/[0.04]' : bgClass,
+          isUpcoming
+            ? 'border-2 border-white/[0.15] bg-white/[0.06] ring-white/[0.04]'
+            : bgClass,
           !isUpcoming && config.ring,
           status === 'error' && 'animate-tl-shake'
         )}
