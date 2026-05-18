@@ -174,7 +174,7 @@ export function CurrencyInput({
             : springSnappy
         }
         className={cn(
-          'flex items-stretch overflow-hidden rounded-lg border transition-colors',
+          'flex items-stretch rounded-lg border bg-white/[0.03] transition-colors',
           focused && !error ? 'border-white/30' : 'border-white/[0.08]',
           error && 'border-red-500/60',
           disabled && 'cursor-not-allowed opacity-50',
@@ -192,7 +192,7 @@ export function CurrencyInput({
 
         {/* Symbol prefix (when selector is hidden) */}
         {!showCurrencySelector && currencyInfo && (
-          <div className="flex items-center bg-white/[0.04] px-3 text-sm text-white/50">
+          <div className="flex items-center border-r border-white/[0.08] px-3 text-sm text-white/50">
             {currencyInfo.symbol}
           </div>
         )}
@@ -208,7 +208,7 @@ export function CurrencyInput({
           onBlur={handleBlur}
           disabled={disabled}
           placeholder={placeholder}
-          className="min-w-0 flex-1 bg-white/[0.03] px-3 py-2.5 text-right text-sm text-white outline-none placeholder:text-white/25"
+          className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-right text-sm text-white outline-none placeholder:text-white/25"
         />
       </motion.div>
 

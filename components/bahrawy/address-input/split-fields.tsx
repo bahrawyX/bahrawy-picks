@@ -11,7 +11,7 @@ interface SplitFieldsProps {
 
 export function SplitFields({ value, onChange, disabled }: SplitFieldsProps) {
   const inputClass = cn(
-    'w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/30',
+    'w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/30',
     disabled && 'cursor-not-allowed opacity-50',
   )
 

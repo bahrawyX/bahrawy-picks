@@ -82,7 +82,7 @@ export function DemoCard({
   return (
     <div
       className={cn(
-        'flex min-h-[280px] items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/40 p-8',
+        'flex min-h-[280px] items-center justify-center overflow-visible rounded-xl border border-white/10 bg-black/40 p-8',
         className
       )}
     >

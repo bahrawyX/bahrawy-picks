@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 interface MapPreviewProps {
@@ -17,22 +18,29 @@ export function MapPreview({
   height = 200,
   className,
 }: MapPreviewProps) {
-  // Using OpenStreetMap tile embed
+  const [loaded, setLoaded] = useState(false)
   const bbox = getBBox(lat, lon, zoom)
 
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-white/[0.08]',
+        'relative overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-200',
         className,
       )}
       style={{ height }}
     >
+      {/* Loading spinner */}
+      {!loaded && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-200">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-400 border-t-neutral-600" />
+        </div>
+      )}
       <iframe
         title="Map preview"
         src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`}
         className="h-full w-full border-0"
         loading="lazy"
+        onLoad={() => setLoaded(true)}
       />
     </div>
   )

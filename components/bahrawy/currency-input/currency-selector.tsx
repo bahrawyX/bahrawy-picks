@@ -76,7 +76,7 @@ export function CurrencySelector({
         }}
         disabled={disabled}
         className={cn(
-          'flex items-center gap-1.5 rounded-l-lg border-r border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm transition-colors hover:bg-white/[0.08]',
+          'flex items-center gap-1.5 border-r border-white/[0.08] bg-transparent px-3 py-2.5 text-sm transition-colors hover:bg-white/[0.06]',
           disabled && 'cursor-not-allowed opacity-50',
         )}
       >
