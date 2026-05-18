@@ -149,4 +149,16 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Keyboard shortcut display with automatic platform detection and Mac/Windows symbol mapping.',
   },
+  {
+    title: 'Code Editor',
+    slug: 'code-editor',
+    description:
+      'Monaco-powered inline code editor with multi-file tabs, diff mode, custom Bahrawy theme, run button, and output panel.',
+  },
+  {
+    title: 'Spreadsheet Input',
+    slug: 'spreadsheet-input',
+    description:
+      'Mini Excel-style editable grid with cell types, formulas, virtualization, CSV import/export, and clipboard support.',
+  },
 ]

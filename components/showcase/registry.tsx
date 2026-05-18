@@ -459,6 +459,28 @@ export const registry: RegistryEntry[] = [
     hasOptions: false,
     dependencies: [],
   },
+  {
+    kind: 'docs',
+    id: '36',
+    slug: 'code-editor',
+    name: 'Code Editor',
+    description:
+      'Monaco-powered inline code editor with multi-file tabs, diff mode, custom Bahrawy theme, run button, and output panel.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['@monaco-editor/react', 'framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '37',
+    slug: 'spreadsheet-input',
+    name: 'Spreadsheet Input',
+    description:
+      'Mini Excel-style editable grid with cell types, formulas, virtualization, CSV import/export, and clipboard support.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

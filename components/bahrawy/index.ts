@@ -102,3 +102,9 @@ export type { CountUpProps } from './count-up'
 
 export { Kbd } from './kbd'
 export type { KbdProps } from './kbd'
+
+export { CodeEditor } from './code-editor'
+export type { CodeEditorProps, EditorFile } from './code-editor'
+
+export { SpreadsheetInput } from './spreadsheet-input'
+export type { SpreadsheetInputProps, SpreadsheetColumn, SpreadsheetRow } from './spreadsheet-input'
