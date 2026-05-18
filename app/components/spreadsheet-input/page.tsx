@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { SpreadsheetInput, type SpreadsheetColumn } from '@/components/bahrawy'
+import { SpreadsheetInput, type SpreadsheetColumn, type SpreadsheetRow } from '@/components/bahrawy'
 import { CodeBlock } from '@/components/showcase/code-block'
 import {
   DemoCard,
@@ -98,8 +98,8 @@ const CHECKBOX_SNIPPET = `const columns: SpreadsheetColumn[] = [
 <SpreadsheetInput columns={columns} data={tasks} onChange={setTasks} />`
 
 export default function SpreadsheetInputDocs() {
-  const [people, setPeople] = useState(PEOPLE_DATA)
-  const [tasks, setTasks] = useState(TASK_DATA)
+  const [people, setPeople] = useState<SpreadsheetRow[]>(PEOPLE_DATA)
+  const [tasks, setTasks] = useState<SpreadsheetRow[]>(TASK_DATA)
 
   return (
     <DocsPage
