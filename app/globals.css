@@ -74,6 +74,23 @@ section.react-monaco-editor-container {
   border: none !important;
   outline: none !important;
 }
+/* Force Monaco background to black BEFORE custom theme loads.
+   vs-dark defaults to #1e1e1e which causes a visible flash. */
+.monaco-editor .monaco-editor-background,
+.monaco-editor .margin,
+.monaco-editor,
+.monaco-editor .overflow-guard,
+.monaco-editor .inputarea {
+  background-color: #000 !important;
+}
+/* When light theme is active, Monaco parent has .vs class */
+.monaco-editor.vs .monaco-editor-background,
+.monaco-editor.vs .margin,
+.monaco-editor.vs,
+.monaco-editor.vs .overflow-guard,
+.monaco-editor.vs .inputarea {
+  background-color: #fff !important;
+}
 
 /* Color picker slider */
 .color-slider {

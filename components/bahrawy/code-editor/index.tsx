@@ -340,29 +340,31 @@ export function CodeEditor({
             options={{ fontSize, readOnly, wordWrap: wordWrap ? 'on' : 'off' }}
           />
         ) : (
-          <Editor
-            height={isFullscreen ? 'calc(100vh - 160px)' : height}
-            language={language}
-            theme={themeName}
-            value={currentValue}
-            onChange={handleValueChange}
-            beforeMount={handleBeforeMount}
-            onMount={handleMount}
-            options={editorOptions}
-            loading={
-              <div
-                className={cn(
-                  'flex items-center justify-center text-sm',
-                  isDark ? 'text-white/30' : 'text-black/30',
-                )}
-                style={{
-                  height: typeof height === 'number' ? `${height}px` : height,
-                }}
-              >
-                Loading editor...
-              </div>
-            }
-          />
+          <div className={isDark ? 'bg-black' : 'bg-white'}>
+            <Editor
+              height={isFullscreen ? 'calc(100vh - 160px)' : height}
+              language={language}
+              theme={themeName}
+              value={currentValue}
+              onChange={handleValueChange}
+              beforeMount={handleBeforeMount}
+              onMount={handleMount}
+              options={editorOptions}
+              loading={
+                <div
+                  className={cn(
+                    'flex items-center justify-center text-sm',
+                    isDark ? 'text-white/30' : 'text-black/30',
+                  )}
+                  style={{
+                    height: typeof height === 'number' ? `${height}px` : height,
+                  }}
+                >
+                  Loading editor...
+                </div>
+              }
+            />
+          </div>
         )}
 
         {/* Status bar */}
