@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import {
   Sun,
   Moon,
@@ -11,7 +10,6 @@ import {
   Loader2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { springSnappy } from '@/lib/motion'
 import { CopyButton } from '@/components/bahrawy/copy-button'
 import {
   Select,
@@ -98,14 +96,12 @@ function ToolbarButton({
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <motion.button
+          <button
             type="button"
             onClick={onClick}
-            whileTap={{ scale: 0.93 }}
-            transition={springSnappy}
             disabled={disabled}
             className={cn(
-              'inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+              'inline-flex h-8 w-8 items-center justify-center rounded-lg transition-all active:scale-93',
               isDark
                 ? 'text-white/50 hover:bg-white/[0.06] hover:text-white disabled:text-white/20'
                 : 'text-black/50 hover:bg-black/[0.06] hover:text-black disabled:text-black/20',
@@ -115,7 +111,7 @@ function ToolbarButton({
             aria-label={tooltip}
           >
             {children}
-          </motion.button>
+          </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">{tooltip}</TooltipContent>
       </Tooltip>
