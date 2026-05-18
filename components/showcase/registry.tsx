@@ -316,6 +316,72 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '23',
+    slug: 'signature-pad',
+    name: 'Signature Pad',
+    description:
+      'Canvas-based signature pad with draw and type modes, bezier smoothing, velocity-based stroke width, and export to PNG/JPEG/SVG.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '24',
+    slug: 'json-editor',
+    name: 'JSON Editor',
+    description:
+      'Interactive JSON editor with tree view, raw editing, inline value editing, type badges, and copy support.',
+    category: 'data',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '25',
+    slug: 'mention-input',
+    name: 'Mention Input',
+    description:
+      'ContentEditable input with @mention support, cursor-positioned dropdown, and mention chip rendering.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '26',
+    slug: 'pin-input',
+    name: 'PIN Input',
+    description:
+      'Masked numeric PIN input with show/hide toggle, paste support, and animated digit entry.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '27',
+    slug: 'currency-input',
+    name: 'Currency Input',
+    description:
+      'Formatted currency input with Intl.NumberFormat, searchable currency selector, and 30 currencies.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '28',
+    slug: 'address-input',
+    name: 'Address Input',
+    description:
+      'Address autocomplete powered by OpenStreetMap Nominatim with split fields, map preview, and geolocation.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

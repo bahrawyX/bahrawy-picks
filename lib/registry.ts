@@ -71,4 +71,40 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Canvas-based image cropper with drag-to-crop, zoom, rotation, flip, aspect ratio presets, and file output.',
   },
+  {
+    title: 'Signature Pad',
+    slug: 'signature-pad',
+    description:
+      'Canvas-based signature pad with draw and type modes, bezier smoothing, velocity-based stroke width, and export to PNG/JPEG/SVG.',
+  },
+  {
+    title: 'JSON Editor',
+    slug: 'json-editor',
+    description:
+      'Interactive JSON editor with tree view, raw editing, inline value editing, type badges, and copy support.',
+  },
+  {
+    title: 'Mention Input',
+    slug: 'mention-input',
+    description:
+      'ContentEditable input with @mention support, cursor-positioned dropdown, and mention chip rendering.',
+  },
+  {
+    title: 'PIN Input',
+    slug: 'pin-input',
+    description:
+      'Masked numeric PIN input with show/hide toggle, paste support, and animated digit entry.',
+  },
+  {
+    title: 'Currency Input',
+    slug: 'currency-input',
+    description:
+      'Formatted currency input with Intl.NumberFormat, searchable currency selector, and 30 currencies.',
+  },
+  {
+    title: 'Address Input',
+    slug: 'address-input',
+    description:
+      'Address autocomplete powered by OpenStreetMap Nominatim with split fields, map preview, and geolocation.',
+  },
 ]
