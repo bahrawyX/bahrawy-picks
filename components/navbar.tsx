@@ -2,8 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Github } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Github, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 
 const links = [
   { href: '/components', label: 'Components' },
@@ -15,9 +23,18 @@ const links = [
  * Floating pill navbar. Center nav collapses on scroll-down and expands
  * on scroll-up using a `grid-template-columns: 1fr ↔ 0fr` transition.
  * Above the threshold the nav is always wide.
+ *
+ * On mobile: shows a hamburger menu that opens a Sheet drawer.
  */
 export function Navbar() {
   const [compact, setCompact] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
 
   useEffect(() => {
     const TOP_THRESHOLD = 80
@@ -55,7 +72,7 @@ export function Navbar() {
     : 'duration-m3-enter ease-m3-enter'
 
   return (
-    <header className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
+    <header className="fixed top-4 left-1/2 z-50 -translate-x-1/2 w-[calc(100%-2rem)] max-w-fit">
       <div
         className={cn(
           'flex items-center gap-1 rounded-full border border-white/10 bg-black/40 px-2 py-1.5 shadow-2xl shadow-black/40 backdrop-blur-xl',
@@ -63,6 +80,51 @@ export function Navbar() {
           collapseMotion
         )}
       >
+        {/* Mobile hamburger */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/5 hover:text-white md:hidden"
+              aria-label="Open menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 px-0">
+            <SheetHeader className="px-6">
+              <SheetTitle>Bahrawy</SheetTitle>
+            </SheetHeader>
+            <nav className="mt-4 flex flex-col gap-1 px-4">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    'rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                    pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href))
+                      ? 'bg-white/10 text-white'
+                      : 'text-white/60 hover:bg-white/[0.06] hover:text-white',
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="my-2 h-px bg-white/[0.06]" />
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/[0.06] hover:text-white"
+              >
+                <Github className="h-4 w-4" />
+                GitHub
+              </a>
+            </nav>
+          </SheetContent>
+        </Sheet>
+
         <Link
           href="/"
           className="rounded-full px-4 py-1.5 text-sm font-semibold tracking-tight text-white"
@@ -70,10 +132,10 @@ export function Navbar() {
           Bahrawy
         </Link>
 
-        {/* Collapsible center: grid 1fr ↔ 0fr animates width smoothly */}
+        {/* Collapsible center: grid 1fr ↔ 0fr animates width smoothly — hidden on mobile */}
         <div
           className={cn(
-            'grid overflow-hidden transition-[grid-template-columns,opacity]',
+            'hidden md:grid overflow-hidden transition-[grid-template-columns,opacity]',
             collapseMotion,
             compact ? 'grid-cols-[0fr] opacity-0' : 'grid-cols-[1fr] opacity-100'
           )}
@@ -102,7 +164,7 @@ export function Navbar() {
           target="_blank"
           rel="noreferrer noopener"
           aria-label="GitHub"
-          className="rounded-full p-2 text-white/70 transition-colors duration-m3-enter ease-m3-enter hover:bg-white/5 hover:text-white"
+          className="hidden md:inline-flex rounded-full p-2 text-white/70 transition-colors duration-m3-enter ease-m3-enter hover:bg-white/5 hover:text-white"
         >
           <Github className="h-4 w-4" />
         </a>

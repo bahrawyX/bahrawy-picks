@@ -95,7 +95,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-oklch(0.577 0.245 27.325) dark:text-oklch(0.704 0.191 22.216)", className)}
+      className={cn(error && "text-red-500", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -135,7 +135,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-oklch(0.552 0.016 285.938) dark:text-oklch(0.705 0.015 286.067)", className)}
+      className={cn("text-[0.8rem] text-zinc-400", className)}
       {...props}
     />
   )
@@ -157,7 +157,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-oklch(0.577 0.245 27.325) dark:text-oklch(0.704 0.191 22.216)", className)}
+      className={cn("text-[0.8rem] font-medium text-red-500", className)}
       {...props}
     >
       {body}

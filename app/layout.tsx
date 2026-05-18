@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 import { Navbar } from '@/components/navbar'
 import { NavigationProgress } from '@/components/navigation-progress'
 import './globals.css'
@@ -35,6 +36,17 @@ export default function RootLayout({
         <NavigationProgress />
         <Navbar />
         {children}
+        <Toaster
+          theme="dark"
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: '#18181b',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: '#fff',
+            },
+          }}
+        />
       </body>
     </html>
   )

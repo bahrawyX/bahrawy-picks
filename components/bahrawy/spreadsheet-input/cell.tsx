@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { springSnappy } from '@/lib/motion'
+import { Checkbox } from '@/components/ui/checkbox'
 import type { SpreadsheetColumn } from './index'
 
 interface CellProps {
@@ -81,12 +82,11 @@ export function Cell({
         onClick={onSelect}
         role="gridcell"
       >
-        <input
-          type="checkbox"
+        <Checkbox
           checked={!!value}
-          onChange={(e) => onValueChange(e.target.checked)}
-          className="h-3.5 w-3.5 cursor-pointer rounded border-white/20 bg-transparent accent-blue-500"
+          onCheckedChange={(checked) => onValueChange(!!checked)}
           aria-label={column.header}
+          className="h-3.5 w-3.5 cursor-pointer"
         />
       </div>
     )

@@ -97,9 +97,39 @@ const CHECKBOX_SNIPPET = `const columns: SpreadsheetColumn[] = [
 
 <SpreadsheetInput columns={columns} data={tasks} onChange={setTasks} />`
 
+const STRESS_COLUMNS: SpreadsheetColumn[] = [
+  { key: 'name', header: 'Name', type: 'text', width: 200 },
+  { key: 'amount', header: 'Amount', type: 'number', width: 120 },
+  {
+    key: 'status',
+    header: 'Status',
+    type: 'select',
+    width: 130,
+    options: ['Active', 'Inactive', 'Pending', 'Banned'],
+  },
+  { key: 'verified', header: 'OK?', type: 'checkbox', width: 60 },
+  { key: 'notes', header: 'Notes', type: 'text', width: 260 },
+]
+
+const STRESS_DATA: SpreadsheetRow[] = [
+  { name: '', amount: 0, status: '', verified: false, notes: 'Empty name test' },
+  { name: '   ', amount: -999999, status: 'Active', verified: true, notes: 'Leading spaces & huge negative' },
+  { name: 'Robert\'); DROP TABLE Students;--', amount: 42, status: 'Pending', verified: false, notes: 'SQL injection test' },
+  { name: '<script>alert("xss")</script>', amount: NaN, status: 'Banned', verified: true, notes: 'XSS attempt + NaN' },
+  { name: 'a'.repeat(300), amount: 0.1 + 0.2, status: 'Active', verified: false, notes: 'Overflow text + float precision' },
+  { name: 'null', amount: 0, status: 'Inactive', verified: false, notes: 'Literal string "null"' },
+  { name: 'undefined', amount: Infinity, status: 'Active', verified: true, notes: 'Infinity number' },
+  { name: 'John "Johnny" O\'Brien', amount: -0, status: 'Pending', verified: false, notes: 'Quotes in name + negative zero' },
+  { name: '12345', amount: 99999999999, status: 'Active', verified: true, notes: 'Numeric name + huge number' },
+  { name: 'Test User', amount: 3.14159265358979, status: 'Inactive', verified: false, notes: 'Long decimal' },
+  { name: 'true', amount: 1e-10, status: 'Banned', verified: true, notes: 'Boolean-ish name + tiny number' },
+  { name: '!@#$%^&*()', amount: -1, status: 'Active', verified: false, notes: 'Special characters name' },
+]
+
 export default function SpreadsheetInputDocs() {
   const [people, setPeople] = useState<SpreadsheetRow[]>(PEOPLE_DATA)
   const [tasks, setTasks] = useState<SpreadsheetRow[]>(TASK_DATA)
+  const [stress, setStress] = useState<SpreadsheetRow[]>(STRESS_DATA)
 
   return (
     <DocsPage
@@ -181,6 +211,25 @@ export default function SpreadsheetInputDocs() {
             />
           </div>
         </DemoCard>
+      </DocsSection>
+
+      {/* Stress test */}
+      <DocsSection title="Stress test (edge cases)">
+        <DemoCard className="items-start">
+          <div className="w-full">
+            <SpreadsheetInput
+              columns={STRESS_COLUMNS}
+              data={stress}
+              onChange={setStress}
+              showToolbar
+            />
+          </div>
+        </DemoCard>
+        <p className="mt-2 text-sm text-white/40">
+          Tests: empty values, whitespace, SQL injection strings, XSS attempts,
+          overflow text, NaN, Infinity, negative zero, float precision, special
+          characters, boolean-like strings, huge numbers, and long decimals.
+        </p>
       </DocsSection>
 
       {/* Props */}
