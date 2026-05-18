@@ -282,7 +282,6 @@ export function NumberInput({
             value={raw}
             placeholder={placeholder}
             disabled={disabled}
-            error={error}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}

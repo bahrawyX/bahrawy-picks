@@ -289,7 +289,6 @@ export function PhoneInput({
           value={display}
           onChange={handleInput}
           disabled={disabled}
-          error={error}
           placeholder={placeholder}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
