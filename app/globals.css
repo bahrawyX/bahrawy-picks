@@ -50,6 +50,31 @@ body {
   display: none;
 }
 
+/* Monaco editor overrides — kill default borders/outlines/white gaps */
+.monaco-editor,
+.monaco-editor .overflow-guard,
+.monaco-editor .margin,
+.monaco-editor .monaco-editor-background,
+.monaco-editor .inputarea.ime-input,
+.monaco-editor textarea,
+.monaco-diff-editor,
+.monaco-diff-editor .editor.original,
+.monaco-diff-editor .editor.modified {
+  border: none !important;
+  outline: none !important;
+}
+.monaco-editor,
+.monaco-editor .overflow-guard {
+  border-radius: 0 !important;
+}
+/* Monaco wrapper — prevent white flash / gap between toolbar and editor */
+[data-keybinding-context],
+.monaco-editor-container,
+section.react-monaco-editor-container {
+  border: none !important;
+  outline: none !important;
+}
+
 /* Color picker slider */
 .color-slider {
   -webkit-appearance: none;

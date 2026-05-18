@@ -288,11 +288,11 @@ export function CodeEditor({
       {...fadeUp}
       transition={springGentle}
       className={cn(
-        'overflow-hidden rounded-xl border',
+        'overflow-hidden rounded-xl',
         isDark
-          ? 'border-white/[0.08] bg-black'
-          : 'border-black/[0.08] bg-white',
-        isFullscreen && 'rounded-none border-none',
+          ? 'ring-1 ring-white/[0.06] bg-black'
+          : 'border border-black/[0.12] bg-white',
+        isFullscreen && 'rounded-none ring-0 border-none',
         className,
       )}
     >

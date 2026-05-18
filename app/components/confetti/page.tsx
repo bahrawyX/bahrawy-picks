@@ -1,5 +1,6 @@
 'use client'
 
+import { useCallback } from 'react'
 import { useConfetti } from '@/components/bahrawy'
 import { ConfettiCanvas } from '@/components/bahrawy/confetti/canvas'
 import { CodeBlock } from '@/components/showcase/code-block'
@@ -9,6 +10,15 @@ import {
   DocsSection,
 } from '@/components/showcase/docs-page'
 import { PropsTable } from '@/components/showcase/props-table'
+
+/** Returns a normalized { x, y } origin from the top-center of the clicked button. */
+function originFromButton(e: React.MouseEvent<HTMLButtonElement>) {
+  const rect = e.currentTarget.getBoundingClientRect()
+  return {
+    x: (rect.left + rect.width / 2) / window.innerWidth,
+    y: rect.top / window.innerHeight,
+  }
+}
 
 const HOOK_SNIPPET = `import { useConfetti } from '@/components/bahrawy'
 import { ConfettiCanvas } from '@/components/bahrawy/confetti/canvas'
@@ -48,7 +58,7 @@ export default function ConfettiDocs() {
       <DocsSection title="Fire confetti">
         <DemoCard>
           <button
-            onClick={() => fire()}
+            onClick={(e) => fire({ origin: originFromButton(e) })}
             className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
           >
             🎉 Fire Confetti
@@ -60,8 +70,8 @@ export default function ConfettiDocs() {
       <DocsSection title="Custom colors">
         <DemoCard>
           <button
-            onClick={() =>
-              fire({ colors: ['#ff0000', '#00ff00', '#0000ff'], count: 120 })
+            onClick={(e) =>
+              fire({ colors: ['#ff0000', '#00ff00', '#0000ff'], count: 120, origin: originFromButton(e) })
             }
             className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
           >

@@ -141,10 +141,10 @@ export function Toolbar({
   return (
     <div
       className={cn(
-        'flex items-center justify-between border-b px-2 py-1.5',
+        'flex items-center justify-between px-2 py-1.5',
         isDark
-          ? 'border-white/[0.06] bg-white/[0.02]'
-          : 'border-black/[0.06] bg-black/[0.02]',
+          ? 'bg-white/[0.02]'
+          : 'border-b border-black/[0.06] bg-black/[0.02]',
       )}
     >
       {/* Left: language selector */}
