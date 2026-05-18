@@ -81,3 +81,24 @@ export type { JsonEditorProps } from './json-editor'
 
 export { AddressInput } from './address-input'
 export type { AddressInputProps } from './address-input'
+
+export { PasswordInput } from './password-input'
+export type { PasswordInputProps } from './password-input'
+
+export { RatingInput } from './rating-input'
+export type { RatingInputProps, RatingVariant } from './rating-input'
+
+export { CopyButton } from './copy-button'
+export type { CopyButtonProps } from './copy-button'
+
+export { ScrollProgress } from './scroll-progress'
+export type { ScrollProgressProps, ScrollProgressPosition } from './scroll-progress'
+
+export { Confetti, useConfetti } from './confetti'
+export type { ConfettiProps, ConfettiConfig, ConfettiCanvasRef } from './confetti'
+
+export { CountUp } from './count-up'
+export type { CountUpProps } from './count-up'
+
+export { Kbd } from './kbd'
+export type { KbdProps } from './kbd'

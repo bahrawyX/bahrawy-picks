@@ -107,4 +107,46 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Address autocomplete powered by OpenStreetMap Nominatim with split fields, map preview, and geolocation.',
   },
+  {
+    title: 'Password Input',
+    slug: 'password-input',
+    description:
+      'Password field with show/hide toggle, real-time strength meter, and configurable requirements checklist.',
+  },
+  {
+    title: 'Rating Input',
+    slug: 'rating-input',
+    description:
+      'Interactive rating input with star, heart, emoji, and thumb variants, half-star precision, and labels.',
+  },
+  {
+    title: 'Copy Button',
+    slug: 'copy-button',
+    description:
+      'One-click clipboard copy button with animated idle/copied/error states and tooltip feedback.',
+  },
+  {
+    title: 'Scroll Progress',
+    slug: 'scroll-progress',
+    description:
+      'Fixed scroll progress bar with spring physics. Supports top, bottom, left, and right positions.',
+  },
+  {
+    title: 'Confetti',
+    slug: 'confetti',
+    description:
+      'Canvas-based confetti particle system with configurable colors, gravity, spread, and an imperative fire() API.',
+  },
+  {
+    title: 'Count Up',
+    slug: 'count-up',
+    description:
+      'Animated number counter with spring physics, in-view triggering, and Intl.NumberFormat formatting.',
+  },
+  {
+    title: 'Kbd',
+    slug: 'kbd',
+    description:
+      'Keyboard shortcut display with automatic platform detection and Mac/Windows symbol mapping.',
+  },
 ]

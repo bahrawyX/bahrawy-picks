@@ -382,6 +382,83 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '29',
+    slug: 'password-input',
+    name: 'Password Input',
+    description:
+      'Password field with show/hide toggle, real-time strength meter, and configurable requirements checklist.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '30',
+    slug: 'rating-input',
+    name: 'Rating Input',
+    description:
+      'Interactive rating input with star, heart, emoji, and thumb variants, half-star precision, and labels.',
+    category: 'form',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '31',
+    slug: 'copy-button',
+    name: 'Copy Button',
+    description:
+      'One-click clipboard copy button with animated idle/copied/error states and tooltip feedback.',
+    category: 'ui',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react', '@radix-ui/react-tooltip'],
+  },
+  {
+    kind: 'docs',
+    id: '32',
+    slug: 'scroll-progress',
+    name: 'Scroll Progress',
+    description:
+      'Fixed scroll progress bar with spring physics. Supports top, bottom, left, and right positions.',
+    category: 'motion',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '33',
+    slug: 'confetti',
+    name: 'Confetti',
+    description:
+      'Canvas-based confetti particle system with configurable colors, gravity, spread, and imperative fire() API.',
+    category: 'motion',
+    hasOptions: true,
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '34',
+    slug: 'count-up',
+    name: 'Count Up',
+    description:
+      'Animated number counter with spring physics, in-view triggering, and Intl.NumberFormat formatting.',
+    category: 'motion',
+    hasOptions: true,
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '35',
+    slug: 'kbd',
+    name: 'Kbd',
+    description:
+      'Keyboard shortcut display with automatic platform detection and Mac/Windows symbol mapping.',
+    category: 'ui',
+    hasOptions: false,
+    dependencies: [],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {
