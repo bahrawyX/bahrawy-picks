@@ -82,7 +82,7 @@ export function FileTabs({
       className={cn(
         'flex items-center gap-0 overflow-x-auto border-b',
         isDark
-          ? 'border-white/[0.06] bg-white/[0.01]'
+          ? 'border-white/[0.04] bg-[#252525]'
           : 'border-black/[0.06] bg-black/[0.01]',
       )}
     >
