@@ -80,7 +80,6 @@ function AccountStep() {
         <Input
           id="name"
           placeholder="Jane Doe"
-          error={!!errors.name}
           {...register('name')}
         />
       </Field>
@@ -89,7 +88,6 @@ function AccountStep() {
           id="email"
           type="email"
           placeholder="jane@example.com"
-          error={!!errors.email}
           {...register('email')}
         />
       </Field>
@@ -135,7 +133,6 @@ function PasswordStep() {
           id="password"
           type="password"
           placeholder="********"
-          error={!!errors.password}
           {...register('password')}
         />
       </Field>
@@ -148,7 +145,6 @@ function PasswordStep() {
           id="confirm"
           type="password"
           placeholder="********"
-          error={!!errors.confirm}
           {...register('confirm')}
         />
       </Field>
