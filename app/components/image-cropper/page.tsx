@@ -62,8 +62,10 @@ export default function ImageCropperDocs() {
       {/* ---- Free crop ---- */}
       <DocsSection title="Free crop (upload)">
         <DemoCard>
-          <div className="flex items-start gap-6">
-            <ImageCropper onCrop={handleFree} />
+          <div className="flex w-full items-start gap-6">
+            <div className="flex-1">
+              <ImageCropper onCrop={handleFree} />
+            </div>
             {freeResult && (
               <div className="space-y-1">
                 <img
@@ -84,8 +86,10 @@ export default function ImageCropperDocs() {
       {/* ---- Square (1:1) ---- */}
       <DocsSection title="Square (1:1)">
         <DemoCard>
-          <div className="flex items-start gap-6">
-            <ImageCropper aspectRatio={1} onCrop={handleSquare} />
+          <div className="flex w-full items-start gap-6">
+            <div className="flex-1">
+              <ImageCropper aspectRatio={1} onCrop={handleSquare} />
+            </div>
             {squareResult && (
               <div className="space-y-1">
                 <img
@@ -106,8 +110,10 @@ export default function ImageCropperDocs() {
       {/* ---- Widescreen (16:9) ---- */}
       <DocsSection title="Widescreen (16:9)">
         <DemoCard>
-          <div className="flex items-start gap-6">
-            <ImageCropper aspectRatio={16 / 9} onCrop={handleWide} />
+          <div className="flex w-full items-start gap-6">
+            <div className="flex-1">
+              <ImageCropper aspectRatio={16 / 9} onCrop={handleWide} />
+            </div>
             {wideResult && (
               <div className="space-y-1">
                 <img
@@ -128,11 +134,13 @@ export default function ImageCropperDocs() {
       {/* ---- Existing image ---- */}
       <DocsSection title="Edit existing image">
         <DemoCard>
-          <div className="flex items-start gap-6">
-            <ImageCropper
-              src={SAMPLE_IMAGE}
-              onCrop={handleEdit}
-            />
+          <div className="flex w-full items-start gap-6">
+            <div className="flex-1">
+              <ImageCropper
+                src={SAMPLE_IMAGE}
+                onCrop={handleEdit}
+              />
+            </div>
             {editResult && (
               <div className="space-y-1">
                 <img

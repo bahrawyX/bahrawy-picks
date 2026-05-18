@@ -428,7 +428,7 @@ export function ImageCropper({
           whileTap={{ scale: 0.99 }}
           transition={springSnappy}
           className={cn(
-            'flex h-40 w-full max-w-xs flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-white/10 bg-white/[0.02] transition-colors hover:border-white/20 hover:bg-white/[0.04]',
+            'flex h-40 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-white/10 bg-white/[0.02] transition-colors hover:border-white/20 hover:bg-white/[0.04]',
             className,
           )}
         >

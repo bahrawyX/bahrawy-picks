@@ -311,8 +311,7 @@ export function TagsInput({
               onBlur={() => setFocused(false)}
               disabled={disabled}
               placeholder={tags.length === 0 ? placeholder : ''}
-              className="min-w-[80px] flex-1 border-none bg-transparent py-1 text-sm text-white outline-none placeholder:text-white/25"
-              style={{ width: Math.max(80, inputValue.length * 8 + 16) }}
+              className="min-w-[140px] flex-1 border-none bg-transparent py-1 text-sm text-white outline-none placeholder:text-white/25"
             />
           )}
 
