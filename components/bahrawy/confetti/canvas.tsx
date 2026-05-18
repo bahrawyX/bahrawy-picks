@@ -16,10 +16,12 @@ export interface ConfettiCanvasRef {
 
 interface ConfettiCanvasProps {
   className?: string
+  /** Render as a fixed full-viewport overlay (default: true) */
+  fullscreen?: boolean
 }
 
 export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>(
-  function ConfettiCanvas({ className }, ref) {
+  function ConfettiCanvas({ className, fullscreen = true }, ref) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const particlesRef = useRef<Particle[]>([])
     const animFrameRef = useRef<number>(0)
@@ -71,10 +73,15 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
       if (!canvas) return
 
       const resize = () => {
-        const parent = canvas.parentElement
-        if (parent) {
-          canvas.width = parent.clientWidth
-          canvas.height = parent.clientHeight
+        if (fullscreen) {
+          canvas.width = window.innerWidth
+          canvas.height = window.innerHeight
+        } else {
+          const parent = canvas.parentElement
+          if (parent) {
+            canvas.width = parent.clientWidth
+            canvas.height = parent.clientHeight
+          }
         }
       }
 
@@ -84,13 +91,17 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
         window.removeEventListener('resize', resize)
         cancelAnimationFrame(animFrameRef.current)
       }
-    }, [])
+    }, [fullscreen])
 
     return (
       <canvas
         ref={canvasRef}
         className={className}
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+        style={
+          fullscreen
+            ? { position: 'fixed', inset: 0, zIndex: 9999, pointerEvents: 'none' }
+            : { position: 'absolute', inset: 0, pointerEvents: 'none' }
+        }
         data-testid="confetti-canvas"
       />
     )

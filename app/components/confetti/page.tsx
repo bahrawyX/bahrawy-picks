@@ -1,8 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
-import { Confetti, useConfetti } from '@/components/bahrawy'
-import type { ConfettiCanvasRef } from '@/components/bahrawy'
+import { useConfetti } from '@/components/bahrawy'
 import { ConfettiCanvas } from '@/components/bahrawy/confetti/canvas'
 import { CodeBlock } from '@/components/showcase/code-block'
 import {
@@ -18,12 +16,12 @@ import { ConfettiCanvas } from '@/components/bahrawy/confetti/canvas'
 function Demo() {
   const { ref, fire } = useConfetti()
   return (
-    <div className="relative">
+    <>
       <ConfettiCanvas ref={ref} />
       <button onClick={() => fire()}>
         Celebrate!
       </button>
-    </div>
+    </>
   )
 }`
 
@@ -43,35 +41,32 @@ export default function ConfettiDocs() {
       description="Canvas-based confetti particle system with configurable colors, gravity, spread, and imperative fire() API."
       category="10 · MOTION"
     >
+      {/* Single fullscreen canvas for the whole page */}
+      <ConfettiCanvas ref={ref} />
+
       {/* Interactive demo */}
       <DocsSection title="Fire confetti">
         <DemoCard>
-          <div className="relative flex w-full items-center justify-center">
-            <ConfettiCanvas ref={ref} />
-            <button
-              onClick={() => fire()}
-              className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
-            >
-              🎉 Fire Confetti
-            </button>
-          </div>
+          <button
+            onClick={() => fire()}
+            className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          >
+            🎉 Fire Confetti
+          </button>
         </DemoCard>
       </DocsSection>
 
       {/* Custom colors */}
       <DocsSection title="Custom colors">
         <DemoCard>
-          <div className="relative flex w-full items-center justify-center">
-            <ConfettiCanvas ref={ref} />
-            <button
-              onClick={() =>
-                fire({ colors: ['#ff0000', '#00ff00', '#0000ff'], count: 120 })
-              }
-              className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
-            >
-              🌈 RGB Burst
-            </button>
-          </div>
+          <button
+            onClick={() =>
+              fire({ colors: ['#ff0000', '#00ff00', '#0000ff'], count: 120 })
+            }
+            className="rounded-lg bg-white/10 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20"
+          >
+            🌈 RGB Burst
+          </button>
         </DemoCard>
       </DocsSection>
 
