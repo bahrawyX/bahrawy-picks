@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  type ChangeEvent,
   type KeyboardEvent,
   type ClipboardEvent,
   useCallback,
@@ -64,44 +65,44 @@ export function PinInput({
 }: PinInputProps) {
   const isControlled = controlledValue !== undefined
   const [internalValue, setInternalValue] = useState('')
-  const digits = (isControlled ? controlledValue : internalValue).split('')
-  const [focusIndex, setFocusIndex] = useState<number | null>(null)
+  const currentValue = isControlled ? controlledValue : internalValue
+  const [focused, setFocused] = useState(false)
   const [masked, setMasked] = useState(initialMask)
   const [shaking, setShaking] = useState(false)
 
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const sizeStyle = sizeMap[size]
   const hasError = !!error
 
+  // Build fixed-length digits array for rendering
+  const digits: string[] = []
+  for (let i = 0; i < length; i++) {
+    digits.push(currentValue[i] ?? '')
+  }
+
+  // The "active" box index is the position of the next digit to type
+  const activeIndex = Math.min(currentValue.length, length - 1)
+
   // ---- Value management ----
 
-  const updateValue = useCallback(
+  const commitValue = useCallback(
     (newVal: string) => {
-      const clamped = newVal.slice(0, length)
-      if (!isControlled) setInternalValue(clamped)
-      onChange?.(clamped)
-      if (clamped.length === length) {
-        onComplete?.(clamped)
+      // Only keep digits, clamped to length
+      const cleaned = newVal.replace(/\D/g, '').slice(0, length)
+      if (!isControlled) setInternalValue(cleaned)
+      onChange?.(cleaned)
+      if (cleaned.length === length) {
+        onComplete?.(cleaned)
       }
     },
     [isControlled, onChange, onComplete, length],
   )
 
-  // ---- Focus helpers ----
-
-  const focusAt = useCallback((index: number) => {
-    const inp = inputRefs.current[index]
-    if (inp) {
-      inp.focus()
-      inp.select()
-    }
-  }, [])
-
-  // Auto-focus first input
+  // Auto-focus
   useEffect(() => {
-    if (autoFocus && inputRefs.current[0]) {
-      inputRefs.current[0].focus()
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus()
     }
   }, [autoFocus])
 
@@ -116,63 +117,23 @@ export function PinInput({
 
   // ---- Handlers ----
 
-  const handleInput = useCallback(
-    (index: number, char: string) => {
-      if (disabled) return
-      if (!/^\d$/.test(char)) return
-
-      const arr = [...digits]
-      // Pad array to index
-      while (arr.length <= index) arr.push('')
-      arr[index] = char
-      updateValue(arr.join(''))
-
-      // Move to next
-      if (index < length - 1) {
-        focusAt(index + 1)
-      }
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      commitValue(e.target.value)
     },
-    [digits, disabled, length, updateValue, focusAt],
+    [commitValue],
   )
 
   const handleKeyDown = useCallback(
-    (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+    (e: KeyboardEvent<HTMLInputElement>) => {
       if (disabled) return
-
-      if (e.key === 'Backspace') {
+      // Backspace when at the end removes last digit
+      if (e.key === 'Backspace' && currentValue.length > 0) {
         e.preventDefault()
-        const arr = [...digits]
-        if (arr[index]) {
-          arr[index] = ''
-          updateValue(arr.join(''))
-        } else if (index > 0) {
-          arr[index - 1] = ''
-          updateValue(arr.join(''))
-          focusAt(index - 1)
-        }
-        return
-      }
-
-      if (e.key === 'ArrowLeft' && index > 0) {
-        e.preventDefault()
-        focusAt(index - 1)
-        return
-      }
-
-      if (e.key === 'ArrowRight' && index < length - 1) {
-        e.preventDefault()
-        focusAt(index + 1)
-        return
-      }
-
-      if (e.key === 'Delete') {
-        e.preventDefault()
-        const arr = [...digits]
-        arr[index] = ''
-        updateValue(arr.join(''))
+        commitValue(currentValue.slice(0, -1))
       }
     },
-    [digits, disabled, length, updateValue, focusAt],
+    [disabled, currentValue, commitValue],
   )
 
   const handlePaste = useCallback(
@@ -181,16 +142,15 @@ export function PinInput({
       if (disabled) return
       const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
       if (pasted) {
-        updateValue(pasted)
-        focusAt(Math.min(pasted.length, length - 1))
+        commitValue(pasted)
       }
     },
-    [disabled, length, updateValue, focusAt],
+    [disabled, length, commitValue],
   )
 
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
-      {/* Pin boxes */}
+      {/* Visual pin boxes */}
       <motion.div
         animate={shaking ? { x: [0, -6, 6, -6, 6, 0] } : { x: 0 }}
         transition={
@@ -200,35 +160,36 @@ export function PinInput({
         }
         className={cn('flex items-center', sizeStyle.gap)}
       >
-        {Array.from({ length }).map((_, i) => {
-          const digit = digits[i] || ''
-          const isFocused = focusIndex === i
-          const filled = !!digit
+        {/* Boxes wrapper — the hidden input sits inside here */}
+        <div
+          className="relative flex items-center gap-[inherit] cursor-pointer"
+          onClick={() => inputRef.current?.focus()}
+        >
+          {/* Real input stretched over the boxes only */}
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="[0-9]*"
+            maxLength={length}
+            value={currentValue}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            disabled={disabled}
+            className="absolute inset-0 z-10 cursor-pointer bg-transparent text-transparent caret-transparent outline-none selection:bg-transparent"
+            aria-label="PIN input"
+          />
+          {digits.map((digit, i) => {
+            const isFocused = focused && i === activeIndex
+            const filled = !!digit
 
-          return (
-            <div key={i} className="relative">
-              <input
-                ref={(el) => { inputRefs.current[i] = el }}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={1}
-                value=""
-                onChange={(e) => {
-                  const val = e.target.value
-                  if (val && /^\d$/.test(val)) {
-                    handleInput(i, val)
-                  }
-                }}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                onPaste={handlePaste}
-                onFocus={() => setFocusIndex(i)}
-                onBlur={() => setFocusIndex(null)}
-                disabled={disabled}
-                className="absolute inset-0 z-10 cursor-pointer bg-transparent text-center text-transparent caret-transparent outline-none"
-                aria-label={`PIN digit ${i + 1}`}
-              />
-              <motion.div
+            return (
+              <div
+                key={i}
                 className={cn(
                   'flex items-center justify-center border transition-colors',
                   sizeStyle.box,
@@ -243,58 +204,34 @@ export function PinInput({
                           ? 'border-white/20 bg-white/[0.04]'
                           : 'border-white/[0.08] bg-white/[0.03]',
                 )}
-                animate={
-                  filled
-                    ? { scale: [0.85, 1.05, 1] }
-                    : {}
-                }
-                transition={springSnappy}
               >
-                <AnimatePresence mode="wait">
-                  {filled ? (
-                    <motion.span
-                      key={masked ? 'masked' : 'digit'}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.5 }}
-                      transition={springSnappy}
-                      className={cn(
-                        'select-none font-medium text-white',
-                        masked && 'text-xl leading-none',
-                      )}
-                    >
-                      {masked ? maskChar : digit}
-                    </motion.span>
-                  ) : isFocused ? (
-                    <motion.div
-                      key="caret"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [1, 0] }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        repeatType: 'reverse',
-                        ease: 'easeInOut',
-                      }}
-                      className="h-5 w-0.5 rounded-full bg-white"
-                    />
-                  ) : placeholder ? (
-                    <span className="select-none text-white/20">{placeholder}</span>
-                  ) : null}
-                </AnimatePresence>
-              </motion.div>
-            </div>
-          )
-        })}
+                {filled ? (
+                  <span
+                    className={cn(
+                      'select-none font-medium text-white',
+                      masked && 'text-xl leading-none',
+                    )}
+                  >
+                    {masked ? maskChar : digit}
+                  </span>
+                ) : isFocused ? (
+                  <span className="inline-block h-5 w-0.5 animate-pulse rounded-full bg-white" />
+                ) : placeholder ? (
+                  <span className="select-none text-white/20">{placeholder}</span>
+                ) : null}
+              </div>
+            )
+          })}
+        </div>
 
-        {/* Show/hide toggle */}
+        {/* Show/hide toggle — OUTSIDE the input overlay */}
         {initialMask && (
           <button
             type="button"
             onClick={() => setMasked((m) => !m)}
             disabled={disabled}
             className={cn(
-              'ml-1 rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+              'relative z-20 ml-1 rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
               disabled && 'cursor-not-allowed opacity-50',
             )}
             aria-label={masked ? 'Show PIN' : 'Hide PIN'}
