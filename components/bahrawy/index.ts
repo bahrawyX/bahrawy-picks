@@ -120,3 +120,31 @@ export type { KanbanProps, KanbanCard, KanbanColumn } from './kanban'
 
 export { VirtualList } from './virtual-list'
 export type { VirtualListProps, VirtualListHandle, RenderItemProps as VirtualListRenderItemProps } from './virtual-list'
+
+// Animations
+export {
+  TextReveal,
+  GradientText,
+  TypewriterText,
+  FlipText,
+  TextScramble,
+  BlurReveal,
+  FloatingElements,
+  SplitReveal,
+  NeonGlow,
+  ParallaxSection,
+  StaggerReveal,
+} from './animations'
+export type {
+  TextRevealProps,
+  GradientTextProps,
+  TypewriterTextProps,
+  FlipTextProps,
+  TextScrambleProps,
+  BlurRevealProps,
+  FloatingElementsProps,
+  SplitRevealProps,
+  NeonGlowProps,
+  ParallaxSectionProps,
+  StaggerRevealProps,
+} from './animations'

@@ -173,4 +173,70 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'High-performance virtualized list handling millions of rows. Fixed/variable height, grid, infinite scroll, grouped, table mode.',
   },
+  {
+    title: 'Text Reveal',
+    slug: 'text-reveal',
+    description:
+      'Words, characters, or lines reveal with a smooth clip-mask slide-up animation triggered on scroll.',
+  },
+  {
+    title: 'Gradient Text',
+    slug: 'gradient-text',
+    description:
+      'Text with an animated flowing gradient. Six built-in presets (aurora, fire, ocean, candy, gold, rainbow) plus custom colors.',
+  },
+  {
+    title: 'Typewriter Text',
+    slug: 'typewriter-text',
+    description:
+      'Classic typewriter effect with natural typing speed variation, delete-and-retype cycling, and blinking cursor.',
+  },
+  {
+    title: 'Blur Reveal',
+    slug: 'blur-reveal',
+    description:
+      'Content fades in from heavy blur to sharp focus with directional movement. Supports staggered children.',
+  },
+  {
+    title: 'Parallax Section',
+    slug: 'parallax-section',
+    description:
+      'Elements move at different speeds on scroll creating depth. Configurable speed and direction.',
+  },
+  {
+    title: 'Stagger Reveal',
+    slug: 'stagger-reveal',
+    description:
+      'Container that automatically staggers its children in on scroll. Six direction modes.',
+  },
+  {
+    title: 'Flip Text',
+    slug: 'flip-text',
+    description:
+      'Split-flap display effect where each character flips in with 3D rotation like a departures board.',
+  },
+  {
+    title: 'Text Scramble',
+    slug: 'text-scramble',
+    description:
+      'Characters scramble through random chars before resolving. Multiple charsets including binary, hex, and matrix.',
+  },
+  {
+    title: 'Floating Elements',
+    slug: 'floating-elements',
+    description:
+      'Elements float and drift gently in random directions. Optional mouse repel physics.',
+  },
+  {
+    title: 'Split Reveal',
+    slug: 'split-reveal',
+    description:
+      'Two halves of content split apart to reveal hidden content underneath. Horizontal or vertical direction.',
+  },
+  {
+    title: 'Neon Glow',
+    slug: 'neon-glow',
+    description:
+      'Pulsing neon glow effect with optional realistic flicker. Seven color presets plus custom hex.',
+  },
 ]

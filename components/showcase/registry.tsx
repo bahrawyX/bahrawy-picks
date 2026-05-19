@@ -504,15 +504,11 @@ export const registry: RegistryEntry[] = [
     dependencies: ['framer-motion'],
   },
   {
-    kind: 'docs',
+    kind: 'soon',
     id: '40',
     slug: 'kanban',
     name: 'Kanban',
-    description:
-      'Full-featured drag and drop Kanban board with columns, cards, WIP limits, search, filters, and detail dialogs.',
     category: 'data',
-    hasOptions: true,
-    dependencies: ['@dnd-kit/core', '@dnd-kit/sortable', 'framer-motion', 'lucide-react'],
   },
   {
     kind: 'docs',
@@ -524,6 +520,16 @@ export const registry: RegistryEntry[] = [
     category: 'data',
     hasOptions: true,
     dependencies: ['@tanstack/react-virtual', 'framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '42',
+    slug: 'animations',
+    name: 'Animations',
+    description:
+      '11 production-ready animation components — text reveal, gradient text, typewriter, flip text, scramble, blur reveal, parallax, stagger, floating elements, split reveal, and neon glow.',
+    category: 'motion',
+    dependencies: ['framer-motion'],
   },
 ]
 
