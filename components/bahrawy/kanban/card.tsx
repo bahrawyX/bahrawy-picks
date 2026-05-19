@@ -75,10 +75,10 @@ export function KanbanCardComponent({
       {...(isDragOverlay ? {} : fadeUp)}
       transition={springGentle}
       className={cn(
-        'group relative cursor-pointer rounded-lg border border-l-2 border-white/[0.06] bg-white/[0.04] p-3 hover:bg-white/[0.06]',
+        'group relative cursor-pointer rounded-xl border border-l-[3px] border-white/[0.06] bg-white/[0.04] p-3 hover:bg-white/[0.06] transition-colors',
         card.priority && PRIORITY_COLORS[card.priority],
         isDragging && 'opacity-40',
-        isDragOverlay && 'rotate-3 scale-105 shadow-2xl shadow-black/40'
+        isDragOverlay && 'rotate-2 scale-[1.02] shadow-xl shadow-black/30 ring-1 ring-white/10'
       )}
       onClick={(e) => {
         if (menuOpen) return

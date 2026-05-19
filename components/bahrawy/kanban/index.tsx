@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -24,7 +24,6 @@ import { springSnappy } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 import { Search, Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Column } from './column'
 import { CardOverlay } from './card-overlay'
 import { ColumnOverlay } from './column-overlay'
@@ -74,7 +73,6 @@ export interface KanbanProps {
   onColumnDelete?: (columnId: string) => void
   showSearch?: boolean
   showFilters?: boolean
-  cardWidth?: number
   className?: string
 }
 
@@ -104,7 +102,6 @@ export function Kanban({
   onColumnDelete,
   showSearch = true,
   showFilters = true,
-  cardWidth = 280,
   className,
 }: KanbanProps) {
   // Internal state if no callbacks
@@ -136,6 +133,11 @@ export function Kanban({
   const [detailCard, setDetailCard] = useState<KanbanCard | null>(null)
   const [detailColumnId, setDetailColumnId] = useState<string | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
+
+  // Drag-over tracking for column highlighting
+  const [overColumnId, setOverColumnId] = useState<string | null>(null)
+  const columnsRef = useRef(columns)
+  columnsRef.current = columns
 
   // Sensors
   const sensors = useSensors(
@@ -180,6 +182,7 @@ export function Kanban({
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event
     const data = active.data.current
+    setOverColumnId(null)
     if (data?.type === 'column') {
       setActiveId(active.id as string)
       setActiveType('column')
@@ -192,6 +195,20 @@ export function Kanban({
   const handleDragOver = useCallback(
     (event: DragOverEvent) => {
       const { active, over } = event
+
+      // Track which column is being dragged over (for highlighting)
+      if (active.data.current?.type === 'card' && over) {
+        const od = over.data.current
+        if (od?.type === 'column') {
+          setOverColumnId(over.id as string)
+        } else if (od?.type === 'card') {
+          const col = findColumnByCardId(columnsRef.current, over.id as string)
+          setOverColumnId(col?.id ?? null)
+        }
+      } else {
+        setOverColumnId(null)
+      }
+
       if (!over || active.id === over.id) return
 
       const activeData = active.data.current
@@ -253,6 +270,7 @@ export function Kanban({
 
       setActiveId(null)
       setActiveType(null)
+      setOverColumnId(null)
 
       if (!over || active.id === over.id) return
 
@@ -487,7 +505,7 @@ export function Kanban({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-4 overflow-x-auto pb-4">
+        <div className="flex gap-3 overflow-x-auto pb-4">
           <SortableContext
             items={columnIds}
             strategy={horizontalListSortingStrategy}
@@ -497,7 +515,7 @@ export function Kanban({
                 key={col.id}
                 column={col}
                 cards={col.cards}
-                cardWidth={cardWidth}
+                isDragOver={overColumnId === col.id}
                 onCardClick={(card) => {
                   setDetailCard(card)
                   setDetailColumnId(col.id)
@@ -512,11 +530,11 @@ export function Kanban({
 
           {/* Add column button */}
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
             transition={springSnappy}
             onClick={handleColumnAdd}
-            className="flex h-12 min-w-[200px] items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/[0.08] text-sm text-white/30 hover:border-white/[0.12] hover:bg-white/[0.02] hover:text-white/50"
+            className="flex min-w-[160px] flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/[0.06] py-8 text-sm text-white/20 hover:border-white/[0.10] hover:bg-white/[0.02] hover:text-white/40 transition-colors"
           >
             <Plus className="h-4 w-4" />
             Add column

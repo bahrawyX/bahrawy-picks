@@ -174,8 +174,8 @@ export default function KanbanDocs() {
         title="Basic Board"
         description="Drag cards between columns, reorder columns, search and filter by priority. Click a card to edit."
       >
-        <DemoCard className="items-start overflow-x-auto">
-          <div className="w-full min-w-[900px]">
+        <DemoCard className="items-start overflow-x-auto p-3">
+          <div className="w-full">
             <Kanban columns={basicColumns} />
           </div>
         </DemoCard>
@@ -187,8 +187,8 @@ export default function KanbanDocs() {
         title="WIP Limits"
         description="Set a limit on columns to warn when card count exceeds capacity."
       >
-        <DemoCard className="items-start overflow-x-auto">
-          <div className="w-full min-w-[700px]">
+        <DemoCard className="items-start overflow-x-auto p-3">
+          <div className="w-full">
             <Kanban
               columns={wipColumns}
               showSearch={false}
@@ -256,12 +256,6 @@ export default function KanbanDocs() {
               type: 'boolean',
               default: 'true',
               description: 'Show the priority filter bar.',
-            },
-            {
-              name: 'cardWidth',
-              type: 'number',
-              default: '280',
-              description: 'Width of each card in pixels.',
             },
             {
               name: 'className',
