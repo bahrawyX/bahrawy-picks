@@ -88,6 +88,14 @@ export default function FlipTextDocs() {
         </ControlPanel>
         <CodeBlock code={snippet} language="tsx" />
       </DocsSection>
+
+      <DocsSection title="Dependencies">
+        <div className="flex flex-wrap gap-2">
+          {['framer-motion'].map((d) => (
+            <code key={d} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/80">{d}</code>
+          ))}
+        </div>
+      </DocsSection>
     </DocsPage>
   )
 }
