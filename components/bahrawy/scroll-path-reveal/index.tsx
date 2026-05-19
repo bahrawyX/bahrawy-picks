@@ -59,7 +59,6 @@ export function ScrollPathReveal({
 }: ScrollPathRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const orbRef = useRef<SVGGElement>(null)
-  const ghostPathRef = useRef<SVGPathElement>(null)
   const { pathRef, totalLength, measure, getPoint } = usePathLength()
 
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
@@ -158,7 +157,19 @@ export function ScrollPathReveal({
         gsap.set(orbRef.current, { opacity: 0 })
       }
 
-      // Main scroll animation — draw the path
+      // Initialize section cards as hidden
+      sections.forEach((section, i) => {
+        const cardEl = document.getElementById(`section-card-${section.id}`)
+        if (!cardEl) return
+        const side: 'left' | 'right' = isMobile
+          ? 'right'
+          : i % 2 === 0
+            ? 'left'
+            : 'right'
+        gsap.set(cardEl, { opacity: 0, x: side === 'left' ? -40 : 40 })
+      })
+
+      // Main scroll animation — draw the path + reveal cards at exact positions
       gsap.to(path, {
         strokeDashoffset: 0,
         ease: 'none',
@@ -168,54 +179,54 @@ export function ScrollPathReveal({
           end: 'bottom bottom',
           scrub: 1,
           onUpdate: (self) => {
-            if (!showOrb || !orbRef.current || !pathRef.current) return
-            const currentLength = totalLength * self.progress
-            const point = pathRef.current.getPointAtLength(currentLength)
-            gsap.set(orbRef.current, {
-              x: point.x,
-              y: point.y,
-              opacity: self.progress > 0.001 ? 1 : 0,
+            // Move orb along path
+            if (showOrb && orbRef.current && pathRef.current) {
+              const currentLength = totalLength * self.progress
+              const point = pathRef.current.getPointAtLength(currentLength)
+              gsap.set(orbRef.current, {
+                x: point.x,
+                y: point.y,
+                opacity: self.progress > 0.001 ? 1 : 0,
+              })
+            }
+
+            // Reveal / hide section cards exactly when path reaches them
+            sections.forEach((section, i) => {
+              const cardEl = document.getElementById(
+                `section-card-${section.id}`
+              )
+              if (!cardEl) return
+
+              const side: 'left' | 'right' = isMobile
+                ? 'right'
+                : i % 2 === 0
+                  ? 'left'
+                  : 'right'
+
+              if (self.progress >= section.pathPosition) {
+                if (cardEl.dataset.revealed !== 'true') {
+                  cardEl.dataset.revealed = 'true'
+                  gsap.to(cardEl, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.4,
+                    ease: 'power3.out',
+                  })
+                }
+              } else {
+                if (cardEl.dataset.revealed === 'true') {
+                  cardEl.dataset.revealed = 'false'
+                  gsap.to(cardEl, {
+                    opacity: 0,
+                    x: side === 'left' ? -40 : 40,
+                    duration: 0.3,
+                    ease: 'power2.in',
+                  })
+                }
+              }
             })
           },
         },
-      })
-
-      // Section card animations
-      sections.forEach((section, i) => {
-        const cardEl = document.getElementById(`section-card-${section.id}`)
-        if (!cardEl) return
-
-        const side: 'left' | 'right' = isMobile
-          ? 'right'
-          : i % 2 === 0
-            ? 'left'
-            : 'right'
-
-        gsap.set(cardEl, { opacity: 0, x: side === 'left' ? -40 : 40 })
-
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: () =>
-            `${Math.max(0, section.pathPosition - 0.05) * 100}% top`,
-          end: () =>
-            `${Math.min(1, section.pathPosition + 0.05) * 100}% top`,
-          onEnter: () => {
-            gsap.to(cardEl, {
-              opacity: 1,
-              x: 0,
-              duration: 0.8,
-              ease: 'power3.out',
-            })
-          },
-          onLeaveBack: () => {
-            gsap.to(cardEl, {
-              opacity: 0,
-              x: side === 'left' ? -40 : 40,
-              duration: 0.4,
-              ease: 'power2.in',
-            })
-          },
-        })
       })
     },
     { scope: containerRef, dependencies: [totalLength, sections, showOrb, isMobile] }
@@ -237,9 +248,6 @@ export function ScrollPathReveal({
         showOrb={showOrb ?? true}
         orbRef={orbRef}
         pathRef={pathRef}
-        ghostPathRef={ghostPathRef}
-        sectionPoints={sectionPositions}
-        isMobile={isMobile}
       />
 
       {/* Section cards as HTML divs */}

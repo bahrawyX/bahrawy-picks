@@ -139,7 +139,6 @@ export default function CardStackScrollDocs() {
         sectionLabel="Why Bahrawy?"
         heading="Everything you need"
         cards={cards}
-        className="rounded-xl border border-white/10 overflow-hidden"
       />
 
       {/* Content below to show exit */}
