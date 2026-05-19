@@ -233,10 +233,4 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Two halves of content split apart to reveal hidden content underneath. Horizontal or vertical direction.',
   },
-  {
-    title: 'Neon Glow',
-    slug: 'neon-glow',
-    description:
-      'Pulsing neon glow effect with optional realistic flicker. Seven color presets plus custom hex.',
-  },
 ]

@@ -131,7 +131,6 @@ export {
   BlurReveal,
   FloatingElements,
   SplitReveal,
-  NeonGlow,
   ParallaxSection,
   StaggerReveal,
 } from './animations'
@@ -144,7 +143,6 @@ export type {
   BlurRevealProps,
   FloatingElementsProps,
   SplitRevealProps,
-  NeonGlowProps,
   ParallaxSectionProps,
   StaggerRevealProps,
 } from './animations'
