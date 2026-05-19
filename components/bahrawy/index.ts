@@ -121,6 +121,12 @@ export type { KanbanProps, KanbanCard, KanbanColumn } from './kanban'
 export { VirtualList } from './virtual-list'
 export type { VirtualListProps, VirtualListHandle, RenderItemProps as VirtualListRenderItemProps } from './virtual-list'
 
+export { ScrollPathReveal } from './scroll-path-reveal'
+export type { ScrollPathRevealProps, ScrollPathSection } from './scroll-path-reveal'
+
+export { CardStackScroll } from './card-stack-scroll'
+export type { CardStackScrollProps, CardStackItem } from './card-stack-scroll'
+
 // Animations
 export {
   TextReveal,

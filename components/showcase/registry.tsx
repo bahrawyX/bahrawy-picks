@@ -611,6 +611,27 @@ export const registry: RegistryEntry[] = [
     category: 'motion',
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '52',
+    slug: 'scroll-path-reveal',
+    name: 'Scroll Path Reveal',
+    description:
+      'SVG bezier path that draws itself on scroll with a traveling orb and content sections that animate in at specific path positions.',
+    category: 'scroll',
+    hasOptions: true,
+    dependencies: ['gsap', '@gsap/react'],
+  },
+  {
+    kind: 'docs',
+    id: '53',
+    slug: 'card-stack-scroll',
+    name: 'Card Stack Scroll',
+    description:
+      'Pinned scroll section where cards stack and replace each other as you scroll. Deck-of-cards feel with accent color transitions and progress indicators.',
+    category: 'scroll',
+    dependencies: ['gsap', '@gsap/react', 'framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

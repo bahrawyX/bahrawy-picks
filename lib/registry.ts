@@ -233,4 +233,16 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Two halves of content split apart to reveal hidden content underneath. Horizontal or vertical direction.',
   },
+  {
+    title: 'Scroll Path Reveal',
+    slug: 'scroll-path-reveal',
+    description:
+      'SVG bezier path that draws itself on scroll with a traveling orb and content sections that animate in at specific path positions.',
+  },
+  {
+    title: 'Card Stack Scroll',
+    slug: 'card-stack-scroll',
+    description:
+      'Pinned scroll section where cards stack and replace each other as you scroll. Deck-of-cards feel with accent color transitions and progress indicators.',
+  },
 ]
