@@ -59,8 +59,8 @@ export function SliderControl({
   unit = '',
 }: SliderControlProps) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-      <span className="text-xs text-white/50 whitespace-nowrap min-w-0 shrink-0">
+    <div className="flex items-center gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+      <span className="text-xs text-white/50 whitespace-nowrap shrink-0">
         {label}
       </span>
       <input
@@ -70,9 +70,9 @@ export function SliderControl({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="flex-1 h-1 appearance-none rounded-full bg-white/10 cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/80 [&::-webkit-slider-thumb]:shadow-sm"
+        className="min-w-0 flex-1 h-1 appearance-none rounded-full bg-white/10 cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white/80 [&::-webkit-slider-thumb]:shadow-sm"
       />
-      <span className="text-xs font-mono text-white/70 min-w-[3rem] text-right whitespace-nowrap">
+      <span className="text-xs font-mono text-white/70 shrink-0 text-right whitespace-nowrap">
         {value}{unit}
       </span>
     </div>
@@ -91,8 +91,8 @@ interface ToggleControlProps {
 
 export function ToggleControl({ label, checked, onChange }: ToggleControlProps) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-      <span className="text-xs text-white/50">{label}</span>
+    <div className="flex items-center justify-between gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+      <span className="text-xs text-white/50 truncate">{label}</span>
       <button
         type="button"
         role="switch"
@@ -132,8 +132,8 @@ interface SelectControlProps {
 
 export function SelectControl({ label, value, onChange, options }: SelectControlProps) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-      <span className="text-xs text-white/50 whitespace-nowrap">{label}</span>
+    <div className="flex items-center justify-between gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+      <span className="text-xs text-white/50 shrink-0">{label}</span>
       <div className="relative">
         <select
           value={value}
