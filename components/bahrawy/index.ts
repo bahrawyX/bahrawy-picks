@@ -330,6 +330,13 @@ export type {
   MagneticFieldCta,
 } from './magnetic-field'
 
+export { PortalScroll } from './portal-scroll'
+export type {
+  PortalScrollProps,
+  PortalScrollScene,
+  PortalScrollCta,
+} from './portal-scroll'
+
 
 // Animations
 export {

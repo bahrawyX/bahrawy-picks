@@ -545,4 +545,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'A pinned scroll section that pairs cursor magnetism with a scroll-driven wave. A canvas dot lattice repels around your cursor with a spring while a glowing accent line sweeps top-to-bottom; each headline locks in as the wave passes it, then a description and CTA fade in.',
   },
+  {
+    title: 'Portal Scroll',
+    slug: 'portal-scroll',
+    description:
+      "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge until it fills the screen.",
+  },
 ]
