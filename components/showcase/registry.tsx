@@ -1177,6 +1177,16 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '105',
+    slug: 'cursor-lens',
+    name: 'Cursor Lens',
+    description:
+      "An invisible cursor mask that reveals a different scene underneath as you hover. No ring, no chrome — just a soft radial fade so the boundary between the two scenes is impossible to spot. The inner image is gently magnified at the cursor focal point, the inner text is drawn crisp on top, and a click pins the lens.",
+    category: 'gsap-section',
+    dependencies: ['lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

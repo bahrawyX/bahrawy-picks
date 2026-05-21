@@ -551,4 +551,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge until it fills the screen.",
   },
+  {
+    title: 'Cursor Lens',
+    slug: 'cursor-lens',
+    description:
+      "An invisible cursor mask that reveals a different scene underneath as you hover. No ring, no chrome — just a soft radial fade so the boundary between the two scenes is impossible to spot. The inner image is gently magnified at the cursor focal point, the inner text is drawn crisp on top, and a click pins the lens at that spot so you can step back and look.",
+  },
 ]

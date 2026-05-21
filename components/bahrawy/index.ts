@@ -337,6 +337,13 @@ export type {
   PortalScrollCta,
 } from './portal-scroll'
 
+export { CursorLens } from './cursor-lens'
+export type {
+  CursorLensProps,
+  CursorLensScene,
+  CursorLensCta,
+} from './cursor-lens'
+
 
 // Animations
 export {
