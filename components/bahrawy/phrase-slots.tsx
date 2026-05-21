@@ -293,35 +293,42 @@ export function PhraseSlots({
           }}
         />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-10 px-6 text-center sm:px-10">
-          {/* Eyebrow */}
-          {eyebrow && (
-            <div
-              ref={eyebrowRef}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur"
-            >
-              <span
-                aria-hidden
-                className="block h-1.5 w-1.5 rounded-full"
-                style={{ background: accentColor }}
-              />
-              {eyebrow}
+        <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-8 py-20 text-center sm:px-14 sm:py-24 lg:px-20 lg:py-28">
+          {/* Header group — eyebrow + heading sit close together */}
+          {(eyebrow || heading) && (
+            <div className="flex flex-col items-center gap-4 sm:gap-5">
+              {eyebrow && (
+                <div
+                  ref={eyebrowRef}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur"
+                >
+                  <span
+                    aria-hidden
+                    className="block h-1.5 w-1.5 rounded-full"
+                    style={{ background: accentColor }}
+                  />
+                  {eyebrow}
+                </div>
+              )}
+
+              {heading && (
+                <h2
+                  ref={headingRef}
+                  className="text-balance text-xl font-medium leading-snug tracking-tight text-white/85 sm:text-2xl"
+                >
+                  {heading}
+                </h2>
+              )}
             </div>
           )}
 
-          {/* Heading */}
-          {heading && (
-            <h2
-              ref={headingRef}
-              className="text-balance text-xl font-medium leading-snug tracking-tight text-white/85 sm:text-2xl"
-            >
-              {heading}
-            </h2>
-          )}
-
-          {/* Slots row */}
-          <div className="relative" role="text" aria-label={ariaLabel}>
-            <div className="flex items-baseline justify-center gap-3 sm:gap-5">
+          {/* Slot row — big breathing room above and below */}
+          <div
+            className="relative mt-14 sm:mt-16 lg:mt-20"
+            role="text"
+            aria-label={ariaLabel}
+          >
+            <div className="flex items-baseline justify-center gap-4 sm:gap-6">
               {slots.map((slot, i) => {
                 // Stack the options CYCLES times — gives the reel something to
                 // spin through before it lands.
@@ -374,32 +381,35 @@ export function PhraseSlots({
             {/* Accent underline — draws once the last slot lands */}
             <div
               ref={underlineRef}
-              className="absolute -bottom-4 left-0 h-px w-full"
+              className="absolute -bottom-5 left-0 h-px w-full"
               style={{ background: accentColor }}
             />
           </div>
 
-          {/* Description */}
-          {description && (
-            <p
-              ref={descRef}
-              className="max-w-xl text-pretty text-sm leading-relaxed text-white/65 sm:text-base"
-            >
-              {description}
-            </p>
-          )}
+          {/* Footer group — description + CTA sit close, generous margin from slots */}
+          {(description || cta) && (
+            <div className="mt-14 flex flex-col items-center gap-6 sm:mt-16 sm:gap-7 lg:mt-20">
+              {description && (
+                <p
+                  ref={descRef}
+                  className="max-w-xl text-pretty text-sm leading-relaxed text-white/65 sm:text-base"
+                >
+                  {description}
+                </p>
+              )}
 
-          {/* CTA */}
-          {cta && (
-            <div ref={ctaRef}>
-              <a
-                href={cta.href ?? '#'}
-                onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-              >
-                {cta.label}
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
+              {cta && (
+                <div ref={ctaRef}>
+                  <a
+                    href={cta.href ?? '#'}
+                    onClick={cta.onClick}
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                  >
+                    {cta.label}
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -407,7 +417,7 @@ export function PhraseSlots({
         {/* Tiny scroll hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
         >
           Scroll
         </div>
