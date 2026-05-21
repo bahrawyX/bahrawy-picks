@@ -1109,12 +1109,13 @@ export const registry: RegistryEntry[] = [
   {
     kind: 'docs',
     id: '98',
-    slug: 'hero-awwwards',
-    name: 'Hero Awwwards',
+    slug: 'mega-nav',
+    name: 'Mega Nav',
     description:
-      'Awards-tier landing hero. GSAP cascades every letter into place with rotateX + blur clearance + scale + y. A flowing color gradient runs through the headline forever, a spring-smoothed dual spotlight tracks the cursor, four drifting accent blobs blur in the background, a marquee strip slides in at the bottom.',
-    category: 'gsap-section',
-    dependencies: ['gsap', '@gsap/react', 'framer-motion', 'lucide-react'],
+      'Floating top navigation bar with a frosted-glass backdrop. Hover a menu item with `sections` and a mega-menu drops down with categorized links — height + opacity animated, content fades between items, closes when the cursor leaves.',
+    category: 'navigation',
+    hasOptions: true,
+    dependencies: ['framer-motion', 'lucide-react'],
   },
 ]
 

@@ -295,8 +295,13 @@ export type {
   ConstellationNode,
 } from './constellation-scroll'
 
-export { HeroAwwwards } from './hero-awwwards'
-export type { HeroAwwwardsProps } from './hero-awwwards'
+export { MegaNav } from './mega-nav'
+export type {
+  MegaNavProps,
+  MegaNavItem,
+  MegaNavSection,
+  MegaNavLink,
+} from './mega-nav'
 
 
 // Animations
