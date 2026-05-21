@@ -28,9 +28,11 @@ export default function ComponentsLayout({
 
   return (
     <div className="relative min-h-screen bg-black text-white">
-      <div className="mx-auto flex w-full max-w-7xl gap-10 px-4 pt-28 pb-24 sm:px-6 md:px-10">
-        {/* Desktop sidebar */}
-        <aside className="sticky top-28 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pr-2 scrollbar-hide md:block [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]">
+      {/* No outer max-width — sidebar sits at the very left edge of the
+          viewport, main showcase takes everything else. */}
+      <div className="flex w-full pt-28 pb-24">
+        {/* Desktop sidebar — pinned to the left edge */}
+        <aside className="sticky top-28 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pl-6 pr-3 scrollbar-hide md:block lg:pl-8 [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]">
           <div className="pb-10 pt-6">
             <Sidebar />
           </div>
@@ -59,8 +61,12 @@ export default function ComponentsLayout({
           </Sheet>
         </div>
 
+        {/* Main showcase — takes ALL remaining space; content wrapped in a
+            90% width div so there's a comfortable gutter on both sides. */}
         <main className="min-w-0 flex-1">
-          {children}
+          <div className="mx-auto w-[90%]">
+            {children}
+          </div>
         </main>
       </div>
     </div>
