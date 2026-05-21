@@ -533,4 +533,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Pinned hero with two 50/50 columns of stacked content that scroll in opposite Y directions (left up, right down). Past `reveal` (default 0.7) of the pin, a centred card fades in over both halves with a backdrop blur — the "meeting" moment.',
   },
+  {
+    title: 'Phrase Slots',
+    slug: 'phrase-slots',
+    description:
+      'A slot-machine for words. Each "slot" is a single-line window with a tall column of candidate words behind it; scroll spins each column through multiple cycles, lands on the target with a staggered ending. Final state: a complete sentence reading across the row, underlined in the accent color.',
+  },
 ]

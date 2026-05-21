@@ -316,6 +316,13 @@ export type {
   HeroSplitRevealCta,
 } from './hero-split'
 
+export { PhraseSlots } from './phrase-slots'
+export type {
+  PhraseSlotsProps,
+  PhraseSlotConfig,
+  PhraseSlotsCta,
+} from './phrase-slots'
+
 
 // Animations
 export {

@@ -1147,6 +1147,16 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '102',
+    slug: 'phrase-slots',
+    name: 'Phrase Slots',
+    description:
+      'A slot-machine for words. Each "slot" is a single-line window with a tall column of candidate words behind it; scroll spins each column through multiple cycles and lands on its target, staggered. Final state: a complete sentence reading across the row, underlined in the accent color.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {
