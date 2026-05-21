@@ -31,7 +31,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} bg-black`}>
+    <html
+      lang="en"
+      className={`dark ${inter.variable} bg-black`}
+      suppressHydrationWarning
+    >
       <body className="bg-black font-sans text-white antialiased">
         <NavigationProgress />
         <Navbar />

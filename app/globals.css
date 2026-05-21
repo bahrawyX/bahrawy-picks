@@ -4,12 +4,67 @@
 
 :root {
   color-scheme: dark;
+
+  /* shadcn-style semantic tokens — warm slate + cream + soft purple.
+     Eye-friendly dark palette borrowed from the kanban source. */
+  --background: 240 8% 8%;
+  --foreground: 36 20% 96%;
+  --card: 240 7% 10%;
+  --card-foreground: 36 20% 96%;
+  --popover: 240 7% 12%;
+  --popover-foreground: 36 20% 96%;
+  --primary: 249 66% 64%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 5% 14%;
+  --secondary-foreground: 36 20% 96%;
+  --muted: 240 5% 14%;
+  --muted-foreground: 36 8% 62%;
+  --accent: 249 30% 22%;
+  --accent-foreground: 249 66% 80%;
+  --destructive: 350 65% 58%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 5% 18%;
+  --input: 240 5% 18%;
+  --ring: 249 66% 64%;
+  --radius: 0.5rem;
+}
+
+/* Make .dark variants resolve to the same tokens (bahrawy is dark-only,
+   but next-themes inside the kanban toggles a .dark class — keep both
+   selectors mapped to the same eye-friendly slate palette). */
+.dark {
+  --background: 240 8% 8%;
+  --foreground: 36 20% 96%;
+  --card: 240 7% 10%;
+  --card-foreground: 36 20% 96%;
+  --popover: 240 7% 12%;
+  --popover-foreground: 36 20% 96%;
+  --primary: 249 66% 64%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 5% 14%;
+  --secondary-foreground: 36 20% 96%;
+  --muted: 240 5% 14%;
+  --muted-foreground: 36 8% 62%;
+  --accent: 249 30% 22%;
+  --accent-foreground: 249 66% 80%;
+  --destructive: 350 65% 58%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 5% 18%;
+  --input: 240 5% 18%;
+  --ring: 249 66% 64%;
 }
 
 html,
 body {
   background-color: #000;
   color: #fff;
+}
+
+/* The document is the default scroll container for framer-motion's useScroll.
+   Making it non-static silences the dev-only "non-static position" warning
+   and ensures scroll-offset calculations stay accurate. */
+html {
+  position: relative;
 }
 
 body {
@@ -42,13 +97,90 @@ body {
 }
 
 /* Hide scrollbar but keep scrolling */
-.scrollbar-hide {
+.scrollbar-hide,
+.no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.scrollbar-hide::-webkit-scrollbar {
+.scrollbar-hide::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Thin themed scrollbar — used by the kanban's horizontal column scroll */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Card hover lift — used by kanban TaskCard */
+.card-lift {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px 3px -1px rgba(0, 0, 0, 0.18);
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.45), 0 2px 6px -2px rgba(0, 0, 0, 0.28);
+  border-color: hsl(var(--foreground) / 0.22);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-lift,
+  .card-lift:hover {
+    transform: none;
+    transition: box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+  }
+}
+
+/* Radix animation utilities — used by Popover/Dropdown/Select */
+@layer utilities {
+  .animate-in {
+    animation-duration: 150ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .animate-out {
+    animation-duration: 150ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+  .fade-in-0 { animation-name: bh-fade-in; }
+  .fade-out-0 { animation-name: bh-fade-out; }
+  .zoom-in-95 { animation-name: bh-zoom-in-95; }
+  .zoom-out-95 { animation-name: bh-zoom-out-95; }
+  .slide-in-from-top-2 { animation-name: bh-slide-in-from-top-2; }
+  .slide-in-from-bottom-2 { animation-name: bh-slide-in-from-bottom-2; }
+  .slide-in-from-left-2 { animation-name: bh-slide-in-from-left-2; }
+  .slide-in-from-right-2 { animation-name: bh-slide-in-from-right-2; }
+}
+
+@keyframes bh-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bh-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bh-zoom-in-95 { from { transform: scale(0.95); } to { transform: scale(1); } }
+@keyframes bh-zoom-out-95 { from { transform: scale(1); } to { transform: scale(0.95); } }
+@keyframes bh-slide-in-from-top-2 { from { transform: translateY(-0.5rem); } to { transform: translateY(0); } }
+@keyframes bh-slide-in-from-bottom-2 { from { transform: translateY(0.5rem); } to { transform: translateY(0); } }
+@keyframes bh-slide-in-from-left-2 { from { transform: translateX(-0.5rem); } to { transform: translateX(0); } }
+@keyframes bh-slide-in-from-right-2 { from { transform: translateX(0.5rem); } to { transform: translateX(0); } }
 
 /* Monaco editor overrides — kill default borders/outlines */
 .monaco-editor,

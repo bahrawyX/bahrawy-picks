@@ -3,28 +3,29 @@
 /**
  * <ShiningBorder />
  *
- * A wrapper component that adds an animated glowing beam traveling around
- * its border continuously. The beam is a conic gradient that rotates 360
- * degrees infinitely using Framer Motion's useAnimationFrame.
+ * A wrapper that draws a thin static border around its children and runs a
+ * small bright "meteor" continuously around the perimeter. The meteor follows
+ * the rounded-rect path via CSS `offset-path`, dragging a short tail and
+ * a soft ambient glow.
  *
- * @param children          — Content to wrap.
- * @param variant           — Preset color scheme. Default "default".
- * @param colors            — Custom colors array (used with variant="custom").
- * @param borderWidth       — Border thickness in px. Default 2.
- * @param borderRadius      — Border radius in px. Default 12.
- * @param speed             — Rotation speed multiplier. Default 1.
- * @param beamCount         — Number of beams (1-3). Default 1.
- * @param showGlow          — Show soft glow behind beam. Default true.
- * @param pauseOnHover      — Pause rotation on hover. Default false.
- * @param innerBackground   — Tailwind class for inner bg. Default "bg-black".
- * @param className         — Additional classes for the outer wrapper.
- * @param innerClassName    — Additional classes for the inner content wrapper.
+ * @param children         — Content to wrap.
+ * @param variant          — Preset color scheme. Default "default".
+ * @param colors           — Custom color array (used with variant="custom").
+ *                           Order: [headColor, tailColor, glowColor].
+ * @param borderWidth      — Static border thickness in px. Default 1.
+ * @param borderRadius     — Corner radius in px. Default 14.
+ * @param duration         — Time for one full orbit in seconds. Default 4.
+ * @param beamCount        — Number of meteors (1-3, evenly spaced). Default 1.
+ * @param meteorSize       — Meteor head size in px. Default 60.
+ * @param glowIntensity    — Ambient glow strength 0-1. Default 0.35.
+ * @param pauseOnHover     — Pause the orbit on hover. Default false.
+ * @param innerBackground  — Tailwind class for inner bg. Default "bg-black".
+ * @param className        — Additional classes for the outer wrapper.
+ * @param innerClassName   — Additional classes for the inner content wrapper.
  */
 
 import * as React from 'react'
-import { motion, useAnimationFrame, useMotionValue, useMotionTemplate } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { fadeUp, springGentle } from '@/lib/motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -32,88 +33,33 @@ import { fadeUp, springGentle } from '@/lib/motion'
 
 export interface ShiningBorderProps {
   children: React.ReactNode
-  /** Preset color variant. */
   variant?: 'default' | 'rainbow' | 'aurora' | 'fire' | 'neon' | 'custom'
-  /** Custom gradient colors (used when variant is "custom"). */
-  colors?: string[]
-  /** Border thickness in pixels. */
+  colors?: [string, string, string?]
   borderWidth?: number
-  /** Border radius in pixels. */
   borderRadius?: number
-  /** Rotation speed multiplier. */
-  speed?: number
-  /** Number of beams (1-3). */
+  duration?: number
   beamCount?: number
-  /** Show a soft glow behind the beam. */
-  showGlow?: boolean
-  /** Pause the animation on hover. */
+  meteorSize?: number
+  glowIntensity?: number
   pauseOnHover?: boolean
-  /** Tailwind class for the inner content background. */
   innerBackground?: string
-  /** Additional classes for the outer wrapper. */
   className?: string
-  /** Additional classes for the inner content wrapper. */
   innerClassName?: string
 }
 
 // ---------------------------------------------------------------------------
-// Variant presets
+// Variants — [headColor, tailColor, glowColor?]
 // ---------------------------------------------------------------------------
 
-const VARIANT_COLORS: Record<string, string[]> = {
-  default: ['#ffffff', '#a8a8a8'],
-  rainbow: ['#ff0000', '#ff8000', '#ffff00', '#00ff00', '#0080ff', '#8000ff'],
-  aurora: ['#a78bfa', '#22d3ee', '#34d399', '#a78bfa'],
-  fire: ['#ef4444', '#f59e0b', '#eab308', '#ef4444'],
-  neon: ['#3b82f6', '#8b5cf6', '#ec4899'],
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function buildGradientStops(colors: string[]): string {
-  if (colors.length === 1) return `${colors[0]} 50%`
-  const stopStart = 30
-  const stopEnd = 70
-  const range = stopEnd - stopStart
-  return colors
-    .map((c, i) => `${c} ${stopStart + (range * i) / (colors.length - 1)}%`)
-    .join(', ')
-}
-
-// ---------------------------------------------------------------------------
-// Beam layer
-// ---------------------------------------------------------------------------
-
-function BeamLayer({
-  angle,
-  colors,
-  blur,
-  opacity,
-  borderRadius,
-}: {
-  angle: ReturnType<typeof useMotionValue<number>>
-  colors: string[]
-  blur?: number
-  opacity?: number
-  borderRadius: number
-}) {
-  const stops = buildGradientStops(colors)
-  const background = useMotionTemplate`conic-gradient(from ${angle}deg, transparent 20%, ${stops}, transparent 80%)`
-
-  return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none absolute inset-0"
-      style={{
-        borderRadius,
-        background,
-        filter: blur ? `blur(${blur}px)` : undefined,
-        opacity: opacity ?? 1,
-      }}
-    />
-  )
+const VARIANTS: Record<
+  Exclude<ShiningBorderProps['variant'] & string, 'custom'>,
+  [string, string, string]
+> = {
+  default: ['#ffffff', 'rgba(255,255,255,0.4)', 'rgba(255,255,255,0.5)'],
+  rainbow: ['#a78bfa', 'rgba(56,189,248,0.5)', 'rgba(167,139,250,0.55)'],
+  aurora: ['#22d3ee', 'rgba(52,211,153,0.5)', 'rgba(34,211,238,0.55)'],
+  fire: ['#fbbf24', 'rgba(239,68,68,0.5)', 'rgba(251,191,36,0.6)'],
+  neon: ['#ec4899', 'rgba(59,130,246,0.55)', 'rgba(236,72,153,0.55)'],
 }
 
 // ---------------------------------------------------------------------------
@@ -123,93 +69,130 @@ function BeamLayer({
 export function ShiningBorder({
   children,
   variant = 'default',
-  colors: customColors,
-  borderWidth = 2,
-  borderRadius = 12,
-  speed = 1,
+  colors,
+  borderWidth = 1,
+  borderRadius = 14,
+  duration = 4,
   beamCount = 1,
-  showGlow = true,
+  meteorSize = 60,
+  glowIntensity = 0.35,
   pauseOnHover = false,
   innerBackground = 'bg-black',
   className,
   innerClassName,
 }: ShiningBorderProps) {
-  const colors = variant === 'custom' ? (customColors ?? VARIANT_COLORS.default) : VARIANT_COLORS[variant]
+  const [head, tail, glow] =
+    variant === 'custom' && colors
+      ? [colors[0], colors[1], colors[2] ?? colors[0]]
+      : VARIANTS[variant]
+
   const clampedBeams = Math.max(1, Math.min(3, beamCount))
+  const instanceId = React.useId().replace(/:/g, '')
 
-  // Create motion values for each beam
-  const angle0 = useMotionValue(0)
-  const angle1 = useMotionValue(clampedBeams >= 2 ? 360 / clampedBeams : 0)
-  const angle2 = useMotionValue(clampedBeams >= 3 ? (360 / clampedBeams) * 2 : 0)
-  const angles = [angle0, angle1, angle2]
+  // Each meteor is offset in its orbit by an equal fraction of the duration,
+  // so 2 → opposite sides, 3 → triangle.
+  const meteors = Array.from({ length: clampedBeams }, (_, i) => ({
+    delay: (-duration / clampedBeams) * i,
+    key: `${instanceId}-${i}`,
+  }))
 
-  const angleRef = React.useRef(0)
-  const paused = React.useRef(false)
-
-  useAnimationFrame((_time, delta) => {
-    if (!paused.current) {
-      angleRef.current += delta * speed * 0.1
-      const base = angleRef.current % 360
-      angle0.set(base)
-      if (clampedBeams >= 2) angle1.set((base + 360 / clampedBeams) % 360)
-      if (clampedBeams >= 3) angle2.set((base + (360 / clampedBeams) * 2) % 360)
-    }
-  })
-
-  const handleMouseEnter = React.useCallback(() => {
-    if (pauseOnHover) paused.current = true
-  }, [pauseOnHover])
-
-  const handleMouseLeave = React.useCallback(() => {
-    if (pauseOnHover) paused.current = false
-  }, [pauseOnHover])
-
-  const innerRadius = Math.max(0, borderRadius - borderWidth)
+  const hoverPauseClass = pauseOnHover ? 'group-hover:[animation-play-state:paused]' : ''
 
   return (
-    <motion.div
-      className={cn('relative', className)}
+    <div
+      className={cn('group relative isolate', className)}
       style={{
-        padding: borderWidth,
         borderRadius,
+        // CSS custom props consumed by the keyframes below.
+        ['--sb-radius' as string]: `${borderRadius}px`,
       }}
-      variants={fadeUp}
-      initial="initial"
-      animate="animate"
-      transition={springGentle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
-      {/* Glow layers (behind beam, blurred) */}
-      {showGlow &&
-        Array.from({ length: clampedBeams }).map((_, i) => (
-          <BeamLayer
-            key={`glow-${i}`}
-            angle={angles[i]}
-            colors={colors}
-            blur={8}
-            opacity={0.6}
-            borderRadius={borderRadius}
-          />
+      {/* The static border line — what you see when nothing is animating. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          borderRadius,
+          border: `${borderWidth}px solid rgba(255,255,255,0.10)`,
+        }}
+      />
+
+      {/* The meteor track — absolutely positioned wrapper inside the border. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        style={{ borderRadius }}
+      >
+        {meteors.map((m) => (
+          <React.Fragment key={m.key}>
+            {/* Soft ambient glow trailing the meteor */}
+            <span
+              className={cn('bahrawy-shining-meteor-glow', hoverPauseClass)}
+              style={{
+                width: meteorSize * 2.6,
+                height: meteorSize * 2.6,
+                background: `radial-gradient(circle, ${glow} 0%, transparent 60%)`,
+                opacity: glowIntensity,
+                animationDuration: `${duration}s`,
+                animationDelay: `${m.delay}s`,
+              }}
+            />
+
+            {/* Meteor head with a short fading tail */}
+            <span
+              className={cn('bahrawy-shining-meteor', hoverPauseClass)}
+              style={{
+                width: meteorSize,
+                height: 2,
+                background: `linear-gradient(90deg, transparent 0%, ${tail} 50%, ${head} 100%)`,
+                boxShadow: `0 0 12px 1px ${head}`,
+                animationDuration: `${duration}s`,
+                animationDelay: `${m.delay}s`,
+              }}
+            />
+          </React.Fragment>
         ))}
+      </div>
 
-      {/* Beam layers */}
-      {Array.from({ length: clampedBeams }).map((_, i) => (
-        <BeamLayer
-          key={`beam-${i}`}
-          angle={angles[i]}
-          colors={colors}
-          borderRadius={borderRadius}
-        />
-      ))}
-
-      {/* Inner content */}
+      {/* Inner content — sits above the border layer but stays clipped. */}
       <div
         className={cn('relative z-10', innerBackground, innerClassName)}
-        style={{ borderRadius: innerRadius }}
+        style={{
+          borderRadius,
+          margin: borderWidth,
+        }}
       >
         {children}
       </div>
-    </motion.div>
+
+      {/* Keyframes + offset-path are scoped via a tagged style block. The
+          `inset(0 round var(--sb-radius))` traces the rounded perimeter. */}
+      <style>{`
+        .bahrawy-shining-meteor,
+        .bahrawy-shining-meteor-glow {
+          position: absolute;
+          top: 0;
+          left: 0;
+          offset-path: inset(0 round var(--sb-radius));
+          offset-rotate: auto;
+          animation-name: bahrawy-shining-orbit;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: offset-distance;
+        }
+        .bahrawy-shining-meteor-glow {
+          border-radius: 9999px;
+          filter: blur(14px);
+          transform: translate(-50%, -50%);
+        }
+        .bahrawy-shining-meteor {
+          border-radius: 9999px;
+        }
+        @keyframes bahrawy-shining-orbit {
+          from { offset-distance: 0%; }
+          to   { offset-distance: 100%; }
+        }
+      `}</style>
+    </div>
   )
 }

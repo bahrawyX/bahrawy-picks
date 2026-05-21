@@ -3,6 +3,13 @@
 import * as React from 'react'
 import { RotateCcw } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 // ---------------------------------------------------------------------------
 // Control Panel Container
@@ -133,27 +140,28 @@ interface SelectControlProps {
 export function SelectControl({ label, value, onChange, options }: SelectControlProps) {
   return (
     <div className="flex items-center justify-between gap-2 overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-      <span className="text-xs text-white/50 shrink-0">{label}</span>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-xs text-white/70 font-mono border-none outline-none cursor-pointer appearance-none text-right pr-4"
+      <span className="shrink-0 text-xs text-white/50">{label}</span>
+      <Select value={value} onValueChange={onChange}>
+        {/* Override the shadcn trigger so it sits flush with the row instead
+            of carrying its own border/padding/height. */}
+        <SelectTrigger className="h-auto w-auto gap-1 border-0 bg-transparent p-0 font-mono text-xs text-white/70 shadow-none focus:ring-0 focus:ring-offset-0 [&>span]:line-clamp-none [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          align="end"
+          className="min-w-[8rem] border-white/10 bg-zinc-900/95 backdrop-blur"
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-zinc-900 text-white">
+            <SelectItem
+              key={opt.value}
+              value={opt.value}
+              className="font-mono text-xs text-white/85 focus:bg-white/10 focus:text-white"
+            >
               {opt.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-        <svg
-          className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40"
-          viewBox="0 0 12 12"
-          fill="none"
-        >
-          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
+        </SelectContent>
+      </Select>
     </div>
   )
 }

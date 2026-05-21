@@ -1,0 +1,146 @@
+'use client'
+
+/**
+ * <StatCard />
+ *
+ * Compact data card: label + animated number + delta badge + optional inline
+ * sparkline. Suitable for dashboards. The number springs from 0 → target,
+ * the sparkline draws itself on mount.
+ */
+
+import * as React from 'react'
+import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+export interface StatCardProps {
+  label: React.ReactNode
+  value: number
+  prefix?: string
+  suffix?: string
+  /** Optional delta % shown as a small badge. Sign-aware. */
+  delta?: number
+  /** Sparkline points — y values only, evenly spaced. */
+  trend?: number[]
+  /** Accent color for the spark + positive delta. Default #FFFFFF. */
+  accentColor?: string
+  className?: string
+}
+
+export function StatCard({
+  label,
+  value,
+  prefix,
+  suffix,
+  delta,
+  trend,
+  accentColor = '#FFFFFF',
+  className,
+}: StatCardProps) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.4 })
+
+  const raw = useMotionValue(0)
+  const sp = useSpring(raw, { stiffness: 80, damping: 26, mass: 0.9 })
+  const text = useTransform(sp, (v) => Math.round(v).toLocaleString())
+
+  React.useEffect(() => {
+    if (inView) raw.set(value)
+  }, [inView, value, raw])
+
+  const positive = (delta ?? 0) >= 0
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.02] p-5',
+        className,
+      )}
+    >
+      <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/55">
+        {label}
+      </p>
+
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex items-baseline gap-1 text-3xl font-semibold tabular-nums tracking-tight text-white">
+          {prefix && <span className="text-white/60">{prefix}</span>}
+          <motion.span>{text}</motion.span>
+          {suffix && <span className="text-white/60">{suffix}</span>}
+        </div>
+
+        {delta !== undefined && (
+          <span
+            className={cn(
+              'inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-semibold',
+              positive
+                ? 'bg-emerald-500/15 text-emerald-300'
+                : 'bg-rose-500/15 text-rose-300',
+            )}
+          >
+            {positive ? (
+              <ArrowUpRight className="h-3 w-3" strokeWidth={2.5} />
+            ) : (
+              <ArrowDownRight className="h-3 w-3" strokeWidth={2.5} />
+            )}
+            {Math.abs(delta).toFixed(1)}%
+          </span>
+        )}
+      </div>
+
+      {trend && trend.length > 1 && (
+        <Sparkline points={trend} color={accentColor} inView={inView} />
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Inline sparkline used by StatCard. The full Sparkline component (with more
+// options) ships separately as `<Sparkline />`.
+// ---------------------------------------------------------------------------
+
+function Sparkline({
+  points,
+  color,
+  inView,
+}: {
+  points: number[]
+  color: string
+  inView: boolean
+}) {
+  const w = 120
+  const h = 32
+  const min = Math.min(...points)
+  const max = Math.max(...points)
+  const range = max - min || 1
+  const step = w / (points.length - 1)
+  const path = points
+    .map((p, i) => {
+      const x = i * step
+      const y = h - ((p - min) / range) * h
+      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`
+    })
+    .join(' ')
+
+  return (
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      className="mt-1 h-8 w-full"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <motion.path
+        d={path}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: inView ? 1 : 0 }}
+        transition={{ duration: 0.9, ease: [0.2, 0, 0, 1], delay: 0.15 }}
+      />
+    </svg>
+  )
+}

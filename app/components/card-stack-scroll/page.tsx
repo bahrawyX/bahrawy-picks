@@ -1,154 +1,128 @@
 'use client'
 
-import { CardStackScroll } from '@/components/bahrawy/card-stack-scroll'
+import {
+  CardStackScroll,
+  type CardStackItem,
+} from '@/components/bahrawy/card-stack-scroll'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection } from '@/components/showcase/docs-page'
 
-const cards = [
+/* ------------------------------------------------------------------ */
+/*  Curated demo content                                               */
+/* ------------------------------------------------------------------ */
+
+const CARDS: CardStackItem[] = [
   {
-    id: 'copy-paste',
-    number: '01',
-    title: 'Copy & Paste',
-    description:
-      'Every component is self-contained. Copy it into your project, customize the props, and ship. No complex package installations or peer dependency chains.',
-    accentColor: '#7C3AED',
-    icon: (
-      <svg
-        className="h-8 w-8 text-purple-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-        />
-      </svg>
-    ),
+    id: 'craft',
+    eyebrow: 'Craft',
+    title: 'Build with intent.\nEvery detail, considered.',
+    body: 'Components composed from first principles — type, rhythm, motion. Nothing arbitrary.',
+    background:
+      'linear-gradient(135deg, #064E3B 0%, #0F766E 45%, #1E3A8A 100%)',
+    meta: 'Atelier · 2025',
   },
   {
-    id: 'components',
-    number: '02',
-    title: '35+ Components',
-    description:
-      'From data tables to color pickers, from Kanban boards to signature pads. Every component you need for a production app, built with the same quality bar.',
-    accentColor: '#2563EB',
-    icon: (
-      <svg
-        className="h-8 w-8 text-blue-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"
-        />
-      </svg>
-    ),
+    id: 'motion',
+    eyebrow: 'Motion',
+    title: 'Spring into life.',
+    body: 'Spring physics on every interaction — the difference between a UI you use and one you feel.',
+    background:
+      'linear-gradient(135deg, #1E1B4B 0%, #4338CA 40%, #7C3AED 100%)',
+    meta: 'Framer Motion',
   },
   {
-    id: 'framer',
-    number: '03',
-    title: 'Motion Built In',
-    description:
-      'Framer Motion and GSAP animations are woven into every component. Smooth transitions, spring physics, and scroll-driven effects — all out of the box.',
-    accentColor: '#059669',
-    icon: (
-      <svg
-        className="h-8 w-8 text-emerald-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
-        />
-      </svg>
-    ),
+    id: 'refine',
+    eyebrow: 'Refine',
+    title: 'Pixel-perfect,\nby default.',
+    body: 'The polish you would have applied last is the polish you get on day one.',
+    background:
+      'linear-gradient(135deg, #7F1D1D 0%, #C2410C 50%, #B45309 100%)',
+    meta: 'Tailwind · React 19',
   },
   {
-    id: 'open-source',
-    number: '04',
-    title: 'Open Source',
-    description:
-      'Built in the open. Every component is free to use, modify, and distribute. Community-driven development with contributions welcome.',
-    accentColor: '#D97706',
-    icon: (
-      <svg
-        className="h-8 w-8 text-amber-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
-        />
-      </svg>
-    ),
+    id: 'ship',
+    eyebrow: 'Ship',
+    title: 'Ready for the world.',
+    body: 'Production-tested in dark, in light, across browsers, on devices. Move fast without breaking taste.',
+    background:
+      'linear-gradient(135deg, #18181B 0%, #27272A 50%, #3F3F46 100%)',
+    meta: 'Open source · MIT',
   },
 ]
 
-const snippet = `import { CardStackScroll } from '@/components/bahrawy/card-stack-scroll'
+/* ------------------------------------------------------------------ */
+/*  Snippets                                                           */
+/* ------------------------------------------------------------------ */
 
-<CardStackScroll
-  sectionLabel="Why Bahrawy?"
-  heading="Everything you need"
-  cards={[
-    {
-      id: 'feature-1',
-      number: '01',
-      title: 'Copy & Paste',
-      description: 'Self-contained components...',
-      accentColor: '#7C3AED',
-      icon: <YourIcon />,
-    },
-    // ... more cards
-  ]}
-/>`
+const SNIPPET = `import { CardStackScroll } from '@/components/bahrawy/card-stack-scroll'
+
+const cards = [
+  {
+    id: 'craft',
+    eyebrow: 'Craft',
+    title: 'Build with intent.',
+    body: 'Components composed from first principles.',
+    background: 'linear-gradient(135deg, #064E3B 0%, #1E3A8A 100%)',
+  },
+  // ... more cards
+]
+
+<CardStackScroll cards={cards} />`
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 
 export default function CardStackScrollDocs() {
   return (
     <DocsPage
-      category="15 · scroll"
       title="Card Stack Scroll"
       slug="card-stack-scroll"
-      description="Pinned scroll section where cards stack and replace each other as you scroll. Physical deck-of-cards feel with accent color background transitions and progress indicators."
+      description="Sticky-stacked cards that layer over each other as you scroll. Each card scales gently as the next one slides up on top — the deck deepens as you go. Built with framer-motion's scroll progress, GPU-only transforms."
+      category="15 · scroll"
     >
       <DocsSection
         title="Live demo"
-        description="Scroll through to see cards stack and transition."
+        description="Scroll. The cards stack. The earlier ones shrink behind the later ones."
       >
-        <p className="text-sm text-white/40">
-          &#8595; Scroll down to enter the card stack
+        <p className="text-xs text-white/40">
+          ↓ enter the stack
         </p>
       </DocsSection>
 
-      {/* Full card stack demo */}
-      <CardStackScroll
-        sectionLabel="Why Bahrawy?"
-        heading="Everything you need"
-        cards={cards}
-      />
+      <CardStackScroll cards={CARDS} />
 
-      {/* Content below to show exit */}
+      {/* Breathing room so the last card's exit feels intentional */}
+      <div className="h-32" />
+
       <DocsSection title="Usage">
-        <CodeBlock code={snippet} language="tsx" />
+        <CodeBlock code={SNIPPET} language="tsx" />
+      </DocsSection>
+
+      <DocsSection title="Props">
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[
+            ['cards', 'CardStackItem[] — id, title, body, background, image, meta, cta…'],
+            ['topOffset', 'px from top where the first card pins. Default 80.'],
+            ['topStep', 'px added per card index. >0 fans the deck. Default 0.'],
+            ['scaleStep', 'how much each preceding card shrinks. Default 0.05.'],
+            ['sectionVh', 'height of each scroll section in vh. Default 100.'],
+            ['backgroundClassName', 'page bg between cards. Default bg-zinc-950.'],
+          ].map(([name, body]) => (
+            <li
+              key={name}
+              className="rounded-lg border border-white/10 bg-white/[0.02] p-3"
+            >
+              <code className="font-mono text-xs text-white">{name}</code>
+              <p className="mt-1 text-xs text-white/60">{body}</p>
+            </li>
+          ))}
+        </ul>
       </DocsSection>
 
       <DocsSection title="Dependencies">
         <div className="flex flex-wrap gap-2">
-          {['gsap', '@gsap/react'].map((d) => (
+          {['framer-motion'].map((d) => (
             <code
               key={d}
               className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/80"

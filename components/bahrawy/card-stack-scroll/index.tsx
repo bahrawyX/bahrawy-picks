@@ -1,41 +1,48 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
-import type { ReactNode } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useGSAP } from '@gsap/react'
+import { useRef, type ReactNode } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { StackCard } from './stack-card'
-import { ProgressBar } from './progress-bar'
-import { DotIndicators } from './dot-indicators'
-import { CardNumber } from './card-number'
-import { SectionHeader } from './section-header'
-
-gsap.registerPlugin(ScrollTrigger)
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
 export interface CardStackItem {
+  /** Stable identifier for keys and a11y. */
   id: string
-  accentColor?: string
-  content?: ReactNode
-  number?: string
-  icon?: ReactNode
-  title?: string
-  description?: string
-  image?: string
+  /** Small tag rendered above the title — e.g. "Craft". */
+  eyebrow?: string
+  /** The main display title for the card. Supports `\n` for line breaks. */
+  title: string
+  /** Optional body copy. */
+  body?: string
+  /** CSS background string (gradient, solid, etc.) for the card. */
+  background?: string
+  /** Foreground text color. Defaults to white. */
+  foreground?: string
+  /** Free-form footer / tag row content. */
+  meta?: ReactNode
+  /** Free-form CTA — e.g. a link or button. */
+  cta?: ReactNode
 }
 
 export interface CardStackScrollProps {
   cards: CardStackItem[]
-  sectionLabel?: string
-  heading?: string
-  showProgress?: boolean
-  showDots?: boolean
-  showCardNumber?: boolean
+  /**
+   * Each card's sticky `top` offset grows by this many pixels per card index
+   * to create a "fanned deck" reveal. Default 0 → cards fully cover each other.
+   */
+  topStep?: number
+  /** How much each preceding card shrinks per card layered on top of it. */
+  scaleStep?: number
+  /**
+   * How dim each preceding card gets while it's covered.
+   * Default 1 → no dimming, so cards stay fully solid behind each other.
+   */
+  opacityFloor?: number
+  /** Page background color — what shows between/around cards. */
+  backgroundClassName?: string
   className?: string
 }
 
@@ -45,222 +52,166 @@ export interface CardStackScrollProps {
 
 export function CardStackScroll({
   cards,
-  sectionLabel,
-  heading,
-  showProgress = true,
-  showDots = true,
-  showCardNumber = true,
+  topStep = 0,
+  scaleStep = 0.04,
+  opacityFloor = 1,
+  backgroundClassName = 'bg-zinc-950',
   className,
 }: CardStackScrollProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const stickyRef = useRef<HTMLDivElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
+  return (
+    <div className={cn('relative', backgroundClassName, className)}>
+      {cards.map((card, i) => (
+        <CardScene
+          key={card.id}
+          card={card}
+          index={i}
+          total={cards.length}
+          topStep={topStep}
+          scaleStep={scaleStep}
+          opacityFloor={opacityFloor}
+        />
+      ))}
+    </div>
+  )
+}
 
-  const setCardRef = useCallback(
-    (el: HTMLDivElement | null, index: number) => {
-      cardRefs.current[index] = el
-    },
-    []
+/* ------------------------------------------------------------------ */
+/*  Single sticky card section                                         */
+/* ------------------------------------------------------------------ */
+
+interface CardSceneProps {
+  card: CardStackItem
+  index: number
+  total: number
+  topStep: number
+  scaleStep: number
+  opacityFloor: number
+}
+
+function CardScene({
+  card,
+  index,
+  total,
+  topStep,
+  scaleStep,
+  opacityFloor,
+}: CardSceneProps) {
+  const sectionRef = useRef<HTMLElement>(null)
+
+  // 'start start' = section top reaches viewport top  (this card just pinned)
+  // 'end start'   = section bottom reaches viewport top  (next card fully covers)
+  // While this progress runs 0 → 1, the *next* card is sliding over the
+  // current one — so this is exactly the range to shrink + dim by.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+
+  const targetScale = 1 - (total - index - 1) * scaleStep
+  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale])
+
+  // Last card never gets covered, so it never fades.
+  const isLast = index === total - 1
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1, isLast ? 1 : opacityFloor]
   )
 
-  useGSAP(
-    () => {
-      if (!containerRef.current) return
-      const totalCards = cards.length
-      if (totalCards === 0) return
-
-      // Initialize card positions
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return
-        if (i === 0) {
-          gsap.set(card, { scale: 1, opacity: 1, y: 0, zIndex: totalCards - i })
-        } else {
-          gsap.set(card, {
-            y: window.innerHeight,
-            opacity: 0,
-            scale: 1,
-            zIndex: totalCards - i,
-          })
-        }
-      })
-
-      // Header parallax — fades out as first card starts animating
-      if (headerRef.current) {
-        gsap.to(headerRef.current, {
-          y: -80,
-          opacity: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top top',
-            end: `${(1 / totalCards) * 50}% top`,
-            scrub: 1,
-          },
-        })
-      }
-
-      // One ScrollTrigger per card transition
-      for (let i = 0; i < totalCards; i++) {
-        const startPct = (i / totalCards) * 100
-        const endPct = ((i + 1) / totalCards) * 100
-
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: `${startPct}% top`,
-          end: `${endPct}% top`,
-          scrub: 1,
-          onUpdate: (self) => {
-            const p = self.progress
-
-            // Overall progress
-            const overallProgress = (i + p) / totalCards
-            setProgress(overallProgress)
-
-            // Active index
-            if (p < 0.5) {
-              setActiveIndex(i)
-            } else if (i < totalCards - 1) {
-              setActiveIndex(i + 1)
-            }
-
-            // Current card: scale down, shift up, fade
-            const currentCard = cardRefs.current[i]
-            if (currentCard && i < totalCards - 1) {
-              gsap.set(currentCard, {
-                scale: 1 - p * 0.15,
-                opacity: 1 - p * 0.5,
-                y: -(p * 60),
-                zIndex: totalCards - i,
-              })
-            }
-
-            // Next card: slide up from below viewport
-            const nextCard = cardRefs.current[i + 1]
-            if (nextCard) {
-              gsap.set(nextCard, {
-                y: window.innerHeight * (1 - p),
-                opacity: p,
-                scale: 1,
-                zIndex: totalCards - (i + 1) + totalCards, // Above current
-              })
-            }
-
-            // Stack depth: previous cards get progressively smaller
-            for (let j = 0; j < i; j++) {
-              const stackCard = cardRefs.current[j]
-              if (!stackCard) continue
-              const depth = i - j
-              gsap.set(stackCard, {
-                scale: Math.max(0.5, 0.85 - depth * 0.08),
-                y: -(depth * 16),
-                opacity: Math.max(0.1, 0.5 - depth * 0.15),
-                zIndex: totalCards - j,
-              })
-            }
-          },
-        })
-      }
-
-      // Background color transition
-      if (stickyRef.current) {
-        cards.forEach((card, i) => {
-          if (!card.accentColor) return
-          const startPct = (i / totalCards) * 100
-          const endPct = ((i + 1) / totalCards) * 100
-
-          ScrollTrigger.create({
-            trigger: containerRef.current,
-            start: `${startPct}% top`,
-            end: `${endPct}% top`,
-            scrub: 1,
-            onEnter: () => {
-              if (stickyRef.current) {
-                gsap.to(stickyRef.current, {
-                  backgroundColor: `${card.accentColor}10`,
-                  duration: 0.5,
-                  ease: 'power1.out',
-                })
-              }
-            },
-            onEnterBack: () => {
-              const prevColor =
-                i > 0 && cards[i - 1].accentColor
-                  ? `${cards[i - 1].accentColor}10`
-                  : 'transparent'
-              if (stickyRef.current) {
-                gsap.to(stickyRef.current, {
-                  backgroundColor: prevColor,
-                  duration: 0.5,
-                  ease: 'power1.out',
-                })
-              }
-            },
-          })
-        })
-      }
-    },
-    { scope: containerRef, dependencies: [cards] }
-  )
+  // The fan offset — each card pins slightly lower than the previous, so the
+  // top edges of the older cards peek out behind the new one.
+  const stickyTop = index * topStep
+  const fg = card.foreground ?? '#FFFFFF'
 
   return (
-    <div
-      ref={containerRef}
-      className={cn('relative', className)}
-      style={{ height: `${cards.length * 100}vh` }}
-    >
-      {/* Sticky viewport */}
-      <div
-        ref={stickyRef}
-        className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden transition-colors"
+    <div ref={sectionRef} className="relative">
+      <section
+        className="sticky flex h-screen items-start justify-center px-4 sm:px-6 md:px-10"
+        style={{ top: `${stickyTop}px` }}
       >
-        {/* Progress bar */}
-        {showProgress && (
-          <div className="absolute left-6 right-6 top-6 z-50">
-            <ProgressBar progress={progress} />
-          </div>
-        )}
-
-        {/* Card number */}
-        {showCardNumber && (
-          <div className="absolute right-8 top-10 z-50">
-            <CardNumber current={activeIndex + 1} total={cards.length} />
-          </div>
-        )}
-
-        {/* Section header — z-10 so cards (z-20) render on top */}
-        {(sectionLabel || heading) && (
-          <SectionHeader
-            ref={headerRef}
-            label={sectionLabel}
-            heading={heading}
-            className="absolute z-10 text-center"
-          />
-        )}
-
-        {/* Card stack — z-20 above header */}
-        <div
-          className="relative z-20 w-full max-w-4xl px-4 md:px-8"
-          style={{ height: '500px' }}
+        <motion.article
+          style={{ scale, opacity, background: card.background, color: fg }}
+          className={cn(
+            'relative mx-auto mt-12 w-full max-w-5xl overflow-hidden',
+            'rounded-[28px] border border-white/10',
+            'shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]',
+            'origin-top',
+          )}
         >
-          {cards.map((card, i) => (
-            <StackCard
-              key={card.id}
-              ref={(el) => setCardRef(el, i)}
-              card={card}
-              className="absolute inset-0"
-            />
-          ))}
-        </div>
+          <CardContent card={card} index={index} total={total} />
+        </motion.article>
+      </section>
+    </div>
+  )
+}
 
-        {/* Dot indicators */}
-        {showDots && (
-          <div className="absolute bottom-8 z-50">
-            <DotIndicators total={cards.length} active={activeIndex} />
+/* ------------------------------------------------------------------ */
+/*  Card content — single column, big number, no decorative panel      */
+/* ------------------------------------------------------------------ */
+
+function CardContent({
+  card,
+  index,
+  total,
+}: {
+  card: CardStackItem
+  index: number
+  total: number
+}) {
+  return (
+    <div className="relative flex min-h-[68vh] flex-col justify-between gap-12 p-8 sm:p-12 md:p-16 lg:p-20">
+      {/* Numeric watermark — anchored to the right edge, vertically centered.
+          Made huge so it carries the whole right side of the card now that the
+          decorative panel is gone. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-4 top-1/2 -translate-y-1/2 select-none font-semibold leading-none tracking-[-0.06em] opacity-[0.10] sm:right-0 md:right-4"
+        style={{
+          fontSize: 'clamp(280px, 42vw, 620px)',
+          color: 'currentColor',
+        }}
+      >
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      {/* Copy block */}
+      <div className="relative z-10 max-w-3xl">
+        {card.eyebrow && (
+          <p className="mb-6 inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.24em] opacity-70">
+            <span
+              aria-hidden
+              className="inline-block h-[2px] w-7 rounded-full"
+              style={{ backgroundColor: 'currentColor', opacity: 0.55 }}
+            />
+            {card.eyebrow}
+          </p>
+        )}
+
+        <h3 className="whitespace-pre-line text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-5xl md:text-6xl lg:text-7xl">
+          {card.title}
+        </h3>
+
+        {card.body && (
+          <p className="mt-6 max-w-xl text-pretty text-base leading-relaxed opacity-75 sm:text-lg">
+            {card.body}
+          </p>
+        )}
+      </div>
+
+      {/* Footer row */}
+      <div className="relative z-10 flex flex-wrap items-center gap-4">
+        {card.meta && (
+          <div className="text-[11px] uppercase tracking-[0.22em] opacity-60">
+            {card.meta}
           </div>
         )}
+        {card.cta && <div>{card.cta}</div>}
+        <span
+          className="ml-auto font-mono text-[11px] tracking-widest opacity-50"
+          aria-hidden
+        >
+          {String(index + 1).padStart(2, '0')} · {String(total).padStart(2, '0')}
+        </span>
       </div>
     </div>
   )

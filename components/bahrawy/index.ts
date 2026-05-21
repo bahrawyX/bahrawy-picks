@@ -116,16 +116,185 @@ export { ShiningBorder } from './shining-border'
 export type { ShiningBorderProps } from './shining-border'
 
 export { Kanban } from './kanban'
-export type { KanbanProps, KanbanCard, KanbanColumn } from './kanban'
+export type {
+  Task as KanbanTask,
+  TaskStatus as KanbanTaskStatus,
+  TaskPriority as KanbanTaskPriority,
+  TaskDifficulty as KanbanTaskDifficulty,
+  Column as KanbanColumn,
+  ColumnAccent as KanbanColumnAccent,
+} from './kanban'
 
 export { VirtualList } from './virtual-list'
 export type { VirtualListProps, VirtualListHandle, RenderItemProps as VirtualListRenderItemProps } from './virtual-list'
 
-export { ScrollPathReveal } from './scroll-path-reveal'
-export type { ScrollPathRevealProps, ScrollPathSection } from './scroll-path-reveal'
+export { DynamicIsland } from './dynamic-island'
+export type { DynamicIslandProps, DynamicIslandView } from './dynamic-island'
+
+export {
+  ScrollPathReveal,
+  BAHRAWY_PATH,
+  BAHRAWY_VIEWBOX,
+  SKIPER19_PATH,
+  SKIPER19_VIEWBOX,
+} from './scroll-path-reveal'
+export type {
+  ScrollPathRevealProps,
+  ScrollPathRevealVariant,
+} from './scroll-path-reveal'
 
 export { CardStackScroll } from './card-stack-scroll'
 export type { CardStackScrollProps, CardStackItem } from './card-stack-scroll'
+
+export { Accordion } from './accordion'
+export type { AccordionProps, AccordionItem } from './accordion'
+
+export { ImageHoverReveal } from './image-hover-reveal'
+export type { ImageHoverRevealProps } from './image-hover-reveal'
+
+export { ImageSwapText } from './image-swap-text'
+export type { ImageSwapTextProps, ImageSwapItem } from './image-swap-text'
+
+export { ScrollRail } from './scroll-rail'
+export type { ScrollRailProps } from './scroll-rail'
+
+export { Tabs } from './tabs'
+export type { TabsProps, TabItem } from './tabs'
+
+export { HoverCard } from './hover-card'
+export type { HoverCardProps } from './hover-card'
+
+export { AvatarGroup } from './avatar-group'
+export type { AvatarGroupProps, AvatarItem } from './avatar-group'
+
+export { ProgressRing } from './progress-ring'
+export type { ProgressRingProps } from './progress-ring'
+
+export { Switch } from './switch'
+export type { SwitchProps } from './switch'
+
+export { ToastProvider, useToast } from './toast'
+export type { ToastProviderProps, Toast, ToastIntent, ToastPosition } from './toast'
+
+export { Skeleton, SkeletonText } from './skeleton'
+export type { SkeletonProps, SkeletonTextProps } from './skeleton'
+
+export { HeroSpotlight } from './hero-spotlight'
+export type { HeroSpotlightProps } from './hero-spotlight'
+
+export { HeroMarquee } from './hero-marquee'
+export type { HeroMarqueeProps, HeroMarqueeRow } from './hero-marquee'
+
+export { HeroCounter } from './hero-counter'
+export type {
+  HeroCounterProps,
+  HeroCounterStat,
+  HeroCounterFeature,
+} from './hero-counter'
+
+export { HeroAurora } from './hero-aurora'
+export type { HeroAuroraProps, HeroAuroraBlob } from './hero-aurora'
+
+export { PricingTier } from './pricing-tier'
+export type { PricingTierProps, PricingPlan } from './pricing-tier'
+
+export { PricingToggle } from './pricing-toggle'
+export type { PricingToggleProps, PricingTogglePlan } from './pricing-toggle'
+
+export { PricingCompare } from './pricing-compare'
+export type {
+  PricingCompareProps,
+  PricingComparePlan,
+  PricingCompareFeature,
+  PricingCompareGroup,
+} from './pricing-compare'
+
+export { FooterMinimal } from './footer-minimal'
+export type { FooterMinimalProps, FooterColumn, FooterLink } from './footer-minimal'
+
+export { FooterNewsletter } from './footer-newsletter'
+export type {
+  FooterNewsletterProps,
+  FooterNewsletterColumn,
+  FooterNewsletterLink,
+} from './footer-newsletter'
+
+export { FooterBrandMark } from './footer-brand-mark'
+export type {
+  FooterBrandMarkProps,
+  FooterBrandColumn,
+  FooterBrandLink,
+} from './footer-brand-mark'
+
+export { StatsGrid } from './stats-grid'
+export type { StatsGridProps, StatsGridItem } from './stats-grid'
+
+export { TestimonialsSlider } from './testimonials-slider'
+export type { TestimonialsSliderProps, Testimonial } from './testimonials-slider'
+
+export { CtaSection } from './cta-section'
+export type { CtaSectionProps } from './cta-section'
+
+export { FaqSection } from './faq-section'
+export type { FaqSectionProps, FaqItem } from './faq-section'
+
+export { LogoCloud } from './logo-cloud'
+export type { LogoCloudProps, LogoCloudItem } from './logo-cloud'
+
+export { BentoFeatures } from './bento-features'
+export type { BentoFeaturesProps, BentoFeatureItem } from './bento-features'
+
+export { Divider } from './divider'
+export type { DividerProps } from './divider'
+
+export { Banner } from './banner'
+export type { BannerProps, BannerIntent } from './banner'
+
+export { Breadcrumb } from './breadcrumb'
+export type { BreadcrumbProps, BreadcrumbItem } from './breadcrumb'
+
+export { EmptyState } from './empty-state'
+export type { EmptyStateProps } from './empty-state'
+
+export { LoaderDots } from './loader-dots'
+export type { LoaderDotsProps } from './loader-dots'
+
+export { StatusPill } from './status-pill'
+export type { StatusPillProps, StatusPillIntent } from './status-pill'
+
+export { StatCard } from './stat-card'
+export type { StatCardProps } from './stat-card'
+
+export { Drawer } from './drawer'
+export type { DrawerProps, DrawerSide } from './drawer'
+
+export { DropdownMenu } from './dropdown-menu'
+export type { DropdownMenuProps, DropdownMenuItem, DropdownEntry } from './dropdown-menu'
+
+export { Tooltip } from './tooltip'
+export type { TooltipProps, TooltipSide } from './tooltip'
+
+export { QuoteCard } from './quote-card'
+export type { QuoteCardProps } from './quote-card'
+
+export { StepProgress } from './step-progress'
+export type { StepProgressProps } from './step-progress'
+
+export { SearchInput } from './search-input'
+export type { SearchInputProps } from './search-input'
+
+export { Sparkline } from './sparkline'
+export type { SparklineProps } from './sparkline'
+
+export { PinnedStory } from './pinned-story'
+export type { PinnedStoryProps, PinnedStoryStep } from './pinned-story'
+
+export { ConstellationScroll } from './constellation-scroll'
+export type {
+  ConstellationScrollProps,
+  ConstellationNode,
+} from './constellation-scroll'
+
 
 // Animations
 export {

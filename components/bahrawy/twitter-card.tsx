@@ -319,14 +319,14 @@ export function TwitterCard({
         <Avatar src={avatar} name={name} />
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1">
-            <span className="truncate text-[15px] font-bold text-white">
+          <div className="flex min-w-0 items-center gap-1">
+            <span className="min-w-0 truncate text-[15px] font-bold text-white">
               {name}
             </span>
             {verified && <VerifiedBadge variant={verified} />}
-            <span className="truncate text-[15px] text-white/50">
-              @{handle}
-            </span>
+          </div>
+          <div className="min-w-0 truncate text-[13px] leading-tight text-white/50">
+            @{handle}
           </div>
         </div>
 
