@@ -303,6 +303,9 @@ export type {
   MegaNavLink,
 } from './mega-nav'
 
+export { HeroScrollGrow } from './hero-scroll-grow'
+export type { HeroScrollGrowProps } from './hero-scroll-grow'
+
 
 // Animations
 export {

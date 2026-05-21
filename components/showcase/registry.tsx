@@ -1117,6 +1117,16 @@ export const registry: RegistryEntry[] = [
     hasOptions: true,
     dependencies: ['framer-motion', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '99',
+    slug: 'hero-scroll-grow',
+    name: 'Hero Scroll Grow',
+    description:
+      'Heavy GSAP hero. Text sits over an inset image card; as the user scrolls, the image grows from 72% to full-bleed, its border-radius dissolves from 28 to 0, the hero text fades out, and an optional overlay caption fades in. One scrubbed timeline drives every layer.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

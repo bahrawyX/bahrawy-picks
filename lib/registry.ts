@@ -515,4 +515,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Floating top navigation bar with a frosted-glass backdrop. Hover a menu item with `sections` and a mega-menu drops down with categorized links — height + opacity animated, content fades between items, closes when the cursor leaves.',
   },
+  {
+    title: 'Hero Scroll Grow',
+    slug: 'hero-scroll-grow',
+    description:
+      'Pinned hero. Text sits over an inset image card; as the user scrolls, a GSAP timeline grows the image from 72% to full-bleed, dissolves its border-radius, fades the hero text out, and (optionally) brings in an overlay caption.',
+  },
 ]
