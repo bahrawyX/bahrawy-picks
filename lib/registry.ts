@@ -521,4 +521,16 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Pinned hero. Text sits over an inset image card; as the user scrolls, a GSAP timeline grows the image from 72% to full-bleed, dissolves its border-radius, fades the hero text out, and (optionally) brings in an overlay caption.',
   },
+  {
+    title: 'Carousel 3D',
+    slug: 'carousel-3d',
+    description:
+      'Pinned 3D card carousel. Cards arc off to either side of an active centre card; scrubbed GSAP timeline advances `activeIndex` as the user scrolls, smoothly retargeting every card\'s translateX / translateZ / rotateY / opacity / scale.',
+  },
+  {
+    title: 'Hero Split',
+    slug: 'hero-split',
+    description:
+      'Pinned hero with two 50/50 columns of stacked content that scroll in opposite Y directions (left up, right down). Past `reveal` (default 0.7) of the pin, a centred card fades in over both halves with a backdrop blur — the "meeting" moment.',
+  },
 ]

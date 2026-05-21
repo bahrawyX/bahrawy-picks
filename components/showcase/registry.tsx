@@ -1127,6 +1127,26 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '100',
+    slug: 'carousel-3d',
+    name: 'Carousel 3D',
+    description:
+      'Pinned Cover Flow-style carousel. As the user scrolls, an activeIndex advances and every card retargets its translateX / translateZ / rotateY / opacity / scale based on its offset from active. Looks like a flat row, feels like a 3D arc.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react'],
+  },
+  {
+    kind: 'docs',
+    id: '101',
+    slug: 'hero-split',
+    name: 'Hero Split',
+    description:
+      'Pinned hero with two 50/50 columns of stacked content scrolling in opposite Y directions (left up, right down). Past `reveal` (default 0.7) of the pin, a centred reveal card fades in with backdrop blur — the "meeting" moment.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

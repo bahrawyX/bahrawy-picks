@@ -306,6 +306,16 @@ export type {
 export { HeroScrollGrow } from './hero-scroll-grow'
 export type { HeroScrollGrowProps } from './hero-scroll-grow'
 
+export { Carousel3D } from './carousel-3d'
+export type { Carousel3DProps, Carousel3DCard } from './carousel-3d'
+
+export { HeroSplit } from './hero-split'
+export type {
+  HeroSplitProps,
+  HeroSplitItem,
+  HeroSplitRevealCta,
+} from './hero-split'
+
 
 // Animations
 export {
