@@ -8,11 +8,12 @@ const SNIPPET = `import { HeroAwwwards } from '@/components/bahrawy/hero-awwward
 
 <HeroAwwwards
   eyebrow="v2.0 · 98 components"
-  title="Made to be felt."
-  description="Open-source components for makers who give a damn about how something feels."
+  // Pass an array of strings for a multi-line curtain reveal.
+  title={['Made for the', 'people who', 'give a damn.']}
+  description="Open-source components for makers who care how something feels — not just how it looks."
   primaryCta={{ label: 'Get started', href: '/docs' }}
-  secondaryCta={{ label: 'Browse components', href: '/components' }}
-  spotlightColors={['#A78BFA', '#22D3EE']}
+  secondaryCta={{ label: 'Browse components' }}
+  accentColor="#A78BFA"
 />`
 
 export default function HeroAwwwardsDocs() {
@@ -20,22 +21,23 @@ export default function HeroAwwwardsDocs() {
     <DocsPage
       title="Hero Awwwards"
       slug="hero-awwwards"
-      description="The big one. Letters cascade in with GSAP rotateX + blur clearance + scale + y, a flowing color gradient runs through the headline forever, a spring-smoothed spotlight follows the cursor, four blurred accent blobs drift in the background, a marquee strip slides in at the bottom. Designed to be the first paint on a landing page and still feel adorable, not loud."
+      description="A restrained, type-first landing hero. One GSAP timeline reveals each line of the headline by raising a clip-path mask from the baseline — letters appear in place rather than flying around. A single accent glow + spring-smoothed cursor spotlight do all the background work. No rainbow, no disco."
       category="98 · gsap-section"
     >
       <DocsSection
         title="Live demo"
-        description="Move the cursor around the hero — the spotlight follows. Reload to see the letter cascade again."
+        description="Reload the page to replay the curtain reveal. Move the cursor — a soft spotlight follows."
       >
         <p className="text-xs text-white/40">↓ the hero</p>
       </DocsSection>
 
       <HeroAwwwards
         eyebrow="v2.0 · 98 components"
-        title="Made to be felt."
-        description="Open-source components for makers who give a damn about how something feels. Drop one in, tune it, ship the same day."
+        title={['Made for the', 'people who', 'give a damn.']}
+        description="Open-source components for makers who care how something feels — not just how it looks. Drop one in, tune it, ship the same day."
         primaryCta={{ label: 'Get started' }}
         secondaryCta={{ label: 'Browse components' }}
+        accentColor="#A78BFA"
       />
 
       <div className="h-24" aria-hidden />
@@ -44,15 +46,15 @@ export default function HeroAwwwardsDocs() {
         <CodeBlock code={SNIPPET} language="tsx" />
       </DocsSection>
 
-      <DocsSection title="How the motion works">
+      <DocsSection title="Design rationale">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['Letter cascade', 'GSAP timeline sets every letter to { autoAlpha: 0, y: 70, scale: 0.7, rotateX: 55°, filter: blur(12px), transformOrigin: bottom }, then tweens to rest with stagger 30 ms and power4 ease.'],
-            ['Flowing gradient', 'A 6-stop linear gradient sits behind the text via background-clip: text, with background-size 220% 100%. A 12s linear keyframe slides the gradient across forever.'],
-            ['Mouse spotlight', 'Two motion values track the cursor position 0–1, spring-smoothed, then mapped to CSS percent strings inside two radial-gradient lobes that bake into a single motion template.'],
-            ['Drifting blobs', '4 absolutely-positioned blurred circles ride a Framer keyframe array of small x/y offsets — never the same path twice, never repeating exactly.'],
-            ['Dot grid', "Fixed `radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1px)` at 28 px tiles, masked to the center so the edges fade out — keeps the type isolated."],
-            ['Marquee strip', 'Bottom edge, animated with the `marquee` keyframe + a duration CSS var so consumers can override speed.'],
+            ['Type is the hero', "The headline is the largest, loudest thing on the page. Anton at clamp(72px, 13vw, 220px), tight letter-spacing, multi-line — gives the words real weight."],
+            ['One signature animation', "Each line of the headline reveals by sliding a `clipPath: inset(0 0 100% 0)` → `inset(0 0 0 0)` mask up from the baseline. Letters appear in place. No rotateX, no scaling, no blur — calmer and more confident."],
+            ['Restrained color', "A single duotone gradient brushes across the headline forever (white → accent → white). Eye-friendly. No 6-stop rainbow."],
+            ['Less stacked background', "One corner glow in the top-right + one spring-smoothed cursor spotlight. No blob disco, no dot grid, no marquee. The type carries the page."],
+            ['A landing line', "A thin horizontal rule draws under the headline once it finishes — a tiny punctuation mark that ties the eyebrow + headline + subline together."],
+            ['Scroll indicator', "Bottom-center, a 'Scroll' label and a short accent bar that breathes up and down a vertical line. Hint without the whole marquee."],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>
@@ -65,14 +67,13 @@ export default function HeroAwwwardsDocs() {
       <DocsSection title="Props">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['eyebrow', 'Tiny tag above the headline. Renders with a pulsing emerald dot.'],
-            ['title', 'Headline string. Split on spaces; each letter animates individually.'],
-            ['description', 'Sub-copy below the headline.'],
-            ['primaryCta', '{ label, href?, onClick? } — solid white pill.'],
-            ['secondaryCta', '{ label, href?, onClick? } — outlined pill on a blur.'],
-            ['marquee', 'Words rendered in the bottom strip. Defaults to a tech-stack list.'],
-            ['spotlightColors', 'Two hex colors blended around the cursor. Default purple + cyan.'],
-            ['className', 'Extra classes on the section.'],
+            ['eyebrow', 'Tiny uppercase tag above the headline. Pairs with a thin accent bar.'],
+            ['title', 'string | string[] — pass an array for multi-line, each line reveals as its own mask sweep.'],
+            ['description', 'Sub-copy under the headline. Max-width pinned.'],
+            ['primaryCta', '{ label, href?, onClick? } — solid pill with an arrow that nudges on hover.'],
+            ['secondaryCta', '{ label, href?, onClick? } — text-only link, no pill, no border.'],
+            ['accentColor', 'Single accent color used in the glow, rule, scroll bar, and the duotone brush on the headline. Default #A78BFA.'],
+            ['className', 'Extra classes on the outer section.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>
