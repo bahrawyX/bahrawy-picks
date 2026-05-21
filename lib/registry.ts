@@ -509,4 +509,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'GSAP + SVG section. A network/constellation diagram constructs itself stage-by-stage as the user scrolls — center node pops in, satellites stagger in, edges ink themselves, labels fade up, then pulse-dots fan outward from the center along every edge.',
   },
+  {
+    title: 'Hero Awwwards',
+    slug: 'hero-awwwards',
+    description:
+      'Awards-tier landing hero. GSAP timeline cascades every letter into place (rotateX, blur clearance, scale, y, opacity), a flowing color gradient runs through the headline forever, a mouse-follow spotlight tracks the cursor, four drifting accent blobs blur in the background, a marquee strip slides in at the bottom.',
+  },
 ]

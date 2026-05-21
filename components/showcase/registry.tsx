@@ -1106,6 +1106,16 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react'],
   },
+  {
+    kind: 'docs',
+    id: '98',
+    slug: 'hero-awwwards',
+    name: 'Hero Awwwards',
+    description:
+      'Awards-tier landing hero. GSAP cascades every letter into place with rotateX + blur clearance + scale + y. A flowing color gradient runs through the headline forever, a spring-smoothed dual spotlight tracks the cursor, four drifting accent blobs blur in the background, a marquee strip slides in at the bottom.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'framer-motion', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

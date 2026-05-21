@@ -295,6 +295,9 @@ export type {
   ConstellationNode,
 } from './constellation-scroll'
 
+export { HeroAwwwards } from './hero-awwwards'
+export type { HeroAwwwardsProps } from './hero-awwwards'
+
 
 // Animations
 export {
