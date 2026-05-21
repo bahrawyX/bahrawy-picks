@@ -539,4 +539,10 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'A slot-machine for words. Each "slot" is a single-line window with a tall column of candidate words behind it; scroll spins each column through multiple cycles, lands on the target with a staggered ending. Final state: a complete sentence reading across the row, underlined in the accent color.',
   },
+  {
+    title: 'Magnetic Field',
+    slug: 'magnetic-field',
+    description:
+      'A pinned scroll section that pairs cursor magnetism with a scroll-driven wave. A canvas dot lattice repels around your cursor with a spring while a glowing accent line sweeps top-to-bottom; each headline locks in as the wave passes it, then a description and CTA fade in.',
+  },
 ]

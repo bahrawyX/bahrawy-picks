@@ -323,6 +323,13 @@ export type {
   PhraseSlotsCta,
 } from './phrase-slots'
 
+export { MagneticField } from './magnetic-field'
+export type {
+  MagneticFieldProps,
+  MagneticFieldLine,
+  MagneticFieldCta,
+} from './magnetic-field'
+
 
 // Animations
 export {

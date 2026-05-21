@@ -201,21 +201,96 @@ export function PhraseSlots({
       className={cn('relative w-full bg-black', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
-      <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
-        {/* Soft radial accent in the background */}
+      <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-[#070708]">
+        {/* ──────────────────────────────────────────────────────────────
+            Background — a layered atmosphere.
+            (a) deep vignette so the edges fall off
+            (b) two drifting accent orbs (blurred, slow CSS keyframes)
+            (c) a fine dot grid radially masked to the center
+            (d) a horizontal aurora-band right behind the slot row
+            (e) horizontal "rail" line through the slot baseline
+            (f) faint SVG grain so it doesn't feel sterile
+        ────────────────────────────────────────────────────────────── */}
+
+        {/* (a) deep vignette */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: `radial-gradient(55% 55% at 50% 45%, ${accentColor}1f, transparent 65%)`,
+            background:
+              'radial-gradient(120% 80% at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 55%), radial-gradient(80% 60% at 50% 100%, rgba(0,0,0,0.55) 0%, transparent 60%)',
           }}
         />
 
-        {/* A subtle horizontal "rail" lines through the slots so the active
-            words feel anchored to a track. */}
+        {/* (b) drifting accent orbs */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <div
+            className="bahrawy-phrase-orb bahrawy-phrase-orb-a absolute -left-[10%] top-[8%] h-[55vmin] w-[55vmin] rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${accentColor}55 0%, ${accentColor}10 45%, transparent 70%)`,
+            }}
+          />
+          <div
+            className="bahrawy-phrase-orb bahrawy-phrase-orb-b absolute -right-[12%] bottom-[6%] h-[60vmin] w-[60vmin] rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${accentColor}3a 0%, ${accentColor}0a 50%, transparent 72%)`,
+            }}
+          />
+          <div
+            className="bahrawy-phrase-orb bahrawy-phrase-orb-c absolute left-[40%] top-[30%] h-[35vmin] w-[35vmin] rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${accentColor}2a 0%, transparent 65%)`,
+            }}
+          />
+        </div>
+
+        {/* (c) dot grid masked to a soft radial */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.55]"
+          style={{
+            backgroundImage:
+              'radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)',
+            backgroundSize: '22px 22px',
+            backgroundPosition: '0 0',
+            WebkitMaskImage:
+              'radial-gradient(60% 50% at 50% 50%, black 0%, transparent 72%)',
+            maskImage:
+              'radial-gradient(60% 50% at 50% 50%, black 0%, transparent 72%)',
+          }}
+        />
+
+        {/* (d) aurora band straight through the slot row — really sells the "track" */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2"
+          style={{
+            height: `${slotHeight * 1.6}px`,
+            background: `radial-gradient(60% 100% at 50% 50%, ${accentColor}22 0%, ${accentColor}10 35%, transparent 70%)`,
+            filter: 'blur(2px)',
+          }}
+        />
+
+        {/* (e) the rail line */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-px -translate-y-1/2"
+          style={{
+            background: `linear-gradient(to right, transparent 0%, ${accentColor}30 20%, ${accentColor}55 50%, ${accentColor}30 80%, transparent 100%)`,
+          }}
+        />
+
+        {/* (f) very subtle SVG grain */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.65'/></svg>\")",
+          }}
         />
 
         <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-10 px-6 text-center sm:px-10">
@@ -336,6 +411,39 @@ export function PhraseSlots({
         >
           Scroll
         </div>
+
+        {/* Background orb drift keyframes — slow + offset so they never beat in sync */}
+        <style>{`
+          .bahrawy-phrase-orb {
+            filter: blur(60px);
+            will-change: transform;
+          }
+          .bahrawy-phrase-orb-a {
+            animation: bahrawy-phrase-drift-a 18s ease-in-out infinite;
+          }
+          .bahrawy-phrase-orb-b {
+            animation: bahrawy-phrase-drift-b 22s ease-in-out infinite;
+          }
+          .bahrawy-phrase-orb-c {
+            animation: bahrawy-phrase-drift-c 14s ease-in-out infinite;
+            filter: blur(48px);
+          }
+          @keyframes bahrawy-phrase-drift-a {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50%      { transform: translate3d(6vmin, 4vmin, 0) scale(1.08); }
+          }
+          @keyframes bahrawy-phrase-drift-b {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50%      { transform: translate3d(-5vmin, -5vmin, 0) scale(1.1); }
+          }
+          @keyframes bahrawy-phrase-drift-c {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(0.95); }
+            50%      { transform: translate3d(-3vmin, 5vmin, 0) scale(1.12); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .bahrawy-phrase-orb { animation: none !important; }
+          }
+        `}</style>
       </div>
     </div>
   )

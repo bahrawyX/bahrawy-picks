@@ -1157,6 +1157,16 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react', 'lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '103',
+    slug: 'magnetic-field',
+    name: 'Magnetic Field',
+    description:
+      'A pinned scroll section that pairs cursor magnetism with a scroll-driven wave. A canvas dot lattice repels around your cursor with a spring while a glowing accent line sweeps top-to-bottom; each headline locks in as the wave passes it.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {
