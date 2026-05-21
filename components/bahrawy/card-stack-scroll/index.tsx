@@ -96,7 +96,7 @@ function CardScene({
   scaleStep,
   opacityFloor,
 }: CardSceneProps) {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useRef<HTMLDivElement>(null)
 
   // 'start start' = section top reaches viewport top  (this card just pinned)
   // 'end start'   = section bottom reaches viewport top  (next card fully covers)

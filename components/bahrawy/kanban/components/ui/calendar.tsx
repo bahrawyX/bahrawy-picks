@@ -69,7 +69,8 @@ function Calendar({
           defaultClassNames.month_caption,
         ),
         caption_label: cn('select-none font-medium text-sm', defaultClassNames.caption_label),
-        table: 'w-full border-collapse',
+        // `table` removed — react-day-picker v10 uses `month_grid` instead,
+        // and the default grid styling works fine without an override here.
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
           'text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal',

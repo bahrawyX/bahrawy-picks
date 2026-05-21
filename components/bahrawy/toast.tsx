@@ -15,7 +15,13 @@
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react'
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -130,7 +136,7 @@ interface ToastCardProps {
   fromTop: boolean
 }
 
-const INTENT_ICONS: Record<ToastIntent, React.ComponentType<{ className?: string }>> = {
+const INTENT_ICONS: Record<ToastIntent, LucideIcon> = {
   default: Info,
   info: Info,
   success: CheckCircle2,

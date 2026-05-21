@@ -375,7 +375,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
                       }
                       setDatePickerOpen(false);
                     }}
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>

@@ -74,7 +74,7 @@ export function PinnedStory({
   const stepRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const imageRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const tintRefs = React.useRef<(HTMLDivElement | null)[]>([])
-  const numberRefs = React.useRef<(HTMLDivElement | null)[]>([])
+  const numberRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const progressRef = React.useRef<HTMLDivElement>(null)
   const dotRef = React.useRef<HTMLDivElement>(null)
 

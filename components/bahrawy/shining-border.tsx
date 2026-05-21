@@ -81,9 +81,14 @@ export function ShiningBorder({
   className,
   innerClassName,
 }: ShiningBorderProps) {
+  // Resolve [head, tail, glow]. If variant is 'custom' but no colors were
+  // passed, fall back to the default preset instead of indexing VARIANTS
+  // with 'custom' (which isn't a key there).
   const [head, tail, glow] =
-    variant === 'custom' && colors
-      ? [colors[0], colors[1], colors[2] ?? colors[0]]
+    variant === 'custom'
+      ? colors
+        ? [colors[0], colors[1], colors[2] ?? colors[0]]
+        : VARIANTS.default
       : VARIANTS[variant]
 
   const clampedBeams = Math.max(1, Math.min(3, beamCount))

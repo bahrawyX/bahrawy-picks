@@ -11,7 +11,14 @@
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Info, AlertTriangle, CheckCircle2, Sparkles } from 'lucide-react'
+import {
+  X,
+  Info,
+  AlertTriangle,
+  CheckCircle2,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type BannerIntent = 'info' | 'success' | 'warning' | 'promo'
@@ -30,7 +37,7 @@ export interface BannerProps {
   className?: string
 }
 
-const INTENT_ICON: Record<BannerIntent, React.ComponentType<{ className?: string }>> = {
+const INTENT_ICON: Record<BannerIntent, LucideIcon> = {
   info: Info,
   success: CheckCircle2,
   warning: AlertTriangle,
