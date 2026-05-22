@@ -72,7 +72,7 @@ export default function PinnedStoryDocs() {
       title="Pinned Story"
       slug="pinned-story"
       description="A cinema-style pinned narrative section. The container pins for the full scroll, and a single scrubbed GSAP timeline orchestrates every layer at once — text crossfade, image swap + parallax pan, giant background number, accent tint, top progress bar, side guide dot."
-      category="95 · gsap-section"
+      category="94 · gsap-section"
     >
       <DocsSection
         title="Live demo"

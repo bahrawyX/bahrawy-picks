@@ -406,7 +406,6 @@ export {
   TextScramble,
   BlurReveal,
   FloatingElements,
-  SplitReveal,
   ParallaxSection,
   StaggerReveal,
 } from './animations'
@@ -418,7 +417,6 @@ export type {
   TextScrambleProps,
   BlurRevealProps,
   FloatingElementsProps,
-  SplitRevealProps,
   ParallaxSectionProps,
   StaggerRevealProps,
 } from './animations'

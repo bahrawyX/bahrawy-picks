@@ -19,83 +19,6 @@ import { getEntryHref, registry, type RegistryEntry } from './registry'
 import { SidebarSkeleton } from './sidebar-skeleton'
 
 // ---------------------------------------------------------------------------
-// Categorisation — group the long flat list by purpose. Display order
-// is hand-tuned so the most-reached-for primitives sit at the top and
-// the heavy "section" / GSAP work sits at the bottom.
-// ---------------------------------------------------------------------------
-
-const CATEGORY_ORDER: readonly string[] = [
-  'form',
-  'overlay',
-  'card',
-  'data',
-  'layout',
-  'navigation',
-  'hero',
-  'section',
-  'pricing',
-  'footer',
-  'text',
-  'motion',
-  'scroll',
-  'cursor',
-  'gsap-section',
-  'background',
-  'decoration',
-  'ui',
-] as const
-
-const CATEGORY_LABEL: Record<string, string> = {
-  form: 'Form & Input',
-  overlay: 'Overlay',
-  card: 'Cards',
-  data: 'Data',
-  layout: 'Layout',
-  navigation: 'Navigation',
-  hero: 'Hero',
-  section: 'Sections',
-  pricing: 'Pricing',
-  footer: 'Footers',
-  text: 'Text Effects',
-  motion: 'Motion',
-  scroll: 'Scroll',
-  cursor: 'Cursor',
-  'gsap-section': 'GSAP Sections',
-  background: 'Backgrounds',
-  decoration: 'Decoration',
-  ui: 'UI Primitives',
-}
-
-interface SidebarGroup {
-  category: string
-  label: string
-  entries: RegistryEntry[]
-}
-
-function groupRegistryByCategory(entries: RegistryEntry[]): SidebarGroup[] {
-  const map = new Map<string, RegistryEntry[]>()
-  for (const e of entries) {
-    const list = map.get(e.category) ?? []
-    list.push(e)
-    map.set(e.category, list)
-  }
-  return Array.from(map.entries())
-    .sort(([a], [b]) => {
-      const ai = CATEGORY_ORDER.indexOf(a)
-      const bi = CATEGORY_ORDER.indexOf(b)
-      if (ai === -1 && bi === -1) return a.localeCompare(b)
-      if (ai === -1) return 1
-      if (bi === -1) return -1
-      return ai - bi
-    })
-    .map(([category, list]) => ({
-      category,
-      label: CATEGORY_LABEL[category] ?? category,
-      entries: list,
-    }))
-}
-
-// ---------------------------------------------------------------------------
 // Pending navigation context – lets sidebar highlight the *target* link
 // IMMEDIATELY on click, before Next.js finishes the navigation.
 // ---------------------------------------------------------------------------
@@ -146,21 +69,18 @@ function SidebarContent() {
   const favoritesActive = displayPath === '/components/favorites'
   const allActive = displayPath === '/components'
 
-  const groups = React.useMemo(() => groupRegistryByCategory(registry), [])
-
   return (
     <PendingPathContext.Provider value={pendingPath}>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         <button
           type="button"
           disabled
           className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-white/70"
         >
-          Grouped by type
+          Sorted by Id
           <ChevronDown className="h-3.5 w-3.5 text-white/40" strokeWidth={2.25} />
         </button>
 
-        {/* Top-level shortcuts — All Components + Favorites */}
         <ul className="flex flex-col">
           <li>
             <button
@@ -235,30 +155,22 @@ function SidebarContent() {
               )}
             </button>
           </li>
-        </ul>
 
-        {/* Categorised groups — each one has a heading + its items */}
-        {groups.map((group) => (
-          <section key={group.category} className="flex flex-col gap-1">
-            <h3 className="mb-0.5 px-0 text-[10px] font-medium uppercase tracking-[0.22em] text-white/35">
-              {group.label}
-            </h3>
-            <ul className="flex flex-col">
-              {group.entries.map((entry) => {
-                const href = getEntryHref(entry)
-                return (
-                  <SidebarItem
-                    key={entry.slug}
-                    entry={entry}
-                    href={href}
-                    active={href !== null && displayPath === href}
-                    onNavigate={navigate}
-                  />
-                )
-              })}
-            </ul>
-          </section>
-        ))}
+          <li aria-hidden className="my-2 h-px bg-white/[0.06]" />
+
+          {registry.map((entry) => {
+            const href = getEntryHref(entry)
+            return (
+              <SidebarItem
+                key={entry.slug}
+                entry={entry}
+                href={href}
+                active={href !== null && displayPath === href}
+                onNavigate={navigate}
+              />
+            )
+          })}
+        </ul>
       </div>
     </PendingPathContext.Provider>
   )

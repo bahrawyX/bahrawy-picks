@@ -76,7 +76,7 @@ const items = [
       title="Accordion"
       slug="accordion"
       description="A minimal accordion with a bouncy spring open/close. Tap a row — the panel overshoots a touch, then settles. Configurable bounciness, single or multi-open, optional chevron."
-      category="55 · ui"
+      category="54 · ui"
     >
       <DocsSection
         title="Live demo"

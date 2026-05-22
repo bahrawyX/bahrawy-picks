@@ -228,12 +228,6 @@ export const componentRegistry: RegistryItem[] = [
       'Elements float and drift gently in random directions. Optional mouse repel physics.',
   },
   {
-    title: 'Split Reveal',
-    slug: 'split-reveal',
-    description:
-      'Two halves of content split apart to reveal hidden content underneath. Horizontal or vertical direction.',
-  },
-  {
     title: 'Scroll Path Reveal',
     slug: 'scroll-path-reveal',
     description:

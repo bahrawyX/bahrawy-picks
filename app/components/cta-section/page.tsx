@@ -10,7 +10,7 @@ export default function CtaSectionDocs() {
       title="CTA Section"
       slug="cta-section"
       description="A big call-to-action band sitting on top of a soft radial glow. Drop this between feature sections to pull users into your sign-up flow."
-      category="78 · section"
+      category="77 · section"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">

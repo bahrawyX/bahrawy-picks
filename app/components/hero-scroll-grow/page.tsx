@@ -23,7 +23,7 @@ export default function HeroScrollGrowDocs() {
       title="Hero Scroll Grow"
       slug="hero-scroll-grow"
       description="A pinned hero. Text sits over an inset image card; as the user scrolls, a single GSAP timeline grows the image from 72% to full-bleed, dissolves its border-radius, fades the hero text out, and (optionally) brings in an overlay caption. Everything is locked to scroll via ScrollTrigger.scrub."
-      category="98 · gsap-section"
+      category="97 · gsap-section"
     >
       <DocsSection
         title="Live demo"

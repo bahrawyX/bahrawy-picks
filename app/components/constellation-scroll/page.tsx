@@ -54,7 +54,7 @@ export default function ConstellationScrollDocs() {
       title="Constellation Scroll"
       slug="constellation-scroll"
       description="A pinned scroll section that opens with every node stacked at the same point in the centre of the canvas. As you scroll, the nodes fan outward into a perfect circular constellation, then connecting lines draw in between adjacent nodes to complete the shape."
-      category="96 · gsap-section"
+      category="95 · gsap-section"
     >
       <DocsSection
         title="Live demo"

@@ -10,7 +10,7 @@ export default function VariableFontMorphDocs() {
       title="Variable Font Morph"
       slug="variable-font-morph"
       description="Each character animates its `font-variation-settings: 'wght'` axis between two values with a staggered phase. Works with any variable font that has a weight axis (Inter does)."
-      category="113 · text effect"
+      category="112 · text effect"
     >
       <DocsSection title="Breathing weight">
         <DemoCard className="min-h-[220px]">
