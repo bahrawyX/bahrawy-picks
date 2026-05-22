@@ -1372,7 +1372,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '128',
+    id: '127',
     slug: 'cassette-tape',
     name: 'Cassette Tape',
     description: 'Vintage audio cassette: rotating reels, tape line between them, label with side / title / duration, play-pause button, 3D flip between A-side and B-side.',
@@ -1381,7 +1381,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '129',
+    id: '128',
     slug: 'liquid-toggle',
     name: 'Liquid Toggle',
     description: 'Toggle switch with a goo-filter handle that morphs between off and on positions like a fluid blob, bonding with small anchor dots at each end as it passes through.',
@@ -1399,16 +1399,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '127',
-    slug: 'flip-counter',
-    name: 'Flip Counter',
-    description: 'Mechanical split-flap (Solari-board) digit display. Pass a value; each digit flips like an old airport board, with a per-digit cascade so multi-digit changes read as a wave.',
-    category: 'data',
-    dependencies: [],
-  },
-  {
-    kind: 'docs',
-    id: '130',
+    id: '129',
     slug: 'mood-slider',
     name: 'Mood Slider',
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',

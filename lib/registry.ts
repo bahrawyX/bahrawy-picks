@@ -676,11 +676,6 @@ export const componentRegistry: RegistryItem[] = [
     description: 'Heart button that fills + scales + emits a radial particle burst on click. Click again to un-like (no burst). Controlled or uncontrolled, optional running count.',
   },
   {
-    title: 'Flip Counter',
-    slug: 'flip-counter',
-    description: 'Mechanical split-flap (Solari-board) digit display. Pass a value and each digit flips like an old airport board, with a per-digit cascade so multi-digit changes read as a wave.',
-  },
-  {
     title: 'Mood Slider',
     slug: 'mood-slider',
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',
