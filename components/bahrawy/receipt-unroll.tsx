@@ -270,41 +270,42 @@ export function ReceiptUnroll({
           </div>
         )}
 
-        {/* Printer slot at the top of the viewport — dark bar with a
-            thin glowing accent slit where the receipt comes out. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex justify-center pt-2 sm:pt-4">
-          <div className="relative w-full max-w-[420px] px-4">
-            <div
-              className="h-9 w-full rounded-b-xl border-x border-b border-white/10"
-              style={{
-                background:
-                  'linear-gradient(180deg, #14151c 0%, #07080b 90%)',
-                boxShadow: '0 6px 12px -4px rgba(0,0,0,0.6)',
-              }}
-            />
-            <div
-              aria-hidden
-              className="absolute inset-x-6 top-[60%] h-px"
-              style={{
-                background: `linear-gradient(to right, transparent, ${accentColor}aa 30%, ${accentColor}aa 70%, transparent)`,
-                boxShadow: `0 0 8px ${accentColor}`,
-              }}
-            />
-          </div>
-        </div>
+        {/* CENTERED stage — printer slot sits ABOVE the receipt card,
+            both vertically centered in the viewport. */}
+        <div className="absolute inset-0 flex items-center justify-center px-4">
+          <div className="flex w-full max-w-[420px] flex-col items-stretch">
+            {/* Printer slot — sits just above the receipt */}
+            <div className="pointer-events-none relative z-30 mx-auto w-full">
+              <div
+                className="h-8 w-full rounded-t-md rounded-b-xl border border-white/10"
+                style={{
+                  background:
+                    'linear-gradient(180deg, #14151c 0%, #07080b 90%)',
+                  boxShadow:
+                    '0 6px 12px -4px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+                }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-x-6 top-[60%] h-px"
+                style={{
+                  background: `linear-gradient(to right, transparent, ${accentColor}aa 30%, ${accentColor}aa 70%, transparent)`,
+                  boxShadow: `0 0 8px ${accentColor}`,
+                }}
+              />
+            </div>
 
-        {/* The receipt strip — sits in a clipped wrapper so it appears
-            to come out of the printer slot. */}
-        <div className="absolute inset-x-0 top-0 bottom-0 flex items-start justify-center px-4 pt-10 sm:pt-12">
-          <div
-            className="relative h-full w-full max-w-[420px] overflow-hidden"
-            style={{
-              maskImage:
-                'linear-gradient(to bottom, transparent 0, black 36px, black 100%)',
-              WebkitMaskImage:
-                'linear-gradient(to bottom, transparent 0, black 36px, black 100%)',
-            }}
-          >
+            {/* The receipt — clipped so it appears to come out of the slot */}
+            <div
+              className="relative w-full overflow-hidden"
+              style={{
+                height: 'min(72vh, 720px)',
+                maskImage:
+                  'linear-gradient(to bottom, transparent 0, black 28px, black 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, transparent 0, black 28px, black 100%)',
+              }}
+            >
             <div
               ref={stripRef}
               className="relative mx-auto w-full"
@@ -420,6 +421,7 @@ export function ReceiptUnroll({
 
               <ScallopEdge color={paperColor} position="bottom" />
             </div>
+          </div>
           </div>
         </div>
 

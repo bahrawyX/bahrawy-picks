@@ -431,20 +431,11 @@ export type {
   ReceiptUnrollCta,
 } from './receipt-unroll'
 
-export { AuroraSky } from './aurora-sky'
-export type {
-  AuroraSkyProps,
-  AuroraVerse,
-  AuroraSkyCta,
-} from './aurora-sky'
+export { OrbitalMenu } from './orbital-menu'
+export type { OrbitalMenuProps, OrbitalMenuItem } from './orbital-menu'
 
-export { CometTrail } from './comet-trail'
-export type {
-  CometTrailProps,
-  CometWaypoint,
-  CometTrailCta,
-} from './comet-trail'
-
+export { HabitHeatmap } from './habit-heatmap'
+export type { HabitHeatmapProps, HeatmapCell } from './habit-heatmap'
 
 // Animations
 export {

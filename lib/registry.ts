@@ -651,13 +651,13 @@ export const componentRegistry: RegistryItem[] = [
     description: "A paper receipt unrolls from a printer slot at the top as you scroll. Header, line items type in one at a time, subtotal/total animate at the bottom, scalloped edges + barcode at the very bottom.",
   },
   {
-    title: 'Aurora Sky',
-    slug: 'aurora-sky',
-    description: 'A night sky with twinkling stars; three multi-color aurora ribbons paint themselves across the viewport via animated stroke-dashoffset as you scroll. A verse panel crossfades in the lower half.',
+    title: 'Orbital Menu',
+    slug: 'orbital-menu',
+    description: 'A FAB-style trigger button that fans its menu items outward along an arc on click. Per-item spring stagger, configurable direction (top / right / bottom / left / circle), click outside or Escape to close.',
   },
   {
-    title: 'Comet Trail',
-    slug: 'comet-trail',
-    description: "A comet flies across a starfield along an SVG path as you scroll. A glowing trail draws in behind it; waypoint stars along the journey light up and surface a content card next to each one.",
+    title: 'Habit Heatmap',
+    slug: 'habit-heatmap',
+    description: 'GitHub-style contribution grid. 7 rows × N weeks, cell intensity scales with value through a 5-step accent ramp. Weekday axis, month markers, "Less → More" legend, hover tooltips. Drop in data — or fall back to a stable demo grid.',
   },
 ]

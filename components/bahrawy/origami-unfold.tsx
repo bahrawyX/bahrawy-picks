@@ -300,9 +300,40 @@ export function OrigamiUnfold({
                 style={{ borderColor: `${accentColor}40` }}
               />
 
-              {/* Quadrant content — fades in as its flap unfolds */}
+              {/* Quadrant content — each panel pins its text to the
+                  outer corner of the paper for a clean editorial look:
+                  top-left  → align top + left
+                  top-right → align top + right (text-right)
+                  bottom-right → align bottom + right (text-right)
+                  bottom-left  → align bottom + left
+                  The little "01 / 04" number sits at the INNER corner
+                  (toward the centre) so it never crowds the title. */}
               {panels.map((p, i) => {
                 const accent = p.accent ?? accentColor
+                // Per-corner layout class — controls justify/align +
+                // text alignment + which corner the number sits in.
+                const layout = [
+                  {
+                    // 0 — top-left
+                    box: 'items-start justify-start text-left',
+                    number: 'bottom-0 right-0',
+                  },
+                  {
+                    // 1 — top-right
+                    box: 'items-end justify-start text-right',
+                    number: 'bottom-0 left-0',
+                  },
+                  {
+                    // 2 — bottom-right
+                    box: 'items-end justify-end text-right',
+                    number: 'top-0 left-0',
+                  },
+                  {
+                    // 3 — bottom-left
+                    box: 'items-start justify-end text-left',
+                    number: 'top-0 right-0',
+                  },
+                ][i]
                 return (
                   <div
                     key={i}
@@ -310,34 +341,60 @@ export function OrigamiUnfold({
                       panelRefs.current[i] = el
                     }}
                     className={cn(
-                      'absolute h-1/2 w-1/2 p-6 sm:p-7 lg:p-8',
+                      'absolute h-1/2 w-1/2 p-7 sm:p-8 lg:p-10',
                       quadrantClasses[i],
                     )}
                     style={{ willChange: 'transform, opacity' }}
                   >
-                    <div className="flex h-full flex-col">
+                    <div
+                      className={cn(
+                        'relative flex h-full w-full flex-col gap-2',
+                        layout.box,
+                      )}
+                    >
+                      {/* Quadrant number — opposite corner, monospaced */}
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'absolute font-mono text-[10px] tabular-nums tracking-[0.18em] text-black/35',
+                          layout.number,
+                        )}
+                      >
+                        {String(i + 1).padStart(2, '0')} / 04
+                      </span>
+
                       {p.eyebrow && (
-                        <p className="mb-2 inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em]"
-                           style={{ color: `${accent}cc` }}>
-                          <span
-                            aria-hidden
-                            className="block h-1 w-5 rounded-full"
-                            style={{ background: accent }}
-                          />
-                          {p.eyebrow}
+                        <p
+                          className="inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.34em]"
+                          style={{ color: `${accent}cc` }}
+                        >
+                          {/* hairline rule on the side closest to the
+                              outer edge — flips for right-aligned text */}
+                          {i === 1 || i === 2 ? null : (
+                            <span
+                              aria-hidden
+                              className="block h-px w-5"
+                              style={{ background: accent }}
+                            />
+                          )}
+                          <span>{p.eyebrow}</span>
+                          {i === 1 || i === 2 ? (
+                            <span
+                              aria-hidden
+                              className="block h-px w-5"
+                              style={{ background: accent }}
+                            />
+                          ) : null}
                         </p>
                       )}
-                      <h3 className="text-balance text-lg font-semibold leading-tight tracking-tight text-black sm:text-xl lg:text-2xl">
+                      <h3 className="max-w-[14ch] text-balance text-xl font-semibold leading-[1.1] tracking-[-0.01em] text-black sm:text-2xl lg:text-[1.65rem]">
                         {p.title}
                       </h3>
                       {p.body && (
-                        <p className="mt-2 text-pretty text-xs leading-relaxed text-black/65 sm:text-sm">
+                        <p className="max-w-[22ch] text-pretty text-xs leading-relaxed text-black/55 sm:text-sm">
                           {p.body}
                         </p>
                       )}
-                      <div className="mt-auto self-end font-mono text-[10px] tabular-nums text-black/40">
-                        {String(i + 1).padStart(2, '0')} / 04
-                      </div>
                     </div>
                   </div>
                 )
