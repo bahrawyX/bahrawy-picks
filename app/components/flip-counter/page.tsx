@@ -1,16 +1,25 @@
 'use client'
 
 import * as React from 'react'
+import { Cloud, Moon, Snowflake, Sun, Zap } from 'lucide-react'
 import { FlipCounter } from '@/components/bahrawy/flip-counter'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page'
 
 const SNIPPET = `import { FlipCounter } from '@/components/bahrawy/flip-counter'
 
-const [n, setN] = useState(1234)
+// 1. A number — padded + split
+<FlipCounter value={1234} pad={6} />
 
-<FlipCounter value={n} pad={6} />
-<button onClick={() => setN(n + 1)}>+1</button>`
+// 2. A string — split into characters
+<FlipCounter value="DUBAI" />
+
+// 3. An array of anything — each entry is one cell
+<FlipCounter
+  value={[<Sun />, <Moon />, <Cloud />]}
+  cellWidth={72}
+  cellHeight={72}
+/>`
 
 export default function FlipCounterDocs() {
   const [n, setN] = React.useState(1234)
@@ -67,18 +76,26 @@ export default function FlipCounterDocs() {
         </DemoCard>
       </DocsSection>
 
+      <DocsSection
+        title="Or anything you want"
+        description="Each cell accepts any React node — emoji, icons, even short text labels. Click the buttons to flip."
+      >
+        <IconFlipDemo />
+      </DocsSection>
+
       <DocsSection title="Usage"><CodeBlock code={SNIPPET} language="tsx" /></DocsSection>
 
       <DocsSection title="Props">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['value', 'Number or string. Numbers are padded by `pad`.'],
+            ['value', 'number | string | (string | ReactNode)[]. Number → padded + split into digits; string → split into chars; array → used directly (one cell per entry, so each flap can hold any content).'],
             ['pad', 'Pad-start length for numeric values. Default 0.'],
             ['cellWidth / cellHeight', 'Card dimensions in px. Defaults 56 × 80.'],
             ['cardColor', 'Card colour. Default a dark navy.'],
-            ['glyphColor', 'Glyph colour. Default warm white.'],
-            ['cascade', 'Delay between digit flips in ms — the wave. Default 60.'],
+            ['glyphColor', 'Text/icon colour. Default warm white.'],
+            ['cascade', 'Delay between cell flips in ms — the wave. Default 60.'],
             ['duration', 'Single flip duration in ms. Default 600.'],
+            ['gap', 'Gap between cells in px. Default 4.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
@@ -93,5 +110,43 @@ export default function FlipCounterDocs() {
         <div className="text-xs text-white/55">No external runtime dependencies — just React + CSS 3D.</div>
       </DocsSection>
     </DocsPage>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Sub-demo: any-content cells — flips between lucide icons + emoji
+// ---------------------------------------------------------------------------
+
+const WEATHER_ICONS = [
+  <Sun key="sun" className="h-10 w-10 text-amber-300" />,
+  <Cloud key="cloud" className="h-10 w-10 text-sky-300" />,
+  <Snowflake key="snow" className="h-10 w-10 text-cyan-200" />,
+  <Zap key="zap" className="h-10 w-10 text-yellow-300" />,
+  <Moon key="moon" className="h-10 w-10 text-indigo-200" />,
+]
+
+function IconFlipDemo() {
+  const [step, setStep] = React.useState(0)
+  React.useEffect(() => {
+    const t = window.setInterval(() => setStep((s) => s + 1), 1800)
+    return () => window.clearInterval(t)
+  }, [])
+  // Rotate each cell through the icon set, offset per cell.
+  const cells = [0, 1, 2].map(
+    (i) => WEATHER_ICONS[(step + i) % WEATHER_ICONS.length],
+  )
+  return (
+    <DemoCard className="min-h-[200px]">
+      <div className="flex flex-col items-center gap-5 py-4">
+        <FlipCounter value={cells} cellWidth={72} cellHeight={72} />
+        <button
+          type="button"
+          onClick={() => setStep((s) => s + 1)}
+          className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/80 hover:bg-white/[0.08]"
+        >
+          flip
+        </button>
+      </div>
+    </DemoCard>
   )
 }

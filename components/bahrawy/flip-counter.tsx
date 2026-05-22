@@ -3,21 +3,25 @@
 /**
  * <FlipCounter />
  *
- * A mechanical split-flap (Solari-board) display. Each digit is a
- * physical card split horizontally across the middle — the TOP half
- * shows the current digit's upper portion, the BOTTOM half shows
- * the same digit's lower portion. When the value changes, the top
- * half flips DOWN and away (rotates -180° around the centre seam)
- * while a fresh top half with the NEW digit fades in beneath it.
- * Looks like the boards in old airports.
+ * A mechanical split-flap (Solari-board) display. Each card is split
+ * horizontally across the middle — the TOP half shows the current
+ * content's upper portion, the BOTTOM half the lower portion. When
+ * the content changes, the top half rotates -180° around the centre
+ * seam to reveal a fresh card beneath. Multi-cell support comes with
+ * a per-cell cascade so changes wave across the display like the
+ * real boards in old airports.
  *
- * Pass a `value` (number or string) and the counter animates from
- * the previous value with a per-digit cascade — earlier digits flip
- * first, later ones a tick behind, so multi-digit changes read as
- * a wave across the display.
+ * The `value` prop accepts THREE shapes:
+ *  1. `number` — formatted via `pad`, then split into digits.
+ *  2. `string` — split into characters.
+ *  3. `(string | ReactNode)[]` — used directly; each entry becomes a
+ *     single cell, so each flap can render an image, icon, emoji,
+ *     short text label, anything you want.
  *
- * Controlled. `padStart` pads numeric values to a minimum length so
- * 0–9 still render as `0008` with `pad=4`.
+ * Use case examples:
+ *  - score: <FlipCounter value={1234} pad={6} />
+ *  - departure: <FlipCounter value="DUBAI" />
+ *  - country switcher: <FlipCounter value={[<FlagFR/>, <FlagDE/>]} />
  */
 
 import * as React from 'react'
@@ -27,9 +31,13 @@ import { cn } from '@/lib/utils'
 // Types
 // ---------------------------------------------------------------------------
 
+export type FlipCounterValue = number | string | (string | React.ReactNode)[]
+
 export interface FlipCounterProps {
-  /** Current value. Numbers are padded by `pad`; strings render as-is. */
-  value: number | string
+  /**
+   * Current value. See file header for the three accepted shapes.
+   */
+  value: FlipCounterValue
   /** Pad-start length for numeric values. Default 0 (no pad). */
   pad?: number
   /** Card width in px. Default 56. */
@@ -38,12 +46,14 @@ export interface FlipCounterProps {
   cellHeight?: number
   /** Card colour. Default a dark "departure board" navy. */
   cardColor?: string
-  /** Glyph colour. Default warm white. */
+  /** Glyph colour (only used for text content). Default warm white. */
   glyphColor?: string
-  /** Delay between digit flips in ms — gives the wave effect. Default 60. */
+  /** Delay between cell flips in ms — the wave. Default 60. */
   cascade?: number
-  /** Duration of each single flip in ms. Default 600. */
+  /** Duration of one flip in ms. Default 600. */
   duration?: number
+  /** Gap between cells in px. Default 4. */
+  gap?: number
   className?: string
 }
 
@@ -60,22 +70,31 @@ export function FlipCounter({
   glyphColor = '#f3f3e6',
   cascade = 60,
   duration = 600,
+  gap = 4,
   className,
 }: FlipCounterProps) {
-  const str = React.useMemo(() => {
-    const s = String(value)
-    if (typeof value === 'number' && pad > 0) return s.padStart(pad, '0')
-    return s
+  // Resolve the value into an array of per-cell contents.
+  const cells = React.useMemo<(string | React.ReactNode)[]>(() => {
+    if (Array.isArray(value)) return value
+    if (typeof value === 'number') {
+      const s = pad > 0 ? String(value).padStart(pad, '0') : String(value)
+      return [...s]
+    }
+    return [...String(value)]
   }, [value, pad])
 
   return (
     <div
-      className={cn('inline-flex items-stretch gap-1 select-none', className)}
+      className={cn('inline-flex items-stretch select-none', className)}
+      style={{ gap }}
     >
-      {[...str].map((ch, i) => (
-        <FlipDigit
+      {cells.map((content, i) => (
+        <FlipCell
           key={i}
-          char={ch}
+          // We use the cell INDEX as the key (not the content), so when
+          // the same cell flips to a new value we don't unmount —
+          // exactly what enables the flap animation.
+          content={content}
           cascadeDelay={i * cascade}
           width={cellWidth}
           height={cellHeight}
@@ -89,11 +108,12 @@ export function FlipCounter({
 }
 
 // ---------------------------------------------------------------------------
-// FlipDigit — one mechanical character.
+// FlipCell — one mechanical card. Content can be a string or any React
+// node (image / icon / emoji / short label).
 // ---------------------------------------------------------------------------
 
-function FlipDigit({
-  char,
+function FlipCell({
+  content,
   cascadeDelay,
   width,
   height,
@@ -101,7 +121,7 @@ function FlipDigit({
   glyphColor,
   duration,
 }: {
-  char: string
+  content: string | React.ReactNode
   cascadeDelay: number
   width: number
   height: number
@@ -109,31 +129,26 @@ function FlipDigit({
   glyphColor: string
   duration: number
 }) {
-  // We render TWO stacked halves at any time:
-  //  - `currentChar`   — what's CURRENTLY displayed.
-  //  - `nextChar`      — what we're FLIPPING to.
-  // When `char` (prop) changes, we kick off a flip and at the end
-  // promote `nextChar` → `currentChar`.
-  const [currentChar, setCurrentChar] = React.useState(char)
-  const [nextChar, setNextChar] = React.useState<string | null>(null)
+  // Currently-shown content.
+  const [current, setCurrent] = React.useState<React.ReactNode>(content)
+  // What we're flipping TO.
+  const [pending, setPending] = React.useState<React.ReactNode | null>(null)
   const [flipping, setFlipping] = React.useState(false)
   const id = React.useId().replace(/:/g, '')
 
+  // Compare by reference for nodes, value for primitives. If the prop
+  // changes, kick off a flip after `cascadeDelay`.
   React.useEffect(() => {
-    if (char === currentChar || flipping) return
-    setNextChar(char)
-    // Wait the cascade then start the flip.
-    const start = window.setTimeout(() => {
-      setFlipping(true)
-    }, cascadeDelay)
+    if (content === current || flipping) return
+    setPending(content)
+    const start = window.setTimeout(() => setFlipping(true), cascadeDelay)
     return () => window.clearTimeout(start)
-  }, [char, currentChar, flipping, cascadeDelay])
+  }, [content, current, flipping, cascadeDelay])
 
-  // When the flip finishes, swap the values and reset the flipping flag.
   const onAnimationEnd = () => {
-    if (!flipping || nextChar === null) return
-    setCurrentChar(nextChar)
-    setNextChar(null)
+    if (!flipping || pending === null) return
+    setCurrent(pending)
+    setPending(null)
     setFlipping(false)
   }
 
@@ -150,9 +165,9 @@ function FlipDigit({
           '0 10px 22px -6px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)',
       }}
     >
-      {/* Glyph half — TOP STATIC (the upper half of currentChar) */}
+      {/* TOP STATIC — upper half of the current content */}
       <Half
-        char={currentChar}
+        content={current}
         half="top"
         width={width}
         height={height}
@@ -160,9 +175,9 @@ function FlipDigit({
         glyphColor={glyphColor}
       />
 
-      {/* Glyph half — BOTTOM STATIC (the lower half of currentChar) */}
+      {/* BOTTOM STATIC — lower half of the current content */}
       <Half
-        char={currentChar}
+        content={current}
         half="bottom"
         width={width}
         height={height}
@@ -170,27 +185,23 @@ function FlipDigit({
         glyphColor={glyphColor}
       />
 
-      {/* NEXT char's top half — hidden BENEATH the flipping flap.
-          As the flap rotates -90→-180, this is what gets revealed. */}
-      {nextChar !== null && (
+      {/* PENDING top half sits BENEATH the flap so it's revealed as
+          the flap rotates past 90°. */}
+      {pending !== null && (
         <Half
-          char={nextChar}
+          content={pending}
           half="top"
           width={width}
           height={height}
           cardColor={cardColor}
           glyphColor={glyphColor}
-          // Sit BEHIND the flipping flap (which is z-30).
           z={10}
         />
       )}
 
-      {/* NEXT char's bottom half — gets shown only AFTER the flap
-          completes and we promote next → current via state. */}
-
-      {/* The flipping flap — animates rotateX 0 → -180. It IS the top
-          half of currentChar that "falls down". */}
-      {flipping && nextChar !== null && (
+      {/* The rotating flap — front: current's top half, back: pending's
+          bottom half (rotated 180° so it lands right-way-up at -180°). */}
+      {flipping && pending !== null && (
         <div
           aria-hidden
           className={`bahrawy-flip-${id} absolute left-0 top-0 z-30`}
@@ -203,9 +214,8 @@ function FlipDigit({
           }}
           onAnimationEnd={onAnimationEnd}
         >
-          {/* Front of the flap — the OLD top half */}
           <Half
-            char={currentChar}
+            content={current}
             half="top"
             width={width}
             height={height}
@@ -213,8 +223,6 @@ function FlipDigit({
             glyphColor={glyphColor}
             inFlap
           />
-          {/* Back of the flap — the NEW bottom half, rotated 180 so it
-              appears RIGHT-WAY-UP when the flap lands at -180°. */}
           <div
             className="absolute inset-0"
             style={{
@@ -224,7 +232,7 @@ function FlipDigit({
             }}
           >
             <Half
-              char={nextChar}
+              content={pending}
               half="bottom"
               width={width}
               height={height}
@@ -246,7 +254,7 @@ function FlipDigit({
         </div>
       )}
 
-      {/* The horizontal seam — thin shadow line across the centre */}
+      {/* Centre seam */}
       <span
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-1/2 z-40 h-px"
@@ -260,12 +268,17 @@ function FlipDigit({
 }
 
 // ---------------------------------------------------------------------------
-// Half — renders either the top or bottom half of a character.
-// We render the full character but clip to the relevant half.
+// Half — renders either the top or bottom half of a content cell.
+//
+// For text content we draw the full glyph and clip to a half so the
+// two halves line up exactly across the seam. For ReactNode content
+// we render the SAME node in both halves at the same intrinsic size,
+// then clip — this gives the same split effect for arbitrary content
+// (images, icons, etc).
 // ---------------------------------------------------------------------------
 
 function Half({
-  char,
+  content,
   half,
   width,
   height,
@@ -274,7 +287,7 @@ function Half({
   z = 0,
   inFlap = false,
 }: {
-  char: string
+  content: string | React.ReactNode
   half: 'top' | 'bottom'
   width: number
   height: number
@@ -283,43 +296,54 @@ function Half({
   z?: number
   inFlap?: boolean
 }) {
-  // If we're rendering inside the rotating flap, the flap is HALF the
-  // total height already — so we shouldn't add the top/bottom 50%
-  // positioning, only the glyph offset.
+  // Render strings via our optimised glyph layout; React nodes via a
+  // generic split that draws the node centred at the FULL card height
+  // inside the half.
+  const isText = typeof content === 'string'
+
   return (
     <div
       className="absolute left-0 overflow-hidden"
       style={{
         width,
-        height: inFlap ? height / 2 : height / 2,
+        height: height / 2,
         top: inFlap ? 0 : half === 'top' ? 0 : '50%',
         background: cardColor,
         borderRadius:
-          half === 'top'
-            ? '6px 6px 0 0'
-            : '0 0 6px 6px',
+          half === 'top' ? '6px 6px 0 0' : '0 0 6px 6px',
         zIndex: z,
       }}
     >
-      <span
-        className="absolute left-1/2 font-mono font-semibold leading-none tabular-nums"
-        style={{
-          // Glyph anchored so that when half='top' we see its top half,
-          // and half='bottom' we see its bottom half.
-          top: half === 'top' ? '50%' : 'calc(50% - 100%)',
-          // We "draw" the glyph at the FULL card height so when it's
-          // clipped to a half, we get a real split.
-          transform: 'translateX(-50%)',
-          fontSize: height * 0.85,
-          color: glyphColor,
-          lineHeight: 1,
-          // For the bottom half the text is anchored upward so it
-          // visually continues into the next half-card.
-          willChange: 'transform',
-        }}
-      >
-        {char}
-      </span>
+      {isText ? (
+        <span
+          className="absolute left-1/2 font-mono font-semibold leading-none tabular-nums"
+          style={{
+            top: half === 'top' ? '50%' : 'calc(50% - 100%)',
+            transform: 'translateX(-50%)',
+            fontSize: height * 0.85,
+            color: glyphColor,
+            lineHeight: 1,
+            willChange: 'transform',
+          }}
+        >
+          {content}
+        </span>
+      ) : (
+        <div
+          className="absolute left-1/2 flex items-center justify-center"
+          style={{
+            // Same trick as the glyph: draw the node at the FULL card
+            // height, then clip to the half.
+            top: half === 'top' ? '50%' : 'calc(50% - 100%)',
+            transform: 'translateX(-50%)',
+            width,
+            height,
+            color: glyphColor,
+          }}
+        >
+          {content}
+        </div>
+      )}
     </div>
   )
 }
