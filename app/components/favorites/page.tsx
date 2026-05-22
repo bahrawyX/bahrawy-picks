@@ -6,9 +6,32 @@ import { ArrowRight, Heart, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FavoriteButton } from '@/components/favorite-button'
 import { useFavorites } from '@/hooks/use-favorites'
-import { registry } from '@/components/showcase/registry'
+import { registry, type RegistryEntry } from '@/components/showcase/registry'
 
-type ReadyEntry = Extract<(typeof registry)[number], { kind: 'ready' }>
+// Anything we can actually link to — i.e. has a real demo page.
+type LinkableEntry = Extract<RegistryEntry, { kind: 'ready' | 'docs' }>
+
+// Category-tinted accents — kept in lockstep with the /components grid.
+const CATEGORY_ACCENT: Record<string, string> = {
+  form: '#22D3EE',
+  overlay: '#A78BFA',
+  card: '#F472B6',
+  data: '#34D399',
+  layout: '#60A5FA',
+  navigation: '#FBBF24',
+  hero: '#FB923C',
+  section: '#A78BFA',
+  pricing: '#F472B6',
+  footer: '#94A3B8',
+  text: '#22D3EE',
+  motion: '#A78BFA',
+  scroll: '#34D399',
+  cursor: '#F472B6',
+  'gsap-section': '#FB923C',
+  background: '#60A5FA',
+  decoration: '#FBBF24',
+  ui: '#94A3B8',
+}
 
 export default function FavoritesPage() {
   const { favorites } = useFavorites()
@@ -18,8 +41,14 @@ export default function FavoritesPage() {
     setHydrated(true)
   }, [])
 
+  // Show every favorited entry that has a real page — both `ready`
+  // and `docs` kinds. (Previously this filtered to `ready` only,
+  // which excluded ~99% of the library and made it look like
+  // favorites was eating cards.)
   const entries = registry.filter(
-    (e): e is ReadyEntry => e.kind === 'ready' && favorites.includes(e.slug)
+    (e): e is LinkableEntry =>
+      (e.kind === 'ready' || e.kind === 'docs') &&
+      favorites.includes(e.slug),
   )
   const count = entries.length
 
@@ -56,12 +85,18 @@ export default function FavoritesPage() {
   )
 }
 
-function FavoriteCard({ entry }: { entry: ReadyEntry }) {
-  const Thumb = entry.Thumbnail
+// ---------------------------------------------------------------------------
+// Card — renders a ready entry's <Thumbnail /> when one exists, falls
+// back to a category-tinted preview for docs entries.
+// ---------------------------------------------------------------------------
+
+function FavoriteCard({ entry }: { entry: LinkableEntry }) {
+  const Thumb = entry.kind === 'ready' ? entry.Thumbnail : undefined
+  const accent = CATEGORY_ACCENT[entry.category] ?? '#A78BFA'
 
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] transition-all duration-m3-enter ease-m3-enter hover:border-white/25 hover:bg-white/[0.04]">
-      {/* Heart overlays the whole card — placed outside the Link to avoid nested interactives */}
+      {/* Heart sits outside the Link so we don't nest interactives */}
       <div className="absolute right-3 top-3 z-20">
         <FavoriteButton
           slug={entry.slug}
@@ -73,7 +108,11 @@ function FavoriteCard({ entry }: { entry: ReadyEntry }) {
       <Link href={`/components/${entry.slug}`} className="block">
         {/* Thumbnail / preview */}
         <div className="relative aspect-[16/9] overflow-hidden border-b border-white/10 bg-black">
-          {Thumb ? <Thumb /> : <ThumbnailFallback />}
+          {Thumb ? (
+            <Thumb />
+          ) : (
+            <PreviewFallback name={entry.name} accent={accent} />
+          )}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black via-black/40 to-transparent"
@@ -117,6 +156,11 @@ function FavoriteCard({ entry }: { entry: ReadyEntry }) {
                   +{entry.dependencies.length - 2}
                 </span>
               )}
+              {entry.dependencies.length === 0 && (
+                <span className="self-center text-[10px] text-white/40">
+                  no deps
+                </span>
+              )}
             </div>
             <span className="inline-flex items-center gap-1 text-xs font-medium text-white/60 transition-colors duration-m3-enter ease-m3-enter group-hover:text-white">
               View
@@ -129,9 +173,39 @@ function FavoriteCard({ entry }: { entry: ReadyEntry }) {
   )
 }
 
-function ThumbnailFallback() {
+// ---------------------------------------------------------------------------
+// Preview fallback — category-tinted radial gradient + dot grid + name,
+// same look as the /components grid so favorites match visually.
+// ---------------------------------------------------------------------------
+
+function PreviewFallback({ name, accent }: { name: string; accent: string }) {
   return (
-    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-white/[0.02]" />
+    <div
+      className="relative flex h-full w-full items-center justify-center overflow-hidden p-6"
+      style={{
+        background: `radial-gradient(120% 100% at 30% 20%, ${accent}33 0%, transparent 60%), radial-gradient(120% 100% at 80% 90%, ${accent}1a 0%, transparent 55%), #0a0a0a`,
+      }}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            'radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)',
+          backgroundSize: '18px 18px',
+          maskImage:
+            'radial-gradient(70% 60% at 50% 50%, black 0%, transparent 80%)',
+          WebkitMaskImage:
+            'radial-gradient(70% 60% at 50% 50%, black 0%, transparent 80%)',
+        }}
+      />
+      <span
+        className="relative text-center text-2xl font-semibold tracking-tight text-white/90 sm:text-3xl"
+        style={{ textShadow: `0 0 24px ${accent}55` }}
+      >
+        {name}
+      </span>
+    </div>
   )
 }
 
