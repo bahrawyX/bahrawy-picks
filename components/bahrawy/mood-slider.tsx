@@ -120,15 +120,23 @@ export function MoodSlider({
   const hue = hueLow + (hueHigh - hueLow) * value
 
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-  // Mouth curvature: control-point Y goes frown (80) → smile (44).
-  const mouthControlY = lerp(80, 44, value)
+  // Mouth curvature, in SVG coords (Y grows DOWN).
+  // The mouth path is `M 28 62 Q 50 controlY 72 62`. The corners sit
+  // at y=62, so:
+  //   controlY < 62 → curve bulges UP above the corners  → FROWN (⌒)
+  //   controlY > 62 → curve dips DOWN below the corners  → SMILE (‿)
+  // We want value=0 (sad) → frown, value=1 (happy) → smile.
+  const mouthControlY = lerp(44, 80, value)
   // Eye squint past 0.8.
   const eyeSquint = value > 0.8 ? Math.min(1, (value - 0.8) / 0.2) : 0
   const eyeRY = lerp(7, 2.5, eyeSquint)
   // Cheek blush from 0.65 up.
   const blushOpacity = value > 0.65 ? Math.min(1, (value - 0.65) / 0.35) : 0
-  // Eyebrows angle inward when sad.
-  const browInnerOffset = lerp(-3, 1, value)
+  // Eyebrows — y of each brow's OUTER end (the inner end is fixed
+  // at y=34). For a SAD/worried face the inner end stays put while
+  // the outer end DROPS (higher Y), creating the classic ٧ shape.
+  // For HAPPY the brows are roughly level / slightly arched.
+  const browInnerOffset = lerp(5, -1, value)
   // Face tilt — sad droop, happy lean.
   const faceTilt = lerp(-6, 6, value)
 
