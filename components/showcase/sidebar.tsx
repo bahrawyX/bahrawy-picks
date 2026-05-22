@@ -199,7 +199,10 @@ function SidebarItem({
   )
 
   const labelClasses = cn(
-    'text-sm transition-colors duration-m3-enter ease-m3-enter',
+    // `truncate` includes `whitespace-nowrap`, which is the important
+    // part — long two-word names like "Constellation scroll" never
+    // wrap to a second line when the line-indicator grows on hover.
+    'min-w-0 flex-1 truncate text-sm transition-colors duration-m3-enter ease-m3-enter',
     active
       ? 'text-white'
       : isAvailable

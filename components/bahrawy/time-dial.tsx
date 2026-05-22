@@ -3,24 +3,26 @@
 /**
  * <TimeDial />
  *
- * A pinned scroll section built around a giant rotating dial — picture
- * the back of a film camera, a museum exhibit selector, or a vintage
- * radio's tuning ring. N chapters live around the perimeter at evenly-
- * spaced angles. As the user scrolls, the dial rotates clockwise so
- * each chapter passes under a fixed pointer at the top, and the
- * content panel on the right crossfades to that chapter's story.
+ * A pinned scroll section built like a real analog clock. The clock
+ * face is static — twelve Roman-numeral hour markers, sixty minute
+ * ticks, two metal hands, and a polished bezel. Scrolling sweeps the
+ * hands (hour hand steps through chapter positions, minute hand
+ * spins many times for that stopwatch energy) and the centre flips
+ * to a fresh chapter number with every step. The content panel on
+ * the right crossfades to the matching story.
  *
  * Heavy bits:
- *  - The dial is one element rotated as a whole via GSAP `rotation`
- *    inside a scrubbed ScrollTrigger timeline. Markers around it are
- *    positioned with the classic three-transform radial layout trick
- *    (`rotate(θ) translate(0,-r) rotate(-θ)`) so labels stay upright
- *    in their resting state; the dial's own rotation animates on top.
- *  - Ticks and numbers live in SVG inside the same rotating wrapper,
- *    so everything is consistent at any rotation.
- *  - Chapter panels are absolutely stacked and crossfaded as the dial
- *    passes each step — no React state, all timeline-driven so the
- *    motion is locked to scroll.
+ *  - Static clock face built in inline SVG: 60 tick marks (12 hour
+ *    ticks pick up the accent color, the rest are thin white), four
+ *    Roman numerals at the cardinal points (XII / III / VI / IX),
+ *    plus a thin numeric ring at the 1/2/4/5/7/8/10/11 positions.
+ *  - Two hands (`hour` + `minute`) rotated each frame via the GSAP
+ *    timeline — hour hand sweeps `(N-1)*360/N°`, minute hand spins
+ *    a much higher multiplier for that "stopwatch winding down" feel.
+ *  - Centre number: a stack of digit chips, one per chapter, cross-
+ *    faded by the same timeline so the visible digit is always the
+ *    chapter the hour hand is currently pointing at.
+ *  - Content panel crossfades on the right.
  */
 
 import * as React from 'react'
@@ -40,17 +42,17 @@ if (typeof window !== 'undefined') {
 
 export interface TimeDialChapter {
   id: string
-  /** Short label rendered around the dial (e.g. "01", "2019"). */
-  label: string
+  /** Short label rendered next to the centre digit (e.g. "phase one"). */
+  label?: string
   /** Headline shown in the right-hand content panel. */
   title: React.ReactNode
   /** Sub-copy under the title. */
   body?: React.ReactNode
-  /** Optional eyebrow / tiny tag above the title. */
+  /** Optional eyebrow shown above the title. */
   eyebrow?: React.ReactNode
-  /** Optional image used as the panel backdrop. */
+  /** Optional image used as a small backdrop in the panel. */
   image?: string
-  /** Per-chapter accent color used for the active marker glow. */
+  /** Per-chapter accent color for the centre digit + hour hand glow. */
   accent?: string
 }
 
@@ -61,7 +63,6 @@ export interface TimeDialCta {
 }
 
 export interface TimeDialProps {
-  /** Chapters laid out around the dial. Order = traversal order. */
   chapters: TimeDialChapter[]
   /** Tiny tag above the whole section. */
   eyebrow?: React.ReactNode
@@ -69,7 +70,7 @@ export interface TimeDialProps {
   cta?: TimeDialCta
   /** Pin duration in viewport heights. Default 3.5. */
   scrollLength?: number
-  /** Default accent color used for unmarked chapters + ring glow. */
+  /** Default accent color used for ring + hour hand + active digit. */
   accentColor?: string
   className?: string
 }
@@ -88,9 +89,11 @@ export function TimeDial({
 }: TimeDialProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
   const pinRef = React.useRef<HTMLDivElement>(null)
-  const dialRef = React.useRef<HTMLDivElement>(null)
+  const hourHandRef = React.useRef<HTMLDivElement>(null)
+  const minuteHandRef = React.useRef<HTMLDivElement>(null)
   const eyebrowRef = React.useRef<HTMLDivElement>(null)
   const chapterRefs = React.useRef<(HTMLDivElement | null)[]>([])
+  const digitRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const ctaRef = React.useRef<HTMLDivElement>(null)
 
   const N = chapters.length
@@ -106,7 +109,18 @@ export function TimeDial({
         if (!el) return
         gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 14 })
       })
+      digitRefs.current.forEach((el, i) => {
+        if (!el) return
+        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, scale: i === 0 ? 1 : 0.85 })
+      })
       if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
+      if (hourHandRef.current)
+        gsap.set(hourHandRef.current, { rotation: 0, transformOrigin: '50% 100%' })
+      if (minuteHandRef.current)
+        gsap.set(minuteHandRef.current, {
+          rotation: 0,
+          transformOrigin: '50% 100%',
+        })
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -120,7 +134,6 @@ export function TimeDial({
         },
       })
 
-      // ---- Eyebrow lands early ------------------------------------------
       if (eyebrowRef.current) {
         tl.to(
           eyebrowRef.current,
@@ -129,31 +142,43 @@ export function TimeDial({
         )
       }
 
-      // ---- Dial rotation ------------------------------------------------
-      // Chapter `i` sits at angle `i * 360 / N` from the top. To bring
-      // chapter `i` to the pointer we rotate the dial by `-i * 360/N`.
-      // Total rotation across the timeline = -(N − 1) * 360 / N.
-      const maxRotation = -((N - 1) * 360) / N
-      tl.fromTo(
-        dialRef.current,
-        { rotation: 0 },
-        {
-          rotation: maxRotation,
-          duration: 1,
-          ease: 'power2.inOut',
-        },
-        0,
-      )
+      // ---- Hands -------------------------------------------------------
+      // Hour hand: sweeps through N evenly-spaced positions on the dial
+      // from 12 o'clock (0°) to (N-1) × 360/N°.
+      const hourMax = ((N - 1) * 360) / N
+      if (hourHandRef.current) {
+        tl.fromTo(
+          hourHandRef.current,
+          { rotation: 0 },
+          {
+            rotation: hourMax,
+            duration: 1,
+            ease: 'power2.inOut',
+          },
+          0,
+        )
+      }
+      // Minute hand: a few full rotations during the same scroll —
+      // gives that stopwatch / fast-forward feel.
+      if (minuteHandRef.current) {
+        tl.fromTo(
+          minuteHandRef.current,
+          { rotation: 0 },
+          {
+            rotation: hourMax * 12, // 12× hour-hand-speed, like real clocks
+            duration: 1,
+            ease: 'power2.inOut',
+          },
+          0,
+        )
+      }
 
-      // ---- Chapter panel crossfades -------------------------------------
-      // Each transition between chapter i and i+1 happens around scroll
-      // progress `i / (N − 1)`, with a small overlap so the outgoing
-      // panel finishes fading before the next finishes coming in.
+      // ---- Chapter panel + centre-digit crossfades ---------------------
       if (N > 1) {
         for (let i = 1; i < N; i++) {
           const transAt = i / (N - 1)
           const halfWindow = 0.05
-          // Out (previous)
+          // Out
           tl.to(
             chapterRefs.current[i - 1],
             {
@@ -164,7 +189,17 @@ export function TimeDial({
             },
             Math.max(0, transAt - halfWindow),
           )
-          // In (current)
+          tl.to(
+            digitRefs.current[i - 1],
+            {
+              autoAlpha: 0,
+              scale: 0.85,
+              duration: halfWindow,
+              ease: 'power2.in',
+            },
+            Math.max(0, transAt - halfWindow),
+          )
+          // In
           tl.to(
             chapterRefs.current[i],
             {
@@ -175,10 +210,19 @@ export function TimeDial({
             },
             transAt - halfWindow * 0.3,
           )
+          tl.to(
+            digitRefs.current[i],
+            {
+              autoAlpha: 1,
+              scale: 1,
+              duration: halfWindow,
+              ease: 'back.out(2)',
+            },
+            transAt - halfWindow * 0.3,
+          )
         }
       }
 
-      // ---- CTA arrives at the end ---------------------------------------
       if (ctaRef.current) {
         tl.to(
           ctaRef.current,
@@ -199,10 +243,7 @@ export function TimeDial({
       className={cn('relative w-full bg-[#07080b]', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
-      <div
-        ref={pinRef}
-        className="relative h-screen w-full overflow-hidden"
-      >
+      <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
         {/* Background mood */}
         <div
           aria-hidden
@@ -216,9 +257,7 @@ export function TimeDial({
         {eyebrow && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center px-6 pt-14 sm:pt-16">
             <div ref={eyebrowRef} className="pointer-events-auto">
-              <div
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur"
-              >
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
@@ -230,18 +269,20 @@ export function TimeDial({
           </div>
         )}
 
-        {/* Layout: dial on the left, content panel on the right */}
+        {/* Two-column layout — clock on the left, content on the right */}
         <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-2">
-          {/* DIAL ---------------------------------------------------- */}
+          {/* CLOCK ------------------------------------------------- */}
           <div className="relative flex items-center justify-center">
-            <Dial
+            <ClockFace
               chapters={chapters}
               accentColor={accentColor}
-              dialRef={dialRef}
+              hourHandRef={hourHandRef}
+              minuteHandRef={minuteHandRef}
+              digitRefs={digitRefs}
             />
           </div>
 
-          {/* CONTENT PANELS ----------------------------------------- */}
+          {/* CONTENT PANELS --------------------------------------- */}
           <div className="relative flex items-center px-8 sm:px-12 lg:px-16">
             <div className="relative w-full">
               {chapters.map((c, i) => {
@@ -254,15 +295,13 @@ export function TimeDial({
                     }}
                     className="absolute inset-0 flex flex-col items-start justify-center"
                   >
-                    <p
-                      className="mb-4 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55"
-                    >
+                    <p className="mb-4 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
                       <span
                         aria-hidden
                         className="block h-1 w-6 rounded-full"
                         style={{ background: accent }}
                       />
-                      {c.eyebrow ?? `Chapter ${String(i + 1).padStart(2, '0')}`}
+                      {c.eyebrow ?? c.label ?? `Chapter ${String(i + 1).padStart(2, '0')}`}
                     </p>
                     <h2
                       className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
@@ -290,7 +329,6 @@ export function TimeDial({
                 )
               })}
 
-              {/* CTA below the content panel — sits at chapter level */}
               {cta && (
                 <div
                   ref={ctaRef}
@@ -299,7 +337,7 @@ export function TimeDial({
                   <a
                     href={cta.href ?? '#'}
                     onClick={cta.onClick}
-                    className="pointer-events-auto group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                    className="group pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
                     style={{
                       boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
                     }}
@@ -313,12 +351,11 @@ export function TimeDial({
           </div>
         </div>
 
-        {/* Tiny scroll hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
         >
-          Scroll to spin
+          Scroll · time advances
         </div>
       </div>
     </div>
@@ -326,20 +363,37 @@ export function TimeDial({
 }
 
 // ---------------------------------------------------------------------------
-// Dial — the rotating thing.
+// ClockFace — static analog clock with hands + chapter digit at the centre.
 // ---------------------------------------------------------------------------
 
-function Dial({
+const ROMAN: Record<number, string> = {
+  1: 'I',
+  2: 'II',
+  3: 'III',
+  4: 'IV',
+  5: 'V',
+  6: 'VI',
+  7: 'VII',
+  8: 'VIII',
+  9: 'IX',
+  10: 'X',
+  11: 'XI',
+  12: 'XII',
+}
+
+function ClockFace({
   chapters,
   accentColor,
-  dialRef,
+  hourHandRef,
+  minuteHandRef,
+  digitRefs,
 }: {
   chapters: TimeDialChapter[]
   accentColor: string
-  dialRef: React.RefObject<HTMLDivElement | null>
+  hourHandRef: React.RefObject<HTMLDivElement | null>
+  minuteHandRef: React.RefObject<HTMLDivElement | null>
+  digitRefs: React.MutableRefObject<(HTMLDivElement | null)[]>
 }) {
-  const N = chapters.length
-  // Number of decorative ticks around the dial.
   const TICK_COUNT = 60
 
   return (
@@ -347,115 +401,189 @@ function Dial({
       className="relative"
       style={{ width: 'min(56vmin, 72vh)', height: 'min(56vmin, 72vh)' }}
     >
-      {/* Static pointer at 12 o'clock — sits OUTSIDE the rotating dial */}
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-3"
-      >
-        <div
-          className="h-4 w-3"
-          style={{
-            background: accentColor,
-            clipPath: 'polygon(50% 100%, 0 0, 100% 0)',
-            filter: `drop-shadow(0 0 8px ${accentColor})`,
-          }}
-        />
-      </div>
-
-      {/* Soft halo around the dial */}
+      {/* Outer halo */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-[-10%] rounded-full"
         style={{
           background: `radial-gradient(circle, ${accentColor}1a 0%, transparent 70%)`,
-          filter: 'blur(24px)',
+          filter: 'blur(28px)',
         }}
       />
 
-      {/* The rotating dial itself */}
+      {/* Brushed bezel — outer dark ring */}
       <div
-        ref={dialRef}
-        className="relative h-full w-full"
-        style={{ willChange: 'transform', transformOrigin: '50% 50%' }}
-      >
-        {/* Outer ring */}
-        <div
-          className="absolute inset-0 rounded-full border"
-          style={{
-            borderColor: `${accentColor}55`,
-            boxShadow: `inset 0 0 40px ${accentColor}1a, 0 0 28px ${accentColor}33`,
-          }}
-        />
-        {/* Middle ring */}
-        <div
-          className="absolute inset-[8%] rounded-full border border-white/10"
-        />
-        {/* Inner disc */}
-        <div
-          className="absolute inset-[26%] rounded-full border border-white/[0.08]"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 70%)',
-          }}
-        />
-        {/* Tiny center dot */}
-        <div
-          className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ background: accentColor, boxShadow: `0 0 10px ${accentColor}` }}
-        />
+        aria-hidden
+        className="absolute inset-0 rounded-full"
+        style={{
+          background: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.07), transparent 55%), conic-gradient(from 0deg, rgba(255,255,255,0.05), rgba(255,255,255,0.16), rgba(255,255,255,0.04), rgba(255,255,255,0.14), rgba(255,255,255,0.05))`,
+          boxShadow: `inset 0 0 1px ${accentColor}aa, 0 0 30px ${accentColor}33`,
+        }}
+      />
 
-        {/* Tick marks via SVG — fits the rotation cleanly */}
+      {/* Inner face */}
+      <div
+        className="absolute inset-[5%] overflow-hidden rounded-full"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 35%, #14161e 0%, #07080b 75%)',
+          boxShadow:
+            'inset 0 1px 2px rgba(255,255,255,0.08), inset 0 -20px 40px rgba(0,0,0,0.6)',
+        }}
+      >
+        {/* Tick marks via SVG */}
         <svg
-          className="pointer-events-none absolute inset-0"
+          className="absolute inset-0 h-full w-full"
           viewBox="-50 -50 100 100"
           aria-hidden
         >
           {Array.from({ length: TICK_COUNT }).map((_, i) => {
             const angle = (i / TICK_COUNT) * 360
-            const isLong = i % (TICK_COUNT / N) === 0
-            const isMid = i % (TICK_COUNT / 12) === 0
+            const isHour = i % 5 === 0
             return (
               <line
                 key={i}
                 x1="0"
-                y1={isLong ? -46 : isMid ? -47 : -47.5}
+                y1={isHour ? -45 : -45}
                 x2="0"
-                y2={isLong ? -42 : isMid ? -45 : -46}
-                stroke={isLong ? accentColor : 'rgba(255,255,255,0.35)'}
-                strokeWidth={isLong ? 0.4 : 0.18}
+                y2={isHour ? -41 : -43.5}
+                stroke={isHour ? accentColor : 'rgba(255,255,255,0.32)'}
+                strokeWidth={isHour ? 0.55 : 0.22}
                 strokeLinecap="round"
                 transform={`rotate(${angle})`}
+                opacity={isHour ? 0.85 : 1}
               />
             )
           })}
         </svg>
 
-        {/* Chapter markers — positioned around the perimeter with the
-            classic triple-rotate trick so labels sit upright at rest. */}
-        {chapters.map((c, i) => {
-          const angle = (i * 360) / N
-          const accent = c.accent ?? accentColor
+        {/* Roman numerals at 12 / 3 / 6 / 9 */}
+        {[12, 3, 6, 9].map((h) => {
+          const angle = (h % 12) * 30
           return (
             <div
-              key={c.id}
-              className="absolute left-1/2 top-1/2 select-none"
+              key={h}
+              className="absolute left-1/2 top-1/2 select-none font-semibold text-white/80"
               style={{
-                transform: `rotate(${angle}deg) translate(0, -36%) rotate(${-angle}deg)`,
+                fontSize: 'min(3.2vmin, 4vh)',
+                letterSpacing: '0.08em',
+                transform: `rotate(${angle}deg) translate(0, -32%) rotate(${-angle}deg) translate(-50%, -50%)`,
                 transformOrigin: 'center',
               }}
             >
-              <div
-                className="flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border bg-black/55 text-center font-mono text-[11px] font-medium text-white backdrop-blur sm:h-14 sm:w-14 sm:text-xs"
-                style={{
-                  borderColor: `${accent}55`,
-                  boxShadow: `0 0 16px ${accent}33`,
-                }}
-              >
-                {c.label}
-              </div>
+              {ROMAN[h]}
             </div>
           )
         })}
+
+        {/* Slimmer numeric labels at 1/2/4/5/7/8/10/11 */}
+        {[1, 2, 4, 5, 7, 8, 10, 11].map((h) => {
+          const angle = (h % 12) * 30
+          return (
+            <div
+              key={h}
+              className="absolute left-1/2 top-1/2 select-none font-mono text-white/40"
+              style={{
+                fontSize: 'min(1.6vmin, 2vh)',
+                transform: `rotate(${angle}deg) translate(0, -36%) rotate(${-angle}deg) translate(-50%, -50%)`,
+                transformOrigin: 'center',
+              }}
+            >
+              {h}
+            </div>
+          )
+        })}
+
+        {/* Subtle glass reflection */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{
+            background:
+              'radial-gradient(60% 40% at 30% 20%, rgba(255,255,255,0.07) 0%, transparent 60%)',
+          }}
+        />
+
+        {/* Hour hand — short + thick */}
+        <div
+          ref={hourHandRef}
+          className="absolute left-1/2 top-1/2 origin-bottom"
+          style={{
+            width: '4px',
+            height: '28%',
+            transform: 'translate(-50%, -100%)',
+            transformOrigin: '50% 100%',
+            willChange: 'transform',
+            background: `linear-gradient(to top, ${accentColor}, ${accentColor}cc)`,
+            borderRadius: '4px 4px 1px 1px',
+            boxShadow: `0 0 12px ${accentColor}99`,
+          }}
+        />
+        {/* Minute hand — long + thin */}
+        <div
+          ref={minuteHandRef}
+          className="absolute left-1/2 top-1/2 origin-bottom"
+          style={{
+            width: '2.5px',
+            height: '40%',
+            transform: 'translate(-50%, -100%)',
+            transformOrigin: '50% 100%',
+            willChange: 'transform',
+            background:
+              'linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.65))',
+            borderRadius: '3px 3px 1px 1px',
+            boxShadow: '0 0 6px rgba(255,255,255,0.5)',
+          }}
+        />
+
+        {/* Centre axle */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            background: '#fff',
+            boxShadow: `0 0 8px ${accentColor}, 0 0 0 2px ${accentColor}33`,
+          }}
+        />
+
+        {/* Chapter digit — stacked, one per chapter, crossfaded by the
+            timeline above. Sits just below centre so it doesn't fight
+            the clock hands at 12 o'clock. */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-[68%] -translate-x-1/2 -translate-y-1/2"
+        >
+          <div className="relative h-16 w-16 sm:h-20 sm:w-20">
+            {chapters.map((c, i) => {
+              const accent = c.accent ?? accentColor
+              return (
+                <div
+                  key={c.id}
+                  ref={(el) => {
+                    digitRefs.current[i] = el
+                  }}
+                  className="absolute inset-0 flex flex-col items-center justify-center rounded-full border bg-black/55 backdrop-blur"
+                  style={{
+                    borderColor: `${accent}66`,
+                    boxShadow: `0 0 18px ${accent}55, inset 0 0 12px ${accent}1a`,
+                  }}
+                >
+                  <span
+                    className="font-mono text-lg font-semibold tabular-nums text-white sm:text-xl"
+                    style={{ textShadow: `0 0 10px ${accent}` }}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span
+                    className="text-[8px] font-medium uppercase tracking-[0.28em] text-white/55 sm:text-[9px]"
+                  >
+                    of {String(chapters.length).padStart(2, '0')}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )

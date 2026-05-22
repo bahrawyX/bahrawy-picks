@@ -410,6 +410,41 @@ export type {
   CinemaReelCta,
 } from './cinema-reel'
 
+export { VinylPlayer } from './vinyl-player'
+export type {
+  VinylPlayerProps,
+  VinylTrack,
+  VinylPlayerCta,
+} from './vinyl-player'
+
+export { OrigamiUnfold } from './origami-unfold'
+export type {
+  OrigamiUnfoldProps,
+  OrigamiPanel,
+  OrigamiCta,
+} from './origami-unfold'
+
+export { ReceiptUnroll } from './receipt-unroll'
+export type {
+  ReceiptUnrollProps,
+  ReceiptLine,
+  ReceiptUnrollCta,
+} from './receipt-unroll'
+
+export { AuroraSky } from './aurora-sky'
+export type {
+  AuroraSkyProps,
+  AuroraVerse,
+  AuroraSkyCta,
+} from './aurora-sky'
+
+export { CometTrail } from './comet-trail'
+export type {
+  CometTrailProps,
+  CometWaypoint,
+  CometTrailCta,
+} from './comet-trail'
+
 
 // Animations
 export {

@@ -387,7 +387,7 @@ export function CinemaReel({
             }}
           />
           <div
-            className="absolute left-1/2 top-[15%] -translate-x-1/2 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.28em] text-white/80 backdrop-blur"
+            className="absolute left-1/2 top-[15%] -translate-x-1/2 inline-flex whitespace-nowrap items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.28em] text-white/80 backdrop-blur"
           >
             <span
               aria-hidden

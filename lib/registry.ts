@@ -635,4 +635,29 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'cinema-reel',
     description: 'A pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, and the rest dim — like a real projector.',
   },
+  {
+    title: 'Vinyl Player',
+    slug: 'vinyl-player',
+    description: 'A turntable with a spinning vinyl record + tonearm that rotates to drop into each track. Per-track info panel + a live waveform highlights the active track. Pure scroll-driven motion.',
+  },
+  {
+    title: 'Origami Unfold',
+    slug: 'origami-unfold',
+    description: 'A folded paper square unfolds in 3D as you scroll — four flaps hinge outward sequentially, revealing four content quadrants under a final headline. CSS perspective + 3D transforms, scrubbed with GSAP.',
+  },
+  {
+    title: 'Receipt Unroll',
+    slug: 'receipt-unroll',
+    description: "A paper receipt unrolls from a printer slot at the top as you scroll. Header, line items type in one at a time, subtotal/total animate at the bottom, scalloped edges + barcode at the very bottom.",
+  },
+  {
+    title: 'Aurora Sky',
+    slug: 'aurora-sky',
+    description: 'A night sky with twinkling stars; three multi-color aurora ribbons paint themselves across the viewport via animated stroke-dashoffset as you scroll. A verse panel crossfades in the lower half.',
+  },
+  {
+    title: 'Comet Trail',
+    slug: 'comet-trail',
+    description: "A comet flies across a starfield along an SVG path as you scroll. A glowing trail draws in behind it; waypoint stars along the journey light up and surface a content card next to each one.",
+  },
 ]
