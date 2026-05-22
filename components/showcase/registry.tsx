@@ -1307,6 +1307,24 @@ export const registry: RegistryEntry[] = [
     category: 'text',
     dependencies: [],
   },
+  {
+    kind: 'docs',
+    id: '119',
+    slug: 'time-dial',
+    name: 'Time Dial',
+    description: 'Pinned scroll section with a giant rotating dial. Chapters sit around the perimeter at evenly-spaced angles; scroll rotates the dial so each chapter passes under a top pointer, and the right-hand content panel crossfades to that chapter.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '120',
+    slug: 'cinema-reel',
+    name: 'Cinema Reel',
+    description: 'Pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, the rest dim.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

@@ -625,4 +625,14 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'stretch-text',
     description: 'On hover, each character stretches horizontally via `transform: scaleX`. Staggered per-char delays make the stretch read as a wave through the line.',
   },
+  {
+    title: 'Time Dial',
+    slug: 'time-dial',
+    description: 'A pinned scroll section built around a giant rotating dial. Chapters sit around the perimeter at evenly-spaced angles; scroll rotates the dial clockwise so each chapter passes under a top pointer, and the content panel on the right crossfades to that chapter.',
+  },
+  {
+    title: 'Cinema Reel',
+    slug: 'cinema-reel',
+    description: 'A pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, and the rest dim — like a real projector.',
+  },
 ]

@@ -396,6 +396,20 @@ export type { CharSpringProps } from './char-spring'
 export { StretchText } from './stretch-text'
 export type { StretchTextProps } from './stretch-text'
 
+export { TimeDial } from './time-dial'
+export type {
+  TimeDialProps,
+  TimeDialChapter,
+  TimeDialCta,
+} from './time-dial'
+
+export { CinemaReel } from './cinema-reel'
+export type {
+  CinemaReelProps,
+  CinemaReelFrame,
+  CinemaReelCta,
+} from './cinema-reel'
+
 
 // Animations
 export {
