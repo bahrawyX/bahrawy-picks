@@ -344,6 +344,29 @@ export type {
   CursorLensCta,
 } from './cursor-lens'
 
+export { GlitchHeadline } from './glitch-headline'
+export type { GlitchHeadlineProps } from './glitch-headline'
+
+export { TypeTunnel } from './type-tunnel'
+export type {
+  TypeTunnelProps,
+  TypeTunnelLine,
+  TypeTunnelCta,
+} from './type-tunnel'
+
+export { PaperTear } from './paper-tear'
+export type {
+  PaperTearProps,
+  PaperTearScene,
+  PaperTearCta,
+} from './paper-tear'
+
+export { LiquidLetters } from './liquid-letters'
+export type { LiquidLettersProps } from './liquid-letters'
+
+export { DepthCards } from './depth-cards'
+export type { DepthCardsProps, DepthCardItem } from './depth-cards'
+
 
 // Animations
 export {

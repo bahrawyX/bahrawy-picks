@@ -75,6 +75,14 @@ export interface PortalScrollProps {
   cta?: PortalScrollCta
   /** Pin duration in viewport heights. Default 3.5. */
   scrollLength?: number
+  /**
+   * Shape of the portal mask.
+   *  - 'circle'  (default) → a growing circle, classic spotlight feel
+   *  - 'diamond'           → a growing diamond (rotated square),
+   *    sharper and more architectural; rim renders as a rotated
+   *    square outline with a scan dot orbiting the 4 corners.
+   */
+  shape?: 'circle' | 'diamond'
   /** Rim + glow color. Default '#F472B6' (pink-ish). */
   accentColor?: string
   /** Strength of cursor parallax inside the portal, in px. Default 28. */
@@ -101,6 +109,7 @@ export function PortalScroll({
   inner,
   cta,
   scrollLength = 3.5,
+  shape = 'circle',
   accentColor = '#F472B6',
   parallaxStrength = 28,
   className,
@@ -138,26 +147,54 @@ export function PortalScroll({
       if (!sectionRef.current || !pinRef.current) return
 
       // ------------------------------------------------------------------
-      // Compute the max portal radius — diagonal/2 + buffer so circles
-      // fully cover the viewport at scale 1.
+      // Compute the max portal radius. The two shapes have different
+      // requirements to fully cover the viewport:
+      //  - circle:  radius = hypot(vw, vh) / 2  (reaches the corners)
+      //  - diamond: |x| + |y| ≤ R  →  R = (vw + vh) / 2  (edges cover
+      //                                  the corners; ~36% larger)
       // ------------------------------------------------------------------
       const computeMaxR = () => {
-        maxRRef.current =
-          Math.hypot(window.innerWidth, window.innerHeight) / 2 + 80
+        if (shape === 'diamond') {
+          maxRRef.current =
+            (window.innerWidth + window.innerHeight) / 2 + 60
+        } else {
+          maxRRef.current =
+            Math.hypot(window.innerWidth, window.innerHeight) / 2 + 80
+        }
       }
       computeMaxR()
       window.addEventListener('resize', computeMaxR)
 
       // ------------------------------------------------------------------
-      // Initial element states
+      // Shape-aware clip-path generator. Used both for the initial
+      // state and the per-frame update.
       // ------------------------------------------------------------------
-      if (innerLayerRef.current) {
-        innerLayerRef.current.style.clipPath = 'circle(0px at 50% 50%)'
-        // Older WebKit needs the prefixed form too.
+      const makeClipPath = (r: number): string => {
+        if (shape === 'diamond') {
+          const layer = innerLayerRef.current
+          // Fallback to window dims if the layer isn't measured yet.
+          const lw = layer?.offsetWidth || window.innerWidth
+          const lh = layer?.offsetHeight || window.innerHeight
+          const cx = lw / 2
+          const cy = lh / 2
+          // Vertices: top, right, bottom, left.
+          return `polygon(${cx}px ${cy - r}px, ${cx + r}px ${cy}px, ${cx}px ${cy + r}px, ${cx - r}px ${cy}px)`
+        }
+        return `circle(${r}px at 50% 50%)`
+      }
+
+      const setClipPath = (cp: string) => {
+        if (!innerLayerRef.current) return
+        innerLayerRef.current.style.clipPath = cp
         ;(innerLayerRef.current.style as unknown as {
           WebkitClipPath?: string
-        }).WebkitClipPath = 'circle(0px at 50% 50%)'
+        }).WebkitClipPath = cp
       }
+
+      // ------------------------------------------------------------------
+      // Initial element states
+      // ------------------------------------------------------------------
+      setClipPath(makeClipPath(0))
       if (rimRef.current) {
         gsap.set(rimRef.current, { width: 0, height: 0, autoAlpha: 0 })
       }
@@ -232,13 +269,7 @@ export function PortalScroll({
           ease: 'power2.inOut',
           onUpdate: () => {
             const r = radiusObj.current.value * maxRRef.current
-            if (innerLayerRef.current) {
-              const cp = `circle(${r}px at 50% 50%)`
-              innerLayerRef.current.style.clipPath = cp
-              ;(innerLayerRef.current.style as unknown as {
-                WebkitClipPath?: string
-              }).WebkitClipPath = cp
-            }
+            setClipPath(makeClipPath(r))
             if (rimRef.current) {
               const size = r * 2
               rimRef.current.style.width = `${size}px`
@@ -365,6 +396,7 @@ export function PortalScroll({
         inner,
         cta,
         scrollLength,
+        shape,
         accentColor,
         parallaxStrength,
         chars.length,
@@ -555,53 +587,86 @@ export function PortalScroll({
         </div>
 
         {/* ─────────────────────────────────────────────────────────
-            RIM — sits over both scenes at the portal edge.
+            RIM — sits over both scenes at the portal edge. Render
+            shape-specific outline + scan animation.
         ───────────────────────────────────────────────────────── */}
         <div
           ref={rimRef}
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
             width: 0,
             height: 0,
             filter: `drop-shadow(0 0 18px ${accentColor})`,
           }}
         >
-          {/* Static thin outline. */}
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              border: `1.5px solid ${accentColor}`,
-              boxShadow: `inset 0 0 24px ${accentColor}33, 0 0 14px ${accentColor}66`,
-            }}
-          />
-          {/* Spinning conic-gradient sweep, masked to the rim only. */}
-          <div
-            className="bahrawy-portal-spin absolute inset-0 rounded-full"
-            style={{
-              background: `conic-gradient(from 0deg, transparent 0deg, ${accentColor} 25deg, transparent 70deg, transparent 180deg, ${accentColor}aa 205deg, transparent 250deg)`,
-              WebkitMaskImage:
-                'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
-              maskImage:
-                'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
-              mixBlendMode: 'screen',
-            }}
-          />
-          {/* Scan dot orbiting the rim. A wrapper rotates around the
-              rim's centre; the dot sits at the wrapper's top edge so it
-              traces the rim regardless of size. */}
-          <div className="bahrawy-portal-orbit absolute inset-0 rounded-full">
-            <div
-              className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: '9999px',
-                background: accentColor,
-                boxShadow: `0 0 14px ${accentColor}, 0 0 28px ${accentColor}88`,
-              }}
-            />
-          </div>
+          {shape === 'diamond' ? (
+            <>
+              {/* Diamond outline = a rotated square sized so its
+                  bounding box matches the rim container. */}
+              <div
+                className="absolute left-1/2 top-1/2"
+                style={{
+                  // edge length = side / sqrt(2) of bounding box ≈ 70.71%
+                  width: '70.71%',
+                  height: '70.71%',
+                  transform: 'translate(-50%, -50%) rotate(45deg)',
+                  border: `1.5px solid ${accentColor}`,
+                  boxShadow: `inset 0 0 24px ${accentColor}33, 0 0 14px ${accentColor}66`,
+                }}
+              />
+              {/* Scan dot — left/top keyframes through the 4 diamond
+                  corners trace the perimeter as straight edges. */}
+              <div
+                className="bahrawy-portal-diamond-scan absolute"
+                style={{
+                  width: 10,
+                  height: 10,
+                  marginLeft: -5,
+                  marginTop: -5,
+                  borderRadius: '9999px',
+                  background: accentColor,
+                  boxShadow: `0 0 14px ${accentColor}, 0 0 28px ${accentColor}88`,
+                }}
+              />
+            </>
+          ) : (
+            <>
+              {/* Static thin circular outline. */}
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  border: `1.5px solid ${accentColor}`,
+                  boxShadow: `inset 0 0 24px ${accentColor}33, 0 0 14px ${accentColor}66`,
+                }}
+              />
+              {/* Spinning conic-gradient sweep, masked to the rim only. */}
+              <div
+                className="bahrawy-portal-spin absolute inset-0 rounded-full"
+                style={{
+                  background: `conic-gradient(from 0deg, transparent 0deg, ${accentColor} 25deg, transparent 70deg, transparent 180deg, ${accentColor}aa 205deg, transparent 250deg)`,
+                  WebkitMaskImage:
+                    'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
+                  maskImage:
+                    'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
+                  mixBlendMode: 'screen',
+                }}
+              />
+              {/* Scan dot orbiting the rim via a rotating wrapper. */}
+              <div className="bahrawy-portal-orbit absolute inset-0 rounded-full">
+                <div
+                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '9999px',
+                    background: accentColor,
+                    boxShadow: `0 0 14px ${accentColor}, 0 0 28px ${accentColor}88`,
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         {/* Keyframes for the rim animations */}
@@ -615,6 +680,10 @@ export function PortalScroll({
             will-change: transform;
             transform-origin: 50% 50%;
           }
+          .bahrawy-portal-diamond-scan {
+            animation: bahrawy-portal-diamond-scan-kf 4.8s linear infinite;
+            will-change: left, top;
+          }
           @keyframes bahrawy-portal-spin-kf {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
@@ -623,9 +692,17 @@ export function PortalScroll({
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
           }
+          @keyframes bahrawy-portal-diamond-scan-kf {
+            0%   { left: 50%; top: 0%; }
+            25%  { left: 100%; top: 50%; }
+            50%  { left: 50%; top: 100%; }
+            75%  { left: 0%; top: 50%; }
+            100% { left: 50%; top: 0%; }
+          }
           @media (prefers-reduced-motion: reduce) {
             .bahrawy-portal-spin,
-            .bahrawy-portal-orbit { animation: none !important; }
+            .bahrawy-portal-orbit,
+            .bahrawy-portal-diamond-scan { animation: none !important; }
           }
         `}</style>
       </div>

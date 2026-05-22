@@ -57,6 +57,7 @@ export default function PortalScrollDocs() {
         }}
         cta={{ label: 'Browse the work' }}
         scrollLength={3.5}
+        shape="diamond"
         accentColor="#F472B6"
       />
 

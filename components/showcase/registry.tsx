@@ -1187,6 +1187,56 @@ export const registry: RegistryEntry[] = [
     category: 'gsap-section',
     dependencies: ['lucide-react'],
   },
+  {
+    kind: 'docs',
+    id: '106',
+    slug: 'glitch-headline',
+    name: 'Glitch Headline',
+    description:
+      'A CRT-damaged display headline. Cyan + magenta channels drift in idle wobble; on hover a clip-path band sweeps the text and slices it horizontally. Pure CSS, no JS animation loop.',
+    category: 'gsap-section',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '107',
+    slug: 'type-tunnel',
+    name: 'Type Tunnel',
+    description:
+      'Pinned scroll section that turns a list of headlines into a Z-axis tunnel. Each line lives at a different depth in 3D space; scrolling moves the camera forward through them so they arrive from the vanishing point, swell, then pass behind you.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '108',
+    slug: 'paper-tear',
+    name: 'Paper Tear',
+    description:
+      'Two sheets of paper stacked on top of each other. Scroll tears the top sheet off along a deterministic jagged SVG path, revealing the bottom sheet. Both halves carry a paper-grain texture.',
+    category: 'gsap-section',
+    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '109',
+    slug: 'liquid-letters',
+    name: 'Liquid Letters',
+    description:
+      'Typography that looks like blobs of liquid. SVG goo filter (Gaussian blur + alpha-tightening colour matrix) is applied to both the text AND a cursor-following blob, so the blob bonds with letters it touches.',
+    category: 'gsap-section',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '110',
+    slug: 'depth-cards',
+    name: 'Depth Cards',
+    description:
+      '3D diorama. Layered cards sit at different Z depths inside a perspective container; cursor tilts the camera so cards parallax against each other. Spring-eased tilt, per-card counter-parallax, depth-falloff glow halos.',
+    category: 'gsap-section',
+    dependencies: [],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

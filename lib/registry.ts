@@ -557,4 +557,34 @@ export const componentRegistry: RegistryItem[] = [
     description:
       "An invisible cursor mask that reveals a different scene underneath as you hover. No ring, no chrome — just a soft radial fade so the boundary between the two scenes is impossible to spot. The inner image is gently magnified at the cursor focal point, the inner text is drawn crisp on top, and a click pins the lens at that spot so you can step back and look.",
   },
+  {
+    title: 'Glitch Headline',
+    slug: 'glitch-headline',
+    description:
+      'A CRT-damaged display headline. Cyan + magenta channels drift in idle wobble; on hover a clip-path band sweeps the text and slices it horizontally, shifting chunks a few pixels out of register. Pure CSS, no animation loop, no JS runtime cost.',
+  },
+  {
+    title: 'Type Tunnel',
+    slug: 'type-tunnel',
+    description:
+      'A pinned scroll section that turns a list of headlines into a Z-axis tunnel. Each line lives at a different depth in 3D space; scrolling moves the camera forward through them so they arrive from the vanishing point, swell to fill the viewport, then pass behind you. One final standing headline lands at the end.',
+  },
+  {
+    title: 'Paper Tear',
+    slug: 'paper-tear',
+    description:
+      'Two sheets of paper stacked on top of each other. As you scroll into the section, the top sheet tears off along a deterministic jagged SVG path and lifts away with a subtle tilt + fade, revealing the bottom sheet. Both halves carry a paper-grain texture so the tear reads physical.',
+  },
+  {
+    title: 'Liquid Letters',
+    slug: 'liquid-letters',
+    description:
+      'A typography effect that makes letters look like blobs of liquid. The classic CSS-goo SVG filter (Gaussian blur + alpha-tightening colour matrix) is applied to both the SVG text AND a cursor-following blob — so the blob bonds with whichever letters it touches and pulls them into a single fluid shape.',
+  },
+  {
+    title: 'Depth Cards',
+    slug: 'depth-cards',
+    description:
+      'A 3D diorama. Layered cards sit at different Z depths inside a perspective container; moving your cursor tilts the camera so the cards parallax against each other. Spring-eased tilt, per-card counter-parallax, depth-falloff glow halos — look-around at depth, no scroll required.',
+  },
 ]
