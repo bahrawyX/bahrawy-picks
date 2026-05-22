@@ -82,40 +82,66 @@ export function Tooltip({
   }
 
   // ---- Tail geometry --------------------------------------------------
-  // Each side puts the tail on the EDGE of the bubble that faces the
-  // trigger; the clip-path makes a small triangle pointing at it.
+  // Classic CSS speech-bubble pattern: a small square rotated 45° so
+  // its corner points at the trigger. The two visible sides of the
+  // rotated square get the same 1px border as the bubble, giving a
+  // tail with a crisp outlined point. The other two sides sit BEHIND
+  // the bubble's body (overlap into the bubble) so the join is seamless.
+  //
+  // For each side, we pick the two un-rotated borders that, after the
+  // 45° rotation, end up as the OUTSIDE-FACING edges of the tail:
+  //  - top side    → right + bottom (pointing down-out)
+  //  - bottom side → top   + left
+  //  - left side   → top   + right
+  //  - right side  → bottom + left
+  const TAIL = 12 // un-rotated square edge length (px)
+  const BORDER = '1px solid rgba(255,255,255,0.1)'
+  const baseTail: React.CSSProperties = {
+    position: 'absolute',
+    width: TAIL,
+    height: TAIL,
+    background: BUBBLE_BG,
+    transform: 'rotate(45deg)',
+    // Soft drop-shadow on the outside of the tail to match the bubble's
+    // shadow-lg shadow-black/50.
+    boxShadow: '2px 2px 4px -2px rgba(0,0,0,0.4)',
+  }
+  // Half the rotated square's "outer" extent — equals TAIL × √2 / 4
+  // ≈ TAIL × 0.354. We push the tail outside the bubble by this much
+  // so the corner just barely touches the bubble edge.
+  const OFFSET = Math.round(TAIL / 2)
   const tailStyles: Record<TooltipSide, React.CSSProperties> = {
     top: {
-      bottom: -5,
+      ...baseTail,
+      bottom: -OFFSET,
       left: '50%',
-      marginLeft: -6,
-      width: 12,
-      height: 6,
-      clipPath: 'polygon(50% 100%, 0 0, 100% 0)',
+      marginLeft: -TAIL / 2,
+      borderRight: BORDER,
+      borderBottom: BORDER,
     },
     bottom: {
-      top: -5,
+      ...baseTail,
+      top: -OFFSET,
       left: '50%',
-      marginLeft: -6,
-      width: 12,
-      height: 6,
-      clipPath: 'polygon(50% 0, 0 100%, 100% 100%)',
+      marginLeft: -TAIL / 2,
+      borderTop: BORDER,
+      borderLeft: BORDER,
     },
     left: {
-      right: -5,
+      ...baseTail,
+      right: -OFFSET,
       top: '50%',
-      marginTop: -6,
-      width: 6,
-      height: 12,
-      clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
+      marginTop: -TAIL / 2,
+      borderTop: BORDER,
+      borderRight: BORDER,
     },
     right: {
-      left: -5,
+      ...baseTail,
+      left: -OFFSET,
       top: '50%',
-      marginTop: -6,
-      width: 6,
-      height: 12,
-      clipPath: 'polygon(0 50%, 100% 0, 100% 100%)',
+      marginTop: -TAIL / 2,
+      borderBottom: BORDER,
+      borderLeft: BORDER,
     },
   }
 
@@ -149,11 +175,9 @@ export function Tooltip({
             {showTail && (
               <span
                 aria-hidden
-                className="absolute"
-                style={{
-                  ...tailStyles[side],
-                  background: BUBBLE_BG,
-                }}
+                // The 45° rotated square — position + borders all live
+                // on `tailStyles[side]`. No extra classes needed.
+                style={tailStyles[side]}
               />
             )}
           </motion.span>

@@ -224,10 +224,12 @@ export function TimeDial({
       }
 
       if (ctaRef.current) {
+        // Appears AFTER the last chapter has settled — almost at the
+        // very end of the pin so it never overlaps content.
         tl.to(
           ctaRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.06, ease: 'power2.out' },
-          0.92,
+          { autoAlpha: 1, y: 0, duration: 0.05, ease: 'power2.out' },
+          0.96,
         )
       }
     },
@@ -328,32 +330,34 @@ export function TimeDial({
                   </div>
                 )
               })}
-
-              {cta && (
-                <div
-                  ref={ctaRef}
-                  className="pointer-events-none absolute inset-x-0 bottom-[-120px] sm:bottom-[-100px]"
-                >
-                  <a
-                    href={cta.href ?? '#'}
-                    onClick={cta.onClick}
-                    className="group pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                    style={{
-                      boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
-                    }}
-                  >
-                    {cta.label}
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </div>
 
+        {/* CTA — pinned to the BOTTOM of the section so it never
+            overlaps the chapter text, no matter the chapter count.
+            Same pattern as PortalScroll / MagneticField. */}
+        {cta && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-14 z-20 flex justify-center px-6">
+            <div ref={ctaRef} className="pointer-events-auto">
+              <a
+                href={cta.href ?? '#'}
+                onClick={cta.onClick}
+                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                style={{
+                  boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
+                }}
+              >
+                {cta.label}
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </a>
+            </div>
+          </div>
+        )}
+
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
         >
           Scroll · time advances
         </div>

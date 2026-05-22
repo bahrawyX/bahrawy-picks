@@ -428,6 +428,11 @@ export function OrigamiUnfold({
                     transformStyle: 'preserve-3d',
                     willChange: 'transform',
                     background: paperColor,
+                    // Without this, the back face of each flap paints
+                    // the OPPOSITE quadrant when rotated 180°, hiding
+                    // every panel underneath.
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
                     boxShadow:
                       'inset 0 0 0 1px rgba(0,0,0,0.05), 0 6px 16px -8px rgba(0,0,0,0.4)',
                   }}
