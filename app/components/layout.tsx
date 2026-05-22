@@ -31,8 +31,14 @@ export default function ComponentsLayout({
       {/* No outer max-width — sidebar sits at the very left edge of the
           viewport, main showcase takes everything else. */}
       <div className="flex w-full pt-28 pb-24">
-        {/* Desktop sidebar — pinned to the left edge */}
-        <aside className="sticky top-28 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pl-6 pr-3 scrollbar-hide md:block lg:pl-8 [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]">
+        {/* Desktop sidebar — pinned to the left edge.
+            `data-lenis-prevent` opts the aside out of the page-level
+            Lenis smooth scroll so wheel events inside scroll the
+            sidebar natively instead of being captured by the body. */}
+        <aside
+          data-lenis-prevent
+          className="sticky top-28 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pl-6 pr-3 scrollbar-hide md:block lg:pl-8 [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]"
+        >
           <div className="pb-10 pt-6">
             <Sidebar />
           </div>
@@ -50,7 +56,7 @@ export default function ComponentsLayout({
                 <Menu className="h-5 w-5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-80 overflow-y-auto px-0">
+            <SheetContent side="left" className="w-80 overflow-y-auto px-0" data-lenis-prevent>
               <SheetHeader className="px-6">
                 <SheetTitle>Components</SheetTitle>
               </SheetHeader>

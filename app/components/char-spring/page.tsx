@@ -10,7 +10,7 @@ export default function CharSpringDocs() {
       title="Char Spring"
       slug="char-spring"
       description="Each character springs up from below when the element enters the viewport. The container has overflow-hidden so the off-screen start state is genuinely hidden. Per-char delay gives the line a typewriter-with-bounce feel."
-      category="119 · text effect"
+      category="118 · text effect"
     >
       <DocsSection title="Scroll to replay">
         <DemoCard className="min-h-[260px]">

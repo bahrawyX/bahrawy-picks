@@ -1055,7 +1055,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '94',
+    id: '93',
     slug: 'search-input',
     name: 'Search Input',
     description:
@@ -1066,7 +1066,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '95',
+    id: '94',
     slug: 'sparkline',
     name: 'Sparkline',
     description:
@@ -1077,7 +1077,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '96',
+    id: '95',
     slug: 'pinned-story',
     name: 'Pinned Story',
     description:
@@ -1087,7 +1087,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '97',
+    id: '96',
     slug: 'constellation-scroll',
     name: 'Constellation Scroll',
     description:
@@ -1097,7 +1097,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '98',
+    id: '97',
     slug: 'mega-nav',
     name: 'Mega Nav',
     description:
@@ -1108,7 +1108,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '99',
+    id: '98',
     slug: 'hero-scroll-grow',
     name: 'Hero Scroll Grow',
     description:
@@ -1118,7 +1118,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '100',
+    id: '99',
     slug: 'carousel-3d',
     name: 'Carousel 3D',
     description:
@@ -1128,7 +1128,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '101',
+    id: '100',
     slug: 'hero-split',
     name: 'Hero Split',
     description:
@@ -1138,7 +1138,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '102',
+    id: '101',
     slug: 'phrase-slots',
     name: 'Phrase Slots',
     description:
@@ -1148,7 +1148,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '103',
+    id: '102',
     slug: 'magnetic-field',
     name: 'Magnetic Field',
     description:
@@ -1158,7 +1158,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '104',
+    id: '103',
     slug: 'portal-scroll',
     name: 'Portal Scroll',
     description:
@@ -1168,7 +1168,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '105',
+    id: '104',
     slug: 'cursor-lens',
     name: 'Cursor Lens',
     description:
@@ -1178,7 +1178,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '106',
+    id: '105',
     slug: 'glitch-headline',
     name: 'Glitch Headline',
     description:
@@ -1188,7 +1188,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '107',
+    id: '106',
     slug: 'type-tunnel',
     name: 'Type Tunnel',
     description:
@@ -1198,7 +1198,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '108',
+    id: '107',
     slug: 'paper-tear',
     name: 'Paper Tear',
     description:
@@ -1208,7 +1208,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '109',
+    id: '108',
     slug: 'liquid-letters',
     name: 'Liquid Letters',
     description:
@@ -1218,7 +1218,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '110',
+    id: '109',
     slug: 'depth-cards',
     name: 'Depth Cards',
     description:
@@ -1228,7 +1228,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '111',
+    id: '110',
     slug: 'wave-text',
     name: 'Wave Text',
     description: 'A line of text where each character undulates in a sine wave with a staggered phase. Pure CSS, no JS animation loop.',
@@ -1237,7 +1237,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '112',
+    id: '111',
     slug: 'disperse-text',
     name: 'Disperse Text',
     description: 'Letters explode away from their resting position on hover then settle back when the cursor leaves. Per-character offsets seeded by index for stable layout.',
@@ -1246,7 +1246,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '113',
+    id: '112',
     slug: 'magnetic-text',
     name: 'Magnetic Text',
     description: 'Every character has a magnetic pull toward the cursor — yanked along the cursor vector with strength proportional to proximity, lerped per frame for a spring-like feel.',
@@ -1255,7 +1255,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '114',
+    id: '113',
     slug: 'variable-font-morph',
     name: 'Variable Font Morph',
     description: "Each character animates its `font-variation-settings: 'wght'` axis between two values with a staggered phase. Works with any variable font with a weight axis.",
@@ -1264,7 +1264,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '115',
+    id: '114',
     slug: 'neon-pulse',
     name: 'Neon Pulse',
     description: "Text wearing a neon sign's glow: layered text-shadows, a breathing opacity pulse, and an occasional flicker that punches brightness down.",
@@ -1273,7 +1273,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '116',
+    id: '115',
     slug: 'gradient-flow',
     name: 'Gradient Flow',
     description: 'Text whose fill is a linear gradient sized 300% of the text width; animating background-position slides the colors through the glyphs in a seamless loop.',
@@ -1282,7 +1282,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '117',
+    id: '116',
     slug: 'holo-text',
     name: 'Holo Text',
     description: 'Holographic text: a cyan layer and a magenta layer drift in opposite directions behind a white base layer, blending in `screen` mode.',
@@ -1291,7 +1291,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '118',
+    id: '117',
     slug: 'shine-sweep',
     name: 'Shine Sweep',
     description: 'A bright shine stripe sweeps diagonally across the text. background-clip: text + animated background-position. Runs continuously or only on hover.',
@@ -1300,7 +1300,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '119',
+    id: '118',
     slug: 'char-spring',
     name: 'Char Spring',
     description: 'Each character springs up from below when the element enters the viewport. overflow-hidden container + per-char delay for a typewriter-with-bounce feel.',
@@ -1309,7 +1309,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '120',
+    id: '119',
     slug: 'stretch-text',
     name: 'Stretch Text',
     description: 'On hover, each character stretches horizontally via `transform: scaleX`. Staggered per-char delays make the stretch read as a wave through the line.',
