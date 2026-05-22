@@ -300,7 +300,57 @@ export function MoodSlider({
 }
 
 // ---------------------------------------------------------------------------
-// Face SVG
+// <MoodFace /> — exported standalone face. Same expression math as
+// the slider, packaged as a stand-alone visual so it can be dropped
+// in a grid / row outside of a slider context.
+// ---------------------------------------------------------------------------
+
+export interface MoodFaceProps {
+  /** Mood value 0–1. Same as the slider's value. */
+  value: number
+  /** Diameter in px. Default 96. */
+  size?: number
+  /** Hue range to lerp through. Default [0, 130] = red → green. */
+  hueRange?: [number, number]
+  className?: string
+}
+
+export function MoodFace({
+  value,
+  size = 96,
+  hueRange = [0, 130],
+  className,
+}: MoodFaceProps) {
+  const v = Math.max(0, Math.min(1, value))
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+  const [hueLow, hueHigh] = hueRange
+  const hue = hueLow + (hueHigh - hueLow) * v
+  // Same derivations as in the slider (see comments there for why).
+  const mouthControlY = lerp(44, 80, v)
+  const eyeSquint = v > 0.8 ? Math.min(1, (v - 0.8) / 0.2) : 0
+  const eyeRY = lerp(7, 2.5, eyeSquint)
+  const blushOpacity = v > 0.65 ? Math.min(1, (v - 0.65) / 0.35) : 0
+  const browInnerOffset = lerp(5, -1, v)
+
+  return (
+    <div
+      className={cn('inline-flex', className)}
+      style={{ width: size, height: size }}
+      aria-hidden
+    >
+      <FaceSvg
+        hue={hue}
+        mouthControlY={mouthControlY}
+        eyeRY={eyeRY}
+        blushOpacity={blushOpacity}
+        browInnerOffset={browInnerOffset}
+      />
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Internal FaceSvg
 // ---------------------------------------------------------------------------
 
 function FaceSvg({

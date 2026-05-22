@@ -1,15 +1,18 @@
 'use client'
 
 import * as React from 'react'
-import { MoodSlider } from '@/components/bahrawy/mood-slider'
+import { MoodFace, MoodSlider } from '@/components/bahrawy/mood-slider'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page'
 
-const SNIPPET = `import { MoodSlider } from '@/components/bahrawy/mood-slider'
+const SNIPPET = `import { MoodSlider, MoodFace } from '@/components/bahrawy/mood-slider'
 
+// Interactive — drag-to-rate
 const [mood, setMood] = useState(0.5)
+<MoodSlider value={mood} onChange={setMood} />
 
-<MoodSlider value={mood} onChange={setMood} />`
+// Standalone face — drop in a grid / card / button
+<MoodFace value={0.8} size={120} />`
 
 const MOOD_WORD = (v: number) => {
   if (v < 0.15) return 'awful'
@@ -37,6 +40,35 @@ export default function MoodSliderDocs() {
             <p className="text-center text-sm uppercase tracking-[0.32em] text-white/65">
               {MOOD_WORD(v)} · {(v * 100).toFixed(0)}%
             </p>
+          </div>
+        </DemoCard>
+      </DocsSection>
+
+      <DocsSection
+        title="The whole expression range"
+        description="Each step on the slider corresponds to a face like this. Drag the demo above to morph between them — or grab the standalone <MoodFace /> if you just want the face."
+      >
+        <DemoCard className="min-h-[260px]">
+          <div className="grid w-full grid-cols-2 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+            {[
+              { v: 0,    label: 'awful' },
+              { v: 0.25, label: 'rough' },
+              { v: 0.5,  label: 'fine'  },
+              { v: 0.75, label: 'good'  },
+              { v: 1,    label: 'amazing' },
+            ].map(({ v, label }) => (
+              <div key={v} className="flex flex-col items-center gap-3">
+                <MoodFace value={v} size={120} />
+                <div className="text-center">
+                  <p className="text-sm font-semibold tracking-tight text-white">
+                    {label}
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                    {(v * 100).toFixed(0)}%
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </DemoCard>
       </DocsSection>

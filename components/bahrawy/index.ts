@@ -449,8 +449,8 @@ export type { LikeBurstProps } from './like-burst'
 export { FlipCounter } from './flip-counter'
 export type { FlipCounterProps } from './flip-counter'
 
-export { MoodSlider } from './mood-slider'
-export type { MoodSliderProps } from './mood-slider'
+export { MoodSlider, MoodFace } from './mood-slider'
+export type { MoodSliderProps, MoodFaceProps } from './mood-slider'
 
 // Animations
 export {
