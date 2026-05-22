@@ -12,6 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { GlobalSearch } from '@/components/global-search'
 
 const links = [
   { href: '/components', label: 'Components' },
@@ -157,6 +158,14 @@ export function Navbar() {
             </nav>
             <span className="h-5 w-px shrink-0 bg-white/10" aria-hidden />
           </div>
+        </div>
+
+        {/* Global ⌘K search */}
+        <div className="hidden md:block">
+          <GlobalSearch />
+        </div>
+        <div className="md:hidden">
+          <GlobalSearch compactOnly />
         </div>
 
         <a
