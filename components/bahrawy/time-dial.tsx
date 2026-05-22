@@ -457,18 +457,25 @@ function ClockFace({
           })}
         </svg>
 
-        {/* Roman numerals at 12 / 3 / 6 / 9 */}
+        {/* Hour markers — Roman numerals at 12 / 3 / 6 / 9 placed by
+            classic polar math so they land at the perimeter and stay
+            upright. radius = % of dial half-size; angle in degrees
+            clockwise from 12 o'clock. */}
         {[12, 3, 6, 9].map((h) => {
-          const angle = (h % 12) * 30
+          const theta = ((h % 12) * 30 * Math.PI) / 180
+          const r = 38
+          const x = 50 + r * Math.sin(theta)
+          const y = 50 - r * Math.cos(theta)
           return (
             <div
               key={h}
-              className="absolute left-1/2 top-1/2 select-none font-semibold text-white/80"
+              className="absolute select-none font-semibold text-white/85"
               style={{
+                left: `${x}%`,
+                top: `${y}%`,
                 fontSize: 'min(3.2vmin, 4vh)',
                 letterSpacing: '0.08em',
-                transform: `rotate(${angle}deg) translate(0, -32%) rotate(${-angle}deg) translate(-50%, -50%)`,
-                transformOrigin: 'center',
+                transform: 'translate(-50%, -50%)',
               }}
             >
               {ROMAN[h]}
@@ -476,17 +483,21 @@ function ClockFace({
           )
         })}
 
-        {/* Slimmer numeric labels at 1/2/4/5/7/8/10/11 */}
+        {/* Slim numeric labels at the in-between hours */}
         {[1, 2, 4, 5, 7, 8, 10, 11].map((h) => {
-          const angle = (h % 12) * 30
+          const theta = ((h % 12) * 30 * Math.PI) / 180
+          const r = 36
+          const x = 50 + r * Math.sin(theta)
+          const y = 50 - r * Math.cos(theta)
           return (
             <div
               key={h}
-              className="absolute left-1/2 top-1/2 select-none font-mono text-white/40"
+              className="absolute select-none font-mono text-white/40"
               style={{
+                left: `${x}%`,
+                top: `${y}%`,
                 fontSize: 'min(1.6vmin, 2vh)',
-                transform: `rotate(${angle}deg) translate(0, -36%) rotate(${-angle}deg) translate(-50%, -50%)`,
-                transformOrigin: 'center',
+                transform: 'translate(-50%, -50%)',
               }}
             >
               {h}
