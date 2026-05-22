@@ -437,6 +437,18 @@ export type { OrbitalMenuProps, OrbitalMenuItem } from './orbital-menu'
 export { HabitHeatmap } from './habit-heatmap'
 export type { HabitHeatmapProps, HeatmapCell } from './habit-heatmap'
 
+export { HologramCard } from './hologram-card'
+export type { HologramCardProps } from './hologram-card'
+
+export { StickerPeel } from './sticker-peel'
+export type { StickerPeelProps } from './sticker-peel'
+
+export { CassetteTape } from './cassette-tape'
+export type { CassetteTapeProps, CassetteSide } from './cassette-tape'
+
+export { LiquidToggle } from './liquid-toggle'
+export type { LiquidToggleProps } from './liquid-toggle'
+
 // Animations
 export {
   TextReveal,

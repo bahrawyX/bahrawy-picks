@@ -660,4 +660,24 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'habit-heatmap',
     description: 'GitHub-style contribution grid. 7 rows × N weeks, cell intensity scales with value through a 5-step accent ramp. Weekday axis, month markers, "Less → More" legend, hover tooltips. Drop in data — or fall back to a stable demo grid.',
   },
+  {
+    title: 'Hologram Card',
+    slug: 'hologram-card',
+    description: 'Trading-card with a holographic-foil overlay. Cursor-driven 3D tilt + an iridescent rainbow gradient whose angle shifts with the cursor, like real foil catching light. Iridescence, no glow.',
+  },
+  {
+    title: 'Sticker Peel',
+    slug: 'sticker-peel',
+    description: 'Drag the top-right corner of a sticker to peel it back. 3D fold via CSS transforms; a cast shadow appears under the lifted portion; release past a threshold and the sticker stays peeled.',
+  },
+  {
+    title: 'Cassette Tape',
+    slug: 'cassette-tape',
+    description: 'Vintage audio cassette with rotating reels, tape line between them, label with side/title/duration, play/pause button, and a 3D flip to switch between A-side and B-side.',
+  },
+  {
+    title: 'Liquid Toggle',
+    slug: 'liquid-toggle',
+    description: 'Toggle switch with a goo-filter handle that morphs between off and on positions like a fluid blob, bonding with small anchor dots at each end as it passes through.',
+  },
 ]

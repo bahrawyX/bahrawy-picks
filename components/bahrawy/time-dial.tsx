@@ -246,12 +246,13 @@ export function TimeDial({
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
-        {/* Background mood */}
+        {/* Background — quiet vignette, no accent glow */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: `radial-gradient(60% 50% at 25% 50%, ${accentColor}1a 0%, transparent 60%), radial-gradient(120% 90% at 50% 100%, rgba(0,0,0,0.55) 0%, transparent 60%)`,
+            background:
+              'radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.5) 0%, transparent 60%)',
           }}
         />
 
@@ -263,7 +264,7 @@ export function TimeDial({
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
-                  style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }}
+                  style={{ background: accentColor }}
                 />
                 {eyebrow}
               </div>
@@ -305,10 +306,7 @@ export function TimeDial({
                       />
                       {c.eyebrow ?? c.label ?? `Chapter ${String(i + 1).padStart(2, '0')}`}
                     </p>
-                    <h2
-                      className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
-                      style={{ textShadow: `0 0 30px ${accent}33` }}
-                    >
+                    <h2 className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
                       {c.title}
                     </h2>
                     {c.body && (
@@ -343,10 +341,7 @@ export function TimeDial({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                style={{
-                  boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
-                }}
+                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black shadow-lg shadow-black/30 transition-colors hover:bg-white/90"
               >
                 {cta.label}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -405,27 +400,20 @@ function ClockFace({
       className="relative"
       style={{ width: 'min(56vmin, 72vh)', height: 'min(56vmin, 72vh)' }}
     >
-      {/* Outer halo */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-[-10%] rounded-full"
-        style={{
-          background: `radial-gradient(circle, ${accentColor}1a 0%, transparent 70%)`,
-          filter: 'blur(28px)',
-        }}
-      />
-
-      {/* Brushed bezel — outer dark ring */}
+      {/* Brushed-steel bezel — the outer ring. Subtle conic gradient
+          gives it a real metal feel without any colored glow. */}
       <div
         aria-hidden
         className="absolute inset-0 rounded-full"
         style={{
-          background: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.07), transparent 55%), conic-gradient(from 0deg, rgba(255,255,255,0.05), rgba(255,255,255,0.16), rgba(255,255,255,0.04), rgba(255,255,255,0.14), rgba(255,255,255,0.05))`,
-          boxShadow: `inset 0 0 1px ${accentColor}aa, 0 0 30px ${accentColor}33`,
+          background:
+            'radial-gradient(circle at 30% 25%, rgba(255,255,255,0.10), transparent 55%), conic-gradient(from 0deg, #2a2c33, #4a4d57, #1f2128, #3a3d46, #2a2c33)',
+          boxShadow:
+            '0 24px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.4)',
         }}
       />
 
-      {/* Inner face */}
+      {/* Inner face — matte dark dial */}
       <div
         className="absolute inset-[5%] overflow-hidden rounded-full"
         style={{
@@ -448,14 +436,13 @@ function ClockFace({
               <line
                 key={i}
                 x1="0"
-                y1={isHour ? -45 : -45}
+                y1={-45}
                 x2="0"
                 y2={isHour ? -41 : -43.5}
-                stroke={isHour ? accentColor : 'rgba(255,255,255,0.32)'}
+                stroke={isHour ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.32)'}
                 strokeWidth={isHour ? 0.55 : 0.22}
                 strokeLinecap="round"
                 transform={`rotate(${angle})`}
-                opacity={isHour ? 0.85 : 1}
               />
             )
           })}
@@ -519,7 +506,7 @@ function ClockFace({
           }}
         />
 
-        {/* Hour hand — short + thick */}
+        {/* Hour hand — short + thick. Painted metal (accent), no glow. */}
         <div
           ref={hourHandRef}
           className="absolute left-1/2 top-1/2 origin-bottom"
@@ -529,12 +516,11 @@ function ClockFace({
             transform: 'translate(-50%, -100%)',
             transformOrigin: '50% 100%',
             willChange: 'transform',
-            background: `linear-gradient(to top, ${accentColor}, ${accentColor}cc)`,
+            background: `linear-gradient(to top, ${accentColor}, ${accentColor}dd)`,
             borderRadius: '4px 4px 1px 1px',
-            boxShadow: `0 0 12px ${accentColor}99`,
           }}
         />
-        {/* Minute hand — long + thin */}
+        {/* Minute hand — long + thin. White paint, no glow. */}
         <div
           ref={minuteHandRef}
           className="absolute left-1/2 top-1/2 origin-bottom"
@@ -547,51 +533,42 @@ function ClockFace({
             background:
               'linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.65))',
             borderRadius: '3px 3px 1px 1px',
-            boxShadow: '0 0 6px rgba(255,255,255,0.5)',
           }}
         />
 
-        {/* Centre axle */}
+        {/* Centre axle — small polished cap, no glow */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
           style={{
-            background: '#fff',
-            boxShadow: `0 0 8px ${accentColor}, 0 0 0 2px ${accentColor}33`,
+            boxShadow: 'inset 0 -1px 1px rgba(0,0,0,0.4)',
           }}
         />
 
-        {/* Chapter digit — stacked, one per chapter, crossfaded by the
-            timeline above. Sits just below centre so it doesn't fight
-            the clock hands at 12 o'clock. */}
+        {/* Chapter digit sub-dial — clean dark plate with a thin
+            inner border. No accent glow, just a polished window. */}
         <div
           aria-hidden
           className="absolute left-1/2 top-[68%] -translate-x-1/2 -translate-y-1/2"
         >
           <div className="relative h-16 w-16 sm:h-20 sm:w-20">
             {chapters.map((c, i) => {
-              const accent = c.accent ?? accentColor
               return (
                 <div
                   key={c.id}
                   ref={(el) => {
                     digitRefs.current[i] = el
                   }}
-                  className="absolute inset-0 flex flex-col items-center justify-center rounded-full border bg-black/55 backdrop-blur"
+                  className="absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/15 bg-black/70 backdrop-blur"
                   style={{
-                    borderColor: `${accent}66`,
-                    boxShadow: `0 0 18px ${accent}55, inset 0 0 12px ${accent}1a`,
+                    boxShadow:
+                      'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -8px 16px rgba(0,0,0,0.4)',
                   }}
                 >
-                  <span
-                    className="font-mono text-lg font-semibold tabular-nums text-white sm:text-xl"
-                    style={{ textShadow: `0 0 10px ${accent}` }}
-                  >
+                  <span className="font-mono text-lg font-semibold tabular-nums text-white sm:text-xl">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span
-                    className="text-[8px] font-medium uppercase tracking-[0.28em] text-white/55 sm:text-[9px]"
-                  >
+                  <span className="text-[8px] font-medium uppercase tracking-[0.28em] text-white/55 sm:text-[9px]">
                     of {String(chapters.length).padStart(2, '0')}
                   </span>
                 </div>

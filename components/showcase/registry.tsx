@@ -1370,6 +1370,42 @@ export const registry: RegistryEntry[] = [
     category: 'data',
     dependencies: [],
   },
+  {
+    kind: 'docs',
+    id: '126',
+    slug: 'hologram-card',
+    name: 'Hologram Card',
+    description: 'Trading-card with holographic-foil overlay. Cursor-driven 3D tilt + iridescent rainbow gradient whose angle shifts with the cursor — real foil catching light, no glow.',
+    category: 'card',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '127',
+    slug: 'sticker-peel',
+    name: 'Sticker Peel',
+    description: 'Drag the top-right corner of a sticker to peel it. 3D fold + cast shadow under the lifted portion. Release past a threshold and the sticker stays peeled.',
+    category: 'card',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '128',
+    slug: 'cassette-tape',
+    name: 'Cassette Tape',
+    description: 'Vintage audio cassette: rotating reels, tape line between them, label with side / title / duration, play-pause button, 3D flip between A-side and B-side.',
+    category: 'card',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '129',
+    slug: 'liquid-toggle',
+    name: 'Liquid Toggle',
+    description: 'Toggle switch with a goo-filter handle that morphs between off and on positions like a fluid blob, bonding with small anchor dots at each end as it passes through.',
+    category: 'form',
+    dependencies: [],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

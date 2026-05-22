@@ -159,18 +159,14 @@ export function OrbitalMenu({
                 animate={{ x: dx, y: dy, opacity: 1, scale: 1 }}
                 exit={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
                 transition={{ ...SPRING, delay: i * 0.035 }}
-                className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border bg-black/55 text-white/85 shadow-lg backdrop-blur-md transition-colors hover:text-white"
-                style={{
-                  borderColor: `${accent}55`,
-                  boxShadow: `0 8px 24px -8px ${accent}55, 0 0 0 1px rgba(255,255,255,0.05)`,
-                }}
+                className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-zinc-900/90 text-white/85 shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-white/25 hover:bg-zinc-800 hover:text-white"
               >
+                {/* Optional accent dot in the corner — sets the item
+                    apart by colour without painting a neon halo. */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity group-hover/oi:opacity-100"
-                  style={{
-                    background: `radial-gradient(circle at 50% 50%, ${accent}33 0%, transparent 70%)`,
-                  }}
+                  className="absolute right-1 top-1 h-1 w-1 rounded-full"
+                  style={{ background: accent }}
                 />
                 {item.icon}
                 {/* Floating label */}
@@ -186,18 +182,19 @@ export function OrbitalMenu({
           })}
       </AnimatePresence>
 
-      {/* Trigger */}
+      {/* Trigger — solid accent, soft polished sheen, no glow */}
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={triggerLabel}
         aria-expanded={open}
         className={cn(
-          'relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full text-white shadow-2xl transition-transform active:scale-95',
+          'relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/15 text-white shadow-lg shadow-black/40 transition-transform active:scale-95',
         )}
         style={{
-          background: `radial-gradient(circle at 30% 30%, ${accentColor} 0%, ${accentColor}cc 70%, ${accentColor}aa 100%)`,
-          boxShadow: `0 12px 30px -8px ${accentColor}66, 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 12px ${accentColor}aa`,
+          // Solid fill with a subtle radial highlight at the top-left
+          // so it reads as polished rather than flat — no outer glow.
+          background: `radial-gradient(circle at 30% 28%, ${accentColor}, ${accentColor}d9 70%)`,
         }}
       >
         <motion.span
