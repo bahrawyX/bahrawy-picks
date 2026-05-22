@@ -277,9 +277,6 @@ export type { TooltipProps, TooltipSide } from './tooltip'
 export { QuoteCard } from './quote-card'
 export type { QuoteCardProps } from './quote-card'
 
-export { StepProgress } from './step-progress'
-export type { StepProgressProps } from './step-progress'
-
 export { SearchInput } from './search-input'
 export type { SearchInputProps } from './search-input'
 
@@ -293,6 +290,7 @@ export { ConstellationScroll } from './constellation-scroll'
 export type {
   ConstellationScrollProps,
   ConstellationNode,
+  ConstellationScrollCta,
 } from './constellation-scroll'
 
 export { MegaNav } from './mega-nav'

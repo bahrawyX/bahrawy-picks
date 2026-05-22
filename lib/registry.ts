@@ -480,12 +480,6 @@ export const componentRegistry: RegistryItem[] = [
       'Pull-quote card with author avatar + role and a scroll-triggered staggered reveal.',
   },
   {
-    title: 'Step Progress',
-    slug: 'step-progress',
-    description:
-      'Horizontal numbered step indicator with done/active/upcoming states and an animated active ring.',
-  },
-  {
     title: 'Search Input',
     slug: 'search-input',
     description:

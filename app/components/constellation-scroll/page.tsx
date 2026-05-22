@@ -8,6 +8,8 @@ import {
   Wind,
   Zap,
   Hexagon,
+  Layers,
+  Boxes,
 } from 'lucide-react'
 import {
   ConstellationScroll,
@@ -16,86 +18,32 @@ import {
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection } from '@/components/showcase/docs-page'
 
-// Hexagon positions around center (50, 50) with radius 32 (in viewBox %).
-//   0deg   →  (82.0, 50.0)
-//  60deg   →  (66.0, 77.7)
-// 120deg   →  (34.0, 77.7)
-// 180deg   →  (18.0, 50.0)
-// 240deg   →  (34.0, 22.3)
-// 300deg   →  (66.0, 22.3)
 const NODES: ConstellationNode[] = [
-  {
-    id: 'core',
-    label: 'Bahrawy',
-    icon: <Hexagon strokeWidth={2.5} />,
-    x: 50,
-    y: 50,
-    variant: 'center',
-    color: '#FFFFFF',
-  },
-  {
-    id: 'react',
-    label: 'React 19',
-    icon: <Atom strokeWidth={2.2} />,
-    x: 82,
-    y: 50,
-    color: '#22D3EE',
-  },
-  {
-    id: 'next',
-    label: 'Next.js 15',
-    icon: <Triangle strokeWidth={2.2} />,
-    x: 66,
-    y: 77.7,
-    color: '#FFFFFF',
-  },
-  {
-    id: 'tw',
-    label: 'Tailwind',
-    icon: <Wind strokeWidth={2.2} />,
-    x: 34,
-    y: 77.7,
-    color: '#38BDF8',
-  },
-  {
-    id: 'fm',
-    label: 'Framer Motion',
-    icon: <Sparkles strokeWidth={2.2} />,
-    x: 18,
-    y: 50,
-    color: '#A78BFA',
-  },
-  {
-    id: 'gsap',
-    label: 'GSAP',
-    icon: <Zap strokeWidth={2.2} />,
-    x: 34,
-    y: 22.3,
-    color: '#34D399',
-  },
-  {
-    id: 'ts',
-    label: 'TypeScript',
-    icon: <Braces strokeWidth={2.2} />,
-    x: 66,
-    y: 22.3,
-    color: '#60A5FA',
-  },
+  { id: 'react', icon: <Atom strokeWidth={2.2} />, label: 'React 19', accent: '#22D3EE' },
+  { id: 'next', icon: <Triangle strokeWidth={2.2} />, label: 'Next.js 15', accent: '#FFFFFF' },
+  { id: 'tw', icon: <Wind strokeWidth={2.2} />, label: 'Tailwind', accent: '#38BDF8' },
+  { id: 'fm', icon: <Sparkles strokeWidth={2.2} />, label: 'Framer Motion', accent: '#A78BFA' },
+  { id: 'gsap', icon: <Zap strokeWidth={2.2} />, label: 'GSAP', accent: '#34D399' },
+  { id: 'ts', icon: <Braces strokeWidth={2.2} />, label: 'TypeScript', accent: '#60A5FA' },
+  { id: 'lucide', icon: <Hexagon strokeWidth={2.2} />, label: 'Lucide', accent: '#F472B6' },
+  { id: 'dnd', icon: <Layers strokeWidth={2.2} />, label: 'dnd-kit', accent: '#FBBF24' },
+  { id: 'shadcn', icon: <Boxes strokeWidth={2.2} />, label: 'shadcn/ui', accent: '#A3E635' },
 ]
 
 const SNIPPET = `import { ConstellationScroll } from '@/components/bahrawy/constellation-scroll'
+import { Atom, Triangle, Wind, Sparkles, Zap, Braces } from 'lucide-react'
 
 const nodes = [
-  { id: 'core',  label: 'Bahrawy',       x: 50, y: 50,   variant: 'center' },
-  { id: 'react', label: 'React 19',      x: 82, y: 50 },
-  { id: 'next',  label: 'Next.js 15',    x: 66, y: 77.7 },
-  // … more satellites
+  { id: 'react', icon: <Atom />,      label: 'React 19',       accent: '#22D3EE' },
+  { id: 'next',  icon: <Triangle />,  label: 'Next.js 15',     accent: '#FFFFFF' },
+  { id: 'tw',    icon: <Wind />,      label: 'Tailwind',       accent: '#38BDF8' },
+  // … more
 ]
 
 <ConstellationScroll
   eyebrow="How it fits together"
-  title="One library. Every piece in its place."
-  description="A small core, a wide surface."
+  heading="One library. Every piece in its place."
+  description="Every dependency, a node — connected, but standalone."
   nodes={nodes}
   accentColor="#A78BFA"
 />`
@@ -105,23 +53,24 @@ export default function ConstellationScrollDocs() {
     <DocsPage
       title="Constellation Scroll"
       slug="constellation-scroll"
-      description="A pinned scroll section where a network diagram constructs itself in 5 staged passes as you scroll. Pure GSAP + SVG — no extra plugins beyond ScrollTrigger. The whole sequence is one scrubbed timeline so the diagram is locked to scroll position."
+      description="A pinned scroll section that opens with every node stacked at the same point in the centre of the canvas. As you scroll, the nodes fan outward into a perfect circular constellation, then connecting lines draw in between adjacent nodes to complete the shape."
       category="97 · gsap-section"
     >
       <DocsSection
         title="Live demo"
-        description="Scroll into the section — it pins and the constellation builds. Keep scrolling to release."
+        description="Scroll in — the stack at the centre fans out into a ring, then the lines connect."
       >
-        <p className="text-xs text-white/40">↓ scroll in</p>
+        <p className="text-xs text-white/40">↓ scroll to form</p>
       </DocsSection>
 
       <ConstellationScroll
         eyebrow="How it fits together"
-        title="One library. Every piece in its place."
-        description="A small core, a wide surface. Every component is a node — connected, but standalone."
+        heading="Every piece, its own place."
+        description="Each dependency starts in the same spot. Scrolling separates them into a clean ring — connected, but distinct."
         nodes={NODES}
+        cta={{ label: 'Browse components' }}
+        scrollLength={2.6}
         accentColor="#A78BFA"
-        scrollLength={4}
       />
 
       <div className="h-24" aria-hidden />
@@ -130,34 +79,38 @@ export default function ConstellationScrollDocs() {
         <CodeBlock code={SNIPPET} language="tsx" />
       </DocsSection>
 
-      <DocsSection title="Stages">
-        <ol className="grid gap-2 sm:grid-cols-2">
+      <DocsSection title="How the motion works">
+        <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['Stage 1 · Center pop', 'Center node scales 0.3 → 1 with a back-ease overshoot. autoAlpha 0 → 1.'],
-            ['Stage 2 · Satellites', 'Each satellite scales + fades in, staggered 25ms apart.'],
-            ['Stage 3 · Edges ink', 'Each line uses `getTotalLength()` to set its own dasharray, then animates dashoffset from full → 0. True SVG path-draw.'],
-            ['Stage 4 · Labels', 'HTML pills next to every node fade up. Positioned by computing the radial vector outward from the center.'],
-            ['Stage 5 · Pulses', 'Pulse-dots fan out from the center along every edge, fade in, travel via `cx`/`cy` tweens, fade out as they arrive.'],
+            ['Initial stack', 'Every node is absolutely centred at (0, 0) of the stage with scale 0.78, so the start state reads as ONE circle rather than N overlapping ones.'],
+            ['Radial fan-out', "One tweened progress value (0 → 1, `power3.out`) drives every node's `translate3d(R × p × cos θ, R × p × sin θ, 0)` per frame. θ is the node's evenly-spaced slot on the ring (-π/2 starts at the top, walks clockwise)."],
+            ['Adaptive radius', 'The stage measures itself on mount + resize. The ring radius scales with `min(width, height) / 2 - nodeSize/2 - 24px`, so the constellation always fits the viewport without clipping.'],
+            ['Per-node scale-up', 'Nodes also scale from 0.78 → 1 as they spread, so they emerge from the centre instead of just translating.'],
+            ['Lines draw in', 'Adjacent nodes are connected via SVG `<line>` elements. Each line uses `getTotalLength()` to set its dasharray; the timeline animates dashoffset to 0 once the ring has settled.'],
+            ['Labels last', "Per-node labels sit just below each circle and fade up at 65% of the timeline — once nodes are mostly in place — so they don't look like a soup of text during the spread."],
+            ['Scrubbed', 'Whole sequence is locked to scroll via `ScrollTrigger.scrub`. Scrolling back reverses cleanly all the way to the stack.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>
               <p className="mt-1 text-xs text-white/60">{b}</p>
             </li>
           ))}
-        </ol>
+        </ul>
       </DocsSection>
 
       <DocsSection title="Props">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['nodes', 'ConstellationNode[] — { id, label, x (0-100), y (0-100), variant?, color? }'],
-            ['edges', 'Pairs of node IDs to draw. Defaults to every satellite connected to the first center.'],
-            ['eyebrow', 'Small tag above the title.'],
-            ['title', 'Section headline above the diagram.'],
-            ['description', 'Sub-copy below the diagram.'],
-            ['scrollLength', 'Pin duration in viewport heights. Default 4.'],
-            ['accentColor', 'Color for edges + pulses. Default #A78BFA.'],
-            ['className', 'Extra classes on the section.'],
+            ['nodes', 'ConstellationNode[] — { id, icon?, label?, accent? }. Order = the slot order around the ring (clockwise from top).'],
+            ['eyebrow', 'Tiny tag above the heading.'],
+            ['heading', 'Section headline at the top.'],
+            ['description', 'Sub-copy beneath the heading.'],
+            ['cta', '{ label, href?, onClick? } — call-to-action at the bottom, fades in after the ring settles.'],
+            ['scrollLength', 'Pin duration in viewport heights. Default 2.4.'],
+            ['radius', "Ring radius as a fraction of the smaller stage dimension. Default 0.62."],
+            ['nodeSize', 'Diameter of each node in px. Default 64.'],
+            ['drawLinks', 'Draw connecting lines between adjacent nodes. Default true.'],
+            ['accentColor', 'Default accent for nodes without their own. Default #A78BFA.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>
@@ -169,7 +122,7 @@ export default function ConstellationScrollDocs() {
 
       <DocsSection title="Dependencies">
         <div className="flex flex-wrap gap-2">
-          {['gsap', '@gsap/react'].map((d) => (
+          {['gsap', '@gsap/react', 'lucide-react'].map((d) => (
             <code
               key={d}
               className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/80"

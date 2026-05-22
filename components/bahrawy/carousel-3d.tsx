@@ -51,9 +51,9 @@ export interface Carousel3DProps {
   cards: Carousel3DCard[]
   /** Pin length in viewport heights. Default 3.5. */
   scrollLength?: number
-  /** Horizontal spacing between adjacent cards (px). Default 320. */
+  /** Horizontal spacing between adjacent cards (px). Default 420. */
   spacing?: number
-  /** How far back side-cards sit in 3D (px). Default 200. */
+  /** How far back side-cards sit in 3D (px). Default 220. */
   depth?: number
   /** Degrees of rotateY per card distance from active. Default 22. */
   angle?: number
@@ -71,8 +71,8 @@ export interface Carousel3DProps {
 export function Carousel3D({
   cards,
   scrollLength = 3.5,
-  spacing = 320,
-  depth = 200,
+  spacing = 420,
+  depth = 220,
   angle = 22,
   eyebrow,
   heading,
@@ -196,7 +196,7 @@ export function Carousel3D({
           style={{ perspective: '1400px' }}
         >
           <div
-            className="relative h-[60vh] w-[280px] sm:w-[320px] md:w-[360px]"
+            className="relative h-[62vh] w-[340px] sm:w-[420px] md:w-[500px]"
             style={{ transformStyle: 'preserve-3d' }}
           >
             {cards.map((card, i) => (

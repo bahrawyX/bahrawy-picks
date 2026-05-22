@@ -1055,17 +1055,6 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '93',
-    slug: 'step-progress',
-    name: 'Step Progress',
-    description:
-      'Horizontal numbered step indicator with done / active / upcoming states.',
-    category: 'navigation',
-    hasOptions: true,
-    dependencies: ['framer-motion', 'lucide-react'],
-  },
-  {
-    kind: 'docs',
     id: '94',
     slug: 'search-input',
     name: 'Search Input',

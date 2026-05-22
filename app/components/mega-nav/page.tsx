@@ -1,21 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Atom,
-  Boxes,
-  Braces,
-  CreditCard,
-  Layers,
-  Layout,
-  LifeBuoy,
-  Newspaper,
-  Search,
-  Sparkles,
-  Triangle,
-  Wind,
-  Zap,
-} from 'lucide-react'
+import { Apple, Search, ShoppingBag } from 'lucide-react'
 import { MegaNav, type MegaNavItem } from '@/components/bahrawy/mega-nav'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page'
@@ -26,129 +12,191 @@ import {
 } from '@/components/showcase/control-panel'
 
 /* ------------------------------------------------------------------ */
-/*  Demo items                                                         */
+/*  Apple-themed demo nav                                              */
 /* ------------------------------------------------------------------ */
 
 const ITEMS: MegaNavItem[] = [
+  { label: 'Store', href: '#store' },
   {
-    label: 'Components',
+    label: 'Mac',
     sections: [
       {
-        heading: 'Form',
+        heading: 'Explore Mac',
         links: [
-          { label: 'Phone Input', description: 'International with formatting.', icon: <Layout className="h-3.5 w-3.5" /> },
-          { label: 'OTP Input', description: 'Six-digit one-time codes.', icon: <Layout className="h-3.5 w-3.5" /> },
-          { label: 'Date Range', description: 'Two-month picker, presets.', icon: <Layout className="h-3.5 w-3.5" /> },
+          { label: 'MacBook Air' },
+          { label: 'MacBook Pro' },
+          { label: 'iMac' },
+          { label: 'Mac mini' },
+          { label: 'Mac Studio' },
+          { label: 'Mac Pro' },
+          { label: 'Displays' },
+          { label: 'Compare Mac' },
         ],
       },
       {
-        heading: 'Motion',
+        heading: 'Shop Mac',
         links: [
-          { label: 'Scroll Rail', description: 'Horizontal scroll on vertical input.', icon: <Sparkles className="h-3.5 w-3.5" /> },
-          { label: 'Pinned Story', description: '4-step cinematic narrative.', icon: <Sparkles className="h-3.5 w-3.5" /> },
-          { label: 'Text Reveal', description: 'Word, char, or line entrance.', icon: <Sparkles className="h-3.5 w-3.5" /> },
+          { label: 'Shop Mac' },
+          { label: 'Help Me Choose' },
+          { label: 'Mac Accessories' },
+          { label: 'Apple Trade In' },
+          { label: 'Financing' },
         ],
       },
       {
-        heading: 'Data',
+        heading: 'More from Mac',
         links: [
-          { label: 'Data Table', description: 'TanStack-powered.', icon: <Layers className="h-3.5 w-3.5" /> },
-          { label: 'Sparkline', description: 'Tiny SVG line chart.', icon: <Layers className="h-3.5 w-3.5" /> },
-          { label: 'Stat Card', description: 'Number + delta + sparkline.', icon: <Layers className="h-3.5 w-3.5" /> },
-        ],
-      },
-      {
-        heading: 'Layout',
-        links: [
-          { label: 'Bento Grid', description: 'Mixed-size feature grid.', icon: <Boxes className="h-3.5 w-3.5" /> },
-          { label: 'Card Stack', description: 'Sticky cards on scroll.', icon: <Boxes className="h-3.5 w-3.5" /> },
-          { label: 'Mega Nav', description: 'This component.', icon: <Boxes className="h-3.5 w-3.5" /> },
+          { label: 'Mac Support' },
+          { label: 'AppleCare+ for Mac' },
+          { label: 'macOS Sequoia' },
+          { label: 'Apps by Apple' },
+          { label: 'Continuity' },
+          { label: 'iCloud+' },
         ],
       },
     ],
   },
   {
-    label: 'Templates',
+    label: 'iPad',
     sections: [
       {
-        heading: 'Marketing',
+        heading: 'Explore iPad',
         links: [
-          { label: 'Landing', description: 'Hero, features, pricing, footer.', icon: <Triangle className="h-3.5 w-3.5" /> },
-          { label: 'Changelog', description: 'Versioned timeline of releases.', icon: <Triangle className="h-3.5 w-3.5" /> },
+          { label: 'iPad Pro' },
+          { label: 'iPad Air' },
+          { label: 'iPad' },
+          { label: 'iPad mini' },
+          { label: 'Apple Pencil' },
+          { label: 'Compare iPad' },
         ],
       },
       {
-        heading: 'App',
+        heading: 'Shop iPad',
         links: [
-          { label: 'Dashboard', description: 'Stats + charts + tables.', icon: <Atom className="h-3.5 w-3.5" /> },
-          { label: 'Kanban', description: 'Drop-in task board.', icon: <Atom className="h-3.5 w-3.5" /> },
-        ],
-      },
-    ],
-    promo: (
-      <a
-        href="#"
-        className="flex h-full flex-col justify-between gap-3 rounded-xl border border-white/10 bg-gradient-to-br from-violet-500/15 via-cyan-500/10 to-transparent p-4 transition-colors hover:from-violet-500/25"
-      >
-        <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-violet-300">
-          <Sparkles className="h-3 w-3" />
-          New
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-white">Bahrawy Studio</p>
-          <p className="mt-1 text-xs leading-relaxed text-white/65">
-            A starter kit assembling every template into one shippable Next.js app.
-          </p>
-        </div>
-        <span className="text-xs font-medium text-violet-300">Open kit →</span>
-      </a>
-    ),
-  },
-  {
-    label: 'Pricing',
-    sections: [
-      {
-        heading: 'Plans',
-        links: [
-          { label: 'Free', description: 'Everything for personal use.', icon: <Wind className="h-3.5 w-3.5" /> },
-          { label: 'Pro', description: 'Premium blocks + lifetime updates.', icon: <Zap className="h-3.5 w-3.5" /> },
-          { label: 'Team', description: 'Five seats + Slack channel.', icon: <Braces className="h-3.5 w-3.5" /> },
+          { label: 'Shop iPad' },
+          { label: 'iPad Accessories' },
+          { label: 'Apple Trade In' },
+          { label: 'Financing' },
         ],
       },
       {
-        heading: 'Includes',
+        heading: 'More from iPad',
         links: [
-          { label: 'All 99 components' },
-          { label: 'Figma source files' },
-          { label: 'Lifetime updates (Pro)' },
+          { label: 'iPad Support' },
+          { label: 'AppleCare+ for iPad' },
+          { label: 'iPadOS 18' },
+          { label: 'iCloud+' },
         ],
       },
     ],
   },
   {
-    label: 'Docs',
-    href: '#docs',
-  },
-  {
-    label: 'Community',
+    label: 'iPhone',
     sections: [
       {
-        heading: 'Connect',
+        heading: 'Explore iPhone',
         links: [
-          { label: 'GitHub', description: 'Source, issues, PRs.', icon: <Newspaper className="h-3.5 w-3.5" />, external: true },
-          { label: 'Discord', description: 'Live channels with the team.', icon: <LifeBuoy className="h-3.5 w-3.5" />, external: true },
+          { label: 'iPhone 15 Pro' },
+          { label: 'iPhone 15' },
+          { label: 'iPhone 14' },
+          { label: 'iPhone SE' },
+          { label: 'Compare iPhone' },
+          { label: 'Switch from Android' },
         ],
       },
       {
-        heading: 'Read',
+        heading: 'Shop iPhone',
         links: [
-          { label: 'Changelog' },
-          { label: 'Roadmap' },
-          { label: 'Brand kit' },
+          { label: 'Shop iPhone' },
+          { label: 'iPhone Accessories' },
+          { label: 'Apple Trade In' },
+          { label: 'Carrier Deals at Apple' },
+        ],
+      },
+      {
+        heading: 'More from iPhone',
+        links: [
+          { label: 'iPhone Support' },
+          { label: 'AppleCare+ for iPhone' },
+          { label: 'iOS 18' },
+          { label: 'Apple Intelligence' },
         ],
       },
     ],
   },
+  {
+    label: 'Watch',
+    sections: [
+      {
+        heading: 'Explore Watch',
+        links: [
+          { label: 'Apple Watch Series 9' },
+          { label: 'Apple Watch Ultra 2' },
+          { label: 'Apple Watch SE' },
+          { label: 'Apple Watch Nike' },
+          { label: 'Apple Watch Hermès' },
+          { label: 'Compare Watch' },
+        ],
+      },
+      {
+        heading: 'Shop Watch',
+        links: [
+          { label: 'Shop Apple Watch' },
+          { label: 'Apple Watch Studio' },
+          { label: 'Bands' },
+          { label: 'Apple Watch Accessories' },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'AirPods',
+    sections: [
+      {
+        heading: 'Explore AirPods',
+        links: [
+          { label: 'AirPods Pro (2nd gen)' },
+          { label: 'AirPods (3rd gen)' },
+          { label: 'AirPods (2nd gen)' },
+          { label: 'AirPods Max' },
+          { label: 'Compare AirPods' },
+        ],
+      },
+      {
+        heading: 'Shop AirPods',
+        links: [
+          { label: 'Shop AirPods' },
+          { label: 'AirPods Accessories' },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'TV & Home',
+    sections: [
+      {
+        heading: 'Explore TV & Home',
+        links: [
+          { label: 'Apple TV 4K' },
+          { label: 'HomePod' },
+          { label: 'HomePod mini' },
+          { label: 'AirTag' },
+          { label: 'Siri' },
+        ],
+      },
+      {
+        heading: 'Apps & Services',
+        links: [
+          { label: 'Apple TV+' },
+          { label: 'Apple Music' },
+          { label: 'Apple Arcade' },
+          { label: 'Apple Fitness+' },
+          { label: 'Apple One' },
+        ],
+      },
+    ],
+  },
+  { label: 'Support', href: '#support' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -160,27 +208,36 @@ export default function MegaNavDocs() {
   const [scrollThreshold, setScrollThreshold] = useState(24)
 
   const SNIPPET = `import { MegaNav } from '@/components/bahrawy/mega-nav'
+import { Apple, Search, ShoppingBag } from 'lucide-react'
 
 const items = [
+  { label: 'Store', href: '/store' },
   {
-    label: 'Components',
+    label: 'Mac',
     sections: [
-      { heading: 'Form',   links: [{ label: 'Phone Input', href: '/phone-input' }] },
-      { heading: 'Motion', links: [{ label: 'Text Reveal', href: '/text-reveal' }] },
+      {
+        heading: 'Explore Mac',
+        links: [
+          { label: 'MacBook Air' },
+          { label: 'MacBook Pro' },
+          { label: 'iMac' },
+        ],
+      },
     ],
   },
-  { label: 'Docs', href: '/docs' },
+  // … iPad / iPhone / Watch / AirPods / TV & Home
+  { label: 'Support', href: '/support' },
 ]
 
 <MegaNav
-  logo="Bahrawy"
+  logo={<Apple className="h-4 w-4" />}
   items={items}
   position="${position}"
   scrollThreshold={${scrollThreshold}}
   actions={
     <>
-      <button>Search</button>
-      <a href="/sign-in">Sign in</a>
+      <button><Search className="h-3.5 w-3.5" /></button>
+      <button><ShoppingBag className="h-3.5 w-3.5" /></button>
     </>
   }
 />`
@@ -189,17 +246,21 @@ const items = [
     <DocsPage
       title="Mega Nav"
       slug="mega-nav"
-      description="A floating top navigation bar with a frosted-glass backdrop and hover-driven mega-menus. Backdrop deepens on scroll, content crossfades when moving between items, mobile collapses to a stacked sheet."
+      description="A floating top navigation bar with a frosted-glass backdrop and hover-driven mega-menus. Backdrop deepens on scroll, content crossfades when moving between items, mobile collapses to a stacked sheet. Demo themed in Apple's style — store nav with Mac / iPad / iPhone / Watch / AirPods / TV & Home / Support categories."
       category="98 · navigation"
     >
       <DocsSection
         title="Live demo"
-        description="Hover Components / Templates / Pricing / Community to drop the mega-menu. Scroll down to watch the backdrop deepen."
+        description="Hover Mac / iPad / iPhone / Watch / AirPods / TV & Home to drop the mega-menu. Move between items — the surface stays open and the content crossfades. Press Escape to close."
       >
         <DemoCard className="min-h-[520px] items-stretch overflow-hidden p-0">
           <div className="relative h-full w-full">
             <MegaNav
-              logo="Bahrawy"
+              logo={
+                <span className="inline-flex items-center text-white">
+                  <Apple className="h-[18px] w-[18px]" strokeWidth={1.8} fill="currentColor" />
+                </span>
+              }
               items={ITEMS}
               position="relative"
               scrollThreshold={scrollThreshold}
@@ -207,18 +268,18 @@ const items = [
                 <>
                   <button
                     type="button"
-                    aria-label="Search"
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
+                    aria-label="Search apple.com"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/85 transition-colors hover:text-white"
                   >
-                    <Search className="h-3.5 w-3.5" />
+                    <Search className="h-4 w-4" strokeWidth={2} />
                   </button>
-                  <a
-                    href="#"
-                    className="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-black transition-colors hover:bg-white/90"
+                  <button
+                    type="button"
+                    aria-label="Shopping bag"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-white/85 transition-colors hover:text-white"
                   >
-                    Sign in
-                    <CreditCard className="ml-1.5 h-3 w-3" />
-                  </a>
+                    <ShoppingBag className="h-4 w-4" strokeWidth={2} />
+                  </button>
                 </>
               }
             />
@@ -227,8 +288,8 @@ const items = [
                 Page content below the bar
               </p>
               <p className="mt-3 text-balance text-base leading-relaxed text-white/55">
-                Hover a menu item with sections to drop the mega-menu. Swap between menus
-                — the surface stays open and the content crossfades. Press Escape to close.
+                Hover any category to drop its mega-menu. Move between items — the surface stays
+                open and the content crossfades. Press Escape to close.
               </p>
             </div>
           </div>
@@ -266,7 +327,7 @@ const items = [
           {[
             ['logo', 'ReactNode — wordmark / SVG / anything.'],
             ['items', 'MegaNavItem[] — { label, href?, sections?, promo? }. Items with sections drop a mega-menu on hover.'],
-            ['actions', 'Right-side slot. Pass any nodes (search button, sign-in link, cart, etc.).'],
+            ['actions', 'Right-side slot. Pass any nodes (search button, shopping bag, sign-in link, cart, etc.).'],
             ['position', '"sticky" | "fixed" | "relative". Default "sticky".'],
             ['scrollThreshold', 'Px scrolled before the backdrop deepens. Default 24.'],
             ['className', 'Extra classes on the outer header.'],

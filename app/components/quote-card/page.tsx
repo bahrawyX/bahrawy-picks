@@ -13,7 +13,7 @@ export default function QuoteCardDocs() {
       category="92 · card"
     >
       <DocsSection title="Live demo">
-        <DemoCard className="min-h-[420px] items-stretch">
+        <DemoCard className="items-stretch">
           <div className="grid w-full gap-4 sm:grid-cols-2">
             <QuoteCard
               quote="The bar for what feels good has been raised. We swapped three of our hand-rolled components for Bahrawy and shipped a week earlier."

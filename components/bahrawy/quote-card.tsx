@@ -48,7 +48,7 @@ export function QuoteCard({
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={SPRING}
       className={cn(
-        'relative flex flex-col gap-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8',
+        'relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6',
         className,
       )}
     >

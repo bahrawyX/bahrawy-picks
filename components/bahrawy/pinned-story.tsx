@@ -76,7 +76,6 @@ export function PinnedStory({
   const tintRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const numberRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const progressRef = React.useRef<HTMLDivElement>(null)
-  const dotRef = React.useRef<HTMLDivElement>(null)
 
   useGSAP(
     () => {
@@ -196,11 +195,6 @@ export function PinnedStory({
       if (progressRef.current) {
         tl.to(progressRef.current, { scaleX: 1, ease: 'none' }, 0)
       }
-      // Side dot — walks from the top of the rail to the bottom.
-      if (dotRef.current) {
-        gsap.set(dotRef.current, { top: '0%' })
-        tl.to(dotRef.current, { top: '100%', ease: 'none' }, 0)
-      }
     },
     { dependencies: [steps, stepLength], scope: sectionRef },
   )
@@ -276,18 +270,7 @@ export function PinnedStory({
         <div className="relative z-20 mx-auto grid h-full max-w-6xl grid-cols-1 gap-12 px-10 pb-20 pt-28 sm:px-16 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-24 lg:px-24">
           {/* Left — overlapping step text blocks */}
           <div className="relative flex h-full min-h-[420px] items-center">
-            {/* Vertical guide rail */}
-            <span
-              aria-hidden
-              className="absolute left-0 top-1/2 h-3/4 w-px -translate-y-1/2 bg-white/[0.08]"
-            />
-            <div
-              ref={dotRef}
-              className="absolute left-0 z-10 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{ background: accentColor }}
-            />
-
-            <div className="relative w-full pl-8">
+            <div className="relative w-full">
               {steps.map((step, i) => (
                 <div
                   key={step.id}
@@ -328,8 +311,16 @@ export function PinnedStory({
                   ref={(el) => {
                     imageRefs.current[i] = el
                   }}
-                  className="absolute inset-0"
-                  style={{ opacity: i === 0 ? 1 : 0 }}
+                  // Image wrap is 8% taller than the card on each side so
+                  // the parallax tween (±3%) never reveals a black gap at
+                  // the top or bottom. The card's `overflow-hidden` clips
+                  // the overflow cleanly.
+                  className="absolute left-0 right-0"
+                  style={{
+                    top: '-8%',
+                    bottom: '-8%',
+                    opacity: i === 0 ? 1 : 0,
+                  }}
                 >
                   <img
                     src={step.image}

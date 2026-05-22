@@ -85,64 +85,136 @@ export function HeroScrollGrow({
     () => {
       if (!sectionRef.current || !pinRef.current) return
 
-      // Initial states
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+      // ----------------------------------------------------------------
+      // INTRO sequence (auto-plays on mount):
+      //   - The image starts at FULL-BLEED (scale 1, radius 0) — exactly
+      //     the same state the scroll animation ends on.
+      //   - It smoothly shrinks into the inset card at scale `initialScale`
+      //     with `initialRadius` corners — the scroll-start state.
+      //   - Hero text fades up just as the image arrives at rest.
+      //   - The ScrollTrigger that grows the image is created AFTER the
+      //     intro completes, so the two tweens never fight for the
+      //     transform.
+      // ----------------------------------------------------------------
       gsap.set(imageWrapRef.current, {
-        scale: initialScale,
-        borderRadius: initialRadius,
+        scale: 1,
+        borderRadius: 0,
         transformOrigin: '50% 50%',
       })
+      if (heroTextRef.current) {
+        gsap.set(heroTextRef.current, { autoAlpha: 0, y: 16 })
+      }
       if (overlayRef.current) {
         gsap.set(overlayRef.current, { autoAlpha: 0, y: 20 })
       }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: () => `+=${scrollLength * window.innerHeight}`,
-          pin: pinRef.current,
-          scrub: 0.4,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      })
+      let scrollTL: gsap.core.Timeline | null = null
 
-      // 0 → 1.0: image grows + corners straighten in one continuous tween.
-      tl.to(
+      const buildScrollTimeline = () => {
+        scrollTL = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: () => `+=${scrollLength * window.innerHeight}`,
+            pin: pinRef.current,
+            scrub: 0.4,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+
+        // 0 → 1.0: image grows + corners straighten back to full-bleed.
+        scrollTL.to(
+          imageWrapRef.current,
+          {
+            scale: 1,
+            borderRadius: 0,
+            ease: 'power2.out',
+            duration: 1,
+          },
+          0,
+        )
+
+        // 0.55 → 0.85: hero text dissolves once the image fills.
+        scrollTL.to(
+          heroTextRef.current,
+          {
+            autoAlpha: 0,
+            y: -32,
+            ease: 'power2.in',
+            duration: 0.3,
+          },
+          0.55,
+        )
+
+        // 0.75 → 1.0: overlay caption (if any) fades in.
+        if (overlayRef.current) {
+          scrollTL.to(
+            overlayRef.current,
+            {
+              autoAlpha: 1,
+              y: 0,
+              ease: 'power2.out',
+              duration: 0.25,
+            },
+            0.75,
+          )
+        }
+      }
+
+      if (prefersReducedMotion) {
+        // Skip the intro — go straight to the scroll-start state and
+        // wire up scroll.
+        gsap.set(imageWrapRef.current, {
+          scale: initialScale,
+          borderRadius: initialRadius,
+        })
+        if (heroTextRef.current)
+          gsap.set(heroTextRef.current, { autoAlpha: 1, y: 0 })
+        buildScrollTimeline()
+        return () => {
+          scrollTL?.scrollTrigger?.kill()
+          scrollTL?.kill()
+        }
+      }
+
+      const intro = gsap.timeline({ delay: 0.15 })
+
+      intro.to(
         imageWrapRef.current,
         {
-          scale: 1,
-          borderRadius: 0,
-          ease: 'power2.out',
-          duration: 1,
+          scale: initialScale,
+          borderRadius: initialRadius,
+          duration: 1.4,
+          ease: 'power3.inOut',
         },
         0,
       )
-
-      // 0.55 → 0.85: hero text dissolves once the image gets close to fill.
-      tl.to(
-        heroTextRef.current,
-        {
-          autoAlpha: 0,
-          y: -32,
-          ease: 'power2.in',
-          duration: 0.3,
-        },
-        0.55,
-      )
-
-      // 0.75 → 1.0: overlay caption (if any) fades in over the full-bleed image.
-      if (overlayRef.current) {
-        tl.to(
-          overlayRef.current,
+      if (heroTextRef.current) {
+        intro.to(
+          heroTextRef.current,
           {
             autoAlpha: 1,
             y: 0,
+            duration: 0.7,
             ease: 'power2.out',
-            duration: 0.25,
           },
-          0.75,
+          0.5,
         )
+      }
+
+      intro.eventCallback('onComplete', () => {
+        buildScrollTimeline()
+      })
+
+      return () => {
+        intro.kill()
+        scrollTL?.scrollTrigger?.kill()
+        scrollTL?.kill()
       }
     },
     {
