@@ -365,6 +365,37 @@ export type { LiquidLettersProps } from './liquid-letters'
 export { DepthCards } from './depth-cards'
 export type { DepthCardsProps, DepthCardItem } from './depth-cards'
 
+// Text effects
+export { WaveText } from './wave-text'
+export type { WaveTextProps } from './wave-text'
+
+export { DisperseText } from './disperse-text'
+export type { DisperseTextProps } from './disperse-text'
+
+export { MagneticText } from './magnetic-text'
+export type { MagneticTextProps } from './magnetic-text'
+
+export { VariableFontMorph } from './variable-font-morph'
+export type { VariableFontMorphProps } from './variable-font-morph'
+
+export { NeonPulse } from './neon-pulse'
+export type { NeonPulseProps } from './neon-pulse'
+
+export { GradientFlow } from './gradient-flow'
+export type { GradientFlowProps } from './gradient-flow'
+
+export { HoloText } from './holo-text'
+export type { HoloTextProps } from './holo-text'
+
+export { ShineSweep } from './shine-sweep'
+export type { ShineSweepProps } from './shine-sweep'
+
+export { CharSpring } from './char-spring'
+export type { CharSpringProps } from './char-spring'
+
+export { StretchText } from './stretch-text'
+export type { StretchTextProps } from './stretch-text'
+
 
 // Animations
 export {

@@ -597,13 +597,19 @@ export function PortalScroll({
           style={{
             width: 0,
             height: 0,
-            filter: `drop-shadow(0 0 18px ${accentColor})`,
+            // Drop-shadow glow only for the circle variant; diamond has
+            // a crisp outline by request.
+            filter:
+              shape === 'diamond'
+                ? undefined
+                : `drop-shadow(0 0 18px ${accentColor})`,
           }}
         >
           {shape === 'diamond' ? (
             <>
               {/* Diamond outline = a rotated square sized so its
-                  bounding box matches the rim container. */}
+                  bounding box matches the rim container. Crisp line
+                  only — no inner glow, no outer shadow. */}
               <div
                 className="absolute left-1/2 top-1/2"
                 style={{
@@ -612,7 +618,6 @@ export function PortalScroll({
                   height: '70.71%',
                   transform: 'translate(-50%, -50%) rotate(45deg)',
                   border: `1.5px solid ${accentColor}`,
-                  boxShadow: `inset 0 0 24px ${accentColor}33, 0 0 14px ${accentColor}66`,
                 }}
               />
               {/* Scan dot — left/top keyframes through the 4 diamond

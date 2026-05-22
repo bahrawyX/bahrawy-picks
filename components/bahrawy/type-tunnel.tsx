@@ -156,14 +156,17 @@ export function TypeTunnel({
         : null
 
       // -------- RAF reconciler — Z + opacity per line --------
-      // We treat the camera as moving forward by `progress × travel` px,
-      // so each line's effective z = baseZ + progressShift.
-      //  baseZ_i = -i * spacing
-      // Once a line gets within `nearLimit` of the camera, it starts
-      // appearing; it peaks at z ≈ -50 (just in front of the camera)
-      // and fades as it exits past `closeLimit`.
-      const nearLimit = spacing * 1.8 // start fade-in
-      const closeLimit = 350          // start fade-out past camera
+      // The camera moves forward by `progress × travel` px each frame,
+      // so each line's effective `z = baseZ + progressShift` where
+      // `baseZ_i = -i * spacing`.
+      //
+      // The opacity envelope is TIGHT on purpose — only the closest
+      // line to the camera should be visible at a time. With `spacing`
+      // = 600 px and a visible band of ~300 px (-220 → +90), neighbour
+      // lines never overlap on screen — the user reads one headline,
+      // it dissolves, the next one arrives.
+      const nearLimit = 220 // start fade-in this far behind the camera
+      const closeLimit = 90 // start fade-out this far past the camera
 
       let raf = 0
       const draw = () => {
@@ -174,23 +177,24 @@ export function TypeTunnel({
           if (!el) continue
           const baseZ = -i * spacing
           const z = baseZ + shift
-          // Don't render lines that are way behind the camera; saves the
-          // browser a little compositing work.
-          if (z > closeLimit + 400 || z < -nearLimit * 1.4) {
+          // Cull lines that are far from the camera so we skip layout
+          // entirely.
+          if (z > closeLimit + 220 || z < -nearLimit * 1.4) {
             el.style.opacity = '0'
-            // Keep the transform around so when it re-enters we don't
-            // jump-glitch — just write a far transform.
             el.style.transform = `translate3d(-50%, -50%, ${z}px)`
             continue
           }
-          // Opacity envelope.
+          // Tight opacity envelope — fast in, fast out, single line on
+          // screen at a time. Squared for a punchier curve.
           let opacity = 0
           if (z > closeLimit) {
-            // Past the camera — fast fade out.
-            opacity = Math.max(0, 1 - (z - closeLimit) / 220)
+            // Past the camera — quick exit.
+            const t = 1 - (z - closeLimit) / 180
+            opacity = Math.max(0, t * t)
           } else if (z > -nearLimit) {
-            // Approaching — gentle fade in.
-            opacity = Math.min(1, (z + nearLimit) / (nearLimit * 0.7))
+            // Approaching — sharper fade-in than before.
+            const t = Math.min(1, (z + nearLimit) / (nearLimit * 0.55))
+            opacity = t * t
           }
           el.style.opacity = String(opacity)
           el.style.transform = `translate3d(-50%, -50%, ${z}px)`

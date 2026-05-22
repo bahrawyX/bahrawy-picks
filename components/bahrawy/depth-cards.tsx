@@ -58,14 +58,16 @@ export interface DepthCardItem {
 export interface DepthCardsProps {
   /** Cards rendered into the diorama. */
   items: DepthCardItem[]
-  /** Strength of the camera tilt in degrees at the corner. Default 10. */
+  /** Strength of the camera tilt in degrees at the corner. Default 8. */
   tiltStrength?: number
-  /** Spacing along Z between adjacent depth layers, in px. Default 220. */
+  /** Spacing along Z between adjacent depth layers, in px. Default 240. */
   zSpacing?: number
-  /** Perspective distance in px. Default 1200. */
+  /** Perspective distance in px. Default 1400. */
   perspective?: number
-  /** Lerp factor for the tilt smoothing. Default 0.08. */
+  /** Lerp factor for the tilt smoothing. Default 0.06 (slower = softer). */
   lerp?: number
+  /** Max background blur in px applied to the deepest card. Default 3. */
+  depthBlur?: number
   /** Aspect ratio for the diorama canvas. Default '16 / 9'. */
   aspect?: string
   className?: string
@@ -77,10 +79,11 @@ export interface DepthCardsProps {
 
 export function DepthCards({
   items,
-  tiltStrength = 10,
-  zSpacing = 220,
-  perspective = 1200,
-  lerp = 0.08,
+  tiltStrength = 8,
+  zSpacing = 240,
+  perspective = 1400,
+  lerp = 0.06,
+  depthBlur = 3,
   aspect = '16 / 9',
   className,
 }: DepthCardsProps) {
@@ -127,7 +130,7 @@ export function DepthCards({
       s.curY += (s.targetY - s.curY) * lerp
 
       const rotY = s.curX * tiltStrength // tilt around Y based on X
-      const rotX = -s.curY * tiltStrength * 0.7
+      const rotX = -s.curY * tiltStrength * 0.65
       pivot.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`
 
       // Subtle counter-parallax on each card: deeper cards drift more
@@ -136,10 +139,10 @@ export function DepthCards({
         const el = cardRefs.current[i]
         if (!el) continue
         const depth = Number(el.dataset.depth ?? 0)
-        const tx = s.curX * depth * 8
-        const ty = s.curY * depth * 6
+        const tx = s.curX * depth * 9
+        const ty = s.curY * depth * 7
         const z = -depth * zSpacing
-        const scale = 1 - depth * 0.04
+        const scale = 1 - depth * 0.045
         el.style.transform = `translate3d(${tx}px, ${ty}px, ${z}px) scale(${scale})`
       }
 
@@ -221,19 +224,42 @@ export function DepthCards({
               {/* Glow halo behind the card — falls off with depth. */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute -inset-6 rounded-3xl"
+                className="pointer-events-none absolute -inset-8 rounded-3xl"
                 style={{
-                  background: `radial-gradient(closest-side, ${accent}30 0%, transparent 70%)`,
-                  filter: 'blur(20px)',
-                  opacity: Math.max(0.25, 1 - item.depth * 0.18),
+                  background: `radial-gradient(closest-side, ${accent}38 0%, transparent 72%)`,
+                  filter: 'blur(28px)',
+                  opacity: Math.max(0.18, 1 - item.depth * 0.22),
                 }}
               />
               <div
-                className="relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/85 p-5 shadow-2xl backdrop-blur-md sm:p-6"
+                className="relative overflow-hidden rounded-2xl border bg-zinc-950/85 p-5 shadow-2xl backdrop-blur-md sm:p-6"
                 style={{
-                  boxShadow: `0 30px 60px -20px rgba(0,0,0,0.7), 0 0 24px ${accent}22`,
+                  borderColor: `${accent}38`,
+                  boxShadow: `0 40px 80px -28px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04), 0 0 30px ${accent}26`,
+                  // Deeper cards pick up a subtle haze — feels atmospheric.
+                  filter:
+                    item.depth > 0
+                      ? `blur(${Math.min(depthBlur, item.depth * 0.7)}px)`
+                      : undefined,
                 }}
               >
+                {/* Top highlight line — a 1px accent gradient that
+                    catches the eye as the camera tilts. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px"
+                  style={{
+                    background: `linear-gradient(to right, transparent, ${accent}aa, transparent)`,
+                  }}
+                />
+                {/* Soft inner gradient — adds depth without an image. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background: `radial-gradient(120% 80% at 10% 0%, ${accent}1a 0%, transparent 60%)`,
+                  }}
+                />
                 {item.image && (
                   <>
                     <img

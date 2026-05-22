@@ -40,22 +40,30 @@ export default function PaperTearDocs() {
         <p className="text-xs text-white/40">↓ scroll to tear</p>
       </DocsSection>
 
-      <PaperTear
-        top={{
-          eyebrow: 'cover',
-          title: 'The summary.',
-          subtitle: 'What we put on the case study page.',
-          accent: '#F472B6',
-        }}
-        bottom={{
-          eyebrow: 'inside',
-          title: 'The actual work.',
-          subtitle: 'Drafts, dead ends, the version that almost shipped.',
-          accent: '#A78BFA',
-        }}
-        cta={{ label: 'See the process' }}
-        seed={7}
-      />
+      {/*
+        Break out of the 90% showcase wrapper so the tear takes the FULL
+        main area (everything except the sidebar). The math: parent is
+        90% of grandparent, so width 111.12% / -5.55% margins fills the
+        grandparent edge-to-edge without overlapping the sidebar.
+      */}
+      <div className="-mx-[5.55%] w-[111.12%]">
+        <PaperTear
+          top={{
+            eyebrow: 'cover',
+            title: 'The summary.',
+            subtitle: 'What we put on the case study page.',
+            accent: '#F472B6',
+          }}
+          bottom={{
+            eyebrow: 'inside',
+            title: 'The actual work.',
+            subtitle: 'Drafts, dead ends, the version that almost shipped.',
+            accent: '#A78BFA',
+          }}
+          cta={{ label: 'See the process' }}
+          seed={7}
+        />
+      </div>
 
       <div className="h-24" aria-hidden />
 

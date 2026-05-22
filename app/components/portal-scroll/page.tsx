@@ -42,18 +42,18 @@ export default function PortalScrollDocs() {
       <PortalScroll
         outer={{
           image:
-            'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1800&q=80&auto=format&fit=crop',
-          eyebrow: 'Chapter I',
-          title: "You're standing outside.",
-          subtitle: 'The story is behind the door.',
+            'https://images.unsplash.com/photo-1531256456869-ce942a665e80?w=1800&q=80&auto=format&fit=crop',
+          eyebrow: 'Side A',
+          title: 'The face they show.',
+          subtitle: 'Composed. On brand. On message.',
         }}
         inner={{
           image:
-            'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1800&q=80&auto=format&fit=crop',
-          eyebrow: 'Chapter II — Step through',
-          title: 'Welcome inside.',
+            'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=1800&q=80&auto=format&fit=crop',
+          eyebrow: 'Side B',
+          title: 'The mood they keep.',
           subtitle:
-            'Everything past this point is what we ship — taste, process, motion.',
+            'Saturated, lit a certain way, ready when the camera turns.',
         }}
         cta={{ label: 'Browse the work' }}
         scrollLength={3.5}

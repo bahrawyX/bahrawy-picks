@@ -581,4 +581,54 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'A 3D diorama. Layered cards sit at different Z depths inside a perspective container; moving your cursor tilts the camera so the cards parallax against each other. Spring-eased tilt, per-card counter-parallax, depth-falloff glow halos — look-around at depth, no scroll required.',
   },
+  {
+    title: 'Wave Text',
+    slug: 'wave-text',
+    description: 'A line of text where each character undulates in a sine wave with a staggered phase. Pure CSS — no JS animation loop.',
+  },
+  {
+    title: 'Disperse Text',
+    slug: 'disperse-text',
+    description: 'Letters explode away from their resting position on hover then settle back when the cursor leaves. Per-character offsets seeded by index for stable layout.',
+  },
+  {
+    title: 'Magnetic Text',
+    slug: 'magnetic-text',
+    description: 'Every character has a magnetic pull toward the cursor — yanked along the cursor vector with strength proportional to proximity, lerped per frame for a spring-like feel.',
+  },
+  {
+    title: 'Variable Font Morph',
+    slug: 'variable-font-morph',
+    description: "Each character animates its `font-variation-settings: 'wght'` axis between two values with a staggered phase. Works with any variable font that exposes a weight axis.",
+  },
+  {
+    title: 'Neon Pulse',
+    slug: 'neon-pulse',
+    description: "Text wearing a neon sign's glow: layered text-shadows at increasing radii, a breathing opacity pulse, and an occasional flicker that punches brightness down — like a real broken sign.",
+  },
+  {
+    title: 'Gradient Flow',
+    slug: 'gradient-flow',
+    description: 'Text whose fill is a linear gradient sized 300% of the text width; animating background-position slides the colors through the glyphs in a seamless loop.',
+  },
+  {
+    title: 'Holo Text',
+    slug: 'holo-text',
+    description: 'Holographic text: a cyan layer and a magenta layer drift in opposite directions behind a white base layer, blending in `screen` mode so the overlap reads white but the fringes glow.',
+  },
+  {
+    title: 'Shine Sweep',
+    slug: 'shine-sweep',
+    description: 'A bright "shine" stripe sweeps diagonally across the text. Background-clip: text + animated background-position. Runs continuously or only on hover.',
+  },
+  {
+    title: 'Char Spring',
+    slug: 'char-spring',
+    description: 'Each character springs up from below when the element enters the viewport. Container overflow-hidden + per-char delay for a typewriter-with-bounce feel.',
+  },
+  {
+    title: 'Stretch Text',
+    slug: 'stretch-text',
+    description: 'On hover, each character stretches horizontally via `transform: scaleX`. Staggered per-char delays make the stretch read as a wave through the line.',
+  },
 ]

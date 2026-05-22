@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { Navbar } from '@/components/navbar'
 import { NavigationProgress } from '@/components/navigation-progress'
+import { SmoothScrollProvider } from '@/components/smooth-scroll-provider'
 import './globals.css'
 
 const inter = Inter({
@@ -38,8 +39,10 @@ export default function RootLayout({
     >
       <body className="bg-black font-sans text-white antialiased">
         <NavigationProgress />
-        <Navbar />
-        {children}
+        <SmoothScrollProvider>
+          <Navbar />
+          {children}
+        </SmoothScrollProvider>
         <Toaster
           theme="dark"
           position="bottom-right"
