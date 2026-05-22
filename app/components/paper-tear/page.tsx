@@ -41,11 +41,20 @@ export default function PaperTearDocs() {
       </DocsSection>
 
       {/*
-        Full-viewport breakout — span the whole window. The sidebar
-        is z-indexed above this in app/components/layout.tsx so it
-        stays visible on top of the pinned hero.
+        Full-viewport breakout — span the whole window. We use a
+        negative-margin trick (NOT translate) so the wrapper does NOT
+        become a containing block for `position: fixed` descendants —
+        GSAP ScrollTrigger pins via fixed positioning, and a parent
+        transform would resolve "fixed" relative to the wrapper
+        instead of the viewport, breaking the pin entirely.
+
+        The sidebar is z-indexed above this in
+        app/components/layout.tsx so it stays visible on top.
       */}
-      <div className="relative left-1/2 -translate-x-1/2 w-screen">
+      <div
+        className="relative w-screen"
+        style={{ marginLeft: 'calc(-50vw + 50%)' }}
+      >
         <PaperTear
           top={{
             eyebrow: 'cover',
