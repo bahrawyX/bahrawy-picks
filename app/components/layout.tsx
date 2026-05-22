@@ -37,7 +37,10 @@ export default function ComponentsLayout({
             sidebar natively instead of being captured by the body. */}
         <aside
           data-lenis-prevent
-          className="sticky top-28 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pl-6 pr-3 scrollbar-hide md:block lg:pl-8 [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]"
+          // z-20 keeps the sidebar above any full-bleed pinned section
+          // (e.g. Paper Tear) that escapes the showcase wrapper to
+          // span the whole viewport width.
+          className="sticky top-28 z-20 hidden h-[calc(100vh-8rem)] w-64 shrink-0 overflow-y-auto pl-6 pr-3 scrollbar-hide md:block lg:pl-8 [mask-image:linear-gradient(to_bottom,transparent,black_80px,black_calc(100%-80px),transparent)]"
         >
           <div className="pb-10 pt-6">
             <Sidebar />

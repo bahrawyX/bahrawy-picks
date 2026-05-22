@@ -41,12 +41,11 @@ export default function PaperTearDocs() {
       </DocsSection>
 
       {/*
-        Break out of the 90% showcase wrapper so the tear takes the FULL
-        main area (everything except the sidebar). The math: parent is
-        90% of grandparent, so width 111.12% / -5.55% margins fills the
-        grandparent edge-to-edge without overlapping the sidebar.
+        Full-viewport breakout — span the whole window. The sidebar
+        is z-indexed above this in app/components/layout.tsx so it
+        stays visible on top of the pinned hero.
       */}
-      <div className="-mx-[5.55%] w-[111.12%]">
+      <div className="relative left-1/2 -translate-x-1/2 w-screen">
         <PaperTear
           top={{
             eyebrow: 'cover',
