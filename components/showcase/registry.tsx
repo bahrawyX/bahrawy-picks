@@ -1336,15 +1336,6 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '122',
-    slug: 'origami-unfold',
-    name: 'Origami Unfold',
-    description: 'A folded paper square unfolds in 3D as you scroll — four flaps hinge outward sequentially, revealing four content quadrants under a final headline.',
-    category: 'gsap-section',
-    dependencies: ['gsap', '@gsap/react', 'lucide-react'],
-  },
-  {
-    kind: 'docs',
     id: '123',
     slug: 'receipt-unroll',
     name: 'Receipt Unroll',

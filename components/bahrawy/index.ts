@@ -417,13 +417,6 @@ export type {
   VinylPlayerCta,
 } from './vinyl-player'
 
-export { OrigamiUnfold } from './origami-unfold'
-export type {
-  OrigamiUnfoldProps,
-  OrigamiPanel,
-  OrigamiCta,
-} from './origami-unfold'
-
 export { ReceiptUnroll } from './receipt-unroll'
 export type {
   ReceiptUnrollProps,
