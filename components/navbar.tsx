@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { GlobalSearch } from '@/components/global-search'
+import { BrandMark } from '@/components/brand-mark'
 
 const links = [
   { href: '/components', label: 'Components' },
@@ -94,7 +95,10 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="left" className="w-72 px-0">
             <SheetHeader className="px-6">
-              <SheetTitle>Bahrawy</SheetTitle>
+              <SheetTitle className="flex items-center gap-2 text-white">
+                <BrandMark className="h-5 w-5" />
+                Bahrawy
+              </SheetTitle>
             </SheetHeader>
             <nav className="mt-4 flex flex-col gap-1 px-4">
               {links.map((link) => (
@@ -128,9 +132,11 @@ export function Navbar() {
 
         <Link
           href="/"
-          className="rounded-full px-4 py-1.5 text-sm font-semibold tracking-tight text-white"
+          aria-label="Bahrawy — home"
+          className="group inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold tracking-tight text-white transition-colors hover:bg-white/[0.04]"
         >
-          Bahrawy
+          <BrandMark className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover:-rotate-3" />
+          <span>Bahrawy</span>
         </Link>
 
         {/* Collapsible center: grid 1fr ↔ 0fr animates width smoothly — hidden on mobile */}
