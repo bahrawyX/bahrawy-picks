@@ -1,11 +1,17 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { FavoriteButton } from '@/components/favorite-button'
 import { InstallCommand } from '@/components/showcase/install-command'
 import { PreviewTabs } from '@/components/showcase/preview-tabs'
 import { PropsTable } from '@/components/showcase/props-table'
 import { getEntry, registry } from '@/components/showcase/registry'
+import {
+  metadataForSlug,
+  breadcrumbJsonLdForSlug,
+  componentJsonLdForSlug,
+} from '@/lib/seo'
 
 export const dynamicParams = false
 
@@ -13,6 +19,15 @@ export function generateStaticParams() {
   return registry
     .filter((e) => e.kind === 'ready')
     .map((e) => ({ slug: e.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  return metadataForSlug(slug)
 }
 
 export default async function ComponentDetailPage({
@@ -36,9 +51,23 @@ export default async function ComponentDetailPage({
       : 'ts'
 
   const Preview = entry.Preview
+  const breadcrumb = breadcrumbJsonLdForSlug(slug)
+  const component = componentJsonLdForSlug(slug)
 
   return (
     <article className="flex flex-col gap-10">
+      {breadcrumb && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: breadcrumb }}
+        />
+      )}
+      {component && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: component }}
+        />
+      )}
       <header>
         <p className="text-xs uppercase tracking-[0.2em] text-white/40">
           {entry.id} · {entry.category}

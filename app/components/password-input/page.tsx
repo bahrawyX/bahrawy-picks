@@ -1,87 +1,32 @@
-'use client'
-
-import { useState } from 'react'
-import { PasswordInput } from '@/components/bahrawy'
-import { CodeBlock } from '@/components/showcase/code-block'
+import type { Metadata } from 'next'
 import {
-  DemoCard,
-  DocsPage,
-  DocsSection,
-} from '@/components/showcase/docs-page'
-import { PropsTable } from '@/components/showcase/props-table'
+  metadataForSlug,
+  breadcrumbJsonLdForSlug,
+  componentJsonLdForSlug,
+} from '@/lib/seo'
+import Client from './client'
 
-const BASIC_SNIPPET = `import { PasswordInput } from '@/components/bahrawy'
+export const metadata: Metadata = metadataForSlug('password-input')
 
-<PasswordInput
-  onChange={(val) => console.log(val)}
-/>`
+const breadcrumb = breadcrumbJsonLdForSlug('password-input')
+const component = componentJsonLdForSlug('password-input')
 
-const CUSTOM_REQS_SNIPPET = `<PasswordInput
-  requirements={[
-    { label: 'At least 12 characters', test: (pw) => pw.length >= 12 },
-    { label: 'Has a number', test: (pw) => /\\d/.test(pw) },
-  ]}
-/>`
-
-export default function PasswordInputDocs() {
-  const [val, setVal] = useState('')
-
+export default function Page() {
   return (
-    <DocsPage
-      title="Password Input"
-      slug="password-input"
-      description="Password field with show/hide toggle, real-time strength meter, and configurable requirements checklist."
-      category="08 · FORM"
-    >
-      {/* Basic */}
-      <DocsSection title="Basic">
-        <DemoCard>
-          <PasswordInput value={val} onChange={setVal} />
-        </DemoCard>
-        <CodeBlock code={BASIC_SNIPPET} language="tsx" />
-      </DocsSection>
-
-      {/* No strength meter */}
-      <DocsSection title="Without strength meter">
-        <DemoCard>
-          <PasswordInput showStrength={false} />
-        </DemoCard>
-      </DocsSection>
-
-      {/* Custom requirements */}
-      <DocsSection title="Custom requirements">
-        <DemoCard>
-          <PasswordInput
-            requirements={[
-              { label: 'At least 12 characters', test: (pw) => pw.length >= 12 },
-              { label: 'Has a number', test: (pw) => /\d/.test(pw) },
-            ]}
-          />
-        </DemoCard>
-        <CodeBlock code={CUSTOM_REQS_SNIPPET} language="tsx" />
-      </DocsSection>
-
-      {/* Disabled */}
-      <DocsSection title="Disabled">
-        <DemoCard>
-          <PasswordInput disabled value="secret123" />
-        </DemoCard>
-      </DocsSection>
-
-      {/* Props */}
-      <DocsSection title="Props">
-        <PropsTable
-          props={[
-            { name: 'value', type: 'string', default: '—', description: 'Controlled password value' },
-            { name: 'onChange', type: '(value: string) => void', default: '—', description: 'Called on input change' },
-            { name: 'placeholder', type: 'string', default: '"Enter password"', description: 'Input placeholder text' },
-            { name: 'showStrength', type: 'boolean', default: 'true', description: 'Show strength meter' },
-            { name: 'requirements', type: 'PasswordRequirement[]', default: '5 defaults', description: 'Custom requirements array' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable input' },
-            { name: 'className', type: 'string', default: '—', description: 'Additional CSS classes' },
-          ]}
+    <>
+      {breadcrumb && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: breadcrumb }}
         />
-      </DocsSection>
-    </DocsPage>
+      )}
+      {component && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: component }}
+        />
+      )}
+      <Client />
+    </>
   )
 }

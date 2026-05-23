@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import {
@@ -5,6 +6,29 @@ import {
   registry,
   type RegistryEntry,
 } from '@/components/showcase/registry'
+
+const READY_COUNT = registry.filter((e) => e.kind !== 'soon').length
+
+export const metadata: Metadata = {
+  title: 'Components — Browse the library',
+  description: `Browse all ${READY_COUNT}+ animated React components in the Bahrawy library. Forms, overlays, scroll effects, GSAP sections, text animations, hero layouts, and more — all copy-paste-ready with Tailwind, Framer Motion, GSAP, and Radix.`,
+  alternates: {
+    canonical: '/components',
+  },
+  openGraph: {
+    type: 'website',
+    url: 'https://bahrawy.me/components',
+    title: 'Components — Browse the Bahrawy library',
+    description: `Browse all ${READY_COUNT}+ animated React components. Copy, paste, ship.`,
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Components — Browse the Bahrawy library',
+    description: `Browse all ${READY_COUNT}+ animated React components. Copy, paste, ship.`,
+    images: ['/opengraph-image'],
+  },
+}
 
 // ---------------------------------------------------------------------------
 // Categorisation — same labels + order as the search palette.
