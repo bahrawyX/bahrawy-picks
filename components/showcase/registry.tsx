@@ -558,6 +558,33 @@ export const registry: RegistryEntry[] = [
   {
     kind: 'docs',
     id: '46',
+    slug: 'status',
+    name: 'Status',
+    description: 'Vercel-style service status display. Overall banner derives state from worst service (operational/degraded/outage/maintenance), per-service rows with 90-day uptime ribbons.',
+    category: 'data',
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '47',
+    slug: 'diff',
+    name: 'Diff',
+    description: 'GitHub-style unified code diff. File header with filename and +N/-N stats, monospace body with old + new line numbers, ± gutter glyph, tinted row backgrounds.',
+    category: 'data',
+    dependencies: ['lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '48',
+    slug: 'logs',
+    name: 'Logs',
+    description: 'Terminal-style log stream. Timestamp + colored level pill + optional [source] tag + message. Filter chips toggle visible levels, auto-scroll follows new entries.',
+    category: 'data',
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '49',
     slug: 'kanban',
     name: 'Kanban',
     description:
@@ -576,7 +603,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '47',
+    id: '50',
     slug: 'virtual-list',
     name: 'Virtual List',
     description:
@@ -587,7 +614,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '48',
+    id: '51',
     slug: 'text-reveal',
     name: 'Text Reveal',
     description: 'Words, characters, or lines reveal with a smooth clip-mask slide-up animation triggered on scroll.',
@@ -596,7 +623,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '49',
+    id: '52',
     slug: 'gradient-text',
     name: 'Gradient Text',
     description: 'Text with an animated flowing gradient. Six built-in presets plus custom colors.',
@@ -605,7 +632,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '50',
+    id: '53',
     slug: 'typewriter-text',
     name: 'Typewriter Text',
     description: 'Classic typewriter effect with natural typing speed variation, delete-and-retype cycling, and blinking cursor.',
@@ -614,7 +641,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '51',
+    id: '54',
     slug: 'flip-text',
     name: 'Flip Text',
     description: 'Split-flap display effect where each character flips in with 3D rotation like a departures board.',
@@ -623,7 +650,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '52',
+    id: '55',
     slug: 'text-scramble',
     name: 'Text Scramble',
     description: 'Characters scramble through random chars before resolving. Multiple charsets including binary, hex, and matrix.',
@@ -632,7 +659,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '53',
+    id: '56',
     slug: 'blur-reveal',
     name: 'Blur Reveal',
     description: 'Content fades in from heavy blur to sharp focus with directional movement. Supports staggered children.',
@@ -641,7 +668,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '54',
+    id: '57',
     slug: 'floating-elements',
     name: 'Floating Elements',
     description: 'Elements float and drift gently in random directions. Optional mouse repel physics.',
@@ -650,7 +677,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '55',
+    id: '58',
     slug: 'parallax-section',
     name: 'Parallax Section',
     description: 'Elements move at different speeds on scroll creating depth. Configurable speed and direction.',
@@ -659,7 +686,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '56',
+    id: '59',
     slug: 'stagger-reveal',
     name: 'Stagger Reveal',
     description: 'Container that automatically staggers its children in on scroll. Six direction modes.',
@@ -668,7 +695,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '57',
+    id: '60',
     slug: 'scroll-path-reveal',
     name: 'Scroll Path Reveal',
     description:
@@ -679,7 +706,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '58',
+    id: '61',
     slug: 'card-stack-scroll',
     name: 'Card Stack Scroll',
     description:
@@ -689,7 +716,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '59',
+    id: '62',
     slug: 'dynamic-island',
     name: 'Dynamic Island',
     description:
@@ -700,7 +727,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '60',
+    id: '63',
     slug: 'accordion',
     name: 'Accordion',
     description:
@@ -711,7 +738,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '61',
+    id: '64',
     slug: 'image-hover-reveal',
     name: 'Image Hover Reveal',
     description:
@@ -722,7 +749,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '62',
+    id: '65',
     slug: 'image-swap-text',
     name: 'Image Swap Text',
     description:
@@ -733,7 +760,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '63',
+    id: '66',
     slug: 'scroll-rail',
     name: 'Scroll Rail',
     description:
@@ -744,7 +771,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '64',
+    id: '67',
     slug: 'tabs',
     name: 'Tabs',
     description:
@@ -755,7 +782,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '65',
+    id: '68',
     slug: 'hover-card',
     name: 'Hover Card',
     description:
@@ -766,7 +793,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '66',
+    id: '69',
     slug: 'avatar-group',
     name: 'Avatar Group',
     description:
@@ -777,7 +804,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '67',
+    id: '70',
     slug: 'progress-ring',
     name: 'Progress Ring',
     description:
@@ -788,7 +815,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '68',
+    id: '71',
     slug: 'switch',
     name: 'Switch',
     description:
@@ -799,7 +826,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '69',
+    id: '72',
     slug: 'toast',
     name: 'Toast',
     description:
@@ -810,7 +837,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '70',
+    id: '73',
     slug: 'skeleton',
     name: 'Skeleton',
     description:
@@ -821,7 +848,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '71',
+    id: '74',
     slug: 'hero-spotlight',
     name: 'Hero Spotlight',
     description:
@@ -831,7 +858,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '72',
+    id: '75',
     slug: 'hero-marquee',
     name: 'Hero Marquee',
     description:
@@ -841,7 +868,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '73',
+    id: '76',
     slug: 'hero-counter',
     name: 'Hero Counter',
     description:
@@ -851,7 +878,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '74',
+    id: '77',
     slug: 'hero-aurora',
     name: 'Hero Aurora',
     description:
@@ -861,7 +888,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '75',
+    id: '78',
     slug: 'pricing-tier',
     name: 'Pricing Tier',
     description:
@@ -871,7 +898,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '76',
+    id: '79',
     slug: 'pricing-toggle',
     name: 'Pricing Toggle',
     description:
@@ -881,7 +908,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '77',
+    id: '80',
     slug: 'pricing-compare',
     name: 'Pricing Compare',
     description:
@@ -891,7 +918,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '78',
+    id: '81',
     slug: 'footer-minimal',
     name: 'Footer Minimal',
     description:
@@ -901,7 +928,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '79',
+    id: '82',
     slug: 'footer-newsletter',
     name: 'Footer Newsletter',
     description:
@@ -911,7 +938,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '80',
+    id: '83',
     slug: 'footer-brand-mark',
     name: 'Footer Brand Mark',
     description:
@@ -921,7 +948,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '81',
+    id: '84',
     slug: 'stats-grid',
     name: 'Stats Grid',
     description:
@@ -931,7 +958,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '82',
+    id: '85',
     slug: 'testimonials-slider',
     name: 'Testimonials Slider',
     description:
@@ -941,7 +968,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '83',
+    id: '86',
     slug: 'cta-section',
     name: 'CTA Section',
     description:
@@ -951,7 +978,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '84',
+    id: '87',
     slug: 'faq-section',
     name: 'FAQ Section',
     description:
@@ -961,7 +988,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '85',
+    id: '88',
     slug: 'logo-cloud',
     name: 'Logo Cloud',
     description:
@@ -971,7 +998,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '86',
+    id: '89',
     slug: 'bento-features',
     name: 'Bento Features',
     description:
@@ -981,7 +1008,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '87',
+    id: '90',
     slug: 'divider',
     name: 'Divider',
     description:
@@ -992,7 +1019,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '88',
+    id: '91',
     slug: 'banner',
     name: 'Banner',
     description:
@@ -1003,7 +1030,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '89',
+    id: '92',
     slug: 'breadcrumb',
     name: 'Breadcrumb',
     description:
@@ -1014,7 +1041,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '90',
+    id: '93',
     slug: 'empty-state',
     name: 'Empty State',
     description:
@@ -1024,7 +1051,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '91',
+    id: '94',
     slug: 'loader-dots',
     name: 'Loader Dots',
     description:
@@ -1035,7 +1062,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '92',
+    id: '95',
     slug: 'status-pill',
     name: 'Status Pill',
     description:
@@ -1046,7 +1073,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '93',
+    id: '96',
     slug: 'stat-card',
     name: 'Stat Card',
     description:
@@ -1056,7 +1083,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '94',
+    id: '97',
     slug: 'drawer',
     name: 'Drawer',
     description:
@@ -1067,7 +1094,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '95',
+    id: '98',
     slug: 'dropdown-menu',
     name: 'Dropdown Menu',
     description:
@@ -1077,7 +1104,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '96',
+    id: '99',
     slug: 'tooltip',
     name: 'Tooltip',
     description:
@@ -1088,7 +1115,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '97',
+    id: '100',
     slug: 'quote-card',
     name: 'Quote Card',
     description:
@@ -1098,7 +1125,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '98',
+    id: '101',
     slug: 'search-input',
     name: 'Search Input',
     description:
@@ -1109,7 +1136,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '99',
+    id: '102',
     slug: 'sparkline',
     name: 'Sparkline',
     description:
@@ -1120,7 +1147,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '100',
+    id: '103',
     slug: 'pinned-story',
     name: 'Pinned Story',
     description:
@@ -1130,7 +1157,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '101',
+    id: '104',
     slug: 'constellation-scroll',
     name: 'Constellation Scroll',
     description:
@@ -1140,7 +1167,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '102',
+    id: '105',
     slug: 'mega-nav',
     name: 'Mega Nav',
     description:
@@ -1151,7 +1178,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '103',
+    id: '106',
     slug: 'hero-scroll-grow',
     name: 'Hero Scroll Grow',
     description:
@@ -1161,7 +1188,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '104',
+    id: '107',
     slug: 'carousel-3d',
     name: 'Carousel 3D',
     description:
@@ -1171,7 +1198,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '105',
+    id: '108',
     slug: 'hero-split',
     name: 'Hero Split',
     description:
@@ -1181,7 +1208,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '106',
+    id: '109',
     slug: 'phrase-slots',
     name: 'Phrase Slots',
     description:
@@ -1191,7 +1218,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '107',
+    id: '110',
     slug: 'magnetic-field',
     name: 'Magnetic Field',
     description:
@@ -1201,7 +1228,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '108',
+    id: '111',
     slug: 'portal-scroll',
     name: 'Portal Scroll',
     description:
@@ -1211,7 +1238,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '109',
+    id: '112',
     slug: 'cursor-lens',
     name: 'Cursor Lens',
     description:
@@ -1221,7 +1248,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '110',
+    id: '113',
     slug: 'glitch-headline',
     name: 'Glitch Headline',
     description:
@@ -1231,7 +1258,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '111',
+    id: '114',
     slug: 'type-tunnel',
     name: 'Type Tunnel',
     description:
@@ -1241,7 +1268,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '112',
+    id: '115',
     slug: 'paper-tear',
     name: 'Paper Tear',
     description:
@@ -1251,7 +1278,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '113',
+    id: '116',
     slug: 'liquid-letters',
     name: 'Liquid Letters',
     description:
@@ -1261,7 +1288,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '114',
+    id: '117',
     slug: 'depth-cards',
     name: 'Depth Cards',
     description:
@@ -1271,7 +1298,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '115',
+    id: '118',
     slug: 'wave-text',
     name: 'Wave Text',
     description: 'A line of text where each character undulates in a sine wave with a staggered phase. Pure CSS, no JS animation loop.',
@@ -1280,7 +1307,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '116',
+    id: '119',
     slug: 'disperse-text',
     name: 'Disperse Text',
     description: 'Letters explode away from their resting position on hover then settle back when the cursor leaves. Per-character offsets seeded by index for stable layout.',
@@ -1289,7 +1316,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '117',
+    id: '120',
     slug: 'magnetic-text',
     name: 'Magnetic Text',
     description: 'Every character has a magnetic pull toward the cursor — yanked along the cursor vector with strength proportional to proximity, lerped per frame for a spring-like feel.',
@@ -1298,7 +1325,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '118',
+    id: '121',
     slug: 'variable-font-morph',
     name: 'Variable Font Morph',
     description: "Each character animates its `font-variation-settings: 'wght'` axis between two values with a staggered phase. Works with any variable font with a weight axis.",
@@ -1307,7 +1334,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '119',
+    id: '122',
     slug: 'neon-pulse',
     name: 'Neon Pulse',
     description: "Text wearing a neon sign's glow: layered text-shadows, a breathing opacity pulse, and an occasional flicker that punches brightness down.",
@@ -1316,7 +1343,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '120',
+    id: '123',
     slug: 'gradient-flow',
     name: 'Gradient Flow',
     description: 'Text whose fill is a linear gradient sized 300% of the text width; animating background-position slides the colors through the glyphs in a seamless loop.',
@@ -1325,7 +1352,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '121',
+    id: '124',
     slug: 'holo-text',
     name: 'Holo Text',
     description: 'Holographic text: a cyan layer and a magenta layer drift in opposite directions behind a white base layer, blending in `screen` mode.',
@@ -1334,7 +1361,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '122',
+    id: '125',
     slug: 'shine-sweep',
     name: 'Shine Sweep',
     description: 'A bright shine stripe sweeps diagonally across the text. background-clip: text + animated background-position. Runs continuously or only on hover.',
@@ -1343,7 +1370,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '123',
+    id: '126',
     slug: 'char-spring',
     name: 'Char Spring',
     description: 'Each character springs up from below when the element enters the viewport. overflow-hidden container + per-char delay for a typewriter-with-bounce feel.',
@@ -1352,7 +1379,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '124',
+    id: '127',
     slug: 'stretch-text',
     name: 'Stretch Text',
     description: 'On hover, each character stretches horizontally via `transform: scaleX`. Staggered per-char delays make the stretch read as a wave through the line.',
@@ -1361,7 +1388,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '125',
+    id: '128',
     slug: 'time-dial',
     name: 'Time Dial',
     description: 'Pinned scroll section with a giant rotating dial. Chapters sit around the perimeter at evenly-spaced angles; scroll rotates the dial so each chapter passes under a top pointer, and the right-hand content panel crossfades to that chapter.',
@@ -1370,7 +1397,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '126',
+    id: '129',
     slug: 'cinema-reel',
     name: 'Cinema Reel',
     description: 'Pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, the rest dim.',
@@ -1379,7 +1406,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '127',
+    id: '130',
     slug: 'vinyl-player',
     name: 'Vinyl Player',
     description: 'A turntable with a spinning vinyl record + tonearm that rotates to drop into each track. Per-track info panel + a live waveform highlights the active track.',
@@ -1388,7 +1415,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '129',
+    id: '132',
     slug: 'receipt-unroll',
     name: 'Receipt Unroll',
     description: 'A paper receipt unrolls from a printer slot as you scroll. Header, monospaced line items type in, subtotal/total animate, scalloped edges + barcode at the bottom.',
@@ -1397,7 +1424,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '130',
+    id: '133',
     slug: 'orbital-menu',
     name: 'Orbital Menu',
     description: 'A FAB-style trigger button that fans its menu items outward along an arc on click. Per-item spring stagger, configurable arc direction, click outside or Escape to close.',
@@ -1406,7 +1433,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '131',
+    id: '134',
     slug: 'habit-heatmap',
     name: 'Habit Heatmap',
     description: 'GitHub-style contribution grid. 7 rows × N weeks, cell intensity scales with value through a 5-step accent ramp. Weekday axis, month markers, "Less → More" legend, hover tooltips.',
@@ -1415,7 +1442,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '133',
+    id: '136',
     slug: 'cassette-tape',
     name: 'Cassette Tape',
     description: 'Vintage audio cassette: rotating reels, tape line between them, label with side / title / duration, play-pause button, 3D flip between A-side and B-side.',
@@ -1424,7 +1451,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '134',
+    id: '137',
     slug: 'liquid-toggle',
     name: 'Liquid Toggle',
     description: 'Toggle switch with a goo-filter handle that morphs between off and on positions like a fluid blob, bonding with small anchor dots at each end as it passes through.',
@@ -1433,7 +1460,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '132',
+    id: '135',
     slug: 'like-burst',
     name: 'Like Burst',
     description: 'Heart button that fills + scales + emits a radial particle burst on click. Click again to un-like (no burst). Controlled or uncontrolled, optional running count.',
@@ -1442,7 +1469,7 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '135',
+    id: '138',
     slug: 'mood-slider',
     name: 'Mood Slider',
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',

@@ -44,7 +44,7 @@ export default function KanbanDocs() {
       title="Kanban"
       slug="kanban"
       description="A complete, self-managing task board. Drop it on a page and you have drag-and-drop columns, subtasks, filters, list view, and persistence — out of the box."
-      category="46 · data"
+      category="49 · data"
     >
       <DocsSection
         title="Live demo"

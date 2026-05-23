@@ -68,7 +68,7 @@ export default function PricingTierDocs() {
       title="Pricing Tier"
       slug="pricing-tier"
       description="Three-tier pricing card grid. One tier can be `featured` — gets a glow ring, a Recommended pill, and lifts slightly above the rest. Cards stagger in on scroll."
-      category="75 · pricing"
+      category="78 · pricing"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">

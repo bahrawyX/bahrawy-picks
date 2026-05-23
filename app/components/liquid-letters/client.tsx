@@ -21,7 +21,7 @@ export default function LiquidLettersDocs() {
       title="Liquid Letters"
       slug="liquid-letters"
       description="A typography effect that makes letters look like blobs of liquid. The classic CSS-goo SVG filter (Gaussian blur + alpha-tightening colour matrix) is applied to both the SVG text AND a cursor-following blob — so the blob bonds with whichever letters it touches and pulls them into a single fluid shape."
-      category="113 · type effect"
+      category="116 · type effect"
     >
       <DocsSection
         title="Live demo"

@@ -38,7 +38,7 @@ export default function StaggerRevealDocs() {
       title="Stagger Reveal"
       slug="stagger-reveal"
       description="Animate children into view one by one with configurable direction, stagger delay, and distance. Supports up, down, left, right, scale, and fade directions."
-      category="56 · MOTION"
+      category="59 · MOTION"
     >
       <DocsSection title="Preview" description="Tweak direction, timing, and distance, then hit Replay to see the animation.">
         <DemoCard className="items-start justify-center min-h-[200px]">

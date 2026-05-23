@@ -14,7 +14,7 @@ export default function DividerDocs() {
       title="Divider"
       slug="divider"
       description="A thin horizontal rule that animates its width in on scroll. Optional centered label, three styles."
-      category="87 · ui"
+      category="90 · ui"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[280px] items-stretch">

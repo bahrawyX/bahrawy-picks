@@ -10,7 +10,7 @@ export default function MagneticTextDocs() {
       title="Magnetic Text"
       slug="magnetic-text"
       description="Every character of the text has a magnetic pull toward the cursor. Within `radius` px the character is yanked along the cursor vector with strength `(1 − dist/radius) × strength`. Lerped per-frame for a spring-like feel."
-      category="117 · text effect"
+      category="120 · text effect"
     >
       <DocsSection title="Move your cursor through it">
         <DemoCard className="min-h-[220px]">

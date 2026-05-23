@@ -282,6 +282,24 @@ export const componentRegistry: RegistryItem[] = [
       'Figma/Vercel-style multiplayer cursors with colored chat bubbles. Spring-driven movement, optional typing dots, white bubbles that pop on a dark canvas.',
   },
   {
+    title: 'Status',
+    slug: 'status',
+    description:
+      'Vercel-style service status display. Overall banner derives state from worst service (operational/degraded/outage/maintenance), per-service rows with 90-day uptime ribbons.',
+  },
+  {
+    title: 'Diff',
+    slug: 'diff',
+    description:
+      'GitHub-style unified code diff. File header with filename and +N/-N stats, monospace body with old + new line numbers, ± gutter glyph, tinted row backgrounds.',
+  },
+  {
+    title: 'Logs',
+    slug: 'logs',
+    description:
+      'Terminal-style log stream. Timestamp + colored level pill + optional [source] tag + message. Filter chips toggle visible levels, auto-scroll follows new entries.',
+  },
+  {
     title: 'Accordion',
     slug: 'accordion',
     description:

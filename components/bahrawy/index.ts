@@ -487,3 +487,12 @@ export type {
   LiveCursorsProps,
   LiveCursorsUser,
 } from './live-cursors'
+
+export { Status } from './status'
+export type { StatusProps, StatusService, StatusState } from './status'
+
+export { Diff } from './diff'
+export type { DiffProps, DiffLine } from './diff'
+
+export { Logs } from './logs'
+export type { LogsProps, LogEntry, LogLevel } from './logs'
