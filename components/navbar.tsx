@@ -166,13 +166,8 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Global ⌘K search */}
-        <div className="hidden md:block">
-          <GlobalSearch />
-        </div>
-        <div className="md:hidden">
-          <GlobalSearch compactOnly />
-        </div>
+        {/* Global ⌘K search — single instance; trigger is responsive internally */}
+        <GlobalSearch />
 
         <a
           href="https://github.com"

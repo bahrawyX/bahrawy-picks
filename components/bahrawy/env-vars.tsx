@@ -101,18 +101,19 @@ function RevealToggle({
         aria-label={visible ? 'Hide values' : 'Show values'}
         onClick={() => onChange(!visible)}
         className={cn(
-          'relative h-5 w-9 shrink-0 rounded-full border transition-colors',
+          'relative flex h-5 w-9 shrink-0 items-center rounded-full border px-0.5 py-0.5 transition-colors duration-150',
           'outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
           visible
             ? 'border-white/40 bg-white/30'
             : 'border-white/15 bg-white/[0.04]',
         )}
       >
-        <motion.span
+        <span
           aria-hidden
-          className="absolute top-1/2 h-3.5 w-3.5 rounded-full bg-white shadow-md"
-          animate={{ left: visible ? 'calc(100% - 1.05rem)' : '0.15rem', y: '-50%' }}
-          transition={{ type: 'spring', stiffness: 600, damping: 32 }}
+          className={cn(
+            'block h-3.5 w-3.5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out',
+            visible ? 'translate-x-4' : 'translate-x-0',
+          )}
         />
       </button>
     </div>

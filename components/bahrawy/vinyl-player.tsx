@@ -302,55 +302,57 @@ export function VinylPlayer({
           {/* INFO PANEL --------------------------------------- */}
           <div className="relative flex items-center px-8 sm:px-12 lg:px-14">
             <div className="relative w-full">
-              {tracks.map((t, i) => {
-                const accent = t.accent ?? accentColor
-                return (
-                  <div
-                    key={t.id}
-                    ref={(el) => {
-                      trackRefs.current[i] = el
-                    }}
-                    className="absolute inset-0 flex flex-col items-start justify-center"
-                  >
-                    <p className="mb-3 inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
-                      <span
-                        aria-hidden
-                        className="block h-1 w-6 rounded-full"
-                        style={{ background: accent }}
-                      />
-                      Track {String(i + 1).padStart(2, '0')}
-                      <span className="text-white/30">/</span>
-                      {String(tracks.length).padStart(2, '0')}
-                    </p>
-                    <h2
-                      className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
-                      style={{ textShadow: `0 0 30px ${accent}33` }}
+              {/* Fixed-height stack — track panels overlay each other inside. */}
+              <div className="relative min-h-[260px] sm:min-h-[300px]">
+                {tracks.map((t, i) => {
+                  const accent = t.accent ?? accentColor
+                  return (
+                    <div
+                      key={t.id}
+                      ref={(el) => {
+                        trackRefs.current[i] = el
+                      }}
+                      className="absolute inset-0 flex flex-col items-start justify-center"
                     >
-                      {t.title}
-                    </h2>
-                    {t.artist && (
-                      <p className="mt-3 text-sm font-medium uppercase tracking-[0.18em] text-white/65">
-                        {t.artist}
+                      <p className="mb-3 inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+                        <span
+                          aria-hidden
+                          className="block h-1 w-6 rounded-full"
+                          style={{ background: accent }}
+                        />
+                        Track {String(i + 1).padStart(2, '0')}
+                        <span className="text-white/30">/</span>
+                        {String(tracks.length).padStart(2, '0')}
                       </p>
-                    )}
-                    {t.runtime && (
-                      <p className="mt-2 font-mono text-xs tabular-nums text-white/45">
-                        {t.runtime}
-                      </p>
-                    )}
-                  </div>
-                )
-              })}
+                      <h2
+                        className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
+                        style={{ textShadow: `0 0 30px ${accent}33` }}
+                      >
+                        {t.title}
+                      </h2>
+                      {t.artist && (
+                        <p className="mt-3 text-sm font-medium uppercase tracking-[0.18em] text-white/65">
+                          {t.artist}
+                        </p>
+                      )}
+                      {t.runtime && (
+                        <p className="mt-2 font-mono text-xs tabular-nums text-white/45">
+                          {t.runtime}
+                        </p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
 
+              {/* CTA sits in natural flow below the track stack — no glow
+                  bleeding behind the runtime text any more. */}
               {cta && (
-                <div
-                  ref={ctaRef}
-                  className="pointer-events-none absolute inset-x-0 bottom-[-120px] sm:bottom-[-100px]"
-                >
+                <div ref={ctaRef} className="mt-10">
                   <a
                     href={cta.href ?? '#'}
                     onClick={cta.onClick}
-                    className="group pointer-events-auto inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
                     style={{
                       boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
                     }}

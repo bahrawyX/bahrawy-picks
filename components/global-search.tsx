@@ -22,7 +22,7 @@
 
 import * as React from 'react'
 import { createPortal } from 'react-dom'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CornerDownLeft, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -82,20 +82,28 @@ const CATEGORY_ORDER: readonly string[] = [
 // Trigger button — keeps the modal mounting concern local.
 // ---------------------------------------------------------------------------
 
-export function GlobalSearch({
-  compactOnly = false,
-}: {
-  /** Hide the "Search..." label and show only the icon. */
-  compactOnly?: boolean
-}) {
+/**
+ * Render this exactly ONCE per page — it owns the modal state and a
+ * global ⌘K keydown listener. Mounting it twice (e.g. one desktop +
+ * one mobile copy) means two opens at once and only one closes when
+ * you pick a result. The trigger is responsive on its own.
+ */
+export function GlobalSearch() {
   const [open, setOpen] = React.useState(false)
   const [isMac, setIsMac] = React.useState(false)
+  const pathname = usePathname()
 
   React.useEffect(() => {
     if (typeof navigator !== 'undefined') {
       setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.platform))
     }
   }, [])
+
+  // Close on route change — covers any code path that navigates while
+  // open (result click, in-app link, browser back, etc.).
+  React.useEffect(() => {
+    setOpen(false)
+  }, [pathname])
 
   // Global keyboard listener — ⌘K / Ctrl+K toggle, Esc close.
   React.useEffect(() => {
@@ -119,20 +127,13 @@ export function GlobalSearch({
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Search the library"
-        className={cn(
-          'inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] py-1.5 text-sm text-white/70 transition-colors hover:bg-white/[0.08] hover:text-white',
-          compactOnly ? 'px-2' : 'px-3 sm:px-3',
-        )}
+        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-2 py-1.5 text-sm text-white/70 transition-colors hover:bg-white/[0.08] hover:text-white md:px-3"
       >
         <Search className="h-3.5 w-3.5" />
-        {!compactOnly && (
-          <>
-            <span className="hidden sm:inline">Search…</span>
-            <kbd className="hidden items-center gap-0.5 rounded border border-white/10 bg-black/40 px-1.5 py-0.5 font-mono text-[10px] text-white/55 sm:inline-flex">
-              {isMac ? '⌘' : 'Ctrl'} K
-            </kbd>
-          </>
-        )}
+        <span className="hidden md:inline">Search…</span>
+        <kbd className="hidden items-center gap-0.5 rounded border border-white/10 bg-black/40 px-1.5 py-0.5 font-mono text-[10px] text-white/55 md:inline-flex">
+          {isMac ? '⌘' : 'Ctrl'} K
+        </kbd>
       </button>
 
       <SearchPalette open={open} setOpen={setOpen} />
