@@ -77,7 +77,7 @@ export default function OTPInputDocs() {
       title="OTP Input"
       slug="otp-input"
       description="One-time password input with animated character boxes, paste support, auto-focus navigation, and error/success states."
-      category="07 · DATA"
+      category="19 · DATA"
     >
       {/* ---- Basic 6-digit ---- */}
       <DocsSection title="Basic 6-digit">

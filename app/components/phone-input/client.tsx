@@ -52,7 +52,7 @@ export default function PhoneInputDocs() {
 
   return (
     <DocsPage
-      category="01 · form"
+      category="03 · form"
       title="Phone input"
       slug="phone-input"
       description="International phone input with searchable country selector, as-you-type formatting, and E.164 output. Built on libphonenumber-js + shadcn Command."

@@ -36,7 +36,7 @@ export default function FloatingElementsDocs() {
 
   return (
     <DocsPage
-      category="15 · motion"
+      category="54 · motion"
       title="Floating elements"
       slug="floating-elements"
       description="Ambient floating particles that drift smoothly across a container. Supports mouse repel, variable sizing, and configurable speed."

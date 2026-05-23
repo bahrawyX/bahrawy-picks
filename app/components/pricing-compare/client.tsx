@@ -61,7 +61,7 @@ export default function PricingCompareDocs() {
       title="Pricing Compare"
       slug="pricing-compare"
       description="Tall feature comparison table. Plan headers across the top, feature groups down the side. The recommended column gets a subtle accent panel behind it. Rows fade up as they enter the viewport."
-      category="71 · pricing"
+      category="77 · pricing"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">

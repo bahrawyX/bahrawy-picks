@@ -35,7 +35,7 @@ export default function SignaturePadDocs() {
       title="Signature Pad"
       slug="signature-pad"
       description="Canvas-based signature pad with draw and type modes, bezier smoothing, velocity-based stroke width, and export to PNG/JPEG/SVG."
-      category="07 · FORM"
+      category="23 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic">

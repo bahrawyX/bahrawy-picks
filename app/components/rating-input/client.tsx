@@ -28,7 +28,7 @@ export default function RatingInputDocs() {
       title="Rating Input"
       slug="rating-input"
       description="Interactive rating input with star, heart, emoji, and thumb variants, half-star precision, and labels."
-      category="08 · FORM"
+      category="30 · FORM"
     >
       {/* Star (default) */}
       <DocsSection title="Stars (default)">

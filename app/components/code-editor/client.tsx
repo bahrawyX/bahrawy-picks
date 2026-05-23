@@ -105,7 +105,7 @@ export default function CodeEditorDocs() {
       title="Code Editor"
       slug="code-editor"
       description="Monaco-powered inline code editor with multi-file tabs, diff mode, custom Bahrawy theme, run button, and output panel."
-      category="07 · DATA"
+      category="36 · DATA"
     >
       {/* Basic */}
       <DocsSection title="Basic">

@@ -23,7 +23,7 @@ export default function SnippetDocs() {
       title="Snippet"
       slug="snippet"
       description="A copy-and-go code snippet. A tab bar at the top — npm / pnpm / yarn / bun, or any tabs you pass — with a spring-animated active pill. The code body crossfades when the active tab changes. A copy button on the right swaps to a checkmark on success."
-      category="134 · ui"
+      category="44 · ui"
     >
       <DocsSection title="Install command (with tabs)">
         <DemoCard className="min-h-[180px]">

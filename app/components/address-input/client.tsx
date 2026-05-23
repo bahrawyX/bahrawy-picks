@@ -41,7 +41,7 @@ export default function AddressInputDocs() {
       title="Address Input"
       slug="address-input"
       description="Address autocomplete powered by OpenStreetMap Nominatim with split fields, map preview, and geolocation."
-      category="07 · FORM"
+      category="28 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic search">

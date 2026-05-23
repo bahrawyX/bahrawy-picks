@@ -50,7 +50,7 @@ export default function QueueDocs() {
       title="Queue"
       slug="queue"
       description="Linear-style collapsible task groups. Each section header toggles the group open or closed with a spring-eased height animation. Items have a soft round checkbox that fades + strikes the label through on complete, plus optional sub-text and avatar slots."
-      category="130 · data"
+      category="40 · data"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[420px] items-start py-8">

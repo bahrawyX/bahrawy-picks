@@ -246,6 +246,42 @@ export const componentRegistry: RegistryItem[] = [
       'iPhone-style notch that morphs smoothly between rich states — idle, ring, timer, record, music, maps, airdrop. Spring-physics layout animation.',
   },
   {
+    title: 'Queue',
+    slug: 'queue',
+    description:
+      'Linear-style collapsible task groups. Spring-animated section toggles, soft round checkboxes with strikethrough on complete, optional avatars and sub-text per item.',
+  },
+  {
+    title: 'Env Vars',
+    slug: 'env-vars',
+    description:
+      'Vercel-style environment-variable list. Monospace name, Required pill, masked dot values, per-row copy with checkmark, header eye-toggle reveals everything at once.',
+  },
+  {
+    title: 'Tree',
+    slug: 'tree',
+    description:
+      'File-tree with rotating chevrons, folder/file lucide icons, gutter guide lines down the indent, hover row highlight, controlled or uncontrolled expanded state.',
+  },
+  {
+    title: 'Ticker',
+    slug: 'ticker',
+    description:
+      'Inline stock ticker — logo, symbol, price, signed delta with up/down triangle. Flashes green/red on price change. Marquee row variant scrolls multiple tickers, pauses on hover.',
+  },
+  {
+    title: 'Snippet',
+    slug: 'snippet',
+    description:
+      'Install-command snippet with a tab bar (npm/pnpm/yarn/bun, or any tabs), spring-animated active pill, crossfaded code body, one-click copy with checkmark.',
+  },
+  {
+    title: 'Live Cursors',
+    slug: 'live-cursors',
+    description:
+      'Figma/Vercel-style multiplayer cursors with colored chat bubbles. Spring-driven movement, optional typing dots, white bubbles that pop on a dark canvas.',
+  },
+  {
     title: 'Accordion',
     slug: 'accordion',
     description:
@@ -674,41 +710,5 @@ export const componentRegistry: RegistryItem[] = [
     title: 'Mood Slider',
     slug: 'mood-slider',
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',
-  },
-  {
-    title: 'Queue',
-    slug: 'queue',
-    description:
-      'Linear-style collapsible task groups. Spring-animated section toggles, soft round checkboxes with strikethrough on complete, optional avatars and sub-text per item.',
-  },
-  {
-    title: 'Env Vars',
-    slug: 'env-vars',
-    description:
-      'Vercel-style environment-variable list. Monospace name, Required pill, masked dot values, per-row copy with checkmark, header eye-toggle reveals everything at once.',
-  },
-  {
-    title: 'Tree',
-    slug: 'tree',
-    description:
-      'File-tree with rotating chevrons, folder/file lucide icons, gutter guide lines down the indent, hover row highlight, controlled or uncontrolled expanded state.',
-  },
-  {
-    title: 'Ticker',
-    slug: 'ticker',
-    description:
-      'Inline stock ticker — logo, symbol, price, signed delta with up/down triangle. Flashes green/red on price change. Marquee row variant scrolls multiple tickers, pauses on hover.',
-  },
-  {
-    title: 'Snippet',
-    slug: 'snippet',
-    description:
-      'Install-command snippet with a tab bar (npm/pnpm/yarn/bun, or any tabs), spring-animated active pill, crossfaded code body, one-click copy with checkmark.',
-  },
-  {
-    title: 'Live Cursors',
-    slug: 'live-cursors',
-    description:
-      'Figma/Vercel-style multiplayer cursors with colored chat bubbles. Spring-driven movement, optional typing dots, white bubbles that pop on a dark canvas.',
   },
 ]

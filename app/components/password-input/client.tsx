@@ -31,7 +31,7 @@ export default function PasswordInputDocs() {
       title="Password Input"
       slug="password-input"
       description="Password field with show/hide toggle, real-time strength meter, and configurable requirements checklist."
-      category="08 · FORM"
+      category="29 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic">

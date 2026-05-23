@@ -24,7 +24,7 @@ export default function CopyButtonDocs() {
       title="Copy Button"
       slug="copy-button"
       description="One-click clipboard copy button with animated idle/copied/error states and tooltip feedback."
-      category="09 · UI"
+      category="31 · UI"
     >
       {/* Basic */}
       <DocsSection title="Basic">

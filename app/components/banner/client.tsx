@@ -10,7 +10,7 @@ export default function BannerDocs() {
       title="Banner"
       slug="banner"
       description="Sticky announcement banner. Slide-in from the top, intent variants, dismissible (remembered for the session by default)."
-      category="82 · overlay"
+      category="88 · overlay"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[280px] items-stretch">

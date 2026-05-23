@@ -56,7 +56,7 @@ export default function TickerDocs() {
       title="Ticker"
       slug="ticker"
       description="An inline stock-ticker pill: logo, symbol, price, signed delta with an up/down triangle. When the price updates, the row briefly flashes green or red and the delta scales up for an instant. <TickerRow> wraps a list of tickers in a seamless horizontal marquee that pauses on hover."
-      category="133 · data"
+      category="43 · data"
     >
       <DocsSection title="Single ticker (live)">
         <DemoCard className="min-h-[180px]">

@@ -20,7 +20,7 @@ export default function HeroSpotlightDocs() {
       title="Hero Spotlight"
       slug="hero-spotlight"
       description="Centered hero with a radial spotlight that follows your cursor across the section. Spring-smoothed so it glides instead of snapping. Use it as your landing page hero, or any moment that wants a calm, productive feel."
-      category="65 · hero"
+      category="71 · hero"
     >
       <DocsSection title="Live demo" description="Move your cursor across the section.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

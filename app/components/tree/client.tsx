@@ -55,7 +55,7 @@ export default function TreeDocs() {
       title="Tree"
       slug="tree"
       description="A file-tree view. Folder rows have a rotating chevron and a Folder/FolderOpen icon, file rows just the icon. Click a folder to expand or collapse with a spring-eased animation. Gutter guide lines run down the indent so the hierarchy reads at a glance."
-      category="132 · data"
+      category="42 · data"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[420px] items-start py-8">

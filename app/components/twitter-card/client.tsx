@@ -37,7 +37,7 @@ const METRICS_SNIPPET = `<TwitterCard
 export default function TwitterCardDocs() {
   return (
     <DocsPage
-      category="10 · card"
+      category="38 · card"
       title="Twitter card"
       slug="twitter-card"
       description="A beautiful tweet-style social post card with content parsing, verified badges, metric formatting, and platform branding. Built with Framer Motion animations."

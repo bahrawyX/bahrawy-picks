@@ -33,7 +33,7 @@ export default function FileUploadDocs() {
 
   return (
     <DocsPage
-      category="06 · form"
+      category="08 · form"
       title="File upload"
       slug="file-upload"
       description="Drag-and-drop file upload with animated file cards, per-file progress tracking, MIME type filtering, and size validation. Built on Framer Motion."

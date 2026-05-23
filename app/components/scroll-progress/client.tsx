@@ -34,7 +34,7 @@ export default function ScrollProgressDocs() {
       title="Scroll Progress"
       slug="scroll-progress"
       description="Fixed scroll progress bar with spring physics. Supports top, bottom, left, and right positions."
-      category="10 · MOTION"
+      category="32 · MOTION"
     >
       {/* Live demo – the bar is visible on this page */}
       <ScrollProgress position={position} showPercentage={showPct} />

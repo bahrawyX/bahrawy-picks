@@ -76,7 +76,7 @@ export default function Carousel3DDocs() {
       title="Carousel 3D"
       slug="carousel-3d"
       description="A pinned Cover Flow-style carousel. As the user scrolls, an activeIndex advances and every card retargets its translateX, translateZ, rotateY, opacity, and scale based on its offset from active. Looks like a flat row, feels like a 3D arc."
-      category="98 · gsap-section"
+      category="104 · gsap-section"
     >
       <DocsSection
         title="Live demo"

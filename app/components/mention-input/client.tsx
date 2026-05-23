@@ -48,7 +48,7 @@ export default function MentionInputDocs() {
       title="Mention Input"
       slug="mention-input"
       description="ContentEditable input with @mention support, cursor-positioned dropdown, and mention chip rendering."
-      category="07 · FORM"
+      category="25 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic">

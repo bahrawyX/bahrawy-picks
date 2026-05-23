@@ -37,7 +37,7 @@ export default function PinInputDocs() {
       title="PIN Input"
       slug="pin-input"
       description="Masked numeric PIN input with show/hide toggle, paste support, auto-focus navigation, and animated digit entry."
-      category="07 · FORM"
+      category="26 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic (4-digit)">

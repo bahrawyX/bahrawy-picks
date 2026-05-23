@@ -61,7 +61,7 @@ export default function JsonEditorDocs() {
       title="JSON Editor"
       slug="json-editor"
       description="Interactive JSON editor with tree view, raw editing, inline value editing, type badges, and copy support."
-      category="07 · DATA"
+      category="24 · DATA"
     >
       {/* Basic */}
       <DocsSection title="Basic (editable)">

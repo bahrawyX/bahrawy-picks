@@ -16,7 +16,7 @@ export default function GlitchHeadlineDocs() {
       title="Glitch Headline"
       slug="glitch-headline"
       description="A CRT-damaged display headline. Cyan + magenta channels drift in idle wobble; on hover a clip-path band sweeps through the text and slices it horizontally, shifting chunks a few pixels out of register. Pure CSS — no animation loop, no JS runtime cost."
-      category="104 · type effect"
+      category="110 · type effect"
     >
       <DocsSection
         title="Live demo"

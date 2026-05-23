@@ -38,7 +38,7 @@ export default function CurrencyInputDocs() {
       title="Currency Input"
       slug="currency-input"
       description="Formatted currency input with Intl.NumberFormat, searchable currency selector, and 30 top currencies."
-      category="07 · FORM"
+      category="27 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic">
