@@ -36,7 +36,7 @@ export default function TextScrambleDocs() {
 
   return (
     <DocsPage
-      category="58 · motion"
+      category="61 · motion"
       title="Text Scramble"
       slug="text-scramble"
       description="Hacker terminal effect — characters scramble through random chars before resolving to the final text. Supports multiple charsets and staggered reveal."

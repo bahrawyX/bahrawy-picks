@@ -318,6 +318,24 @@ export const componentRegistry: RegistryItem[] = [
       'Vercel-style deployment card. Status drives the visual: queued / building (shimmer + live elapsed counter) / ready (soft pulse) / failed (shake) / cancelled.',
   },
   {
+    title: 'AI Chat',
+    slug: 'ai-chat',
+    description:
+      'Claude/ChatGPT-style chat view with streaming text (char-by-char with a blinking caret), a thinking 3-dot indicator, and user + assistant avatars.',
+  },
+  {
+    title: 'Globe',
+    slug: 'globe',
+    description:
+      'Pure-SVG rotating 3D sphere with great-circle arc lines between geographic points. Hubs pulse, arcs draw themselves in, far-side points fade.',
+  },
+  {
+    title: 'Notification Stack',
+    slug: 'notification-stack',
+    description:
+      'iOS-style stacked notifications. Cards peek behind the top one when collapsed; hover fans them out with spring physics; click ✕ to dismiss with a slide-out.',
+  },
+  {
     title: 'Accordion',
     slug: 'accordion',
     description:

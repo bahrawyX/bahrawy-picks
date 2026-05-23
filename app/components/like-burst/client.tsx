@@ -24,7 +24,7 @@ export default function LikeBurstDocs() {
       title="Like Burst"
       slug="like-burst"
       description="A heart button that bursts on like. Heart fills + springs, a ring of small particles shoots radially outward, and a soft shockwave fans out behind them. Click again to un-like — no burst on the un-like."
-      category="138 · form"
+      category="141 · form"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[200px]">

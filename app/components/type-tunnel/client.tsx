@@ -34,7 +34,7 @@ export default function TypeTunnelDocs() {
       title="Type Tunnel"
       slug="type-tunnel"
       description="A pinned scroll section that turns a list of headlines into a Z-axis tunnel. Each line lives at a different depth in 3D space; scrolling moves the camera forward through them so they arrive from the vanishing point, swell to fill the viewport, then keep going and exit behind you. One final standing headline lands at the end."
-      category="117 · gsap-section"
+      category="120 · gsap-section"
     >
       <DocsSection
         title="Live demo"

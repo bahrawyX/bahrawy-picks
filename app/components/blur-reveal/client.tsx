@@ -38,7 +38,7 @@ export default function BlurRevealDocs() {
 
   return (
     <DocsPage
-      category="59 · motion"
+      category="62 · motion"
       title="Blur Reveal"
       slug="blur-reveal"
       description="Content fades in from a heavy blur to sharp focus, like a camera adjusting. Each child is staggered so they reveal sequentially."

@@ -18,7 +18,7 @@ export default function CassetteTapeDocs() {
       title="Cassette Tape"
       slug="cassette-tape"
       description="A vintage audio cassette — rotating reels, tape line between them, label with side / title / duration, play-pause button, and a 3D flip between A-side and B-side. Pure CSS shell + a tiny SVG for the tape curve."
-      category="139 · card"
+      category="142 · card"
     >
       <DocsSection title="Live demo · press play, then flip">
         <DemoCard className="min-h-[400px]">

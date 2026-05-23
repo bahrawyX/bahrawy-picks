@@ -11,7 +11,7 @@ export default function TooltipDocs() {
       title="Tooltip"
       slug="tooltip"
       description="A small contextual hint on hover/focus. Lightweight version of HoverCard — for one-liners, not rich previews."
-      category="102 · overlay"
+      category="105 · overlay"
     >
       <DocsSection title="Live demo" description="Hover any of the buttons. Bubble + iMessage-style pointer tail.">
         <DemoCard className="min-h-[260px]">

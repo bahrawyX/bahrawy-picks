@@ -65,7 +65,7 @@ export default function ImageHoverRevealDocs() {
       title="Image Hover Reveal"
       slug="image-hover-reveal"
       description="An image card whose hidden description slides up over the image on hover. The title lifts to make room, the image zooms a touch, and the overlay deepens — all on the same spring."
-      category="67 · card"
+      category="70 · card"
     >
       <DocsSection
         title="Live demo"
