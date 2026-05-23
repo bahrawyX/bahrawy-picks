@@ -300,6 +300,24 @@ export const componentRegistry: RegistryItem[] = [
       'Terminal-style log stream. Timestamp + colored level pill + optional [source] tag + message. Filter chips toggle visible levels, auto-scroll follows new entries.',
   },
   {
+    title: 'Terminal',
+    slug: 'terminal',
+    description:
+      'Live-looking terminal that auto-types a scripted sequence of commands + outputs. Mac-style header, blinking cursor, pause-on-hover, play/pause/replay controls, optional looping.',
+  },
+  {
+    title: 'Schema',
+    slug: 'schema',
+    description:
+      'Mini database ER diagram. Tables render as cards with column rows; SVG bezier lines draw between every foreign-key column and the row it references.',
+  },
+  {
+    title: 'Deploy',
+    slug: 'deploy',
+    description:
+      'Vercel-style deployment card. Status drives the visual: queued / building (shimmer + live elapsed counter) / ready (soft pulse) / failed (shake) / cancelled.',
+  },
+  {
     title: 'Accordion',
     slug: 'accordion',
     description:

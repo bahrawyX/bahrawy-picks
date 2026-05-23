@@ -10,7 +10,7 @@ export default function HoloTextDocs() {
       title="Holo Text"
       slug="holo-text"
       description="Holographic text: a cyan layer and a magenta layer drift in opposite directions behind the white base layer, blending in `screen` mode so their overlap reads as white but their fringes glow."
-      category="124 · text effect"
+      category="127 · text effect"
     >
       <DocsSection title="Default">
         <DemoCard className="min-h-[220px]">

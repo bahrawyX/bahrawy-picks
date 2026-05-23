@@ -10,7 +10,7 @@ export default function QuoteCardDocs() {
       title="Quote Card"
       slug="quote-card"
       description="A pull-quote card with author avatar + role. Quote glyph, body, and caption stagger in on scroll."
-      category="100 · card"
+      category="103 · card"
     >
       <DocsSection title="Live demo">
         <DemoCard className="items-stretch">

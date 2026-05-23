@@ -87,7 +87,7 @@ export default function HeroSplitDocs() {
       title="Hero Split"
       slug="hero-split"
       description={`A pinned hero with two 50/50 columns of stacked content that scroll in opposite Y directions — left up, right down. Past \`reveal\` (default 0.7) of the pin, a centred card fades in over both halves with a backdrop blur — the "meeting" moment.`}
-      category="108 · gsap-section"
+      category="111 · gsap-section"
     >
       <DocsSection
         title="Live demo"

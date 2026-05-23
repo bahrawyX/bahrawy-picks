@@ -10,7 +10,7 @@ export default function GradientFlowDocs() {
       title="Gradient Flow"
       slug="gradient-flow"
       description="Text whose fill is a linear gradient sized 300% of the text width; animating background-position slides the colors through the glyphs in a seamless loop. `background-clip: text` is the magic that paints the gradient inside the glyphs only."
-      category="123 · text effect"
+      category="126 · text effect"
     >
       <DocsSection title="Default palette">
         <DemoCard className="min-h-[220px]">

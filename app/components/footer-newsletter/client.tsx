@@ -54,7 +54,7 @@ export default function FooterNewsletterDocs() {
       title="Footer Newsletter"
       slug="footer-newsletter"
       description="Footer with a prominent newsletter signup row at the top. On successful submit, the button morphs to a Subscribed! confirmation for a beat then resets. Wire up your real onSubmit to send to your provider."
-      category="82 · footer"
+      category="85 · footer"
     >
       <DocsSection title="Live demo" description="Type any email and click Subscribe.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

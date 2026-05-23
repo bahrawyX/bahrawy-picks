@@ -496,3 +496,16 @@ export type { DiffProps, DiffLine } from './diff'
 
 export { Logs } from './logs'
 export type { LogsProps, LogEntry, LogLevel } from './logs'
+
+export { Terminal } from './terminal'
+export type { TerminalProps, TerminalStep, TerminalVariant } from './terminal'
+
+export { Schema } from './schema'
+export type { SchemaProps, SchemaTable, SchemaColumn } from './schema'
+
+export { Deploy } from './deploy'
+export type {
+  DeployProps,
+  DeployStatus,
+  DeployEnvironment,
+} from './deploy'

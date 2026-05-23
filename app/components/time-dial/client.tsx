@@ -72,7 +72,7 @@ export default function TimeDialDocs() {
       title="Time Dial"
       slug="time-dial"
       description="A pinned scroll section built around a giant rotating dial — like the back of a film camera, a museum exhibit selector, or a vintage radio's tuning ring. Chapters sit around the perimeter at evenly-spaced angles; scroll rotates the dial clockwise so each chapter passes under a top pointer, and the content panel on the right crossfades to that chapter's story."
-      category="128 · gsap-section"
+      category="131 · gsap-section"
     >
       <DocsSection
         title="Live demo"

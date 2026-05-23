@@ -19,7 +19,7 @@ export default function ScrollPathRevealDocs() {
 
   return (
     <DocsPage
-      category="60 · scroll"
+      category="63 · scroll"
       title="Scroll Path Reveal"
       slug="scroll-path-reveal"
       description="A signature calligraphic path that draws itself as you scroll. Powered by framer-motion's pathLength motion value — no JS animation loop, no layout reads, just GPU-driven stroke."

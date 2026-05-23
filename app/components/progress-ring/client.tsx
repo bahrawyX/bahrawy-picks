@@ -54,7 +54,7 @@ export default function ProgressRingDocs() {
       title="Progress Ring"
       slug="progress-ring"
       description="Circular progress indicator. The stroke and the center label both spring smoothly to the new value — drag the slider or toggle Animate to watch."
-      category="70 · ui"
+      category="73 · ui"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[280px]">

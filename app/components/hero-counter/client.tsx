@@ -24,7 +24,7 @@ export default function HeroCounterDocs() {
       title="Hero Counter"
       slug="hero-counter"
       description="Hero layout where a giant stat counts up on mount alongside a column of feature blurbs. The number rides a spring on a motion value so the digits settle into place rather than tick linearly."
-      category="76 · hero"
+      category="79 · hero"
     >
       <DocsSection title="Live demo" description="The counter starts on mount — refresh to see it again.">
         <div className="overflow-hidden rounded-2xl border border-white/10">
