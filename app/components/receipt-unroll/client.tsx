@@ -28,7 +28,7 @@ export default function ReceiptUnrollDocs() {
       title="Receipt Unroll"
       slug="receipt-unroll"
       description="A paper receipt unrolls from a printer slot at the top of the viewport as you scroll. Header, monospaced line items type in one at a time, subtotal/total animate at the bottom, scalloped edges + barcode at the very bottom."
-      category="144 · gsap-section"
+      category="147 · gsap-section"
     >
       <DocsSection title="Live demo" description="Scroll into the section — the receipt prints out, item by item, finishing with the total + a barcode.">
         <p className="text-xs text-white/40">↓ scroll to print</p>

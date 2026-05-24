@@ -539,3 +539,16 @@ export type { NebulaProps } from './nebula'
 
 export { SpotlightTour } from './spotlight-tour'
 export type { SpotlightTourProps, SpotlightTourStep } from './spotlight-tour'
+
+export { AppShell } from './app-shell'
+export type {
+  AppShellProps,
+  AppShellSection,
+  AppShellItem,
+} from './app-shell'
+
+export { BrowserWindow } from './browser-window'
+export type { BrowserWindowProps } from './browser-window'
+
+export { DragToConfirm } from './drag-to-confirm'
+export type { DragToConfirmProps } from './drag-to-confirm'

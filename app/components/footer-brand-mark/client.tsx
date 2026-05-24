@@ -50,7 +50,7 @@ export default function FooterBrandMarkDocs() {
       title="Footer Brand Mark"
       slug="footer-brand-mark"
       description="A bold footer with a giant wordmark stretched across the bottom. The wordmark starts dim and offset below, then drifts up and brightens as the section scrolls into view. Above it sit compact link columns + a copyright row."
-      category="95 · footer"
+      category="98 · footer"
     >
       <DocsSection title="Live demo" description="Scroll the page — watch the wordmark fade in from below.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

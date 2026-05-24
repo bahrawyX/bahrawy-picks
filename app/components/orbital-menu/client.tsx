@@ -33,7 +33,7 @@ export default function OrbitalMenuDocs() {
       title="Orbital Menu"
       slug="orbital-menu"
       description="A FAB-style trigger button that fans its menu items outward along an arc on click. Per-item spring stagger, configurable direction (top / right / bottom / left / circle), click outside or Escape to close."
-      category="145 · navigation"
+      category="148 · navigation"
     >
       <DocsSection title="Live demo · top arc" description="Click the button — items spring out in a half-circle.">
         <DemoCard className="min-h-[360px]">

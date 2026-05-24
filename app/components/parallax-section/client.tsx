@@ -24,7 +24,7 @@ export default function ParallaxSectionDocs() {
       title="Parallax Section"
       slug="parallax-section"
       description="Scroll-driven parallax effect that moves children at a different speed relative to the viewport. Negative values move against the scroll direction, positive values move with it."
-      category="70 · MOTION"
+      category="73 · MOTION"
     >
       <DocsSection title="Preview" description="Scroll the page to see the parallax effect. Adjust speed to control intensity and direction.">
         <DemoCard className="flex-col items-center justify-center min-h-[250px] overflow-hidden">

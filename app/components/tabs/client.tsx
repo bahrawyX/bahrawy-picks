@@ -58,7 +58,7 @@ const items = [
       title="Tabs"
       slug="tabs"
       description="An animated tab bar with a sliding indicator under the active tab and a fade-through on the content panel. Powered by Framer Motion's layout animations — no math required."
-      category="79 · navigation"
+      category="82 · navigation"
     >
       <DocsSection title="Live demo" description="Click a tab. The indicator springs between positions.">
         <DemoCard className="min-h-[280px] items-start">

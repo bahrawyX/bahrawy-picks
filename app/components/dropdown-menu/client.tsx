@@ -22,7 +22,7 @@ export default function DropdownMenuDocs() {
       title="Dropdown Menu"
       slug="dropdown-menu"
       description="Animated dropdown menu with keyboard navigation (↑/↓/Enter), dividers, icons, shortcut hints, and a danger style."
-      category="110 · overlay"
+      category="113 · overlay"
     >
       <DocsSection title="Live demo" description="Open the menu and try the arrow keys.">
         <DemoCard className="min-h-[280px]">

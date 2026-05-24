@@ -52,7 +52,7 @@ export default function DynamicIslandDocs() {
       title="Dynamic Island"
       slug="dynamic-island"
       description="iPhone-style notch that morphs between rich, animated states. Spring-physics layout animation — the container fluidly resizes and reshapes as content changes, with each scene fading in cleanly on top."
-      category="74 · motion"
+      category="77 · motion"
     >
       <DocsSection
         title="Live demo"

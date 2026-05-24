@@ -33,7 +33,7 @@ export default function FaqSectionDocs() {
       title="FAQ Section"
       slug="faq-section"
       description="A two-column FAQ layout — heading on the left, the question accordion on the right. Same bouncy spring as the Accordion primitive."
-      category="99 · section"
+      category="102 · section"
     >
       <DocsSection title="Live demo" description="Click a question to expand its answer.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

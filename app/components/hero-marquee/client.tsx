@@ -20,7 +20,7 @@ export default function HeroMarqueeDocs() {
       title="Hero Marquee"
       slug="hero-marquee"
       description="Centered hero on top of multiple rows of scrolling words. The rows alternate direction and speed so the background never repeats visually. Hovering pauses every row at once."
-      category="87 · hero"
+      category="90 · hero"
     >
       <DocsSection title="Live demo" description="Hover anywhere to pause the marquee.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

@@ -37,7 +37,7 @@ export default function FlipTextDocs() {
       title="Flip Text"
       slug="flip-text"
       description="3D flip animation that reveals text character by character with configurable stagger, duration, and perspective."
-      category="66 · MOTION"
+      category="69 · MOTION"
     >
       <DocsSection title="Preview" description="Each character flips into view with a staggered 3D rotation.">
         <DemoCard className="items-center justify-center min-h-[200px]">

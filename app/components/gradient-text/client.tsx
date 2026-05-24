@@ -34,7 +34,7 @@ export default function GradientTextDocs() {
       title="Gradient Text"
       slug="gradient-text"
       description="Text with an animated flowing gradient using CSS background-clip. Choose from built-in presets like aurora, fire, ocean, and more."
-      category="64 · MOTION"
+      category="67 · MOTION"
     >
       <DocsSection title="Preview" description="Pick a preset and tweak the animation speed.">
         <DemoCard className="items-center justify-center min-h-[200px]">

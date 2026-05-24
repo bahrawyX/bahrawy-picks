@@ -801,4 +801,22 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Interactive onboarding overlay. Dim the page, cut a soft-cornered glowing hole around the active target via the box-shadow technique, anchor a tooltip with prev/next/skip and step dots. Auto-measure, auto-scroll, auto-flip placement, keyboard nav.',
   },
+  {
+    title: 'App Shell',
+    slug: 'app-shell',
+    description:
+      'The layout primitive every SaaS starts with. Collapsible left rail (brand + sections + footer), optional topbar, main content. Mobile drawer, active highlight via layoutId.',
+  },
+  {
+    title: 'Browser Window',
+    slug: 'browser-window',
+    description:
+      'Mac-style window chrome wrapper. Traffic lights, optional back/forward/reload, URL bar with optional char-by-char animated typing. Dark + light variants.',
+  },
+  {
+    title: 'Drag to Confirm',
+    slug: 'drag-to-confirm',
+    description:
+      'iOS slide-to-unlock pattern. Draggable knob on a pill track with a color fill that grows with progress. Release past threshold confirms; release before springs back.',
+  },
 ]

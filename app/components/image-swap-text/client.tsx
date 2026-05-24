@@ -78,7 +78,7 @@ const items = [
       title="Image Swap Text"
       slug="image-swap-text"
       description="A row of small avatars sitting above a giant headline. Hover an avatar and the headline swaps to that avatar's word in red — old letters fan outward like a paper-fan while new letters pop in from the middle. A red disc with an arrow follows the hovered thumbnail."
-      category="77 · motion"
+      category="80 · motion"
     >
       <DocsSection
         title="Live demo"
