@@ -20,8 +20,8 @@ const bricolage = Bricolage_Grotesque({
 })
 
 const SITE_URL = 'https://bahrawy.me'
-const SITE_NAME = 'Bahrawy'
-const SITE_TITLE = 'Bahrawy — Beautifully crafted React components'
+const SITE_NAME = 'Picks'
+const SITE_TITLE = 'Picks — Beautifully crafted React components'
 const SITE_DESCRIPTION =
   'An open-source collection of 130+ React & Next.js components. Animated, accessible, copy-paste-ready. Built with Tailwind, Framer Motion, GSAP, and Radix.'
 
@@ -65,10 +65,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: '/opengraph-image',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Bahrawy — Beautifully crafted React components',
+        alt: 'Picks — Beautifully crafted React components',
       },
     ],
   },
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ['/opengraph-image'],
+    images: ['/og-image.png'],
     creator: '@bahrawydev',
   },
   robots: {
