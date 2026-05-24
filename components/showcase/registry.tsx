@@ -79,9 +79,9 @@ export const registry: RegistryEntry[] = [
     id: '02',
     slug: 'halo',
     name: 'Halo',
-    description: 'Cursor-reactive WebGL background. A 56×56 grid of glowy spheres on a tilted plane (Three.js InstancedMesh). A custom vertex shader lifts every sphere toward the cursor with a Gaussian falloff, drags the halo with cursor velocity, and tilts the whole plane for extra parallax. Color shifts on bump.',
+    description: 'Cursor-reactive WebGL background. A single OGL fragment shader paints a dense grid of iridescent dots; the cursor warps the UVs with a Gaussian-falloff swirl so the grid visibly bends and spirals around the pointer. Velocity smears the pattern, an accent halo brightens the cursor neighborhood, slow ambient drift keeps it alive when idle.',
     category: 'background',
-    dependencies: ['three'],
+    dependencies: ['ogl'],
   },
   {
     kind: 'docs',

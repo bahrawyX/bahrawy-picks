@@ -3,149 +3,186 @@
 /**
  * <Halo />
  *
- * A cursor-reactive WebGL background. A dense grid of glowy spheres
- * (Three.js InstancedMesh) sits on a tilted plane. As the cursor
- * moves over the canvas:
+ * A cursor-reactive WebGL background built on a single OGL
+ * fragment shader (no Three.js — same approach as <LineWaves />).
  *
- *  - Each sphere's height is lifted in a custom vertex shader by
- *    a Gaussian falloff around the cursor's world-projected position,
- *    so a soft "halo" rises wherever you point.
- *  - The halo's center lags slightly behind the cursor by the
- *    cursor's velocity vector, giving it a fluid drag feel.
- *  - The whole scene tilts a little toward the cursor (camera
- *    parallax) for extra depth.
- *  - Spheres recolor on bump height — cool base → hot peak with
- *    rim fresnel for a soft glow.
+ * The screen is filled with a dense grid of soft iridescent dots
+ * that pulse on their own time. As the cursor moves over the
+ * canvas:
  *
- *  When the cursor leaves the canvas, the halo strength smoothly
- *  fades out and the background breathes on its own via a slow sine
- *  wave across the plane.
+ *  - The UV coordinates are warped around the cursor with a
+ *    Gaussian-falloff swirl, so the grid visibly bends + spirals
+ *    where you point.
+ *  - Cursor velocity adds a directional smear that drags the
+ *    pattern behind the pointer.
+ *  - A bright halo (additive accent glow) brightens the dots
+ *    around the cursor.
+ *
+ * Mouse position is smoothed with a per-frame lerp so the effect
+ * glides instead of snapping, and a slow ambient drift keeps the
+ * field alive when the cursor is idle.
  */
 
 import * as React from 'react'
-import * as THREE from 'three'
+import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { cn } from '@/lib/utils'
 
 export interface HaloProps {
-  /** Grid resolution (NxN). Default 56 (≈3,136 spheres). */
+  /** Number of dots across the short axis. Default 28. */
   density?: number
-  /** Plane half-extent in world units. Default 6. */
-  extent?: number
-  /** Sphere radius. Default 0.07. */
-  sphereRadius?: number
-  /** Peak bump height under the cursor. Default 1.4. */
-  strength?: number
-  /** Falloff radius for the cursor halo (world units). Default 1.6. */
-  radius?: number
-  /** Base sphere color (low / no bump). Hex string. Default cool indigo. */
-  baseColor?: string
-  /** Peak color at the cursor halo summit. Default warm pink. */
-  peakColor?: string
-  /** Ambient bounce color in the rim glow. Default deep violet. */
-  ambientColor?: string
-  /** Background clear color. Default near-black violet. */
-  background?: string
-  /** Disable cursor interaction (still breathes). Default false. */
+  /** Dot radius relative to cell size (0..0.5). Default 0.12. */
+  dotSize?: number
+  /** Animation speed multiplier. Default 0.4. */
+  speed?: number
+  /** Strength of the cursor warp. Default 0.45. */
+  mouseInfluence?: number
+  /** Three iridescent colors mixed across the field. */
+  color1?: string
+  color2?: string
+  color3?: string
+  /** Overall brightness multiplier. Default 1.0. */
+  brightness?: number
+  /** Disable cursor interaction (still drifts). Default false. */
   paused?: boolean
   className?: string
 }
 
-// NOTE: Three.js ShaderMaterial auto-prepends `position`, `normal`, `uv`,
-// `modelMatrix`, `viewMatrix`, `modelViewMatrix`, `projectionMatrix`,
-// `normalMatrix`, `cameraPosition`, and (when used with InstancedMesh)
-// `instanceMatrix`. Redeclaring any of these here would be a GLSL error.
 const VERT = /* glsl */ `
-uniform vec3  uCursor;     // world-space cursor on the plane y=0
-uniform vec3  uCursorVel;  // world-space velocity (XZ)
-uniform float uTime;
-uniform float uRadius;     // halo falloff radius
-uniform float uStrength;   // halo peak height
-
-varying float vBump;
-varying vec3  vNormal;
-
+attribute vec2 uv;
+attribute vec2 position;
+varying vec2 vUv;
 void main() {
-  // Instance's world-space center (mesh's modelMatrix is identity).
-  vec3 instanceWorld = (instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-
-  // Distance from this instance to the cursor, with velocity-lag offset
-  // so the halo trails behind a moving cursor.
-  vec2 toC = instanceWorld.xz - (uCursor.xz - uCursorVel.xz * 0.25);
-  float d  = length(toC);
-
-  // Soft Gaussian bump under the cursor.
-  float falloff = exp(-(d * d) / max(0.0001, uRadius * uRadius));
-  float bump    = falloff * uStrength;
-
-  // Two-frequency ambient breathing — the field stays alive even
-  // when the cursor is idle.
-  float breath =
-      sin(uTime * 0.55 + instanceWorld.x * 0.45 + instanceWorld.z * 0.4) * 0.045
-    + sin(uTime * 0.3  - instanceWorld.x * 0.25 + instanceWorld.z * 0.55) * 0.035;
-
-  // Build the world-space vertex, displace Y, then to view + clip.
-  vec4 worldVertex = instanceMatrix * vec4(position, 1.0);
-  worldVertex.y += bump + breath;
-
-  gl_Position = projectionMatrix * modelViewMatrix * worldVertex;
-
-  vBump  = bump;
-  vNormal = normalize(normalMatrix * normal);
+  vUv = uv;
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `
 
-// NOTE: precision is auto-set by Three.js — don't redeclare here.
 const FRAG = /* glsl */ `
-varying float vBump;
-varying vec3  vNormal;
+precision highp float;
 
-uniform vec3  uColorBase;
-uniform vec3  uColorPeak;
-uniform vec3  uColorAmbient;
-uniform float uStrength;
+uniform float uTime;
+uniform vec3  uResolution;     // x, y, x/y
+uniform vec2  uMouse;          // 0..1 in screen space
+uniform vec2  uMouseVel;       // velocity, normalised per second
+uniform bool  uEnableMouse;
+uniform float uMouseInfluence;
+uniform float uDensity;
+uniform float uDotSize;
+uniform float uSpeed;
+uniform float uBrightness;
+uniform vec3  uColor1;
+uniform vec3  uColor2;
+uniform vec3  uColor3;
+
+float hash11(float n) {
+  return fract(sin(n * 127.1) * 43758.5453123);
+}
+float hash12(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
 
 void main() {
-  // Faux directional light from above.
-  float light = max(dot(vNormal, normalize(vec3(0.25, 1.0, 0.15))), 0.0) * 0.55 + 0.45;
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  float aspect = uResolution.x / max(uResolution.y, 1.0);
 
-  // Rim glow against the camera (view-space normal Z).
-  float fresnel = pow(1.0 - max(vNormal.z, 0.0), 2.0);
+  // Work in aspect-corrected space so the dot grid stays square.
+  vec2 p  = vec2(uv.x * aspect, uv.y);
+  vec2 mp = vec2(uMouse.x * aspect, uMouse.y);
 
-  // Color: base → peak by normalised bump height.
-  float t = clamp(vBump / max(0.0001, uStrength), 0.0, 1.0);
-  vec3 base = mix(uColorBase, uColorPeak, t);
+  float t = uTime * uSpeed;
 
-  vec3 col = base * light + uColorPeak * fresnel * 0.65 + uColorAmbient * 0.12;
+  vec2 warped = p;
 
-  // Brighten the peaks for emphasis.
-  col *= 1.0 + t * 1.6;
+  if (uEnableMouse) {
+    vec2 toC  = p - mp;
+    float dst = length(toC);
 
-  gl_FragColor = vec4(col, 1.0);
+    // Gaussian falloff — strong near the cursor, decays fast.
+    float k    = exp(-dst * dst * 4.5);
+    float bend = uMouseInfluence * k;
+
+    // Pull pixels toward the cursor + add a tangential swirl so the
+    // grid visibly *bends* (instead of just collapsing).
+    vec2 dir = toC / max(dst, 1e-4);
+    vec2 tan = vec2(-dir.y, dir.x);
+    warped -= dir * bend * 0.18;
+    warped += tan * bend * 0.10;
+
+    // Velocity-driven smear behind the cursor.
+    warped -= uMouseVel * exp(-dst * dst * 2.5) * 0.45;
+  }
+
+  // Slow ambient drift so the field is alive when the cursor is idle.
+  warped.x += sin(t * 0.45 + warped.y * 3.7) * 0.012;
+  warped.y += cos(t * 0.55 + warped.x * 4.1) * 0.012;
+
+  // Dot grid.
+  vec2 grid = warped * uDensity;
+  vec2 gi   = floor(grid);
+  vec2 gf   = fract(grid) - 0.5;
+  float d   = length(gf);
+
+  // Per-dot deterministic randomness.
+  float r = hash12(gi);
+
+  // Per-dot pulse on its own phase.
+  float pulse = sin(t * 1.6 + r * 6.2832) * 0.35 + 0.65;
+
+  // Soft circular dot mask.
+  float mask = smoothstep(uDotSize * 1.5, uDotSize * 0.45, d) * pulse;
+
+  // Iridescent color shift — phase varies by cell + cursor distance.
+  vec2 toMouse = p - mp;
+  float dMouse = length(toMouse);
+  float phase  = t * 0.6 + r * 2.4 + dMouse * 1.2;
+  vec3 a = uColor1 * (sin(phase)             * 0.5 + 0.5);
+  vec3 b = uColor2 * (sin(phase + 2.0944)    * 0.5 + 0.5);
+  vec3 c = uColor3 * (sin(phase + 4.1888)    * 0.5 + 0.5);
+  vec3 col = (a + b + c) * 0.55;
+
+  col *= mask;
+
+  // Bright cursor halo (additive glow).
+  if (uEnableMouse) {
+    float halo = exp(-dMouse * dMouse * 3.2) * 0.85;
+    col += uColor2 * halo * 0.55;
+    col += uColor3 * halo * 0.35;
+  }
+
+  col *= uBrightness;
+
+  // Edge fade so it doesn't crop hard against the container.
+  float fade = smoothstep(0.0, 0.08, uv.x)
+             * smoothstep(0.0, 0.08, 1.0 - uv.x)
+             * smoothstep(0.0, 0.08, uv.y)
+             * smoothstep(0.0, 0.08, 1.0 - uv.y);
+  col *= fade;
+
+  // Use luminance as alpha so the canvas blends nicely on any
+  // background colour the consumer wants behind it.
+  float a2 = clamp(length(col), 0.0, 1.0);
+  gl_FragColor = vec4(col, a2);
 }
 `
-
-// -- helpers ---------------------------------------------------------------
 
 function hexToVec3(hex: string): [number, number, number] {
-  const c = new THREE.Color(hex)
-  return [c.r, c.g, c.b]
+  const h = hex.replace('#', '')
+  return [
+    parseInt(h.slice(0, 2), 16) / 255,
+    parseInt(h.slice(2, 4), 16) / 255,
+    parseInt(h.slice(4, 6), 16) / 255,
+  ]
 }
-function clamp01(x: number) {
-  return Math.max(0, Math.min(1, x))
-}
-
-// -- component -------------------------------------------------------------
 
 export function Halo({
-  density = 56,
-  extent = 6,
-  sphereRadius = 0.07,
-  strength = 1.4,
-  radius = 1.6,
-  baseColor = '#1B1B4B',
-  peakColor = '#FF6FA8',
-  ambientColor = '#5E5CE6',
-  background = '#06060C',
+  density = 28,
+  dotSize = 0.12,
+  speed = 0.4,
+  mouseInfluence = 0.45,
+  color1 = '#FF6FA8',
+  color2 = '#5E5CE6',
+  color3 = '#22D3EE',
+  brightness = 1.0,
   paused = false,
   className,
 }: HaloProps) {
@@ -155,99 +192,82 @@ export function Halo({
     const mount = mountRef.current
     if (!mount) return
 
-    // ---- renderer ----
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: false,
-      powerPreference: 'high-performance',
+    const renderer = new Renderer({
+      dpr: Math.min(window.devicePixelRatio, 2),
+      alpha: true,
+      premultipliedAlpha: false,
     })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.setClearColor(new THREE.Color(background), 1)
-    mount.appendChild(renderer.domElement)
-    renderer.domElement.style.width = '100%'
-    renderer.domElement.style.height = '100%'
-    renderer.domElement.style.display = 'block'
-    renderer.domElement.style.touchAction = 'none'
+    const gl = renderer.gl
+    gl.clearColor(0, 0, 0, 0)
+    mount.appendChild(gl.canvas)
+    gl.canvas.style.width = '100%'
+    gl.canvas.style.height = '100%'
+    gl.canvas.style.display = 'block'
 
-    // ---- scene + camera ----
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 60)
-    camera.position.set(0, 5.6, 8.8)
-    camera.lookAt(0, 0, 0)
-
-    // ---- instanced mesh ----
-    const sphereGeo = new THREE.SphereGeometry(sphereRadius, 12, 10)
-    const material = new THREE.ShaderMaterial({
-      vertexShader: VERT,
-      fragmentShader: FRAG,
+    const geometry = new Triangle(gl)
+    const program = new Program(gl, {
+      vertex: VERT,
+      fragment: FRAG,
       uniforms: {
-        uCursor: { value: new THREE.Vector3(0, 0, 0) },
-        uCursorVel: { value: new THREE.Vector3(0, 0, 0) },
         uTime: { value: 0 },
-        uRadius: { value: radius },
-        uStrength: { value: strength },
-        uColorBase: { value: hexToVec3(baseColor) },
-        uColorPeak: { value: hexToVec3(peakColor) },
-        uColorAmbient: { value: hexToVec3(ambientColor) },
+        uResolution: {
+          value: [
+            mount.clientWidth || 1,
+            mount.clientHeight || 1,
+            (mount.clientWidth || 1) / Math.max(mount.clientHeight || 1, 1),
+          ],
+        },
+        uMouse: { value: new Float32Array([0.5, 0.5]) },
+        uMouseVel: { value: new Float32Array([0, 0]) },
+        uEnableMouse: { value: !paused },
+        uMouseInfluence: { value: mouseInfluence },
+        uDensity: { value: density },
+        uDotSize: { value: dotSize },
+        uSpeed: { value: speed },
+        uBrightness: { value: brightness },
+        uColor1: { value: hexToVec3(color1) },
+        uColor2: { value: hexToVec3(color2) },
+        uColor3: { value: hexToVec3(color3) },
       },
     })
-
-    const total = density * density
-    const mesh = new THREE.InstancedMesh(sphereGeo, material, total)
-    mesh.frustumCulled = false
-
-    // Build grid of instance matrices on XZ plane.
-    const dummy = new THREE.Object3D()
-    const step = (extent * 2) / (density - 1)
-    let idx = 0
-    for (let i = 0; i < density; i++) {
-      for (let j = 0; j < density; j++) {
-        const x = -extent + i * step
-        const z = -extent + j * step
-        dummy.position.set(x, 0, z)
-        dummy.updateMatrix()
-        mesh.setMatrixAt(idx++, dummy.matrix)
-      }
-    }
-    mesh.instanceMatrix.needsUpdate = true
-    scene.add(mesh)
+    const mesh = new Mesh(gl, { geometry, program })
 
     // ---- cursor tracking ----
-    const ndc = new THREE.Vector2(0, 0)            // device coords -1..1
-    const raycaster = new THREE.Raycaster()
-    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
-    const cursorTarget = new THREE.Vector3()        // raycast result
-    const cursorWorld = new THREE.Vector3()         // smoothed
-    const cursorPrev = new THREE.Vector3()
-    const cursorVel = new THREE.Vector3()
+    const target = [0.5, 0.5]
+    const current = [0.5, 0.5]
+    const prev = [0.5, 0.5]
     let hovering = false
-    let liveStrength = 0                            // eased toward target
 
-    const onPointerMove = (e: PointerEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect()
-      ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-      ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
+    const onMove = (e: PointerEvent) => {
+      const rect = gl.canvas.getBoundingClientRect()
+      target[0] = (e.clientX - rect.left) / rect.width
+      target[1] = 1.0 - (e.clientY - rect.top) / rect.height
       hovering = true
     }
-    const onPointerLeave = () => {
+    const onEnter = () => {
+      hovering = true
+    }
+    const onLeave = () => {
       hovering = false
+      // ease the target back toward center when the pointer leaves
+      target[0] = 0.5
+      target[1] = 0.5
     }
-    const onPointerEnter = () => {
-      hovering = true
-    }
-
-    renderer.domElement.addEventListener('pointermove', onPointerMove, { passive: true })
-    renderer.domElement.addEventListener('pointerenter', onPointerEnter)
-    renderer.domElement.addEventListener('pointerleave', onPointerLeave)
+    gl.canvas.addEventListener('pointermove', onMove, { passive: true })
+    gl.canvas.addEventListener('pointerenter', onEnter)
+    gl.canvas.addEventListener('pointerleave', onLeave)
 
     // ---- resize ----
     const resize = () => {
       const w = mount.clientWidth
       const h = mount.clientHeight
       if (w === 0 || h === 0) return
-      renderer.setSize(w, h, false)
-      camera.aspect = w / h
-      camera.updateProjectionMatrix()
+      renderer.setSize(w, h)
+      program.uniforms.uResolution.value = [
+        gl.canvas.width,
+        gl.canvas.height,
+        gl.canvas.width / Math.max(gl.canvas.height, 1),
+      ]
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -255,50 +275,41 @@ export function Halo({
 
     // ---- animation loop ----
     let raf = 0
-    const start = performance.now()
-    let last = start
+    let last = performance.now()
 
     const animate = (time: number) => {
       const dt = Math.min(0.05, (time - last) / 1000)
       last = time
-      const t = (time - start) / 1000
-      material.uniforms.uTime.value = t
+      program.uniforms.uTime.value = time * 0.001
 
       if (!paused) {
-        // Raycast cursor → world plane.
-        raycaster.setFromCamera(ndc, camera)
-        if (raycaster.ray.intersectPlane(plane, cursorTarget)) {
-          // Smooth toward target so the halo glides instead of snapping.
-          const ease = 1 - Math.pow(0.001, dt) // ~independent of frame rate
-          cursorWorld.lerp(cursorTarget, ease * 0.6)
-        }
+        // Ease mouse position toward target.
+        const ease = 1 - Math.pow(0.001, dt) // frame-rate independent
+        current[0] += (target[0] - current[0]) * ease * 0.6
+        current[1] += (target[1] - current[1]) * ease * 0.6
 
-        // Velocity = (current - prev) / dt, smoothed via lerp.
+        // Velocity from per-frame delta (clamped so flicks don't break).
         const inv = dt > 0 ? 1 / dt : 0
-        const vx = (cursorWorld.x - cursorPrev.x) * inv
-        const vz = (cursorWorld.z - cursorPrev.z) * inv
-        cursorVel.lerp(new THREE.Vector3(vx, 0, vz), 0.18)
-        cursorPrev.copy(cursorWorld)
+        const vx = (current[0] - prev[0]) * inv
+        const vy = (current[1] - prev[1]) * inv
+        program.uniforms.uMouseVel.value[0] +=
+          (vx - program.uniforms.uMouseVel.value[0]) * 0.2
+        program.uniforms.uMouseVel.value[1] +=
+          (vy - program.uniforms.uMouseVel.value[1]) * 0.2
+        prev[0] = current[0]
+        prev[1] = current[1]
 
-        // Ease the strength up/down by hover state.
-        const targetStrength = hovering ? strength : strength * 0.18
-        liveStrength += (targetStrength - liveStrength) * Math.min(1, dt * 4)
+        program.uniforms.uMouse.value[0] = current[0]
+        program.uniforms.uMouse.value[1] = current[1]
 
-        material.uniforms.uCursor.value.copy(cursorWorld)
-        material.uniforms.uCursorVel.value.copy(cursorVel)
-        material.uniforms.uStrength.value = liveStrength
-
-        // Subtle camera parallax — tilt around origin based on cursor X / Y.
-        const px = clamp01((ndc.x + 1) / 2) - 0.5
-        const py = clamp01((ndc.y + 1) / 2) - 0.5
-        const tx = 0 + px * 1.6
-        const ty = 5.6 + py * 0.9
-        camera.position.x += (tx - camera.position.x) * Math.min(1, dt * 2.5)
-        camera.position.y += (ty - camera.position.y) * Math.min(1, dt * 2.5)
-        camera.lookAt(0, 0, 0)
+        // Soft fade of influence when not hovering.
+        const targetInfluence = hovering ? mouseInfluence : mouseInfluence * 0.35
+        program.uniforms.uMouseInfluence.value +=
+          (targetInfluence - program.uniforms.uMouseInfluence.value) *
+          Math.min(1, dt * 3)
       }
 
-      renderer.render(scene, camera)
+      renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
     raf = requestAnimationFrame(animate)
@@ -306,31 +317,24 @@ export function Halo({
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
-      renderer.domElement.removeEventListener('pointermove', onPointerMove)
-      renderer.domElement.removeEventListener('pointerenter', onPointerEnter)
-      renderer.domElement.removeEventListener('pointerleave', onPointerLeave)
-      sphereGeo.dispose()
-      material.dispose()
-      mesh.dispose()
-      renderer.dispose()
-      if (renderer.domElement.parentElement === mount) {
-        mount.removeChild(renderer.domElement)
+      gl.canvas.removeEventListener('pointermove', onMove)
+      gl.canvas.removeEventListener('pointerenter', onEnter)
+      gl.canvas.removeEventListener('pointerleave', onLeave)
+      if (gl.canvas.parentElement === mount) {
+        mount.removeChild(gl.canvas)
       }
-      const gl = renderer.getContext()
-      const lose = gl.getExtension('WEBGL_lose_context')
-      lose?.loseContext()
+      gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     density,
-    extent,
-    sphereRadius,
-    strength,
-    radius,
-    baseColor,
-    peakColor,
-    ambientColor,
-    background,
+    dotSize,
+    speed,
+    mouseInfluence,
+    color1,
+    color2,
+    color3,
+    brightness,
     paused,
   ])
 

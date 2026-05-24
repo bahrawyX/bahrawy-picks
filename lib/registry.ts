@@ -9,7 +9,7 @@ export const componentRegistry: RegistryItem[] = [
     title: 'Halo',
     slug: 'halo',
     description:
-      'Cursor-reactive WebGL background. ~3,000 glowy spheres on a tilted plane (Three.js InstancedMesh). Custom vertex shader lifts each sphere toward the cursor via Gaussian falloff, drags the halo with cursor velocity, tilts the plane for parallax.',
+      'Cursor-reactive WebGL background. Single OGL fragment shader paints a dense iridescent dot grid; cursor warps the UVs with a Gaussian-falloff swirl so the grid visibly bends + spirals around the pointer, velocity smears the pattern, an accent halo brightens the cursor neighborhood.',
   },
   {
     title: 'Aurora',

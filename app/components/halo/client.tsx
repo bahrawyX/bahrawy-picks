@@ -6,13 +6,13 @@ import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page
 
 const SNIPPET = `import { Halo } from '@/components/bahrawy/halo'
 
-<div className="relative h-screen w-full">
+<div className="relative h-screen w-full bg-black">
   <Halo
-    baseColor="#1B1B4B"
-    peakColor="#FF6FA8"
-    ambientColor="#5E5CE6"
-    strength={1.4}
-    radius={1.6}
+    color1="#FF6FA8"
+    color2="#5E5CE6"
+    color3="#22D3EE"
+    density={28}
+    mouseInfluence={0.45}
   />
   {/* Your content on top */}
   <div className="absolute inset-0 grid place-items-center">
@@ -25,56 +25,71 @@ export default function HaloDocs() {
     <DocsPage
       title="Halo"
       slug="halo"
-      description="A cursor-reactive WebGL background. ~3,000 glowy spheres on a tilted plane (Three.js InstancedMesh). A custom vertex shader lifts every sphere toward the cursor's world-projected position via a Gaussian falloff, drags the halo behind cursor velocity, and tilts the whole scene for parallax. Spheres recolor on bump height with rim fresnel for soft glow."
+      description="A cursor-reactive WebGL background built on a single OGL fragment shader (same engine as Line Waves). A dense grid of iridescent dots pulses on its own time; as you move the cursor, the grid visibly bends + spirals around it via a Gaussian-falloff warp, the pattern smears in the direction of cursor velocity, and a bright accent halo brightens the dots in the cursor's neighborhood. The field drifts slowly when idle so the scene is always alive."
       category="02 · background"
     >
       <DocsSection title="Move your cursor anywhere in the canvas">
         <DemoCard className="min-h-[520px] items-stretch p-0">
-          <div className="relative h-[500px] w-full overflow-hidden rounded-2xl">
+          <div className="relative h-[500px] w-full overflow-hidden rounded-2xl bg-black">
             <Halo />
             <div className="pointer-events-none absolute inset-x-0 top-6 z-10 text-center">
               <p className="text-[10.5px] font-semibold uppercase tracking-[0.32em] text-white/45">
                 Hover · drag · move
               </p>
               <h2 className="mt-2 bg-gradient-to-b from-white to-white/55 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl">
-                Halo follows you.
+                Halo bends around you.
               </h2>
             </div>
-            <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 text-center text-[10.5px] tracking-tight text-white/40">
-              3,136 instanced spheres · cursor-displaced vertex shader · velocity-dragged halo
+            <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 text-center text-[10.5px] tracking-tight text-white/45">
+              Single OGL fragment shader · UV-warped dot mesh · velocity smear · cursor halo
             </div>
           </div>
         </DemoCard>
       </DocsSection>
 
-      <DocsSection title="Cool palette — emerald + cyan">
+      <DocsSection title="Cool — emerald · cyan · indigo">
         <DemoCard className="min-h-[420px] items-stretch p-0">
-          <div className="relative h-[400px] w-full overflow-hidden rounded-2xl">
+          <div className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-black">
             <Halo
-              baseColor="#062B22"
-              peakColor="#34D399"
-              ambientColor="#22D3EE"
-              background="#03110F"
-              strength={1.6}
-              radius={1.8}
+              color1="#34D399"
+              color2="#22D3EE"
+              color3="#5E5CE6"
+              density={32}
+              mouseInfluence={0.5}
+              speed={0.5}
             />
           </div>
         </DemoCard>
       </DocsSection>
 
-      <DocsSection title="Dense + warm — amber + rose">
+      <DocsSection title="Warm — amber · rose · violet">
         <DemoCard className="min-h-[420px] items-stretch p-0">
-          <div className="relative h-[400px] w-full overflow-hidden rounded-2xl">
+          <div className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-black">
             <Halo
-              density={68}
-              extent={6}
-              sphereRadius={0.055}
-              baseColor="#3B1108"
-              peakColor="#FFD60A"
-              ambientColor="#FF453A"
-              background="#0F0606"
-              strength={1.3}
-              radius={1.3}
+              color1="#FFD60A"
+              color2="#FF6FA8"
+              color3="#BF5AF2"
+              density={24}
+              dotSize={0.16}
+              mouseInfluence={0.55}
+              brightness={1.1}
+            />
+          </div>
+        </DemoCard>
+      </DocsSection>
+
+      <DocsSection title="Dense + subtle — mono indigo">
+        <DemoCard className="min-h-[360px] items-stretch p-0">
+          <div className="relative h-[340px] w-full overflow-hidden rounded-2xl bg-black">
+            <Halo
+              color1="#5E5CE6"
+              color2="#A99CFF"
+              color3="#0A84FF"
+              density={42}
+              dotSize={0.09}
+              speed={0.3}
+              mouseInfluence={0.35}
+              brightness={0.95}
             />
           </div>
         </DemoCard>
@@ -83,10 +98,11 @@ export default function HaloDocs() {
       <DocsSection title="Usage">
         <CodeBlock code={SNIPPET} language="tsx" />
         <p className="mt-3 text-xs text-white/45">
-          The canvas fills its parent. Wrap it in a <code className="font-mono">relative</code>{' '}
-          container with a fixed height (or <code className="font-mono">h-screen</code> for a
-          full-bleed hero) and layer content on top with <code className="font-mono">absolute</code>{' '}
-          + <code className="font-mono">pointer-events-none</code> so the canvas keeps receiving
+          The canvas has a transparent clear color (premultipliedAlpha:false), so it sits on
+          top of whatever background you put behind it. Wrap it in a{' '}
+          <code className="font-mono">relative</code> container with a fixed height and put
+          your content above with <code className="font-mono">absolute</code> +{' '}
+          <code className="font-mono">pointer-events-none</code> so the canvas keeps receiving
           cursor input.
         </p>
       </DocsSection>
@@ -94,16 +110,13 @@ export default function HaloDocs() {
       <DocsSection title="Props">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['density', 'Grid resolution NxN. Default 56 (≈3,136 spheres).'],
-            ['extent', 'Plane half-extent in world units. Default 6.'],
-            ['sphereRadius', 'Per-sphere radius. Default 0.07.'],
-            ['strength', 'Peak bump height under the cursor. Default 1.4.'],
-            ['radius', 'Cursor halo falloff radius (world units). Default 1.6.'],
-            ['baseColor', 'Sphere color at zero bump. Default deep indigo.'],
-            ['peakColor', 'Sphere color at peak bump + rim glow. Default warm pink.'],
-            ['ambientColor', 'Ambient bounce color baked into the rim. Default SF indigo.'],
-            ['background', 'WebGL clear color behind the spheres. Default #06060C.'],
-            ['paused', 'Freeze the animation + cursor reaction. Default false.'],
+            ['density', 'Number of dots across the short axis. Default 28.'],
+            ['dotSize', 'Dot radius relative to cell size (0..0.5). Default 0.12.'],
+            ['speed', 'Animation speed multiplier. Default 0.4.'],
+            ['mouseInfluence', 'Strength of the cursor warp + halo. Default 0.45.'],
+            ['color1 / color2 / color3', 'Three iridescent stops mixed across the field.'],
+            ['brightness', 'Overall brightness multiplier. Default 1.0.'],
+            ['paused', 'Freeze the animation + cursor interaction. Default false.'],
             ['className', 'Extra classes on the outer canvas wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
@@ -113,14 +126,15 @@ export default function HaloDocs() {
           ))}
         </ul>
         <p className="mt-3 text-xs text-white/45">
-          On idle (cursor not over the canvas), the halo strength eases to ~18% so the field
-          still breathes with a two-frequency sine wave but doesn&apos;t feel forgotten.
+          The cursor warp is a Gaussian falloff <code className="font-mono">exp(-d² · 4.5)</code>{' '}
+          that pulls pixels radially toward the cursor plus a tangential swirl so the grid
+          visibly bends instead of just collapsing inward.
         </p>
       </DocsSection>
 
       <DocsSection title="Dependencies">
         <div className="flex flex-wrap gap-2">
-          {['three'].map((d) => (
+          {['ogl'].map((d) => (
             <code key={d} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/80">
               {d}
             </code>
