@@ -77,10 +77,10 @@ export const registry: RegistryEntry[] = [
   {
     kind: 'docs',
     id: '02',
-    slug: 'globe',
-    name: 'Globe',
-    description: 'GitHub-style WebGL globe (Three.js). Dotted sphere via InstancedMesh, arcs that arch ABOVE the surface (lifted bezier control point), fresnel atmospheric glow, pulsing hub rings. Full 3D, no SVG.',
-    category: 'data',
+    slug: 'halo',
+    name: 'Halo',
+    description: 'Cursor-reactive WebGL background. A 56×56 grid of glowy spheres on a tilted plane (Three.js InstancedMesh). A custom vertex shader lifts every sphere toward the cursor with a Gaussian falloff, drags the halo with cursor velocity, and tilts the whole plane for extra parallax. Color shifts on bump.',
+    category: 'background',
     dependencies: ['three'],
   },
   {

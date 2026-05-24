@@ -19,7 +19,7 @@ function FilePane() {
     'README.md', 'package.json', 'tsconfig.json',
     'app/layout.tsx', 'app/page.tsx',
     'components/bahrawy/queue.tsx', 'components/bahrawy/aurora.tsx',
-    'components/bahrawy/globe.tsx', 'lib/seo.ts', 'lib/utils.ts',
+    'components/bahrawy/halo.tsx', 'lib/seo.ts', 'lib/utils.ts',
   ]
   return (
     <div className="h-full bg-white/[0.015] p-3 font-mono text-[12px] text-white/65">

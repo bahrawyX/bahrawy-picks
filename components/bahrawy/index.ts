@@ -510,8 +510,8 @@ export type {
 export { AIChat } from './ai-chat'
 export type { AIChatProps, ChatMessage } from './ai-chat'
 
-export { Globe } from './globe'
-export type { GlobeProps, GlobePoint, GlobeArc } from './globe'
+export { Halo } from './halo'
+export type { HaloProps } from './halo'
 
 export { NotificationStack } from './notification-stack'
 export type {

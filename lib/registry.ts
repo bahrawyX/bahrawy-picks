@@ -6,10 +6,10 @@ export interface RegistryItem {
 
 export const componentRegistry: RegistryItem[] = [
   {
-    title: 'Globe',
-    slug: 'globe',
+    title: 'Halo',
+    slug: 'halo',
     description:
-      'GitHub-style WebGL globe (Three.js). Dotted sphere via InstancedMesh, arcs that arch ABOVE the surface, fresnel atmospheric glow, pulsing hub rings.',
+      'Cursor-reactive WebGL background. ~3,000 glowy spheres on a tilted plane (Three.js InstancedMesh). Custom vertex shader lifts each sphere toward the cursor via Gaussian falloff, drags the halo with cursor velocity, tilts the plane for parallax.',
   },
   {
     title: 'Aurora',
