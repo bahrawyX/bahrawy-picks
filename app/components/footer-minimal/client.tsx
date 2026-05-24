@@ -53,7 +53,7 @@ export default function FooterMinimalDocs() {
       title="Footer Minimal"
       slug="footer-minimal"
       description="A clean text footer: logo on the left, link columns on the right, copyright row at the bottom. Light hover animations — each link reveals a small underline and shifts a few pixels right."
-      category="99 · footer"
+      category="104 · footer"
     >
       <DocsSection title="Live demo" description="Hover any link to see the underline grow.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

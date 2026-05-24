@@ -568,9 +568,16 @@ export type { AvatarStatusProps, AvatarStatusState } from './avatar-status'
 export { BarChart } from './bar-chart'
 export type { BarChartProps, BarChartDatum } from './bar-chart'
 
-export { WalletPass } from './wallet-pass'
+export { ProfileCard, ProfileCardIcons } from './profile-card'
 export type {
-  WalletPassProps,
-  WalletPassVariant,
-  WalletPassDetail,
-} from './wallet-pass'
+  ProfileCardProps,
+  ProfileCardStat,
+  ProfileCardStatus,
+} from './profile-card'
+
+export { CodeWindow } from './code-window'
+export type { CodeWindowProps, CodeLanguage } from './code-window'
+
+export { CmdBar } from './cmd-bar'
+export type { CmdBarProps, CmdBarGroup, CmdBarItem } from './cmd-bar'
+

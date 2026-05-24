@@ -3,13 +3,13 @@
 /**
  * <BarChart />
  *
- * A single-series categorical bar chart. Each bar animates in from
- * the baseline on mount with a staggered spring; hover any bar to
- * lift it slightly and show a tooltip with the exact value. Optional
- * gridlines, value labels on top of bars, and per-bar color overrides.
+ * A single-series categorical bar chart, rendered in HTML/CSS so the
+ * text always renders crisp (no SVG aspect-ratio stretching). Bars
+ * animate from baseline on mount with a staggered spring; hover any
+ * bar to lift it slightly and reveal the value. Y-axis gridlines +
+ * labels overlay the chart in the background.
  *
- * Vertical (default) or horizontal. SVG-driven so it scales cleanly,
- * sharp at any size.
+ * Vertical (default) or horizontal. Fills its container width.
  */
 
 import * as React from 'react'
@@ -27,17 +27,17 @@ export interface BarChartProps {
   data: BarChartDatum[]
   /** Vertical (default) puts categories on the X axis. */
   orientation?: 'vertical' | 'horizontal'
-  /** Chart height in px (vertical) or per-bar thickness multiplier (horizontal). Default 240. */
+  /** Chart height in px. Default 240. */
   height?: number
   /** Default bar color. Default '#A78BFA'. */
   accent?: string
-  /** Show horizontal gridlines + Y-axis labels (vertical). Default true. */
+  /** Show horizontal gridlines + Y-axis labels. Default true. */
   showGrid?: boolean
   /** Print the value on top of each bar. Default false. */
   showValues?: boolean
   /** Format the value (for tooltip + labels). */
   formatValue?: (v: number) => string
-  /** Optional max — if omitted, derived from the data. */
+  /** Optional Y-axis max — if omitted, derived from the data. */
   max?: number
   className?: string
 }
@@ -56,9 +56,8 @@ export function BarChart({
   className,
 }: BarChartProps) {
   const computedMax = max ?? Math.max(...data.map((d) => d.value), 0)
-  // Round max up to a clean grid step (4 grid lines).
-  const niceMax = niceCeil(computedMax)
-  const gridLines = [0, 0.25, 0.5, 0.75, 1].map((t) => niceMax * t)
+  const niceMax = niceCeil(computedMax) || 1
+  const gridLines = [1, 0.75, 0.5, 0.25, 0] // top → bottom (so labels read big → small)
   const [hover, setHover] = React.useState<number | null>(null)
 
   if (orientation === 'horizontal') {
@@ -71,13 +70,13 @@ export function BarChart({
       >
         <div className="space-y-2.5">
           {data.map((d, i) => {
-            const pct = niceMax > 0 ? d.value / niceMax : 0
+            const pct = d.value / niceMax
             const color = d.color ?? accent
             const isHover = hover === i
             return (
               <div
                 key={i}
-                className="grid grid-cols-[80px_1fr_auto] items-center gap-3"
+                className="grid grid-cols-[88px_1fr_auto] items-center gap-3"
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
               >
@@ -96,7 +95,7 @@ export function BarChart({
                     }}
                   />
                 </div>
-                <span className="w-12 text-right font-mono text-[11px] tabular-nums text-white/60">
+                <span className="w-14 text-right font-mono text-[11px] tabular-nums text-white/60">
                   {formatValue(d.value)}
                 </span>
               </div>
@@ -108,10 +107,6 @@ export function BarChart({
   }
 
   // Vertical
-  const padding = { top: showValues ? 24 : 12, right: 8, bottom: 28, left: showGrid ? 36 : 8 }
-  const chartH = height - padding.top - padding.bottom
-  const barGap = 0.25 // fraction of bar width
-
   return (
     <div
       className={cn(
@@ -119,135 +114,114 @@ export function BarChart({
         className,
       )}
     >
-      <svg
-        viewBox={`0 0 100 ${height}`}
-        width="100%"
-        height={height}
-        preserveAspectRatio="none"
-        className="block"
+      <div
+        className={cn(
+          'relative flex w-full items-stretch',
+          showGrid ? 'pl-12' : 'pl-2',
+        )}
+        style={{ height }}
       >
-        {/* Gridlines + Y labels */}
-        {showGrid &&
-          gridLines.map((g, i) => {
-            const y = padding.top + chartH * (1 - g / (niceMax || 1))
+        {/* Y-axis gridlines + labels (positioned absolutely behind bars) */}
+        {showGrid && (
+          <div className="pointer-events-none absolute inset-0">
+            {gridLines.map((t, i) => (
+              <div
+                key={i}
+                className="absolute inset-x-0 flex items-center"
+                style={{ top: `${(1 - t) * 100}%`, transform: 'translateY(-50%)' }}
+              >
+                <span className="w-10 pr-2 text-right font-mono text-[10px] tabular-nums text-white/35">
+                  {formatValue(niceMax * t)}
+                </span>
+                <div className="flex-1 border-t border-white/[0.06]" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Bars row */}
+        <div className="relative flex flex-1 items-end gap-2 pr-1">
+          {data.map((d, i) => {
+            const pct = d.value / niceMax
+            const color = d.color ?? accent
+            const isHover = hover === i
             return (
-              <g key={i}>
-                <line
-                  x1={padding.left}
-                  x2={100 - padding.right}
-                  y1={y}
-                  y2={y}
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeWidth={0.3}
-                  vectorEffect="non-scaling-stroke"
+              <div
+                key={i}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
+                className="group relative flex h-full flex-1 cursor-pointer flex-col items-center justify-end"
+              >
+                {/* Value-on-top label */}
+                {showValues && (
+                  <span
+                    className={cn(
+                      'mb-1 font-mono text-[10.5px] tabular-nums transition-colors',
+                      isHover ? 'text-white' : 'text-white/65',
+                    )}
+                  >
+                    {formatValue(d.value)}
+                  </span>
+                )}
+
+                {/* The bar itself */}
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${pct * 100}%` }}
+                  transition={{ ...SPRING, delay: i * 0.05 }}
+                  className="w-full max-w-[64px] rounded-t-md"
+                  style={{
+                    background: `linear-gradient(180deg, ${color}, ${color}aa)`,
+                    boxShadow: isHover
+                      ? `0 -2px 14px ${color}66, inset 0 1px 0 ${color}`
+                      : undefined,
+                    border: isHover ? `1px solid ${color}` : '1px solid transparent',
+                    transform: isHover ? 'translateY(-2px)' : undefined,
+                    transition: 'box-shadow 0.18s, transform 0.18s, border-color 0.18s',
+                  }}
                 />
-                <text
-                  x={padding.left - 4}
-                  y={y + 3}
-                  textAnchor="end"
-                  fontSize={7}
-                  fill="rgba(255,255,255,0.35)"
-                  fontFamily="monospace"
-                >
-                  {formatValue(g)}
-                </text>
-              </g>
+              </div>
             )
           })}
+        </div>
+      </div>
 
-        {/* Bars */}
-        {data.map((d, i) => {
-          const slot = (100 - padding.left - padding.right) / data.length
-          const w = slot * (1 - barGap)
-          const x = padding.left + slot * i + (slot - w) / 2
-          const h = niceMax > 0 ? (d.value / niceMax) * chartH : 0
-          const y = padding.top + chartH - h
-          const color = d.color ?? accent
-          const isHover = hover === i
-          return (
-            <g
-              key={i}
-              onMouseEnter={() => setHover(i)}
-              onMouseLeave={() => setHover(null)}
-              style={{ cursor: 'pointer' }}
-            >
-              <motion.rect
-                initial={{ height: 0, y: padding.top + chartH }}
-                animate={{ height: h, y }}
-                transition={{ ...SPRING, delay: i * 0.05 }}
-                x={x}
-                width={w}
-                rx={1.2}
-                fill={`url(#bar-grad-${i})`}
-                style={{
-                  filter: isHover ? `drop-shadow(0 0 4px ${color}88)` : undefined,
-                }}
-              />
-              <defs>
-                <linearGradient id={`bar-grad-${i}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={color} />
-                  <stop offset="100%" stopColor={`${color}99`} />
-                </linearGradient>
-              </defs>
-              {/* Hover lift */}
-              {isHover && (
-                <motion.rect
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  x={x - 0.3}
-                  y={y - 0.3}
-                  width={w + 0.6}
-                  height={h + 0.6}
-                  rx={1.5}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth={0.4}
-                  vectorEffect="non-scaling-stroke"
-                />
-              )}
-              {/* Category label */}
-              <text
-                x={x + w / 2}
-                y={padding.top + chartH + 12}
-                textAnchor="middle"
-                fontSize={7}
-                fill={isHover ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.55)'}
-                fontFamily="system-ui, sans-serif"
+      {/* Category axis labels — separate row, padded to align with bars */}
+      <div className={cn('mt-1.5 flex', showGrid ? 'pl-12' : 'pl-2')}>
+        <div className="flex flex-1 gap-2 pr-1">
+          {data.map((d, i) => {
+            const isHover = hover === i
+            return (
+              <div
+                key={i}
+                className={cn(
+                  'flex-1 truncate text-center text-[10.5px] transition-colors',
+                  isHover ? 'text-white/85' : 'text-white/45',
+                )}
               >
                 {d.label}
-              </text>
-              {/* Value on top */}
-              {showValues && (
-                <text
-                  x={x + w / 2}
-                  y={y - 3}
-                  textAnchor="middle"
-                  fontSize={6.5}
-                  fill="rgba(255,255,255,0.8)"
-                  fontFamily="monospace"
-                >
-                  {formatValue(d.value)}
-                </text>
-              )}
-            </g>
-          )
-        })}
-      </svg>
-
-      {/* Tooltip */}
-      {hover !== null && data[hover] && (
-        <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px]">
-          <span
-            aria-hidden
-            className="block h-2 w-2 rounded-full"
-            style={{ background: data[hover].color ?? accent }}
-          />
-          <span className="font-medium text-white/85">{data[hover].label}</span>
-          <span className="font-mono tabular-nums text-white/55">
-            {formatValue(data[hover].value)}
-          </span>
+              </div>
+            )
+          })}
         </div>
-      )}
+      </div>
+
+      {/* Tooltip — inline below the chart so it doesn't overflow */}
+      <div className="mt-3 min-h-[24px]">
+        {hover !== null && data[hover] && (
+          <div className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px]">
+            <span
+              aria-hidden
+              className="block h-2 w-2 rounded-full"
+              style={{ background: data[hover].color ?? accent }}
+            />
+            <span className="font-medium text-white/85">{data[hover].label}</span>
+            <span className="font-mono tabular-nums text-white/55">
+              {formatValue(data[hover].value)}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

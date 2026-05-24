@@ -92,7 +92,7 @@ export default function CinemaReelDocs() {
       title="Cinema Reel"
       slug="cinema-reel"
       description="A pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom of the strip, the centered frame pops forward + brightens, neighbours dim — exactly like watching a real projector pull frames past a gate."
-      category="147 · gsap-section"
+      category="152 · gsap-section"
     >
       <DocsSection
         title="Live demo"

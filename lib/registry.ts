@@ -850,9 +850,21 @@ export const componentRegistry: RegistryItem[] = [
       'Single-series categorical bar chart. Animated entrance per bar, hover lift + tooltip, optional gridlines + value labels, per-bar colors, niced-up max. Vertical or horizontal.',
   },
   {
-    title: 'Wallet Pass',
-    slug: 'wallet-pass',
+    title: 'Profile Card',
+    slug: 'profile-card',
     description:
-      'Apple Wallet-style metallic pass card with perforated top edge (real CSS-mask cutouts), gradient palettes per variant, and a CSS-drawn barcode at the bottom.',
+      'GitHub-style hover preview card. Gradient header, avatar overlapping the seam, bio + meta + stats + primary/secondary actions.',
+  },
+  {
+    title: 'Code Window',
+    slug: 'code-window',
+    description:
+      'Static syntax-highlighted code in a mac-style window frame. Hand-rolled tokeniser, line numbers, copy button, optional line highlighting.',
+  },
+  {
+    title: 'Cmd Bar 2.0',
+    slug: 'cmd-bar',
+    description:
+      'Raycast-style command palette with a right-side preview pane. Arrow-key through results and the preview swaps live to show context for the highlighted item.',
   },
 ]

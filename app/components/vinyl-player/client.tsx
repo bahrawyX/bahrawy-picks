@@ -34,7 +34,7 @@ export default function VinylPlayerDocs() {
       title="Vinyl Player"
       slug="vinyl-player"
       description="A turntable with a spinning vinyl record + tonearm that rotates to point at different tracks as you scroll. Each track has its own info panel; a live waveform highlights the active track."
-      category="148 · gsap-section"
+      category="153 · gsap-section"
     >
       <DocsSection title="Live demo" description="Scroll into the section — the record spins, the tonearm drops to each track in turn, the panel on the right swaps to the active track.">
         <p className="text-xs text-white/40">↓ scroll · drop the needle</p>

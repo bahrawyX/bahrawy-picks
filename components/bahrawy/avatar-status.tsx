@@ -100,47 +100,60 @@ export function AvatarStatus({
       className={cn('inline-flex items-center', className)}
       style={{ gap: showName ? dims.gap : 0 }}
     >
+      {/* Outer wrapper is positioning context — NO overflow so the status
+          dot can extend past the rounded edge of the inner clip-box. */}
       <span
         className={cn(
-          'relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full',
-          outerRing && 'ring-2 ring-white/15 ring-offset-2 ring-offset-[var(--ring-bg,transparent)]',
+          'relative inline-block shrink-0 select-none',
+          outerRing && 'rounded-full ring-2 ring-white/15 ring-offset-2 ring-offset-[var(--ring-bg,transparent)]',
         )}
         style={{
           width: dims.box,
           height: dims.box,
-          background: showImage
-            ? '#1a1a1f'
-            : `linear-gradient(135deg, ${palette.from}, ${palette.to})`,
           ['--ring-bg' as string]: ringColor,
         }}
         aria-label={name}
       >
-        {showImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={src}
-            alt={name}
-            onError={() => setImgFailed(true)}
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
-        ) : (
-          <span
-            className="font-semibold tracking-tight text-white/95"
-            style={{ fontSize: dims.textPx, lineHeight: 1 }}
-          >
-            {initialsFrom(name)}
-          </span>
-        )}
+        {/* Inner clip-box — this is what owns overflow:hidden so the
+            avatar image (or initials gradient) is rounded. */}
+        <span
+          className="relative inline-flex h-full w-full items-center justify-center overflow-hidden rounded-full"
+          style={{
+            background: showImage
+              ? '#1a1a1f'
+              : `linear-gradient(135deg, ${palette.from}, ${palette.to})`,
+          }}
+        >
+          {showImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={src}
+              alt={name}
+              onError={() => setImgFailed(true)}
+              className="h-full w-full object-cover"
+              draggable={false}
+            />
+          ) : (
+            <span
+              className="font-semibold tracking-tight text-white/95"
+              style={{ fontSize: dims.textPx, lineHeight: 1 }}
+            >
+              {initialsFrom(name)}
+            </span>
+          )}
+        </span>
 
-        {/* Status dot */}
+        {/* Status dot — lives OUTSIDE the clip-box so it can extend
+            past the avatar's rounded edge with its own ring. */}
         {status !== 'none' && (
           <span
             aria-label={status}
-            className="absolute bottom-0 right-0 block rounded-full"
+            className="absolute block rounded-full"
             style={{
               width: dims.dot,
               height: dims.dot,
+              right: 0,
+              bottom: 0,
               background: STATE_COLORS[status],
               boxShadow: `0 0 0 2px ${ringColor}`,
             }}

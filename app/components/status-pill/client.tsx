@@ -10,7 +10,7 @@ export default function StatusPillDocs() {
       title="Status Pill"
       slug="status-pill"
       description="Compact status badge with intent presets and an optional pulsing dot. Five built-in intents plus 'custom'."
-      category="113 · ui"
+      category="118 · ui"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[240px]">

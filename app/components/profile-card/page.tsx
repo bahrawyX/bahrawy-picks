@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { metadataForSlug, breadcrumbJsonLdForSlug, componentJsonLdForSlug } from '@/lib/seo'
 import Client from './client'
-export const metadata: Metadata = metadataForSlug('wallet-pass')
-const breadcrumb = breadcrumbJsonLdForSlug('wallet-pass')
-const component = componentJsonLdForSlug('wallet-pass')
+export const metadata: Metadata = metadataForSlug('profile-card')
+const breadcrumb = breadcrumbJsonLdForSlug('profile-card')
+const component = componentJsonLdForSlug('profile-card')
 export default function Page() {
   return (
     <>
