@@ -24,7 +24,7 @@ export default function LiquidToggleDocs() {
       title="Liquid Toggle"
       slug="liquid-toggle"
       description="A toggle switch whose handle is a fluid blob. The classic CSS-goo SVG filter (Gaussian blur + alpha-tightening colour matrix) is applied to the handle + small anchor dots at each end; as the handle moves, the blobs merge along a curved isoline, then settle at the destination."
-      category="148 · form"
+      category="149 · form"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[200px]">

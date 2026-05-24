@@ -41,7 +41,7 @@ const avatars = [
       title="Avatar Group"
       slug="avatar-group"
       description="Stacked overlapping avatars that spread apart on hover. Overflow members past `max` collapse into a +N chip at the end. Image avatars and initial-based fallbacks both supported."
-      category="80 · ui"
+      category="81 · ui"
     >
       <DocsSection title="Live demo" description="Hover the group to see the avatars spread apart.">
         <DemoCard className="min-h-[200px]">

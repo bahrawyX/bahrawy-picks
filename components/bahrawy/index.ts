@@ -536,3 +536,6 @@ export type { MeshGradientProps } from './mesh-gradient'
 
 export { Nebula } from './nebula'
 export type { NebulaProps } from './nebula'
+
+export { SpotlightTour } from './spotlight-tour'
+export type { SpotlightTourProps, SpotlightTourStep } from './spotlight-tour'

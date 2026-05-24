@@ -795,4 +795,10 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'mood-slider',
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',
   },
+  {
+    title: 'Spotlight Tour',
+    slug: 'spotlight-tour',
+    description:
+      'Interactive onboarding overlay. Dim the page, cut a soft-cornered glowing hole around the active target via the box-shadow technique, anchor a tooltip with prev/next/skip and step dots. Auto-measure, auto-scroll, auto-flip placement, keyboard nav.',
+  },
 ]

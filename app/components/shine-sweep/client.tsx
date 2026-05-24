@@ -10,7 +10,7 @@ export default function ShineSweepDocs() {
       title="Shine Sweep"
       slug="shine-sweep"
       description="A bright shine stripe sweeps diagonally across the text on a loop. The background is a linear-gradient(currentColor, shine, currentColor) clipped to the glyphs via background-clip: text; animating background-position slides the shine through."
-      category="136 · text effect"
+      category="137 · text effect"
     >
       <DocsSection title="Always sweeping">
         <DemoCard className="min-h-[220px]">
