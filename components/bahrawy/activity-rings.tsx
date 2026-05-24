@@ -76,31 +76,17 @@ export function ActivityRings({
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           <defs>
             {rings.map((r, i) => (
-              <React.Fragment key={i}>
-                <linearGradient
-                  id={`ar-grad-${reactId}-${i}`}
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop offset="0%" stopColor={r.color} stopOpacity={1} />
-                  <stop offset="100%" stopColor={r.color} stopOpacity={0.75} />
-                </linearGradient>
-                <filter
-                  id={`ar-glow-${reactId}-${i}`}
-                  x="-50%"
-                  y="-50%"
-                  width="200%"
-                  height="200%"
-                >
-                  <feGaussianBlur stdDeviation="3" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </React.Fragment>
+              <linearGradient
+                key={i}
+                id={`ar-grad-${reactId}-${i}`}
+                x1="0%"
+                y1="0%"
+                x2="0%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor={r.color} stopOpacity={1} />
+                <stop offset="100%" stopColor={r.color} stopOpacity={0.78} />
+              </linearGradient>
             ))}
           </defs>
 
@@ -123,10 +109,10 @@ export function ActivityRings({
                     r={radius}
                     fill="none"
                     stroke={r.color}
-                    strokeOpacity={0.15}
+                    strokeOpacity={0.13}
                     strokeWidth={thickness}
                   />
-                  {/* Filled arc */}
+                  {/* Filled arc — no glow filter, just flat ring */}
                   <motion.circle
                     cx={cx}
                     cy={cy}
@@ -140,7 +126,6 @@ export function ActivityRings({
                     initial={{ strokeDashoffset: 1 }}
                     animate={{ strokeDashoffset: 1 - firstPass }}
                     transition={{ duration: 1.05, delay: ringDelay, ease: EASE }}
-                    filter={`url(#ar-glow-${reactId}-${i})`}
                   />
                   {/* Overshoot pass (drawn on top, slightly brighter) */}
                   {overshoot > 0 && (
@@ -174,7 +159,7 @@ export function ActivityRings({
         {(centerLabel || centerSubLabel) && (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
             {centerLabel && (
-              <p className="text-[15px] font-semibold tracking-tight text-white">
+              <p className="font-display text-[17px] font-semibold tracking-tight text-white">
                 {centerLabel}
               </p>
             )}
@@ -194,14 +179,13 @@ export function ActivityRings({
             return (
               <li
                 key={i}
-                className="flex items-center justify-between gap-3 rounded-[10px] border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 backdrop-blur"
+                className="flex items-center justify-between gap-3 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-white/[0.025]"
               >
                 <div className="flex min-w-0 items-center gap-2">
                   <span
-                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                    className="inline-block h-2 w-2 shrink-0 rounded-full"
                     style={{
                       background: r.color,
-                      boxShadow: `0 0 8px -1px ${r.color}aa`,
                     }}
                   />
                   <span className="truncate text-[12px] font-medium tracking-tight text-white/85">
@@ -209,17 +193,14 @@ export function ActivityRings({
                   </span>
                 </div>
                 <div className="flex shrink-0 items-baseline gap-1.5">
-                  <span className="font-mono text-[12px] font-semibold tabular-nums text-white">
+                  <span className="font-mono text-[12px] font-medium tabular-nums text-white/90">
                     {r.value.toLocaleString()}
                     <span className="text-white/45">
                       /{r.goal.toLocaleString()}
                       {r.unit ?? ''}
                     </span>
                   </span>
-                  <span
-                    className="font-mono text-[10.5px] font-semibold tabular-nums"
-                    style={{ color: r.color }}
-                  >
+                  <span className="font-mono text-[10.5px] tabular-nums text-white/55">
                     {pct}%
                   </span>
                 </div>

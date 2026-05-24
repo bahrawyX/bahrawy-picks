@@ -3,19 +3,17 @@
 /**
  * <LikeBurst />
  *
- * A heart button that bursts when you like it. On click:
+ * An Apple-style heart "like" button.
  *
- *  - The heart fills with the active colour and springs up briefly,
- *    then settles.
- *  - A ring of small "particles" (default 10) shoots outward from
- *    the heart, fading + falling slightly as they travel. Each
- *    particle's angle is `(i / N) × 360°` so the burst is evenly
- *    radial; each one's distance has a small random jitter for
- *    organic feel.
- *  - Clicking again un-likes (no burst on un-like).
+ *  - At rest: a clean outline heart in muted white.
+ *  - On click: the heart fills with the muted SF-red (#FF3B30) and
+ *    pops with a snappy spring; eight tiny particles in a warm SF
+ *    palette (red / pink / orange) burst radially 30–50px outward,
+ *    fading as they travel. A soft white shockwave ring expands
+ *    underneath.
+ *  - Click again to un-like — fill smoothly drops, no burst.
  *
- * Controlled or uncontrolled. Works as an `<a>` (link), a `<button>`
- * (default), or a plain interactive `<span>` via the `as` prop.
+ * Controlled or uncontrolled.
  */
 
 import * as React from 'react'
@@ -40,9 +38,12 @@ export interface LikeBurstProps {
   showCount?: boolean
   /** Heart size in px. Default 24. */
   size?: number
-  /** Number of burst particles. Default 10. */
+  /** Number of burst particles. Default 8 (radial 45° spacing). */
   particles?: number
-  /** Active colour when liked. Default '#F472B6'. */
+  /**
+   * Active colour when liked. Default '#FF3B30' (Apple SF symbols red).
+   * Particles cycle through a warm SF palette around this colour.
+   */
   color?: string
   /** Idle stroke colour. Default 'rgba(255,255,255,0.55)'. */
   idleColor?: string
@@ -52,15 +53,19 @@ export interface LikeBurstProps {
 }
 
 // ---------------------------------------------------------------------------
-// Component
+// Springs — Apple physics
 // ---------------------------------------------------------------------------
 
+/** Snappy pop for the heart fill — high stiffness, low damping. */
 const HEART_SPRING = {
   type: 'spring' as const,
-  stiffness: 480,
-  damping: 14,
-  mass: 0.4,
+  stiffness: 460,
+  damping: 18,
+  mass: 0.5,
 }
+
+/** Warm SF palette — muted red, pink, warm orange. */
+const SF_PARTICLE_COLORS = ['#FF3B30', '#FF6FA8', '#FF9F0A']
 
 export function LikeBurst({
   liked: controlled,
@@ -69,8 +74,8 @@ export function LikeBurst({
   count,
   showCount,
   size = 24,
-  particles = 10,
-  color = '#F472B6',
+  particles = 8,
+  color = '#FF3B30',
   idleColor = 'rgba(255,255,255,0.55)',
   label = 'Like',
   className,
@@ -103,14 +108,14 @@ export function LikeBurst({
       className={cn(
         'group relative inline-flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors',
         'outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-        liked ? 'text-pink-300' : 'text-white/65 hover:text-white',
+        liked ? 'text-white' : 'text-white/65 hover:text-white',
         className,
       )}
     >
       {/* The heart — animated scale on like / un-like */}
       <motion.span
         className="relative inline-flex items-center justify-center"
-        animate={liked ? { scale: [1, 1.35, 1] } : { scale: 1 }}
+        animate={liked ? { scale: [1, 1.3, 1] } : { scale: 1 }}
         transition={HEART_SPRING}
       >
         <Heart
@@ -120,7 +125,8 @@ export function LikeBurst({
           style={{
             color: liked ? color : idleColor,
             fill: liked ? color : 'transparent',
-            transition: 'color 200ms ease-out, fill 200ms ease-out',
+            // Snappy fill on like, soft on un-like.
+            transition: 'color 220ms ease-out, fill 220ms ease-out',
           }}
         />
 
@@ -150,7 +156,7 @@ export function LikeBurst({
 }
 
 // ---------------------------------------------------------------------------
-// BurstRing — the radial particles
+// BurstRing — the radial particles + shockwave
 // ---------------------------------------------------------------------------
 
 function BurstRing({
@@ -159,32 +165,33 @@ function BurstRing({
   size,
 }: {
   count: number
+  /** Anchor color for the shockwave ring — particles use the SF palette. */
   color: string
   size: number
 }) {
-  // Each particle gets a stable seeded jitter on its travel distance so
-  // the burst feels organic but doesn't reshuffle on re-render.
   const particles = React.useMemo(() => {
     return Array.from({ length: count }).map((_, i) => {
-      // Pseudo-random in [-0.35, 0.35] from the index.
+      // Pseudo-random in [0,1] from the index — stable across re-renders.
       const r = ((i * 9301 + 49297) % 233280) / 233280
-      const jitter = (r - 0.5) * 0.7
+      // Apple-ish radial distance: 30–50px from centre, evenly + a touch
+      // of jitter so the burst doesn't look mechanical.
+      const baseDistance = 30 + r * 20
       return {
         angle: (i / count) * Math.PI * 2,
-        // Particle travels 110% of the heart size outward, plus jitter
-        distance: size * 1.05 * (1 + jitter * 0.5),
-        // Tiny dot size varies a touch.
-        dot: 2 + r * 2.5,
+        distance: baseDistance,
+        dot: 3 + r * 2, // 3–5 px particles
+        color: SF_PARTICLE_COLORS[i % SF_PARTICLE_COLORS.length],
       }
     })
-  }, [count, size])
+  }, [count])
 
   return (
     <span
       aria-hidden
       className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0"
     >
-      {/* Soft expanding ring at the centre — feels like a click "shock" */}
+      {/* Soft white shockwave — quick expansion, fades fast. No coloured
+          glow. */}
       <motion.span
         className="absolute left-0 top-0 rounded-full"
         style={{
@@ -192,12 +199,12 @@ function BurstRing({
           height: size,
           marginLeft: -size / 2,
           marginTop: -size / 2,
-          border: `2px solid ${color}`,
+          border: '1.5px solid rgba(255,255,255,0.55)',
         }}
-        initial={{ scale: 0.4, opacity: 0.6 }}
-        animate={{ scale: 1.8, opacity: 0 }}
+        initial={{ scale: 0.5, opacity: 0.55 }}
+        animate={{ scale: 1.9, opacity: 0 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       />
 
       {particles.map((p, i) => {
@@ -212,18 +219,20 @@ function BurstRing({
               height: p.dot,
               marginLeft: -p.dot / 2,
               marginTop: -p.dot / 2,
-              background: color,
+              background: p.color,
             }}
-            initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+            // 0 → 1 → 0 over 600ms, plus the radial translate.
+            initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
             animate={{
               x: dx,
-              y: dy + p.distance * 0.18, // slight downward drift
-              opacity: 0,
-              scale: 0.6,
+              y: dy,
+              scale: [0, 1, 0],
+              opacity: [1, 1, 0],
             }}
             transition={{
               duration: 0.6,
               ease: [0.22, 1, 0.36, 1],
+              times: [0, 0.4, 1],
             }}
           />
         )

@@ -64,10 +64,7 @@ export default function PopoverDocs() {
             aria-label="Notifications"
           >
             <Bell className="h-4 w-4" strokeWidth={2.25} />
-            <span
-              className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF453A] px-1 text-[9.5px] font-bold text-white"
-              style={{ boxShadow: '0 0 12px -2px #FF453A' }}
-            >
+            <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FF453A] px-1 text-[9.5px] font-bold text-white">
               3
             </span>
           </button>

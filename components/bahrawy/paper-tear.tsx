@@ -104,47 +104,52 @@ function rng(seed: number) {
  * cleanly with `preserveAspectRatio="none"` semantics (we'll embed it
  * via clip-path on a sized box).
  */
+/**
+ * All coordinates are emitted in a 0..1 normalized space so the paths
+ * can be used inside an SVG `<clipPath clipPathUnits="objectBoundingBox">`
+ * — that way the clip stretches to the *actual* element size, no matter
+ * how wide the container is. (CSS `clip-path: path()` takes raw pixel
+ * values, which clipped the sheet to the leftmost ~1000px on wide
+ * viewports — the cause of the "only left half visible" bug.)
+ */
 function buildTearPaths(detail: number, jitter: number, seed: number) {
   const rand = rng(seed)
-  const W = 1000
-  const H = 1000
-  const midY = 500
-  // Distribute X points with slightly uneven spacing.
+  const midY = 0.5
+  // Distribute X points with slightly uneven spacing across 0..1.
   const xs: number[] = [0]
   for (let i = 1; i < detail; i++) {
-    const baseX = (i / detail) * W
-    const wobble = (rand() - 0.5) * (W / detail) * 0.6
-    xs.push(Math.max(0, Math.min(W, baseX + wobble)))
+    const baseX = i / detail
+    const wobble = (rand() - 0.5) * (1 / detail) * 0.6
+    xs.push(Math.max(0, Math.min(1, baseX + wobble)))
   }
-  xs.push(W)
+  xs.push(1)
   // Y values with a low-frequency drift + high-frequency teeth.
   const ys: number[] = []
   let drift = 0
   for (let i = 0; i < xs.length; i++) {
-    drift += (rand() - 0.5) * 12
-    drift = Math.max(-jitter * H * 0.6, Math.min(jitter * H * 0.6, drift))
-    const tooth = (rand() - 0.5) * jitter * H
+    drift += (rand() - 0.5) * 0.012
+    drift = Math.max(-jitter * 0.6, Math.min(jitter * 0.6, drift))
+    const tooth = (rand() - 0.5) * jitter
     ys.push(midY + drift + tooth)
   }
-  // Top sheet: rectangle 0..1000 across, top side flat, bottom side jagged.
+  const fmt = (n: number) => n.toFixed(4)
+  // Top sheet: rectangle 0..1 across, top side flat, bottom side jagged.
   const topPath = [
     `M 0 0`,
-    `L ${W} 0`,
-    `L ${xs[xs.length - 1].toFixed(1)} ${ys[ys.length - 1].toFixed(1)}`,
+    `L 1 0`,
+    `L ${fmt(xs[xs.length - 1])} ${fmt(ys[ys.length - 1])}`,
     ...xs
       .slice(0, -1)
       .reverse()
-      .map((x, i) => `L ${x.toFixed(1)} ${ys[xs.length - 2 - i].toFixed(1)}`),
+      .map((x, i) => `L ${fmt(x)} ${fmt(ys[xs.length - 2 - i])}`),
     `Z`,
   ].join(' ')
   // Bottom sheet: jagged top, flat bottom.
   const bottomPath = [
-    `M ${xs[0].toFixed(1)} ${ys[0].toFixed(1)}`,
-    ...xs
-      .slice(1)
-      .map((x, i) => `L ${x.toFixed(1)} ${ys[i + 1].toFixed(1)}`),
-    `L ${W} ${H}`,
-    `L 0 ${H}`,
+    `M ${fmt(xs[0])} ${fmt(ys[0])}`,
+    ...xs.slice(1).map((x, i) => `L ${fmt(x)} ${fmt(ys[i + 1])}`),
+    `L 1 1`,
+    `L 0 1`,
     `Z`,
   ].join(' ')
   return { topPath, bottomPath }
@@ -251,6 +256,11 @@ export function PaperTear({
   const topAccent = top.accent ?? '#F472B6'
   const bottomAccent = bottom.accent ?? '#A78BFA'
 
+  // Unique IDs so multiple <PaperTear />s on one page don't clash.
+  const clipIds = React.useId()
+  const topClipId = `paper-tear-top-${clipIds.replace(/:/g, '')}`
+  const bottomClipId = `paper-tear-bottom-${clipIds.replace(/:/g, '')}`
+
   return (
     <div
       ref={sectionRef}
@@ -261,13 +271,34 @@ export function PaperTear({
         ref={pinRef}
         className="relative h-screen w-full overflow-hidden bg-black"
       >
+        {/* Defs — SVG <clipPath> with objectBoundingBox units (0..1) so
+            the path scales to whatever size each sheet ends up. This is
+            what makes the tear span the full container width regardless
+            of viewport size. */}
+        <svg
+          aria-hidden
+          width="0"
+          height="0"
+          className="pointer-events-none absolute"
+          style={{ width: 0, height: 0 }}
+        >
+          <defs>
+            <clipPath id={topClipId} clipPathUnits="objectBoundingBox">
+              <path d={paths.topPath} />
+            </clipPath>
+            <clipPath id={bottomClipId} clipPathUnits="objectBoundingBox">
+              <path d={paths.bottomPath} />
+            </clipPath>
+          </defs>
+        </svg>
+
         {/* BOTTOM sheet — flat below, jagged on top (revealed) */}
         <div
           ref={bottomRef}
           className="absolute inset-0"
           style={{
-            clipPath: `path('${paths.bottomPath}')`,
-            WebkitClipPath: `path('${paths.bottomPath}')`,
+            clipPath: `url(#${bottomClipId})`,
+            WebkitClipPath: `url(#${bottomClipId})`,
             background:
               bottom.background ??
               'linear-gradient(180deg, #0b0f1e 0%, #050810 100%)',
@@ -283,24 +314,18 @@ export function PaperTear({
           >
             <div className="max-w-2xl">
               {bottom.eyebrow && (
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/85 backdrop-blur">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/85 backdrop-blur">
                   <span
                     aria-hidden
                     className="block h-1.5 w-1.5 rounded-full"
-                    style={{
-                      background: bottomAccent,
-                      boxShadow: `0 0 8px ${bottomAccent}`,
-                    }}
+                    style={{ background: bottomAccent }}
                   />
                   {bottom.eyebrow}
                 </div>
               )}
               <h2
-                className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl"
-                style={{
-                  letterSpacing: '-0.03em',
-                  textShadow: `0 0 30px ${bottomAccent}55`,
-                }}
+                className="font-display text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl"
+                style={{ letterSpacing: '-0.03em' }}
               >
                 {bottom.title}
               </h2>
@@ -315,9 +340,6 @@ export function PaperTear({
                     href={cta.href ?? '#'}
                     onClick={cta.onClick}
                     className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                    style={{
-                      boxShadow: `0 0 24px ${bottomAccent}40, 0 0 56px ${bottomAccent}1f`,
-                    }}
                   >
                     {cta.label}
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -334,8 +356,8 @@ export function PaperTear({
           ref={topRef}
           className="absolute inset-0"
           style={{
-            clipPath: `path('${paths.topPath}')`,
-            WebkitClipPath: `path('${paths.topPath}')`,
+            clipPath: `url(#${topClipId})`,
+            WebkitClipPath: `url(#${topClipId})`,
             background:
               top.background ??
               'linear-gradient(180deg, #fafaf7 0%, #ede9dd 100%)',
@@ -358,20 +380,17 @@ export function PaperTear({
           <div className="absolute inset-0 flex flex-col items-center justify-start px-6 pt-24 text-center sm:px-10 sm:pt-28">
             <div className="max-w-2xl">
               {top.eyebrow && (
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/70 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-black/70 backdrop-blur">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-white/75 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-black/70 backdrop-blur">
                   <span
                     aria-hidden
                     className="block h-1.5 w-1.5 rounded-full"
-                    style={{
-                      background: topAccent,
-                      boxShadow: `0 0 8px ${topAccent}`,
-                    }}
+                    style={{ background: topAccent }}
                   />
                   {top.eyebrow}
                 </div>
               )}
               <h2
-                className="text-balance text-4xl font-semibold leading-tight tracking-tight text-black/90 sm:text-6xl"
+                className="font-display text-balance text-4xl font-semibold leading-tight tracking-tight text-black/90 sm:text-6xl"
                 style={{ letterSpacing: '-0.03em' }}
               >
                 {top.title}

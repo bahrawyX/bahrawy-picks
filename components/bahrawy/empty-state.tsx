@@ -47,28 +47,19 @@ export function EmptyState({
       )}
     >
       <motion.div
-        initial={{ scale: 0.6, opacity: 0 }}
+        initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={SPRING}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.08]"
         style={{ background: accentColor }}
       >
-        <div className="text-white/80">{icon ?? <Inbox className="h-6 w-6" />}</div>
-        <span
-          aria-hidden
-          className="absolute inset-0 -z-10 rounded-full"
-          style={{
-            background: `radial-gradient(closest-side, ${accentColor}, transparent)`,
-            filter: 'blur(12px)',
-            transform: 'scale(1.6)',
-          }}
-        />
+        <div className="text-white/75">{icon ?? <Inbox className="h-6 w-6" strokeWidth={1.75} />}</div>
       </motion.div>
 
       <div className="flex max-w-sm flex-col gap-1.5">
-        <h3 className="text-lg font-semibold tracking-tight text-white">{title}</h3>
+        <h3 className="font-display text-[17px] font-semibold tracking-tight text-white">{title}</h3>
         {description && (
-          <p className="text-sm leading-relaxed text-white/60">{description}</p>
+          <p className="text-[13.5px] leading-relaxed tracking-tight text-white/60">{description}</p>
         )}
       </div>
 

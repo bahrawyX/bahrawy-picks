@@ -10,8 +10,10 @@
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Quote } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
 
 export interface Testimonial {
   quote: string
@@ -52,23 +54,27 @@ export function TestimonialsSlider({
   }, [interval, paused, items.length])
 
   const current = items[index]
+  const go = (next: number) => {
+    const n = ((next % items.length) + items.length) % items.length
+    setIndex(n)
+  }
 
   return (
     <section
-      className={cn('w-full bg-black px-6 py-24 sm:py-32', className)}
+      className={cn('relative w-full bg-black px-6 py-24 sm:py-32', className)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center">
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-10 text-center">
         {(eyebrow || heading) && (
           <div className="flex flex-col items-center gap-3">
             {eyebrow && (
-              <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80">
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
+              <h2 className="font-display text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
                 {heading}
               </h2>
             )}
@@ -125,7 +131,54 @@ export function TestimonialsSlider({
           })}
         </div>
       </div>
+
+      {/* Prev / Next arrows — iOS-style vibrancy chevrons */}
+      <ArrowButton
+        side="left"
+        ariaLabel="Previous testimonial"
+        onClick={() => go(index - 1)}
+      />
+      <ArrowButton
+        side="right"
+        ariaLabel="Next testimonial"
+        onClick={() => go(index + 1)}
+      />
     </section>
+  )
+}
+
+function ArrowButton({
+  side,
+  onClick,
+  ariaLabel,
+}: {
+  side: 'left' | 'right'
+  onClick: () => void
+  ariaLabel: string
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.94 }}
+      transition={APPLE_SPRING}
+      className={cn(
+        'absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/80 backdrop-blur-2xl transition-colors hover:bg-white/[0.08] hover:text-white',
+        side === 'left' ? 'left-4 sm:left-8' : 'right-4 sm:right-8',
+      )}
+      style={{
+        boxShadow:
+          '0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 18px -8px rgba(0,0,0,0.6)',
+      }}
+    >
+      {side === 'left' ? (
+        <ChevronLeft className="h-4 w-4" strokeWidth={2.25} />
+      ) : (
+        <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
+      )}
+    </motion.button>
   )
 }
 

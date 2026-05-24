@@ -265,9 +265,6 @@ export type { StatCardProps } from './stat-card'
 export { Drawer } from './drawer'
 export type { DrawerProps, DrawerSide } from './drawer'
 
-export { DropdownMenu } from './dropdown-menu'
-export type { DropdownMenuProps, DropdownMenuItem, DropdownEntry } from './dropdown-menu'
-
 export { Tooltip } from './tooltip'
 export type { TooltipProps, TooltipSide } from './tooltip'
 
@@ -375,9 +372,6 @@ export type { MagneticTextProps } from './magnetic-text'
 export { VariableFontMorph } from './variable-font-morph'
 export type { VariableFontMorphProps } from './variable-font-morph'
 
-export { NeonPulse } from './neon-pulse'
-export type { NeonPulseProps } from './neon-pulse'
-
 export { GradientFlow } from './gradient-flow'
 export type { GradientFlowProps } from './gradient-flow'
 
@@ -430,19 +424,15 @@ export type { HabitHeatmapProps, HeatmapCell } from './habit-heatmap'
 export { CassetteTape } from './cassette-tape'
 export type { CassetteTapeProps, CassetteSide } from './cassette-tape'
 
-export { LiquidToggle } from './liquid-toggle'
-export type { LiquidToggleProps } from './liquid-toggle'
-
 export { LikeBurst } from './like-burst'
 export type { LikeBurstProps } from './like-burst'
 
-export { MoodSlider, MoodFace } from './mood-slider'
-export type { MoodSliderProps, MoodFaceProps } from './mood-slider'
+export { MoodSlider } from './mood-slider'
+export type { MoodSliderProps } from './mood-slider'
 
 // Animations
 export {
   TextReveal,
-  GradientText,
   TypewriterText,
   FlipText,
   TextScramble,
@@ -453,7 +443,6 @@ export {
 } from './animations'
 export type {
   TextRevealProps,
-  GradientTextProps,
   TypewriterTextProps,
   FlipTextProps,
   TextScrambleProps,
@@ -590,9 +579,6 @@ export type { ImageLightboxProps, LightboxImage } from './image-lightbox'
 
 export { FloatingToolbar } from './floating-toolbar'
 export type { FloatingToolbarProps, FloatingToolbarAction } from './floating-toolbar'
-
-export { BottomSheet } from './bottom-sheet'
-export type { BottomSheetProps } from './bottom-sheet'
 
 export { SegmentedControl } from './segmented-control'
 export type { SegmentedControlProps, SegmentedControlOption } from './segmented-control'

@@ -81,6 +81,18 @@ export function HeroScrollGrow({
   const imageWrapRef = React.useRef<HTMLDivElement>(null)
   const overlayRef = React.useRef<HTMLDivElement>(null)
 
+  // Per-element refs for the Apple-style intro stagger.
+  const eyebrowRef = React.useRef<HTMLSpanElement>(null)
+  const titleRef = React.useRef<HTMLHeadingElement>(null)
+  const descRef = React.useRef<HTMLParagraphElement>(null)
+  const ctaRef = React.useRef<HTMLDivElement>(null)
+
+  // If the title is a plain string, split it into words so each can
+  // stagger up on mount like the Apple product hero. Non-string JSX
+  // titles fall back to a single fade-up.
+  const titleIsString = typeof title === 'string'
+  const titleWords = titleIsString ? (title as string).split(/(\s+)/) : null
+
   useGSAP(
     () => {
       if (!sectionRef.current || !pinRef.current) return
@@ -90,27 +102,42 @@ export function HeroScrollGrow({
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
       // ----------------------------------------------------------------
-      // INTRO sequence (auto-plays on mount):
-      //   - The image starts at FULL-BLEED (scale 1, radius 0) — exactly
-      //     the same state the scroll animation ends on.
-      //   - It smoothly shrinks into the inset card at scale `initialScale`
-      //     with `initialRadius` corners — the scroll-start state.
-      //   - Hero text fades up just as the image arrives at rest.
+      // INTRO sequence (Apple-style mount):
+      //   - The image arrives at its scroll-start size + fades in.
+      //   - Eyebrow, title words (per-word stagger ~60ms), description,
+      //     and CTAs fade up in a deliberate cascade.
       //   - The ScrollTrigger that grows the image is created AFTER the
-      //     intro completes, so the two tweens never fight for the
+      //     intro completes so the two tweens never fight for the
       //     transform.
+      //
+      // GSAP doesn't take spring configs or cubic-bezier tuples natively
+      // via its TS types, so we use the named ease closest to the Apple
+      // cubic-bezier(0.22, 1, 0.36, 1) — a smooth ease-out cubic.
       // ----------------------------------------------------------------
+      const SPRING_BEZIER = 'power3.out'
+
       gsap.set(imageWrapRef.current, {
-        scale: 1,
-        borderRadius: 0,
+        scale: initialScale * 0.96,
+        borderRadius: initialRadius,
+        autoAlpha: 0,
         transformOrigin: '50% 50%',
       })
-      if (heroTextRef.current) {
-        gsap.set(heroTextRef.current, { autoAlpha: 0, y: 16 })
+
+      if (eyebrowRef.current)
+        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
+      const wordEls = titleRef.current
+        ? Array.from(titleRef.current.querySelectorAll('[data-word]'))
+        : []
+      if (wordEls.length) {
+        gsap.set(wordEls, { autoAlpha: 0, y: 18 })
+      } else if (titleRef.current) {
+        gsap.set(titleRef.current, { autoAlpha: 0, y: 18 })
       }
-      if (overlayRef.current) {
+      if (descRef.current) gsap.set(descRef.current, { autoAlpha: 0, y: 12 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: 10, scale: 0.95 })
+      if (overlayRef.current)
         gsap.set(overlayRef.current, { autoAlpha: 0, y: 20 })
-      }
 
       let scrollTL: gsap.core.Timeline | null = null
 
@@ -167,14 +194,21 @@ export function HeroScrollGrow({
       }
 
       if (prefersReducedMotion) {
-        // Skip the intro — go straight to the scroll-start state and
-        // wire up scroll.
+        // Skip the intro — snap everything to its rest state and wire up
+        // the scroll timeline.
         gsap.set(imageWrapRef.current, {
           scale: initialScale,
           borderRadius: initialRadius,
+          autoAlpha: 1,
         })
-        if (heroTextRef.current)
-          gsap.set(heroTextRef.current, { autoAlpha: 1, y: 0 })
+        if (eyebrowRef.current)
+          gsap.set(eyebrowRef.current, { autoAlpha: 1, y: 0 })
+        if (wordEls.length) gsap.set(wordEls, { autoAlpha: 1, y: 0 })
+        else if (titleRef.current)
+          gsap.set(titleRef.current, { autoAlpha: 1, y: 0 })
+        if (descRef.current) gsap.set(descRef.current, { autoAlpha: 1, y: 0 })
+        if (ctaRef.current)
+          gsap.set(ctaRef.current, { autoAlpha: 1, y: 0, scale: 1 })
         buildScrollTimeline()
         return () => {
           scrollTL?.scrollTrigger?.kill()
@@ -182,28 +216,71 @@ export function HeroScrollGrow({
         }
       }
 
-      const intro = gsap.timeline({ delay: 0.15 })
+      const intro = gsap.timeline({ delay: 0.1 })
 
+      // 1. Image settles in first — scale + fade.
       intro.to(
         imageWrapRef.current,
         {
           scale: initialScale,
-          borderRadius: initialRadius,
-          duration: 1.4,
-          ease: 'power3.inOut',
+          autoAlpha: 1,
+          duration: 0.9,
+          ease: SPRING_BEZIER,
         },
         0,
       )
-      if (heroTextRef.current) {
+
+      // 2. Eyebrow lands at ~0.15s.
+      if (eyebrowRef.current) {
         intro.to(
-          heroTextRef.current,
+          eyebrowRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.6, ease: SPRING_BEZIER },
+          0.15,
+        )
+      }
+
+      // 3. Title words stagger up — 60ms apart, starting at ~0.25s.
+      if (wordEls.length) {
+        intro.to(
+          wordEls,
           {
             autoAlpha: 1,
             y: 0,
             duration: 0.7,
-            ease: 'power2.out',
+            ease: SPRING_BEZIER,
+            stagger: 0.06,
           },
-          0.5,
+          0.25,
+        )
+      } else if (titleRef.current) {
+        intro.to(
+          titleRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.7, ease: SPRING_BEZIER },
+          0.25,
+        )
+      }
+
+      // 4. Description fades in after the title (~0.4s after eyebrow).
+      if (descRef.current) {
+        intro.to(
+          descRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.6, ease: SPRING_BEZIER },
+          0.55,
+        )
+      }
+
+      // 5. CTA pops in with a small spring-style scale.
+      if (ctaRef.current) {
+        intro.to(
+          ctaRef.current,
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.7,
+            ease: SPRING_BEZIER,
+          },
+          0.7,
         )
       }
 
@@ -257,20 +334,49 @@ export function HeroScrollGrow({
           className="pointer-events-none relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center gap-6 px-6 text-center sm:px-10"
         >
           {eyebrow && (
-            <span className="pointer-events-auto rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/85 backdrop-blur">
+            <span
+              ref={eyebrowRef}
+              className="pointer-events-auto rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/85 backdrop-blur"
+            >
               {eyebrow}
             </span>
           )}
-          <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
-            {title}
+          <h1
+            ref={titleRef}
+            className="font-display text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl"
+          >
+            {titleIsString && titleWords ? (
+              titleWords.map((word, i) =>
+                /^\s+$/.test(word) ? (
+                  <span key={i}>{word}</span>
+                ) : (
+                  <span
+                    key={i}
+                    data-word
+                    className="inline-block"
+                    style={{ willChange: 'transform, opacity' }}
+                  >
+                    {word}
+                  </span>
+                ),
+              )
+            ) : (
+              title
+            )}
           </h1>
           {description && (
-            <p className="max-w-xl text-pretty text-base leading-relaxed text-white/80 sm:text-lg">
+            <p
+              ref={descRef}
+              className="max-w-xl text-pretty text-base leading-relaxed text-white/80 sm:text-lg"
+            >
               {description}
             </p>
           )}
           {(primaryCta || secondaryCta) && (
-            <div className="pointer-events-auto mt-2 flex flex-wrap items-center justify-center gap-3">
+            <div
+              ref={ctaRef}
+              className="pointer-events-auto mt-2 flex flex-wrap items-center justify-center gap-3"
+            >
               {primaryCta && (
                 <a
                   href={primaryCta.href ?? '#'}
@@ -285,7 +391,7 @@ export function HeroScrollGrow({
                 <a
                   href={secondaryCta.href ?? '#'}
                   onClick={secondaryCta.onClick}
-                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:bg-white/10"
+                  className="inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:bg-white/10"
                 >
                   {secondaryCta.label}
                 </a>

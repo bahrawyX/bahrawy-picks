@@ -25,7 +25,6 @@ const lines = [
   finalLine={{ eyebrow: 'and again', text: 'Until it lands.' }}
   cta={{ label: 'Get started' }}
   scrollLength={4}
-  accentColor="#A78BFA"
 />`
 
 export default function TypeTunnelDocs() {
@@ -48,7 +47,6 @@ export default function TypeTunnelDocs() {
         finalLine={{ eyebrow: 'and again', text: 'Until it lands.' }}
         cta={{ label: 'Get started' }}
         scrollLength={4}
-        accentColor="#A78BFA"
       />
 
       <div className="h-24" aria-hidden />
@@ -85,7 +83,6 @@ export default function TypeTunnelDocs() {
             ['scrollLength', 'Pin duration in viewport heights. Default 4.'],
             ['travel', 'Total Z-axis travel in px. Default 2400.'],
             ['spacing', 'Initial gap between lines along Z. Default 600.'],
-            ['accentColor', 'Vignette tint + final-line text shadow. Default #A78BFA.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

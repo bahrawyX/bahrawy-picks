@@ -60,6 +60,8 @@ export interface ConstellationScrollProps {
   description?: React.ReactNode
   /** Optional CTA that appears once the constellation has settled. */
   cta?: ConstellationScrollCta
+  /** Optional final headline that lands at the very end of the scroll. */
+  finale?: React.ReactNode
   /** Pin duration in viewport heights. Default 2.4. */
   scrollLength?: number
   /**
@@ -100,6 +102,7 @@ export function ConstellationScroll({
   heading,
   description,
   cta,
+  finale,
   scrollLength = 2.4,
   radius = 0.62,
   nodeSize = 64,
@@ -116,6 +119,7 @@ export function ConstellationScroll({
   const headerRef = React.useRef<HTMLDivElement>(null)
   const descRef = React.useRef<HTMLDivElement>(null)
   const ctaRef = React.useRef<HTMLDivElement>(null)
+  const finaleRef = React.useRef<HTMLDivElement>(null)
 
   const progress = React.useRef({ value: 0 })
   const dims = React.useRef({ w: 0, h: 0, r: 0 })
@@ -170,6 +174,7 @@ export function ConstellationScroll({
       if (headerRef.current) gsap.set(headerRef.current, { autoAlpha: 0, y: 12 })
       if (descRef.current) gsap.set(descRef.current, { autoAlpha: 0, y: 10 })
       if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 10 })
+      if (finaleRef.current) gsap.set(finaleRef.current, { autoAlpha: 0, y: 16 })
 
       // ----------------------------------------------------------------
       // Apply per-node positions for the current progress value.
@@ -189,7 +194,9 @@ export function ConstellationScroll({
       applyPositions()
 
       // ----------------------------------------------------------------
-      // Scrubbed timeline.
+      // Scrubbed timeline. Higher scrub value = the timeline LERPs more
+      // toward the scroll position over time, eliminating the jumpy
+      // frame-by-frame feel and giving Apple-style smoothness.
       // ----------------------------------------------------------------
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -197,7 +204,7 @@ export function ConstellationScroll({
           start: 'top top',
           end: () => `+=${scrollLength * window.innerHeight}`,
           pin: pinRef.current,
-          scrub: 0.35,
+          scrub: 1.1,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
@@ -225,7 +232,7 @@ export function ConstellationScroll({
         progress.current,
         {
           value: 1,
-          duration: 0.7,
+          duration: 0.55,
           ease: 'power3.out',
           onUpdate: applyPositions,
         },
@@ -242,38 +249,67 @@ export function ConstellationScroll({
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.08,
-            stagger: 0.012,
+            duration: 0.12,
+            stagger: 0.018,
             ease: 'power2.out',
           },
-          0.65,
+          0.55,
         )
       }
 
       // Connecting links — draw in starting from the top, walking
       // clockwise around the ring.
       if (drawLinks) {
-        linkRefs.current.forEach((el) => {
+        linkRefs.current.forEach((el, i) => {
           if (!el) return
           tl.to(
             el,
             {
               strokeDashoffset: 0,
-              opacity: 0.55,
-              duration: 0.05,
+              opacity: 0.5,
+              duration: 0.12,
               ease: 'power2.out',
             },
-            0.75,
+            0.6 + i * 0.005,
           )
         })
       }
 
-      // CTA at the very end.
+      // CTA fades in once everything's drawn.
       if (ctaRef.current) {
         tl.to(
           ctaRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.08, ease: 'power2.out' },
-          0.88,
+          { autoAlpha: 1, y: 0, duration: 0.18, ease: 'power2.out' },
+          0.78,
+        )
+      }
+
+      // FINAL settle — at the very end of scroll, ensure progress is
+      // pinned to 1 (no overshoot residue), bump link opacity slightly,
+      // and bring in the optional finale headline. This gives the
+      // animation a clear "done" state instead of trailing off.
+      tl.to(
+        progress.current,
+        {
+          value: 1,
+          duration: 0.05,
+          ease: 'none',
+          onUpdate: applyPositions,
+        },
+        0.92,
+      )
+      if (drawLinks && linkRefs.current.length) {
+        tl.to(
+          linkRefs.current.filter(Boolean),
+          { opacity: 0.7, duration: 0.18, ease: 'power2.out' },
+          0.92,
+        )
+      }
+      if (finaleRef.current) {
+        tl.to(
+          finaleRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.25, ease: 'power2.out' },
+          0.9,
         )
       }
 
@@ -306,12 +342,14 @@ export function ConstellationScroll({
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
-        {/* Background mood */}
+        {/* Background mood — restrained: a single soft radial wash, no
+            colored neon halo. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: `radial-gradient(60% 50% at 50% 50%, ${accentColor}1a 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.5) 0%, transparent 60%)`,
+            background:
+              'radial-gradient(60% 50% at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.5) 0%, transparent 60%)',
           }}
         />
 
@@ -320,17 +358,17 @@ export function ConstellationScroll({
           {(eyebrow || heading) && (
             <div ref={headerRef} className="max-w-2xl">
               {eyebrow && (
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
                   <span
                     aria-hidden
                     className="block h-1.5 w-1.5 rounded-full"
-                    style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }}
+                    style={{ background: accentColor }}
                   />
                   {eyebrow}
                 </div>
               )}
               {heading && (
-                <h2 className="text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+                <h2 className="font-display text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
                   {heading}
                 </h2>
               )}
@@ -378,7 +416,9 @@ export function ConstellationScroll({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke={node.accent ?? accentColor}
+                      // Plain white at low opacity — no per-node colored
+                      // glow. Apple-style restraint.
+                      stroke="rgba(255,255,255,0.55)"
                       strokeWidth="0.3"
                       vectorEffect="non-scaling-stroke"
                       strokeLinecap="round"
@@ -410,18 +450,11 @@ export function ConstellationScroll({
                     className="relative h-full w-full"
                     style={{ willChange: 'transform' }}
                   >
-                    <div
-                      className="relative flex h-full w-full items-center justify-center rounded-full border bg-zinc-950/85 text-white shadow-[0_12px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur"
-                      style={{
-                        borderColor: `${accent}55`,
-                        boxShadow: `0 0 22px ${accent}33, inset 0 0 18px ${accent}1a`,
-                      }}
-                    >
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0 rounded-full"
-                        style={{ boxShadow: `inset 0 0 1px ${accent}88` }}
-                      />
+                    {/* Apple-style node: vibrancy backdrop-blur card,
+                        hairline white border at ~8% opacity, deep but
+                        non-colored drop shadow. The accent only shows
+                        up in the tiny dot inside, never as a glow. */}
+                    <div className="relative flex h-full w-full items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl">
                       <span className="relative">
                         {node.icon ?? (
                           <span
@@ -451,19 +484,35 @@ export function ConstellationScroll({
 
         {/* CTA at the bottom */}
         {cta && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center pb-14">
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-4 pb-14">
+            {finale && (
+              <div ref={finaleRef} className="max-w-xl px-6 text-center">
+                <p className="font-display text-balance text-base font-semibold leading-snug text-white sm:text-lg">
+                  {finale}
+                </p>
+              </div>
+            )}
             <div ref={ctaRef} className="pointer-events-auto">
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
                 className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                style={{
-                  boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
-                }}
               >
                 {cta.label}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </a>
+            </div>
+          </div>
+        )}
+
+        {/* If there's a finale headline but no CTA, render the headline
+            on its own at the bottom. */}
+        {finale && !cta && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center pb-16">
+            <div ref={finaleRef} className="max-w-xl px-6 text-center">
+              <p className="font-display text-balance text-base font-semibold leading-snug text-white sm:text-lg">
+                {finale}
+              </p>
             </div>
           </div>
         )}

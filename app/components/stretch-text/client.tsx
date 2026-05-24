@@ -9,27 +9,29 @@ export default function StretchTextDocs() {
     <DocsPage
       title="Stretch Text"
       slug="stretch-text"
-      description="On hover, each character stretches horizontally via `transform: scaleX(N)` with a staggered delay so the stretch reads as a wave passing through the line."
+      description="Move the cursor across the line — each letter widens via Gaussian falloff against the cursor X, then springs back. Apple spring physics (stiffness 360, damping 28). Per-letter scaleX + letter-spacing so it works on any font."
       category="151 · text effect"
     >
-      <DocsSection title="Hover the line">
-        <DemoCard className="min-h-[220px]">
-          <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl">
+      <DocsSection title="Move the cursor across the line">
+        <DemoCard className="min-h-[240px]">
+          <h2 className="font-display text-5xl font-semibold tracking-tight text-white sm:text-7xl">
             <StretchText>Stretch me out.</StretchText>
           </h2>
         </DemoCard>
       </DocsSection>
 
-      <DocsSection title="Bigger stretch, slower wave">
-        <DemoCard className="min-h-[220px]">
-          <h2 className="text-5xl font-semibold tracking-tight text-white sm:text-7xl">
-            <StretchText stretch={1.8} duration={900} stagger={50}>Slow pull.</StretchText>
+      <DocsSection title="Wider radius, more dramatic stretch">
+        <DemoCard className="min-h-[240px]">
+          <h2 className="font-display text-5xl font-semibold tracking-tight text-white sm:text-7xl">
+            <StretchText radius={180} maxScale={1.7} maxSpacing={0.18}>
+              Slow pull.
+            </StretchText>
           </h2>
         </DemoCard>
       </DocsSection>
 
       <DocsSection title="Usage">
-        <CodeBlock language="tsx" code={`<StretchText stretch={1.45} duration={600} stagger={30}>
+        <CodeBlock language="tsx" code={`<StretchText radius={120} maxScale={1.45}>
   Stretch me out.
 </StretchText>`} />
       </DocsSection>
@@ -38,10 +40,10 @@ export default function StretchTextDocs() {
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
             ['children', 'string — the text (required).'],
-            ['stretch', 'Max horizontal scale. Default 1.45.'],
-            ['duration', 'Per-char transition duration in ms. Default 600.'],
-            ['stagger', 'Per-char stagger delay in ms. Default 30.'],
-            ['className', 'Extra classes on the wrapper.'],
+            ['radius', 'Falloff radius in px. Letters within widen. Default 120.'],
+            ['maxScale', 'Max horizontal scale at full proximity. Default 1.45.'],
+            ['maxSpacing', 'Max letter-spacing bump in em. Default 0.12.'],
+            ['className', 'Extra classes on the wrapper. Bricolage Grotesque by default.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>

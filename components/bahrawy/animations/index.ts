@@ -1,5 +1,4 @@
 export { TextReveal, type TextRevealProps } from './text-reveal'
-export { GradientText, type GradientTextProps } from './gradient-text'
 export { TypewriterText, type TypewriterTextProps } from './typewriter-text'
 export { FlipText, type FlipTextProps } from './flip-text'
 export { TextScramble, type TextScrambleProps } from './text-scramble'

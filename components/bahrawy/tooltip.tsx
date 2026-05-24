@@ -6,19 +6,21 @@
  * A small contextual hint that appears on hover/focus. Lightweight version
  * of HoverCard — for one-liners, not rich previews.
  *
- * Styled like an iMessage bubble: rounded pill body, optional pointer
- * "tail" on the side that faces the trigger. Tail can be toggled via
- * `showTail` (default true).
+ * Apple-styled: vibrancy backdrop, hairline border, multi-layer shadow,
+ * crisp little arrow that points at the trigger. Portal-mounted so it
+ * never gets clipped by transformed/overflow-hidden parents and always
+ * sits correctly relative to the trigger's screen rect.
  *
  * @param content    — The text/node shown in the tooltip.
  * @param children   — Trigger element. Wrapped, not consumed.
  * @param side       — 'top' | 'right' | 'bottom' | 'left'. Default 'top'.
  * @param delay      — Open delay in ms. Default 250.
- * @param showTail   — Render the iMessage-style pointer tail. Default true.
+ * @param showTail   — Render the small pointer arrow. Default true.
  * @param className  — Extra classes on the tooltip bubble.
  */
 
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
@@ -33,10 +35,62 @@ export interface TooltipProps {
   className?: string
 }
 
-const SPRING = { type: 'spring' as const, stiffness: 460, damping: 28, mass: 0.55 }
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
+const OFFSET = 10 // px gap between trigger and bubble
 
-// Match the bubble background so the tail blends seamlessly.
-const BUBBLE_BG = '#18181b' // zinc-900
+interface Position {
+  top: number
+  left: number
+  arrowTop?: number
+  arrowLeft?: number
+}
+
+function computePosition(
+  trigger: DOMRect,
+  bubble: { width: number; height: number },
+  side: TooltipSide,
+): Position {
+  const cx = trigger.left + trigger.width / 2
+  const cy = trigger.top + trigger.height / 2
+  let top = 0
+  let left = 0
+
+  if (side === 'top') {
+    top = trigger.top - bubble.height - OFFSET
+    left = cx - bubble.width / 2
+  } else if (side === 'bottom') {
+    top = trigger.bottom + OFFSET
+    left = cx - bubble.width / 2
+  } else if (side === 'left') {
+    top = cy - bubble.height / 2
+    left = trigger.left - bubble.width - OFFSET
+  } else {
+    top = cy - bubble.height / 2
+    left = trigger.right + OFFSET
+  }
+
+  // Clamp horizontally to viewport (8px margin)
+  const vp = { w: window.innerWidth, h: window.innerHeight }
+  const margin = 8
+  const clampedLeft = Math.max(margin, Math.min(left, vp.w - bubble.width - margin))
+  const clampedTop = Math.max(margin, Math.min(top, vp.h - bubble.height - margin))
+
+  // Arrow tracks the un-clamped center so it still points at the trigger.
+  let arrowLeft: number | undefined
+  let arrowTop: number | undefined
+  if (side === 'top' || side === 'bottom') {
+    arrowLeft = Math.max(10, Math.min(cx - clampedLeft - 5, bubble.width - 16))
+  } else {
+    arrowTop = Math.max(10, Math.min(cy - clampedTop - 5, bubble.height - 16))
+  }
+
+  return {
+    top: clampedTop + window.scrollY,
+    left: clampedLeft + window.scrollX,
+    arrowLeft,
+    arrowTop,
+  }
+}
 
 export function Tooltip({
   content,
@@ -47,6 +101,9 @@ export function Tooltip({
   className,
 }: TooltipProps) {
   const [open, setOpen] = React.useState(false)
+  const [pos, setPos] = React.useState<Position | null>(null)
+  const triggerRef = React.useRef<HTMLSpanElement>(null)
+  const bubbleRef = React.useRef<HTMLDivElement>(null)
   const timer = React.useRef<number | null>(null)
 
   const show = () => {
@@ -65,124 +122,155 @@ export function Tooltip({
     [],
   )
 
-  // ---- Bubble position (relative to the trigger) ----------------------
-  // Note: framer-motion accepts `x`/`y` as transform values. They take
-  // priority over the css transform we'd otherwise need for centring.
-  const sideStyles: Record<TooltipSide, React.CSSProperties> = {
-    top: { bottom: 'calc(100% + 10px)', left: '50%', x: '-50%' as never },
-    bottom: { top: 'calc(100% + 10px)', left: '50%', x: '-50%' as never },
-    left: { right: 'calc(100% + 10px)', top: '50%', y: '-50%' as never },
-    right: { left: 'calc(100% + 10px)', top: '50%', y: '-50%' as never },
-  }
-  const enterOffset: Record<TooltipSide, { x?: number; y?: number }> = {
+  // Measure trigger + bubble and place the bubble.
+  React.useLayoutEffect(() => {
+    if (!open) {
+      setPos(null)
+      return
+    }
+    const measure = () => {
+      const t = triggerRef.current?.getBoundingClientRect()
+      const b = bubbleRef.current
+      if (!t || !b) return
+      setPos(computePosition(t, { width: b.offsetWidth, height: b.offsetHeight }, side))
+    }
+    // Next frame so the bubble has rendered with its intrinsic width.
+    const id = window.setTimeout(measure, 0)
+    return () => window.clearTimeout(id)
+  }, [open, side, content])
+
+  // Reposition on scroll/resize while open.
+  React.useEffect(() => {
+    if (!open) return
+    const onScroll = () => {
+      const t = triggerRef.current?.getBoundingClientRect()
+      const b = bubbleRef.current
+      if (!t || !b) return
+      setPos(computePosition(t, { width: b.offsetWidth, height: b.offsetHeight }, side))
+    }
+    window.addEventListener('scroll', onScroll, true)
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll, true)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [open, side])
+
+  // Enter offset — a tiny lift FROM the trigger.
+  const enterFrom: Record<TooltipSide, { x?: number; y?: number }> = {
     top: { y: 4 },
     bottom: { y: -4 },
     left: { x: 4 },
     right: { x: -4 },
   }
 
-  // ---- Tail geometry --------------------------------------------------
-  // Classic CSS speech-bubble pattern: a small square rotated 45° so
-  // its corner points at the trigger. The two visible sides of the
-  // rotated square get the same 1px border as the bubble, giving a
-  // tail with a crisp outlined point. The other two sides sit BEHIND
-  // the bubble's body (overlap into the bubble) so the join is seamless.
-  //
-  // For each side, we pick the two un-rotated borders that, after the
-  // 45° rotation, end up as the OUTSIDE-FACING edges of the tail:
-  //  - top side    → right + bottom (pointing down-out)
-  //  - bottom side → top   + left
-  //  - left side   → top   + right
-  //  - right side  → bottom + left
-  const TAIL = 12 // un-rotated square edge length (px)
-  const BORDER = '1px solid rgba(255,255,255,0.1)'
-  const baseTail: React.CSSProperties = {
+  // Arrow placement — anchored to the edge nearest the trigger.
+  const arrowStyle: React.CSSProperties = {
     position: 'absolute',
-    width: TAIL,
-    height: TAIL,
-    background: BUBBLE_BG,
+    width: 10,
+    height: 10,
+    background:
+      side === 'top'
+        ? 'linear-gradient(135deg, transparent 0%, transparent 50%, rgba(28,28,32,0.92) 50%)'
+        : side === 'bottom'
+        ? 'linear-gradient(315deg, transparent 0%, transparent 50%, rgba(28,28,32,0.92) 50%)'
+        : side === 'left'
+        ? 'linear-gradient(225deg, transparent 0%, transparent 50%, rgba(28,28,32,0.92) 50%)'
+        : 'linear-gradient(45deg, transparent 0%, transparent 50%, rgba(28,28,32,0.92) 50%)',
+    backdropFilter: 'blur(40px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(40px) saturate(180%)',
     transform: 'rotate(45deg)',
-    // Soft drop-shadow on the outside of the tail to match the bubble's
-    // shadow-lg shadow-black/50.
-    boxShadow: '2px 2px 4px -2px rgba(0,0,0,0.4)',
-  }
-  // Half the rotated square's "outer" extent — equals TAIL × √2 / 4
-  // ≈ TAIL × 0.354. We push the tail outside the bubble by this much
-  // so the corner just barely touches the bubble edge.
-  const OFFSET = Math.round(TAIL / 2)
-  const tailStyles: Record<TooltipSide, React.CSSProperties> = {
-    top: {
-      ...baseTail,
-      bottom: -OFFSET,
-      left: '50%',
-      marginLeft: -TAIL / 2,
-      borderRight: BORDER,
-      borderBottom: BORDER,
-    },
-    bottom: {
-      ...baseTail,
-      top: -OFFSET,
-      left: '50%',
-      marginLeft: -TAIL / 2,
-      borderTop: BORDER,
-      borderLeft: BORDER,
-    },
-    left: {
-      ...baseTail,
-      right: -OFFSET,
-      top: '50%',
-      marginTop: -TAIL / 2,
-      borderTop: BORDER,
-      borderRight: BORDER,
-    },
-    right: {
-      ...baseTail,
-      left: -OFFSET,
-      top: '50%',
-      marginTop: -TAIL / 2,
-      borderBottom: BORDER,
-      borderLeft: BORDER,
-    },
+    borderStyle: 'solid',
+    borderColor: 'rgba(255,255,255,0.08)',
+    borderTopWidth: side === 'bottom' ? '0.5px' : 0,
+    borderLeftWidth: side === 'right' ? '0.5px' : 0,
+    borderRightWidth: side === 'left' ? '0.5px' : 0,
+    borderBottomWidth: side === 'top' ? '0.5px' : 0,
   }
 
+  if (side === 'top') {
+    arrowStyle.bottom = -5
+    arrowStyle.left = pos?.arrowLeft ?? 0
+  } else if (side === 'bottom') {
+    arrowStyle.top = -5
+    arrowStyle.left = pos?.arrowLeft ?? 0
+  } else if (side === 'left') {
+    arrowStyle.right = -5
+    arrowStyle.top = pos?.arrowTop ?? 0
+  } else {
+    arrowStyle.left = -5
+    arrowStyle.top = pos?.arrowTop ?? 0
+  }
+
+  const portal =
+    typeof document !== 'undefined'
+      ? createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                ref={bubbleRef}
+                role="tooltip"
+                initial={{ opacity: 0, scale: 0.94, ...enterFrom[side] }}
+                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, ...enterFrom[side] }}
+                transition={APPLE_SPRING}
+                style={{
+                  position: 'absolute',
+                  top: pos?.top ?? -9999,
+                  left: pos?.left ?? -9999,
+                  zIndex: 240,
+                  opacity: pos ? undefined : 0,
+                }}
+                className={cn(
+                  'pointer-events-none rounded-[8px] border border-white/[0.08]',
+                  className,
+                )}
+              >
+                {/* Vibrancy fill */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-[8px]"
+                  style={{
+                    background:
+                      'linear-gradient(180deg, rgba(40,40,46,0.88) 0%, rgba(22,22,26,0.92) 100%)',
+                    backdropFilter: 'blur(40px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+                    boxShadow: `
+                      0 1px 0 rgba(255,255,255,0.06) inset,
+                      0 0 0 0.5px rgba(255,255,255,0.04),
+                      0 8px 20px -6px rgba(0,0,0,0.55),
+                      0 16px 36px -12px rgba(0,0,0,0.4)
+                    `,
+                  }}
+                />
+
+                {/* Arrow */}
+                {showTail && pos && <span aria-hidden style={arrowStyle} />}
+
+                {/* Content */}
+                <span className="relative block whitespace-nowrap px-2.5 py-1.5 text-[12px] font-medium leading-none text-white/95">
+                  {content}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )
+      : null
+
   return (
-    <span
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocus={show}
-      onBlur={hide}
-      className="relative inline-flex"
-    >
-      {children}
-      <AnimatePresence>
-        {open && (
-          <motion.span
-            role="tooltip"
-            initial={{ opacity: 0, scale: 0.94, ...enterOffset[side] }}
-            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, ...enterOffset[side] }}
-            transition={SPRING}
-            style={{
-              ...sideStyles[side],
-              background: BUBBLE_BG,
-            }}
-            className={cn(
-              'pointer-events-none absolute z-50 whitespace-nowrap rounded-[14px] border border-white/10 px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-black/50',
-              className,
-            )}
-          >
-            {content}
-            {showTail && (
-              <span
-                aria-hidden
-                // The 45° rotated square — position + borders all live
-                // on `tailStyles[side]`. No extra classes needed.
-                style={tailStyles[side]}
-              />
-            )}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </span>
+    <>
+      <span
+        ref={triggerRef}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className="relative inline-flex"
+      >
+        {children}
+      </span>
+      {portal}
+    </>
   )
 }

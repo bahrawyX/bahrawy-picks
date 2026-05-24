@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Bricolage_Grotesque } from 'next/font/google'
 import { Toaster } from 'sonner'
 import { Navbar } from '@/components/navbar'
 import { NavigationProgress } from '@/components/navigation-progress'
@@ -10,6 +10,13 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+})
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 const SITE_URL = 'https://bahrawy.me'
@@ -108,7 +115,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} bg-black`}
+      className={`dark ${inter.variable} ${bricolage.variable} bg-black`}
       suppressHydrationWarning
     >
       <body className="bg-black font-sans text-white antialiased">

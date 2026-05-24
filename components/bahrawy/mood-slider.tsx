@@ -3,21 +3,21 @@
 /**
  * <MoodSlider />
  *
- * A mood-rater card. A large SVG smiley sits at the top, morphing
- * its expression as the user drags the slider beneath it:
- *  - mouth curvature interpolates frown → smile
- *  - eyes squint at high happiness
- *  - eyebrows tilt down when sad
- *  - cheek blush fades in past the upbeat threshold
- *  - little tear-drops fall under the face when very sad
- *  - sparkles rise above the face when very happy
- *  - the face TILTS slightly in the direction of the mood — a happy
- *    face leans forward + bounces lightly; a sad face droops
- *  - the whole card's background carries a soft hue-tinted gradient
- *    that shifts in step
+ * A refined Apple-style slider. The track is a single hue-shifting
+ * bar that runs from cool indigo (low) → warm pink (high). The handle
+ * is a clean white disc that scales up on hover and again on drag.
  *
- * Underneath: a clean track with subtle tick marks, a draggable
- * thumb, and an animated mood word in the footer.
+ * KEEPS:
+ *  - The controlled `value` / `onChange` API
+ *  - The per-step snap (snaps to the nearest tick during drag)
+ *  - The animated mood word in the footer
+ *  - The endpoint hue range so callers can swap palettes
+ *
+ * REMOVES:
+ *  - Morphing SVG smiley face
+ *  - <MoodFace /> export
+ *  - Tear-drop / sparkle particles
+ *  - Multi-layer glows / box-shadows
  */
 
 import * as React from 'react'
@@ -35,8 +35,13 @@ export interface MoodSliderProps {
   defaultValue?: number
   /** Fired as the value changes. */
   onChange?: (next: number) => void
-  /** Hue range for the gradient (HSL degrees). Default [0, 130] = red → green. */
-  hueRange?: [number, number]
+  /**
+   * Optional gradient endpoints — `[low, high]` as CSS color strings.
+   * Defaults to a cool-indigo → warm-pink Apple-style sweep.
+   */
+  trackColors?: [string, string]
+  /** Number of snap steps. Default 11 (10 segments). */
+  steps?: number
   /** Accessible label. */
   label?: string
   /** Words rendered as the current mood. Index ramps with value. */
@@ -58,6 +63,12 @@ const DEFAULT_MOODS = [
   'glowing',
 ]
 
+const COOL = '#5E5CE6' // Apple indigo
+const WARM = '#FF6FA8' // Apple pink
+
+// Apple-spring for handle scale / interpolation.
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32 }
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -66,7 +77,8 @@ export function MoodSlider({
   value: controlled,
   defaultValue = 0.5,
   onChange,
-  hueRange = [0, 130],
+  trackColors = [COOL, WARM],
+  steps = 11,
   label = 'Mood',
   moods = DEFAULT_MOODS,
   className,
@@ -76,12 +88,15 @@ export function MoodSlider({
   const value = isControlled ? clamp01(controlled) : internal
 
   const trackRef = React.useRef<HTMLDivElement>(null)
-  const draggingRef = React.useRef(false)
+  const [hovered, setHovered] = React.useState(false)
+  const [dragging, setDragging] = React.useState(false)
 
   const setValue = (v: number) => {
-    const c = clamp01(v)
-    if (!isControlled) setInternal(c)
-    onChange?.(c)
+    // Snap to nearest step for that "haptic" feel.
+    const segs = Math.max(2, steps) - 1
+    const snapped = Math.round(clamp01(v) * segs) / segs
+    if (!isControlled) setInternal(snapped)
+    onChange?.(snapped)
   }
 
   const setFromPointer = (clientX: number) => {
@@ -92,13 +107,9 @@ export function MoodSlider({
   }
 
   React.useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      if (!draggingRef.current) return
-      setFromPointer(e.clientX)
-    }
-    const onUp = () => {
-      draggingRef.current = false
-    }
+    if (!dragging) return
+    const onMove = (e: PointerEvent) => setFromPointer(e.clientX)
+    const onUp = () => setDragging(false)
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
     window.addEventListener('pointercancel', onUp)
@@ -107,38 +118,14 @@ export function MoodSlider({
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dragging])
 
   const onPointerDown = (e: React.PointerEvent) => {
-    draggingRef.current = true
+    setDragging(true)
     setFromPointer(e.clientX)
     ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
   }
-
-  // ---- Derived visuals ------------------------------------------------
-  const [hueLow, hueHigh] = hueRange
-  const hue = hueLow + (hueHigh - hueLow) * value
-
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-  // Mouth curvature, in SVG coords (Y grows DOWN).
-  // The mouth path is `M 28 62 Q 50 controlY 72 62`. The corners sit
-  // at y=62, so:
-  //   controlY < 62 → curve bulges UP above the corners  → FROWN (⌒)
-  //   controlY > 62 → curve dips DOWN below the corners  → SMILE (‿)
-  // We want value=0 (sad) → frown, value=1 (happy) → smile.
-  const mouthControlY = lerp(44, 80, value)
-  // Eye squint past 0.8.
-  const eyeSquint = value > 0.8 ? Math.min(1, (value - 0.8) / 0.2) : 0
-  const eyeRY = lerp(7, 2.5, eyeSquint)
-  // Cheek blush from 0.65 up.
-  const blushOpacity = value > 0.65 ? Math.min(1, (value - 0.65) / 0.35) : 0
-  // Eyebrows — y of each brow's OUTER end (the inner end is fixed
-  // at y=34). For a SAD/worried face the inner end stays put while
-  // the outer end DROPS (higher Y), creating the classic ٧ shape.
-  // For HAPPY the brows are roughly level / slightly arched.
-  const browInnerOffset = lerp(5, -1, value)
-  // Face tilt — sad droop, happy lean.
-  const faceTilt = lerp(-6, 6, value)
 
   // Mood word — discrete buckets across `moods`.
   const moodIdx = Math.min(
@@ -147,103 +134,54 @@ export function MoodSlider({
   )
   const moodWord = moods[moodIdx]
 
-  // Background hue gradient — soft, no glow.
-  const cardBackground = `
-    radial-gradient(120% 90% at 50% 0%, hsla(${hue}, 70%, 55%, 0.18) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.4))
-  `
+  const [low, high] = trackColors
+  const trackGradient = `linear-gradient(to right, ${low}, ${high})`
 
-  // Track gradient — same hue range.
-  const trackGradient = `linear-gradient(to right,
-    hsl(${hueLow}, 75%, 55%),
-    hsl(${(hueLow + hueHigh) / 2}, 80%, 55%),
-    hsl(${hueHigh}, 75%, 55%)
-  )`
+  // Scale: 1.0 idle → 1.1 hover → 1.15 dragging.
+  const handleScale = dragging ? 1.15 : hovered ? 1.1 : 1
 
   return (
     <div
       className={cn(
-        'relative w-full max-w-[460px] overflow-hidden rounded-3xl border border-white/10 px-7 pt-8 pb-7 shadow-2xl shadow-black/40 backdrop-blur',
+        'relative w-full max-w-[460px] overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] px-7 pt-7 pb-7 backdrop-blur-xl',
         className,
       )}
-      style={{ background: cardBackground }}
       aria-label={label}
     >
-      {/* Face + ambient particles */}
-      <div className="relative mx-auto flex h-[140px] w-[140px] items-center justify-center">
-        {/* Sparkles (happy) */}
-        <AnimatePresence>
-          {value > 0.82 && (
-            <SparklesAbove
-              key="sparkles"
-              count={5}
-              hue={hue}
-              intensity={Math.min(1, (value - 0.82) / 0.18)}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Tear drops (sad) */}
-        <AnimatePresence>
-          {value < 0.18 && (
-            <TearsBelow
-              key="tears"
-              count={3}
-              intensity={Math.min(1, (0.18 - value) / 0.18)}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* The face — subtle breathing + tilt with mood */}
-        <motion.div
-          className="relative h-full w-full"
-          animate={{
-            rotate: faceTilt,
-            scale: [1, 1.015, 1],
-          }}
-          transition={{
-            rotate: { type: 'spring', stiffness: 120, damping: 14 },
-            scale: { duration: 3.4, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        >
-          <FaceSvg
-            hue={hue}
-            mouthControlY={mouthControlY}
-            eyeRY={eyeRY}
-            blushOpacity={blushOpacity}
-            browInnerOffset={browInnerOffset}
-          />
-        </motion.div>
+      {/* Header — label + value */}
+      <div className="flex items-baseline justify-between">
+        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/45">
+          {label}
+        </span>
+        <span className="font-mono text-[11px] tabular-nums text-white/40">
+          {Math.round(value * 100)}%
+        </span>
       </div>
 
       {/* Mood word — morphs */}
-      <div className="mt-6 flex items-baseline justify-center gap-2">
-        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/45">
+      <div className="mt-6 flex items-baseline gap-2">
+        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/35">
           feeling
         </span>
         <AnimatePresence mode="popLayout">
           <motion.span
             key={moodWord}
-            initial={{ opacity: 0, y: 6, filter: 'blur(2px)' }}
+            initial={{ opacity: 0, y: 4, filter: 'blur(2px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -6, filter: 'blur(2px)' }}
+            exit={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
             transition={{ duration: 0.18 }}
-            className="text-base font-semibold tracking-tight"
-            style={{ color: `hsl(${hue}, 80%, 72%)` }}
+            className="font-display text-2xl font-semibold tracking-tight text-white"
           >
             {moodWord}
           </motion.span>
         </AnimatePresence>
-        <span className="font-mono text-xs tabular-nums text-white/35">
-          · {Math.round(value * 100)}%
-        </span>
       </div>
 
-      {/* Track + tick marks */}
-      <div className="relative mt-5 pt-4">
+      {/* Track */}
+      <div className="relative mt-7 pt-5">
         {/* Tick marks above the track */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-between px-[2px] text-white/20">
-          {Array.from({ length: 11 }).map((_, i) => (
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-between px-[2px] text-white/15">
+          {Array.from({ length: steps }).map((_, i) => (
             <span
               key={i}
               className="block w-px"
@@ -258,39 +196,44 @@ export function MoodSlider({
         <div
           ref={trackRef}
           onPointerDown={onPointerDown}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
           role="slider"
           tabIndex={0}
           aria-label={label}
           aria-valuemin={0}
           aria-valuemax={1}
           aria-valuenow={value}
-          className="relative h-3 w-full cursor-grab rounded-full outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30"
+          className="relative h-2 w-full cursor-grab rounded-full outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30"
           style={{
             background: trackGradient,
             boxShadow:
-              'inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.4)',
+              'inset 0 0.5px 0 rgba(255,255,255,0.18), inset 0 -0.5px 0 rgba(0,0,0,0.35)',
           }}
           onKeyDown={(e) => {
-            if (e.key === 'ArrowLeft') setValue(value - 0.05)
-            if (e.key === 'ArrowRight') setValue(value + 0.05)
+            const segs = Math.max(2, steps) - 1
+            const stepSize = 1 / segs
+            if (e.key === 'ArrowLeft') setValue(value - stepSize)
+            if (e.key === 'ArrowRight') setValue(value + stepSize)
             if (e.key === 'Home') setValue(0)
             if (e.key === 'End') setValue(1)
           }}
         >
-          {/* Thumb */}
-          <div
-            className="pointer-events-none absolute top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-zinc-900 shadow-lg shadow-black/40"
-            style={{ left: `${value * 100}%` }}
-          >
-            <div
-              className="absolute inset-[6px] rounded-full"
-              style={{ background: `hsl(${hue}, 80%, 60%)` }}
-            />
-          </div>
+          {/* Handle — clean white disc with Apple spring scale. */}
+          <motion.div
+            className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+            style={{
+              left: `${value * 100}%`,
+              boxShadow:
+                '0 1px 2px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.32)',
+            }}
+            animate={{ scale: handleScale }}
+            transition={APPLE_SPRING}
+          />
         </div>
 
         {/* Endpoint labels */}
-        <div className="mt-2 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
+        <div className="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
           <span>worst</span>
           <span>best</span>
         </div>
@@ -300,274 +243,8 @@ export function MoodSlider({
 }
 
 // ---------------------------------------------------------------------------
-// <MoodFace /> — exported standalone face. Same expression math as
-// the slider, packaged as a stand-alone visual so it can be dropped
-// in a grid / row outside of a slider context.
+// Utilities
 // ---------------------------------------------------------------------------
-
-export interface MoodFaceProps {
-  /** Mood value 0–1. Same as the slider's value. */
-  value: number
-  /** Diameter in px. Default 96. */
-  size?: number
-  /** Hue range to lerp through. Default [0, 130] = red → green. */
-  hueRange?: [number, number]
-  className?: string
-}
-
-export function MoodFace({
-  value,
-  size = 96,
-  hueRange = [0, 130],
-  className,
-}: MoodFaceProps) {
-  const v = Math.max(0, Math.min(1, value))
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-  const [hueLow, hueHigh] = hueRange
-  const hue = hueLow + (hueHigh - hueLow) * v
-  // Same derivations as in the slider (see comments there for why).
-  const mouthControlY = lerp(44, 80, v)
-  const eyeSquint = v > 0.8 ? Math.min(1, (v - 0.8) / 0.2) : 0
-  const eyeRY = lerp(7, 2.5, eyeSquint)
-  const blushOpacity = v > 0.65 ? Math.min(1, (v - 0.65) / 0.35) : 0
-  const browInnerOffset = lerp(5, -1, v)
-
-  return (
-    <div
-      className={cn('inline-flex', className)}
-      style={{ width: size, height: size }}
-      aria-hidden
-    >
-      <FaceSvg
-        hue={hue}
-        mouthControlY={mouthControlY}
-        eyeRY={eyeRY}
-        blushOpacity={blushOpacity}
-        browInnerOffset={browInnerOffset}
-      />
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Internal FaceSvg
-// ---------------------------------------------------------------------------
-
-function FaceSvg({
-  hue,
-  mouthControlY,
-  eyeRY,
-  blushOpacity,
-  browInnerOffset,
-}: {
-  hue: number
-  mouthControlY: number
-  eyeRY: number
-  blushOpacity: number
-  browInnerOffset: number
-}) {
-  const id = React.useId().replace(/:/g, '')
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      className="h-full w-full drop-shadow-[0_10px_22px_rgba(0,0,0,0.4)]"
-      aria-hidden
-    >
-      <defs>
-        <radialGradient id={`bahrawy-mood-face-${id}`} cx="35%" cy="30%" r="80%">
-          <stop offset="0%" stopColor={`hsl(${hue}, 90%, 78%)`} />
-          <stop offset="60%" stopColor={`hsl(${hue}, 80%, 60%)`} />
-          <stop offset="100%" stopColor={`hsl(${hue}, 70%, 42%)`} />
-        </radialGradient>
-      </defs>
-
-      {/* Face */}
-      <circle
-        cx="50"
-        cy="50"
-        r="46"
-        fill={`url(#bahrawy-mood-face-${id})`}
-        stroke="rgba(0,0,0,0.18)"
-        strokeWidth="1"
-      />
-
-      {/* Cheeks */}
-      <circle
-        cx="28"
-        cy="58"
-        r="6"
-        fill={`hsl(${hue}, 95%, 70%)`}
-        opacity={blushOpacity * 0.8}
-      />
-      <circle
-        cx="72"
-        cy="58"
-        r="6"
-        fill={`hsl(${hue}, 95%, 70%)`}
-        opacity={blushOpacity * 0.8}
-      />
-
-      {/* Eyebrows */}
-      <line
-        x1="29"
-        y1={32 + browInnerOffset}
-        x2="42"
-        y2="34"
-        stroke="rgba(0,0,0,0.75)"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <line
-        x1="58"
-        y1="34"
-        x2="71"
-        y2={32 + browInnerOffset}
-        stroke="rgba(0,0,0,0.75)"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-
-      {/* Eyes — round when not squinting, ellipse when happy */}
-      <ellipse cx="36" cy="46" rx="4" ry={eyeRY} fill="rgba(0,0,0,0.88)" />
-      <ellipse cx="64" cy="46" rx="4" ry={eyeRY} fill="rgba(0,0,0,0.88)" />
-
-      {/* Mouth */}
-      <path
-        d={`M 28 62 Q 50 ${mouthControlY} 72 62`}
-        fill="none"
-        stroke="rgba(0,0,0,0.88)"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Particles
-// ---------------------------------------------------------------------------
-
-function SparklesAbove({
-  count,
-  hue,
-  intensity,
-}: {
-  count: number
-  hue: number
-  intensity: number
-}) {
-  const items = React.useMemo(
-    () =>
-      Array.from({ length: count }).map((_, i) => ({
-        // even-ish angular spread, biased upward
-        x: (i / (count - 1)) * 110 - 55, // -55..55 px from centre
-        delay: i * 0.18,
-        scale: 0.6 + ((i * 137) % 60) / 100, // pseudo-random 0.6–1.2
-      })),
-    [count],
-  )
-  return (
-    <>
-      {items.map((s, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2"
-          style={{
-            opacity: intensity,
-          }}
-          initial={{ x: s.x, y: -10, opacity: 0, scale: 0.4 }}
-          animate={{
-            x: s.x,
-            y: -60,
-            opacity: [0, intensity, 0],
-            scale: [0.4, s.scale, 0.2],
-          }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 1.6,
-            delay: s.delay,
-            ease: 'easeOut',
-            repeat: Infinity,
-            repeatDelay: 0.4,
-          }}
-        >
-          <SparkleSvg color={`hsl(${hue}, 90%, 72%)`} />
-        </motion.span>
-      ))}
-    </>
-  )
-}
-
-function SparkleSvg({ color }: { color: string }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden>
-      <path
-        d="M8 0 L9.2 6.8 L16 8 L9.2 9.2 L8 16 L6.8 9.2 L0 8 L6.8 6.8 Z"
-        fill={color}
-        opacity="0.95"
-      />
-    </svg>
-  )
-}
-
-function TearsBelow({
-  count,
-  intensity,
-}: {
-  count: number
-  intensity: number
-}) {
-  const items = React.useMemo(
-    () =>
-      Array.from({ length: count }).map((_, i) => ({
-        x: (i / (count - 1)) * 60 - 30,
-        delay: i * 0.4,
-      })),
-    [count],
-  )
-  return (
-    <>
-      {items.map((s, i) => (
-        <motion.span
-          key={i}
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-1/2"
-          style={{ opacity: intensity }}
-          initial={{ x: s.x, y: 20, opacity: 0, scale: 0.6 }}
-          animate={{
-            x: s.x,
-            y: 90,
-            opacity: [0, intensity, 0],
-            scale: [0.6, 1, 0.6],
-          }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 1.8,
-            delay: s.delay,
-            ease: 'easeIn',
-            repeat: Infinity,
-            repeatDelay: 0.6,
-          }}
-        >
-          <TearSvg />
-        </motion.span>
-      ))}
-    </>
-  )
-}
-
-function TearSvg() {
-  return (
-    <svg width="10" height="14" viewBox="0 0 10 14" aria-hidden>
-      <path
-        d="M5 0 C 7 4, 10 7, 10 10 C 10 12.5, 8 14, 5 14 C 2 14, 0 12.5, 0 10 C 0 7, 3 4, 5 0 Z"
-        fill="#7dd3fc"
-        opacity="0.85"
-      />
-    </svg>
-  )
-}
 
 function clamp01(n: number) {
   return Math.max(0, Math.min(1, n))

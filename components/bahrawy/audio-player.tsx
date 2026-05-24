@@ -133,19 +133,28 @@ export function AudioPlayer({
   return (
     <div
       className={cn(
-        'flex w-full max-w-xl items-center gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-3.5',
+        'flex w-full max-w-xl items-center gap-4 rounded-[20px] border border-white/[0.07] p-3.5 backdrop-blur-2xl',
         className,
       )}
+      style={{
+        background:
+          'linear-gradient(180deg, rgba(28,28,30,0.92), rgba(22,22,26,0.96))',
+        boxShadow:
+          '0 1px 0 rgba(255,255,255,0.06) inset, 0 10px 28px -10px rgba(0,0,0,0.55), 0 28px 64px -18px rgba(0,0,0,0.45)',
+      }}
     >
       <audio ref={audioRef} src={src} autoPlay={autoPlay} preload="metadata" />
 
-      {/* Play / pause button */}
+      {/* Play / pause button — white disc, Apple Music style */}
       <button
         type="button"
         onClick={toggle}
         aria-label={playing ? 'Pause' : 'Play'}
-        className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-zinc-900 transition-transform hover:scale-[1.04] active:scale-95"
-        style={{ background: accent }}
+        className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-zinc-900 transition-transform duration-150 ease-out hover:scale-[1.03] active:scale-[0.96]"
+        style={{
+          boxShadow:
+            '0 1px 0 rgba(255,255,255,0.6) inset, 0 -1px 0 rgba(0,0,0,0.08) inset, 0 6px 14px -6px rgba(0,0,0,0.45)',
+        }}
       >
         {playing ? (
           <Pause className="h-4 w-4" strokeWidth={3} />
@@ -169,7 +178,7 @@ export function AudioPlayer({
         {(title || artist) && (
           <div className="flex items-baseline gap-2">
             {title && (
-              <span className="truncate text-[12.5px] font-semibold tracking-tight text-white">
+              <span className="font-display truncate text-[13px] font-semibold tracking-tight text-white">
                 {title}
               </span>
             )}
@@ -202,8 +211,9 @@ export function AudioPlayer({
                 className="flex-1 rounded-sm transition-colors"
                 style={{
                   height: `${Math.max(8, amp * 100)}%`,
-                  background: isPlayed ? accent : 'rgba(255,255,255,0.18)',
-                  boxShadow: isPlayed ? `0 0 6px ${accent}55` : undefined,
+                  background: isPlayed
+                    ? `${accent}E6`
+                    : 'rgba(255,255,255,0.25)',
                 }}
               />
             )
@@ -212,7 +222,7 @@ export function AudioPlayer({
 
         {/* Time + volume row */}
         <div className="mt-1 flex items-center justify-between gap-2">
-          <span className="font-mono text-[10.5px] tabular-nums text-white/55">
+          <span className="font-mono text-[10.5px] tabular-nums text-white/60">
             {formatTime(current)}{' '}
             <span className="text-white/30">/ {formatTime(duration)}</span>
           </span>

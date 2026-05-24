@@ -322,12 +322,6 @@ export const componentRegistry: RegistryItem[] = [
       'Words, characters, or lines reveal with a smooth clip-mask slide-up animation triggered on scroll.',
   },
   {
-    title: 'Gradient Text',
-    slug: 'gradient-text',
-    description:
-      'Text with an animated flowing gradient. Six built-in presets (aurora, fire, ocean, candy, gold, rainbow) plus custom colors.',
-  },
-  {
     title: 'Typewriter Text',
     slug: 'typewriter-text',
     description:
@@ -640,12 +634,6 @@ export const componentRegistry: RegistryItem[] = [
       'Slide-in panel from any edge with a dim backdrop. Escape closes, spring entry.',
   },
   {
-    title: 'Dropdown Menu',
-    slug: 'dropdown-menu',
-    description:
-      'Animated dropdown with keyboard navigation, dividers, icons, shortcut hints, and a danger style.',
-  },
-  {
     title: 'Tooltip',
     slug: 'tooltip',
     description:
@@ -774,11 +762,6 @@ export const componentRegistry: RegistryItem[] = [
     description: "Each character animates its `font-variation-settings: 'wght'` axis between two values with a staggered phase. Works with any variable font that exposes a weight axis.",
   },
   {
-    title: 'Neon Pulse',
-    slug: 'neon-pulse',
-    description: "Text wearing a neon sign's glow: layered text-shadows at increasing radii, a breathing opacity pulse, and an occasional flicker that punches brightness down — like a real broken sign.",
-  },
-  {
     title: 'Gradient Flow',
     slug: 'gradient-flow',
     description: 'Text whose fill is a linear gradient sized 300% of the text width; animating background-position slides the colors through the glyphs in a seamless loop.',
@@ -801,7 +784,7 @@ export const componentRegistry: RegistryItem[] = [
   {
     title: 'Stretch Text',
     slug: 'stretch-text',
-    description: 'On hover, each character stretches horizontally via `transform: scaleX`. Staggered per-char delays make the stretch read as a wave through the line.',
+    description: 'Move the cursor across the line — each letter widens via Gaussian falloff against the cursor X, then springs back. Per-letter scaleX + letter-spacing, Apple spring physics.',
   },
   {
     title: 'Time Dial',
@@ -829,11 +812,6 @@ export const componentRegistry: RegistryItem[] = [
     description: 'Vintage audio cassette with rotating reels, tape line between them, label with side/title/duration, play/pause button, and a 3D flip to switch between A-side and B-side.',
   },
   {
-    title: 'Liquid Toggle',
-    slug: 'liquid-toggle',
-    description: 'Toggle switch with a goo-filter handle that morphs between off and on positions like a fluid blob, bonding with small anchor dots at each end as it passes through.',
-  },
-  {
     title: 'Like Burst',
     slug: 'like-burst',
     description: 'Heart button that fills + scales + emits a radial particle burst on click. Click again to un-like (no burst). Controlled or uncontrolled, optional running count.',
@@ -841,7 +819,7 @@ export const componentRegistry: RegistryItem[] = [
   {
     title: 'Mood Slider',
     slug: 'mood-slider',
-    description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',
+    description: 'Apple-style mood slider — clean white handle that scales on hover and drag, hue-shifting gradient track (indigo → pink by default), snap-to-step values for a tiny haptic feel, animated mood word in the header.',
   },
   {
     title: 'Split Panel',
@@ -884,12 +862,6 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'floating-toolbar',
     description:
       'Notion/Linear-style selection action bar. Highlight text → vibrancy pill toolbar floats above the selection (auto-flips below if no room), each action fires with the selected text + rect.',
-  },
-  {
-    title: 'Bottom Sheet',
-    slug: 'bottom-sheet',
-    description:
-      'iOS share-sheet-style drawer. Vibrancy backdrop with blur, drag handle, snap detents (e.g. peek 40%, full 92%), drag-down-to-dismiss with momentum, ESC + backdrop click to close. Apple spring physics.',
   },
   {
     title: 'Segmented Control',

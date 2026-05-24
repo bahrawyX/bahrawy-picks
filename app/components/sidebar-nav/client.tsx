@@ -68,11 +68,11 @@ export default function SidebarNavDocs() {
                 onActiveChange={setActiveA}
                 brand={
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-[8px] bg-gradient-to-br from-[#5E5CE6] to-[#BF5AF2] text-white">
-                      <Sparkles className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-[8px] border border-white/[0.08] bg-white/[0.06] text-white/85">
+                      <Sparkles className="h-3.5 w-3.5" strokeWidth={2.25} />
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate text-[13px] font-semibold tracking-tight text-white">
+                      <p className="truncate font-display text-[13px] font-semibold tracking-tight text-white">
                         bahrawy.app
                       </p>
                       <p className="truncate text-[10.5px] text-white/45">Workspace</p>
@@ -81,7 +81,7 @@ export default function SidebarNavDocs() {
                 }
                 footer={
                   <div className="flex items-center gap-2.5 px-2 py-1">
-                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FF375F] to-[#FF9F0A] text-[10px] font-bold text-white">
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.06] text-[10px] font-semibold text-white/85">
                       AB
                     </span>
                     <div className="min-w-0 flex-1">

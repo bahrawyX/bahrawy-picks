@@ -85,19 +85,25 @@ export function PinnedStory({
 
       const N = steps.length
 
-      // Initial state — everything past the first step is hidden via
-      // autoAlpha (= opacity 0 + visibility hidden) so they don't render
-      // as a faint ghost layer behind the active one.
-      gsap.set(stepRefs.current.slice(1), { autoAlpha: 0, y: 24 })
-      gsap.set(imageRefs.current.slice(1), { autoAlpha: 0, scale: 1.15 })
-      gsap.set(tintRefs.current.slice(1), { autoAlpha: 0 })
-      gsap.set(numberRefs.current.slice(1), { autoAlpha: 0 })
-
-      // Make sure the first step's elements are at their resting values.
-      gsap.set(stepRefs.current[0], { autoAlpha: 1, y: 0 })
-      gsap.set(imageRefs.current[0], { autoAlpha: 1, scale: 1 })
-      gsap.set(tintRefs.current[0], { autoAlpha: 1 })
-      gsap.set(numberRefs.current[0], { autoAlpha: 0.08 })
+      // Initial state — all but the first step start invisible and slightly
+      // offset. We use autoAlpha (= opacity 0 + visibility hidden) so the
+      // hidden panels are also pulled out of the accessibility tree.
+      stepRefs.current.forEach((el, i) => {
+        if (!el) return
+        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 12 })
+      })
+      imageRefs.current.forEach((el, i) => {
+        if (!el) return
+        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, scale: i === 0 ? 1 : 1.04 })
+      })
+      tintRefs.current.forEach((el, i) => {
+        if (!el) return
+        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0 })
+      })
+      numberRefs.current.forEach((el, i) => {
+        if (!el) return
+        gsap.set(el, { autoAlpha: i === 0 ? 0.08 : 0 })
+      })
 
       if (progressRef.current) {
         gsap.set(progressRef.current, { scaleX: 0, transformOrigin: '0% 50%' })
@@ -109,86 +115,78 @@ export function PinnedStory({
           start: 'top top',
           end: () => `+=${N * stepLength * window.innerHeight}`,
           pin,
-          // Lower scrub = snappier sync between scroll and timeline. Avoids
-          // the "two steps visible during the slide" ghost.
-          scrub: 0.2,
+          // A touch more scrub smoothing than before — gives the
+          // crossfades a buttery, spring-like feel instead of being
+          // perfectly locked to the scroll-wheel jitter.
+          scrub: 0.5,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       })
 
-      // Crisp, mostly-sequential transitions. Each transition happens in a
-      // 6% window centered on the segment boundary — outgoing fades out
-      // first, incoming fades in right after, with a tiny 2% kiss in the
-      // middle so it doesn't feel like a hard cut.
-      const TRANS = 0.06 / N // width of the transition (in normalized time)
+      // Continuous, generously overlapping crossfade. Each step transition
+      // takes the full inter-segment window (rather than a tight 6% kiss)
+      // and uses a power2.inOut curve, so opacity/y move smoothly with
+      // scroll position. No more "snap at the boundary" — both layers
+      // share the segment and exchange opacity gradually.
+      for (let i = 1; i < N; i++) {
+        const start = (i - 1) / N
+        const dur = 1 / N
 
-      steps.forEach((_, i) => {
-        const segStart = i / N
+        // Outgoing — fades + drifts up across the entire segment.
+        tl.to(
+          stepRefs.current[i - 1],
+          { autoAlpha: 0, y: -12, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.to(
+          imageRefs.current[i - 1],
+          { autoAlpha: 0, scale: 0.98, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.to(
+          tintRefs.current[i - 1],
+          { autoAlpha: 0, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.to(
+          numberRefs.current[i - 1],
+          { autoAlpha: 0, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
 
-        // Per-segment parallax on the active image — gentle vertical drift.
-        // Duration is the full segment minus the transition windows.
-        if (imageRefs.current[i]) {
-          tl.fromTo(
-            imageRefs.current[i],
-            { yPercent: -3 },
-            { yPercent: 3, duration: 1 / N, ease: 'none' },
-            segStart,
-          )
-        }
-
-        if (i > 0) {
-          // Outgoing — runs FIRST, finishes before incoming starts.
-          const outAt = segStart - TRANS
-          tl.to(
-            stepRefs.current[i - 1],
-            { autoAlpha: 0, y: -16, duration: TRANS * 0.7, ease: 'power2.in' },
-            outAt,
-          )
-          tl.to(
-            imageRefs.current[i - 1],
-            { autoAlpha: 0, scale: 0.94, duration: TRANS * 0.7, ease: 'power2.in' },
-            outAt,
-          )
-          tl.to(
-            tintRefs.current[i - 1],
-            { autoAlpha: 0, duration: TRANS * 0.7, ease: 'power2.in' },
-            outAt,
-          )
-          tl.to(
-            numberRefs.current[i - 1],
-            { autoAlpha: 0, duration: TRANS * 0.7, ease: 'power2.in' },
-            outAt,
-          )
-
-          // Incoming — starts slightly after outgoing begins, so there's
-          // only a tiny visual overlap, never two full-opacity layers.
-          const inAt = segStart - TRANS * 0.3
-          tl.to(
-            stepRefs.current[i],
-            { autoAlpha: 1, y: 0, duration: TRANS * 0.7, ease: 'power2.out' },
-            inAt,
-          )
-          tl.to(
-            imageRefs.current[i],
-            { autoAlpha: 1, scale: 1, duration: TRANS * 0.7, ease: 'power2.out' },
-            inAt,
-          )
-          tl.to(
-            tintRefs.current[i],
-            { autoAlpha: 1, duration: TRANS * 0.7, ease: 'power2.out' },
-            inAt,
-          )
-          tl.to(
-            numberRefs.current[i],
-            { autoAlpha: 0.08, duration: TRANS * 0.7, ease: 'power2.out' },
-            inAt,
-          )
-        }
-      })
+        // Incoming — fades + settles in across the SAME segment, fully
+        // overlapping the outgoing. This is the key to a smooth ride:
+        // there's no dead frame where the new step pops in after the old
+        // one is already gone.
+        tl.fromTo(
+          stepRefs.current[i],
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.fromTo(
+          imageRefs.current[i],
+          { autoAlpha: 0, scale: 1.04 },
+          { autoAlpha: 1, scale: 1, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.fromTo(
+          tintRefs.current[i],
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+        tl.fromTo(
+          numberRefs.current[i],
+          { autoAlpha: 0 },
+          { autoAlpha: 0.08, duration: dur, ease: 'power2.inOut' },
+          start,
+        )
+      }
 
       // Pad the timeline to exactly 1 unit of duration so the progress bar
-      // and side dot tweens below have a clean 0 → 1 range to map onto.
+      // below has a clean 0 → 1 range to map onto.
       tl.to({}, { duration: Math.max(0.0001, 1 - tl.duration()) })
 
       // Top progress bar — fills evenly across the entire pin.

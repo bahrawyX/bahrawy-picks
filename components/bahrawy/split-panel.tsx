@@ -55,7 +55,46 @@ export function SplitPanel({
   const [size, setSize] = React.useState(clamp(defaultSize, minSize, maxSize))
   const [dragging, setDragging] = React.useState(false)
   const dragStateRef = React.useRef<{ start: number; origin: number } | null>(null)
+  // Latest pending fraction queued for the next rAF tick.
+  const pendingRef = React.useRef<number | null>(null)
+  const rafRef = React.useRef<number | null>(null)
+  // Mirror of `size` accessible inside the rAF callback without re-creating handlers.
+  const sizeRef = React.useRef(size)
+  sizeRef.current = size
   const isHorizontal = direction === 'horizontal'
+
+  const flushPending = React.useCallback(() => {
+    rafRef.current = null
+    const next = pendingRef.current
+    pendingRef.current = null
+    if (next != null) setSize(next)
+  }, [])
+
+  const cancelRaf = React.useCallback(() => {
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+    pendingRef.current = null
+  }, [])
+
+  // Clean up any in-flight rAF on unmount.
+  React.useEffect(() => () => cancelRaf(), [cancelRaf])
+
+  // While dragging, lock the body cursor + suppress text selection so the
+  // pointer feel matches native resize handles even when the pointer drifts
+  // outside the thin divider hit-area.
+  React.useEffect(() => {
+    if (!dragging) return
+    const prevCursor = document.body.style.cursor
+    const prevSelect = document.body.style.userSelect
+    document.body.style.cursor = isHorizontal ? 'col-resize' : 'row-resize'
+    document.body.style.userSelect = 'none'
+    return () => {
+      document.body.style.cursor = prevCursor
+      document.body.style.userSelect = prevSelect
+    }
+  }, [dragging, isHorizontal])
 
   const applySize = React.useCallback(
     (raw: number) => {
@@ -74,7 +113,7 @@ export function SplitPanel({
     const length = isHorizontal ? rect.width : rect.height
     dragStateRef.current = {
       start: isHorizontal ? e.clientX : e.clientY,
-      origin: size * length,
+      origin: sizeRef.current * length,
     }
     setDragging(true)
     ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
@@ -106,7 +145,12 @@ export function SplitPanel({
     if (frac < minPx) frac = minPx + (frac - minPx) * 0.25
     else if (frac > maxPx) frac = maxPx + (frac - maxPx) * 0.25
 
-    setSize(frac)
+    // Batch via rAF — coalesces multiple pointermove events into one render
+    // per frame, which is what makes the drag feel buttery.
+    pendingRef.current = frac
+    if (rafRef.current == null) {
+      rafRef.current = requestAnimationFrame(flushPending)
+    }
   }
 
   const onPointerUp = (e: React.PointerEvent) => {
@@ -114,10 +158,15 @@ export function SplitPanel({
     dragStateRef.current = null
     setDragging(false)
     ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+    // Commit any frame that was queued but hadn't fired yet, then drop the rAF.
+    const queued = pendingRef.current
+    cancelRaf()
+    const finalSize = queued ?? sizeRef.current
     // If we ended out-of-bounds (because of rubber band), spring to nearest valid.
-    const clamped = clamp(size, minSize, maxSize)
-    if (clamped !== size) {
-      const start = size
+    const clamped = clamp(finalSize, minSize, maxSize)
+    if (clamped !== finalSize) {
+      const start = finalSize
+      setSize(start)
       animate(0, 1, {
         duration: 0.45,
         ease: [0.22, 1, 0.36, 1],
@@ -125,7 +174,8 @@ export function SplitPanel({
         onComplete: () => onResize?.(clamped),
       })
     } else {
-      onResize?.(size)
+      if (queued != null) setSize(clamped)
+      onResize?.(clamped)
     }
   }
 
