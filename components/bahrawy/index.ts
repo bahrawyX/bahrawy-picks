@@ -40,9 +40,6 @@ export type { FloatingDockProps, DockItem } from './floating-dock'
 export { RevealOnScroll, RevealStagger, RevealItem } from './reveal-on-scroll'
 export type { RevealOnScrollProps, RevealStaggerProps, RevealItemProps, RevealDirection } from './reveal-on-scroll'
 
-export { CommandPalette } from './command-palette'
-export type { CommandPaletteProps, CommandGroup, CommandItem } from './command-palette'
-
 export { DataTable } from './data-table'
 export type { DataTableProps } from './data-table'
 

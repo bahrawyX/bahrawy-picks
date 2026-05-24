@@ -3,8 +3,7 @@
 /**
  * <CmdBar />  (Raycast-style command palette)
  *
- * The existing <CommandPalette /> is shadcn-flat. This is the upgrade:
- * a two-column layout with a filterable list on the left and a live
+ * A two-column layout with a filterable list on the left and a live
  * preview pane on the right. As the user arrow-keys through results,
  * the preview swaps to show context for the highlighted item — its
  * description, metadata, and any custom preview node you pass in.

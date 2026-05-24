@@ -228,17 +228,6 @@ export const registry: RegistryEntry[] = [
   },
   {
     kind: 'docs',
-    id: '15',
-    slug: 'command-palette',
-    name: 'Command palette',
-    description:
-      'Spotlight-style command palette with fuzzy search, keyboard nav, and grouped actions.',
-    category: 'overlay',
-    hasOptions: true,
-    dependencies: ['cmdk', 'framer-motion'],
-  },
-  {
-    kind: 'docs',
     id: '16',
     slug: 'data-table',
     name: 'Data table',
