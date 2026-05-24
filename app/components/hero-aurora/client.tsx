@@ -20,7 +20,7 @@ export default function HeroAuroraDocs() {
       title="Hero Aurora"
       slug="hero-aurora"
       description="Centered hero with drifting blurred color blobs behind the text. Each blob slowly orbits along its own path so the bloom never repeats. Soft, brand-y, doesn't fight the type."
-      category="86 · hero"
+      category="87 · hero"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">

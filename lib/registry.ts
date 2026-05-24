@@ -354,6 +354,12 @@ export const componentRegistry: RegistryItem[] = [
       'Fullscreen OGL fragment shader. Four-octave value noise warped with curl-ish offsets, mapped through a 3-color gradient to paint living aurora bands.',
   },
   {
+    title: 'Liquid Chrome',
+    slug: 'liquid-chrome',
+    description:
+      'High-poly icosphere whose vertex shader displaces each vertex along its normal by 3D simplex noise — surface morphs like liquid metal. Custom fragment shader fakes an iridescent chrome environment without a cubemap.',
+  },
+  {
     title: 'Accordion',
     slug: 'accordion',
     description:

@@ -530,3 +530,6 @@ export type { HyperspeedProps } from './hyperspeed'
 
 export { Aurora } from './aurora'
 export type { AuroraProps } from './aurora'
+
+export { LiquidChrome } from './liquid-chrome'
+export type { LiquidChromeProps } from './liquid-chrome'

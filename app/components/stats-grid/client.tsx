@@ -23,7 +23,7 @@ export default function StatsGridDocs() {
       title="Stats Grid"
       slug="stats-grid"
       description="A 4-tile section where every counter springs from 0 to its target value as the grid enters the viewport. Each tile can opt into a color tint without going loud."
-      category="93 · section"
+      category="94 · section"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">

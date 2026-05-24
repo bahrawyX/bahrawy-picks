@@ -25,7 +25,7 @@ export default function LogoCloudDocs() {
       title="Logo Cloud"
       slug="logo-cloud"
       description={'"Trusted by" section with partner logos in an edge-faded marquee. Toggle the marquee off for a static grid instead.'}
-      category="97 · section"
+      category="98 · section"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">
