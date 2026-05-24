@@ -170,7 +170,17 @@ export function FloatingToolbar({
             top: pos.y,
             left: pos.x,
             zIndex: 220,
+            // Don't let dragging on the toolbar start a fresh text selection
+            // that would compete with the one we're displaying actions for.
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
           }}
+          // Critical: keep the underlying text selection alive while the user
+          // clicks toolbar buttons. Without this, mousedown on a button
+          // collapses the selection → mouseup → compute() finds nothing →
+          // toolbar unmounts before the button's onClick ever fires.
+          onMouseDown={(e) => e.preventDefault()}
+          onPointerDown={(e) => e.preventDefault()}
           className={cn(
             'flex items-center gap-0.5 rounded-[14px] border border-white/[0.08] p-1',
             className,
@@ -223,6 +233,11 @@ export function FloatingToolbar({
               )}
               <motion.button
                 type="button"
+                // Belt-and-suspenders: even though the root toolbar already
+                // calls preventDefault, some browsers still try to focus the
+                // <button> on mousedown and that focus shift can clear the
+                // selection. Stop it here too.
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   if (pos) action.onClick?.(pos.text, pos.rect)
                 }}
