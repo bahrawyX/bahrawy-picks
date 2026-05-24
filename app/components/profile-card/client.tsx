@@ -101,7 +101,7 @@ export default function ProfileCardDocs() {
           <ProfileCard
             name="Abdelrahman Bahrawy"
             handle="@bahrawy"
-            role="Building bahrawy.me"
+            role="Building bahrawy-picks.vercel.app"
             bio="Component library + interactive playground."
             status="busy"
             primaryAction={{ label: 'Follow' }}

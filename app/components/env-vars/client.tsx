@@ -42,7 +42,7 @@ export default function EnvVarsDocs() {
                 { name: 'PORT', value: '3000' },
                 {
                   name: 'NEXT_PUBLIC_APP_URL',
-                  value: 'https://bahrawy.me',
+                  value: 'https://bahrawy-picks.vercel.app',
                 },
               ]}
             />

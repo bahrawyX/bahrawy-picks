@@ -47,7 +47,7 @@ export default function AvatarStatusDocs() {
               { name: 'Lee Robinson',       role: 'VP Product · Vercel',      status: 'online' as const,  src: 'https://github.com/leerob.png' },
               { name: 'shadcn',             role: 'Building UI primitives',   status: 'away' as const,    src: 'https://github.com/shadcn.png' },
               { name: 'Pieter Levels',      role: 'Solo founder',             status: 'busy' as const,    src: 'https://github.com/levelsio.png' },
-              { name: 'Abdelrahman Bahrawy',role: 'Building bahrawy.me',      status: 'offline' as const },
+              { name: 'Abdelrahman Bahrawy',role: 'Building bahrawy-picks.vercel.app',      status: 'offline' as const },
             ].map((p) => (
               <div key={p.name} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
                 <AvatarStatus

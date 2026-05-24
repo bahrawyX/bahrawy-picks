@@ -128,7 +128,7 @@ export default function DialogDocs() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@bahrawy.me"
+                placeholder="you@bahrawy-picks.vercel.app"
                 className="mt-1.5 w-full rounded-[10px] border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-[13px] tracking-tight text-white outline-none placeholder:text-white/35 focus:border-white/20"
               />
             </label>

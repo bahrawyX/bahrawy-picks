@@ -53,7 +53,7 @@ export default function SnippetDocs() {
                 },
                 {
                   label: 'shadcn',
-                  code: 'npx shadcn@latest add https://bahrawy.me/r/snippet.json',
+                  code: 'npx shadcn@latest add https://bahrawy-picks.vercel.app/r/snippet.json',
                 },
               ]}
             />
@@ -66,7 +66,7 @@ export default function SnippetDocs() {
           <div className="w-full max-w-xl">
             <Snippet
               prefix="$ "
-              tabs={[{ label: 'bash', code: 'curl -sSL https://bahrawy.me/install | sh' }]}
+              tabs={[{ label: 'bash', code: 'curl -sSL https://bahrawy-picks.vercel.app/install | sh' }]}
             />
           </div>
         </DemoCard>

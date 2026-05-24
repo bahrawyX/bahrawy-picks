@@ -7,7 +7,7 @@ import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page
 const SNIPPET = `import { BrowserWindow } from '@/components/bahrawy/browser-window'
 
 <BrowserWindow
-  url="https://bahrawy.me/components"
+  url="https://bahrawy-picks.vercel.app/components"
   animateUrl
   secure
   variant="dark"
@@ -74,7 +74,7 @@ export default function BrowserWindowDocs() {
         <DemoCard className="min-h-[520px]">
           <div className="w-full max-w-3xl">
             <BrowserWindow
-              url="https://bahrawy.me/components"
+              url="https://bahrawy-picks.vercel.app/components"
               animateUrl
               urlSpeed={28}
               variant="dark"
@@ -107,7 +107,7 @@ export default function BrowserWindowDocs() {
         <DemoCard className="min-h-[280px]">
           <div className="w-full max-w-xl">
             <BrowserWindow
-              url="docs.bahrawy.me/quickstart"
+              url="docs.bahrawy-picks.vercel.app/quickstart"
               variant="dark"
               showActions={false}
               height={140}

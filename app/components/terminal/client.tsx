@@ -35,7 +35,7 @@ const STEPS: TerminalStep[] = [
   { type: 'pause',   ms: 700 },
   { type: 'command', text: 'npm run deploy --prod' },
   { type: 'output',  text: 'Uploading… ████████████ 100%',       variant: 'accent' },
-  { type: 'output',  text: '✓ Deployed to https://bahrawy.me',   variant: 'success' },
+  { type: 'output',  text: '✓ Deployed to https://bahrawy-picks.vercel.app',   variant: 'success' },
   { type: 'pause',   ms: 1200 },
 ]
 

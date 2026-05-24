@@ -17,7 +17,7 @@ const SNIPPET = `import { Deploy } from '@/components/bahrawy/deploy'
     author: { name: 'Abdelrahman el-Bahrawy' },
   }}
   duration={47}
-  href="https://bahrawy.me"
+  href="https://bahrawy-picks.vercel.app"
 />`
 
 export default function DeployDocs() {
@@ -76,7 +76,7 @@ export default function DeployDocs() {
                 author: { name: 'Abdelrahman el-Bahrawy' },
               }}
               duration={status === 'ready' ? 47 : elapsed}
-              href="https://bahrawy.me"
+              href="https://bahrawy-picks.vercel.app"
             />
           </div>
         </DemoCard>
@@ -117,7 +117,7 @@ export default function DeployDocs() {
                 author: { name: 'Abdelrahman el-Bahrawy' },
               }}
               duration={47}
-              href="https://bahrawy.me"
+              href="https://bahrawy-picks.vercel.app"
             />
             <Deploy
               status="failed"

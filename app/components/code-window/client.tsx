@@ -93,7 +93,7 @@ $ npm run build
 ✓ Generating static pages (170/170)
 
 $ npm run deploy --prod
-✓ Deployed to https://bahrawy.me`
+✓ Deployed to https://bahrawy-picks.vercel.app`
 
 export default function CodeWindowDocs() {
   return (

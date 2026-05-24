@@ -123,7 +123,7 @@ export default function CmdBarDocs() {
                   Abdelrahman Bahrawy
                 </p>
                 <p className="truncate text-[10.5px] text-white/45">
-                  bahrawy.me
+                  bahrawy-picks.vercel.app
                 </p>
               </div>
             </div>
