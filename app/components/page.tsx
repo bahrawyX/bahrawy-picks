@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     url: 'https://bahrawy.me/components',
     title: 'Components — Browse the Bahrawy library',
     description: `Browse all ${READY_COUNT}+ animated React components. Copy, paste, ship.`,
-    images: ['/opengraph-image'],
+    images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Components — Browse the Bahrawy library',
     description: `Browse all ${READY_COUNT}+ animated React components. Copy, paste, ship.`,
-    images: ['/opengraph-image'],
+    images: ['/og-image.png'],
   },
 }
 
