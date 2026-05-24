@@ -10,7 +10,7 @@ export default function BreadcrumbDocs() {
       title="Breadcrumb"
       slug="breadcrumb"
       description="Animated breadcrumb with chevron separators. Long trails collapse to a `…` button you can click to expand."
-      category="107 · navigation"
+      category="110 · navigation"
     >
       <DocsSection title="Live demo" description="Click the `…` on the second example to expand the full path.">
         <DemoCard className="min-h-[200px] items-stretch">

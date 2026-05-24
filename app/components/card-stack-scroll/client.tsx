@@ -79,7 +79,7 @@ export default function CardStackScrollDocs() {
       title="Card Stack Scroll"
       slug="card-stack-scroll"
       description="Sticky-stacked cards that layer over each other as you scroll. Each card scales gently as the next one slides up on top — the deck deepens as you go. Built with framer-motion's scroll progress, GPU-only transforms."
-      category="76 · scroll"
+      category="79 · scroll"
     >
       <DocsSection
         title="Live demo"

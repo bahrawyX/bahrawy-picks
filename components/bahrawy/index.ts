@@ -552,3 +552,12 @@ export type { BrowserWindowProps } from './browser-window'
 
 export { DragToConfirm } from './drag-to-confirm'
 export type { DragToConfirmProps } from './drag-to-confirm'
+
+export { SplitPanel } from './split-panel'
+export type { SplitPanelProps } from './split-panel'
+
+export { ImageCompare } from './image-compare'
+export type { ImageCompareProps } from './image-compare'
+
+export { AudioPlayer } from './audio-player'
+export type { AudioPlayerProps } from './audio-player'

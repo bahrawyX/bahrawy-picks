@@ -11,7 +11,7 @@ export default function EmptyStateDocs() {
       title="Empty State"
       slug="empty-state"
       description="The standard no-data pattern: icon + heading + body + CTA. Used to fill empty tables, lists, or dashboards with something helpful."
-      category="108 · ui"
+      category="111 · ui"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[420px] items-stretch">

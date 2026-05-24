@@ -31,7 +31,7 @@ export default function TestimonialsSliderDocs() {
       title="Testimonials Slider"
       slug="testimonials-slider"
       description="A rotating testimonial section. Hovering pauses auto-rotation, clicking a dot jumps directly to that slide. Crossfades between quotes with a subtle lift."
-      category="100 · section"
+      category="103 · section"
     >
       <DocsSection title="Live demo" description="Auto-advances every 5.5s — hover to pause.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

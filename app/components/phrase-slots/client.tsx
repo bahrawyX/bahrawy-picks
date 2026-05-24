@@ -55,7 +55,7 @@ export default function PhraseSlotsDocs() {
       title="Phrase Slots"
       slug="phrase-slots"
       description="A slot-machine for words. Each slot is a single-line window over a tall column of candidate words; scroll spins every column through a few cycles and lands on its target — staggered, so the sentence reveals left-to-right. By the end of the section a complete sentence reads across the row and an accent underline draws beneath it."
-      category="124 · gsap-section"
+      category="127 · gsap-section"
     >
       <DocsSection
         title="Live demo"

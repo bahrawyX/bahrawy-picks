@@ -10,7 +10,7 @@ export default function WaveTextDocs() {
       title="Wave Text"
       slug="wave-text"
       description="A line of text where each character undulates in a sine wave with a staggered phase, so the wave reads as a single curve travelling through the word. Pure CSS keyframes."
-      category="133 · text effect"
+      category="136 · text effect"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[200px]">

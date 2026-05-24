@@ -36,7 +36,7 @@ export default function MagneticFieldDocs() {
       title="Magnetic Field"
       slug="magnetic-field"
       description="A pinned scroll section that pairs cursor magnetism with a scroll-driven wave. A canvas dot lattice repels around your cursor with a spring while a glowing accent line sweeps top-to-bottom; each headline locks in as the wave passes it, then a description and CTA fade in."
-      category="125 · gsap-section"
+      category="128 · gsap-section"
     >
       <DocsSection
         title="Live demo"

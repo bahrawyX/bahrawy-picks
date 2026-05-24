@@ -10,7 +10,7 @@ export default function DisperseTextDocs() {
       title="Disperse Text"
       slug="disperse-text"
       description="Letters explode away from their resting position when the parent is hovered, then settle back when the cursor leaves. Per-character offsets seeded by index for stable layout."
-      category="134 · text effect"
+      category="137 · text effect"
     >
       <DocsSection title="Hover the headline">
         <DemoCard className="min-h-[200px]">

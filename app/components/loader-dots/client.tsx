@@ -18,7 +18,7 @@ export default function LoaderDotsDocs() {
       title="Loader Dots"
       slug="loader-dots"
       description="Three dots that pulse in sequence — the typing/loading indicator. Configurable size, color, speed."
-      category="109 · motion"
+      category="112 · motion"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[260px]">

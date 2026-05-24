@@ -10,7 +10,7 @@ export default function StretchTextDocs() {
       title="Stretch Text"
       slug="stretch-text"
       description="On hover, each character stretches horizontally via `transform: scaleX(N)` with a staggered delay so the stretch reads as a wave passing through the line."
-      category="142 · text effect"
+      category="145 · text effect"
     >
       <DocsSection title="Hover the line">
         <DemoCard className="min-h-[220px]">

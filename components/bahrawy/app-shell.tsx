@@ -1,18 +1,18 @@
 'use client'
 
 /**
- * <AppShell />
+ * <AppShell />  (Aurora theme)
  *
- * The layout primitive every SaaS starts with. A left rail (brand at
- * top, navigation sections below, a footer slot at the bottom), an
- * optional topbar, and the main content area. Spring-animated collapse
- * to icon-only mode — labels fade out as the rail shrinks; active
- * highlight + tooltips when collapsed. Mobile: rail slides in as a
- * drawer when you tap the hamburger.
+ * The layout primitive every SaaS starts with — redesigned with an
+ * Aurora vibe. The sidebar gets a soft cyan→violet ambient glow at
+ * the top that fades down into the surface. Active nav items become a
+ * gradient pill (cyan→violet at ~15% opacity over a thin border in
+ * the same hue), with a shared `layoutId` so the pill animates
+ * between rows. The topbar is glassmorphic (backdrop-blur + semi-
+ * transparent surface). User chip lights up on hover.
  *
- * Pass sections of items (each item has icon + label + optional badge
- * + href/onClick); mark the active one explicitly or let the consumer
- * compute it from `usePathname()`.
+ * Same API as before — sections of items, optional brand + topbar +
+ * footer slots, collapsible to icon-only, mobile drawer.
  */
 
 import * as React from 'react'
@@ -21,41 +21,35 @@ import { ChevronLeft, ChevronRight, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface AppShellItem {
-  /** href makes this an anchor; otherwise onClick fires on click. */
   href?: string
   label: string
   icon?: React.ReactNode
-  /** Optional trailing badge / count. */
   badge?: React.ReactNode
-  /** Marks the row as the active route. */
   active?: boolean
   onClick?: () => void
 }
 
 export interface AppShellSection {
-  /** Optional section heading. Hidden when collapsed. */
   label?: string
   items: AppShellItem[]
 }
 
 export interface AppShellProps {
   sidebar: AppShellSection[]
-  /** Logo + product name slot, top of the rail. */
   brand?: React.ReactNode
-  /** Topbar contents. Hidden if omitted. */
   topbar?: React.ReactNode
-  /** Footer slot at the bottom of the rail (e.g. account chip). */
   sidebarFooter?: React.ReactNode
-  /** Main content area. */
   children: React.ReactNode
   defaultCollapsed?: boolean
   collapsible?: boolean
   sidebarWidth?: number
   collapsedWidth?: number
+  /** Override the gradient stops. Default ['#22D3EE', '#A78BFA'] (cyan → violet). */
+  accent?: [string, string]
   className?: string
 }
 
-const SPRING = { type: 'spring' as const, stiffness: 320, damping: 32, mass: 0.7 }
+const SPRING = { type: 'spring' as const, stiffness: 340, damping: 32, mass: 0.7 }
 
 export function AppShell({
   sidebar,
@@ -65,17 +59,19 @@ export function AppShell({
   children,
   defaultCollapsed = false,
   collapsible = true,
-  sidebarWidth = 240,
-  collapsedWidth = 68,
+  sidebarWidth = 248,
+  collapsedWidth = 72,
+  accent = ['#22D3EE', '#A78BFA'],
   className,
 }: AppShellProps) {
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed)
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [accentA, accentB] = accent
 
   return (
     <div
       className={cn(
-        'relative flex h-full w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-950/60',
+        'relative isolate flex h-full w-full overflow-hidden rounded-2xl border border-white/[0.06] bg-[#08070d]',
         className,
       )}
     >
@@ -83,14 +79,23 @@ export function AppShell({
       <motion.aside
         animate={{ width: collapsed ? collapsedWidth : sidebarWidth }}
         transition={SPRING}
-        className="hidden h-full shrink-0 flex-col border-r border-white/[0.06] bg-white/[0.015] md:flex"
+        className="relative hidden h-full shrink-0 flex-col border-r border-white/[0.05] bg-gradient-to-b from-white/[0.025] to-transparent md:flex"
       >
+        {/* Aurora glow at top of rail */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-56"
+          style={{
+            background: `radial-gradient(140% 100% at 50% 0%, ${accentB}1f 0%, transparent 60%), radial-gradient(120% 100% at 30% 0%, ${accentA}14 0%, transparent 55%)`,
+          }}
+        />
         <SidebarContent
           sidebar={sidebar}
           brand={brand}
           footer={sidebarFooter}
           collapsed={collapsed}
           collapsible={collapsible}
+          accent={accent}
           onToggle={() => setCollapsed((c) => !c)}
         />
       </motion.aside>
@@ -106,7 +111,7 @@ export function AppShell({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
               onClick={() => setMobileOpen(false)}
-              className="absolute inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+              className="absolute inset-0 z-30 bg-black/65 backdrop-blur-sm md:hidden"
             />
             <motion.aside
               key="drawer"
@@ -114,14 +119,22 @@ export function AppShell({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={SPRING}
-              className="absolute inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-white/10 bg-zinc-950 md:hidden"
+              className="absolute inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-white/10 bg-[#08070d] md:hidden"
             >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-56"
+                style={{
+                  background: `radial-gradient(140% 100% at 50% 0%, ${accentB}24 0%, transparent 60%), radial-gradient(120% 100% at 30% 0%, ${accentA}17 0%, transparent 55%)`,
+                }}
+              />
               <SidebarContent
                 sidebar={sidebar}
                 brand={brand}
                 footer={sidebarFooter}
                 collapsed={false}
                 collapsible={false}
+                accent={accent}
                 onCloseMobile={() => setMobileOpen(false)}
               />
             </motion.aside>
@@ -131,19 +144,17 @@ export function AppShell({
 
       {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {(topbar || true) && (
-          <header className="flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-white/[0.015] px-3 py-2.5 md:px-4">
-            <button
-              type="button"
-              aria-label="Open menu"
-              onClick={() => setMobileOpen(true)}
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white md:hidden"
-            >
-              <Menu className="h-4 w-4" strokeWidth={2.5} />
-            </button>
-            {topbar && <div className="min-w-0 flex-1">{topbar}</div>}
-          </header>
-        )}
+        <header className="sticky top-0 z-10 flex shrink-0 items-center gap-2 border-b border-white/[0.05] bg-[#08070d]/70 px-3 py-2.5 backdrop-blur-md md:px-4">
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setMobileOpen(true)}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white md:hidden"
+          >
+            <Menu className="h-4 w-4" strokeWidth={2.5} />
+          </button>
+          {topbar && <div className="min-w-0 flex-1">{topbar}</div>}
+        </header>
         <main className="min-h-0 flex-1 overflow-auto" data-lenis-prevent>
           {children}
         </main>
@@ -160,6 +171,7 @@ function SidebarContent({
   footer,
   collapsed,
   collapsible,
+  accent,
   onToggle,
   onCloseMobile,
 }: {
@@ -168,12 +180,14 @@ function SidebarContent({
   footer?: React.ReactNode
   collapsed: boolean
   collapsible: boolean
+  accent: [string, string]
   onToggle?: () => void
   onCloseMobile?: () => void
 }) {
   return (
-    <>
-      <div className="flex shrink-0 items-center justify-between gap-2 px-3 py-3">
+    <div className="relative flex h-full flex-col">
+      {/* Brand row */}
+      <div className="flex shrink-0 items-center justify-between gap-2 px-3.5 py-4">
         <AnimatePresence mode="wait" initial={false}>
           {!collapsed && brand && (
             <motion.div
@@ -202,7 +216,7 @@ function SidebarContent({
             type="button"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={onToggle}
-            className="inline-flex h-6 w-6 items-center justify-center rounded-md text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+            className="inline-flex h-6 w-6 items-center justify-center rounded-md text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
           >
             {collapsed ? (
               <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -213,7 +227,14 @@ function SidebarContent({
         ) : null}
       </div>
 
-      <nav className="flex-1 space-y-4 overflow-y-auto px-2 pb-3">
+      {/* Hairline under brand */}
+      <div
+        aria-hidden
+        className="mx-3 h-px shrink-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent"
+      />
+
+      {/* Nav */}
+      <nav className="flex-1 space-y-5 overflow-y-auto px-2 pb-3 pt-4">
         {sidebar.map((section, i) => (
           <div key={i}>
             <AnimatePresence mode="wait" initial={false}>
@@ -224,7 +245,7 @@ function SidebarContent({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
-                  className="px-2.5 pb-1.5 pt-2 text-[10px] font-medium uppercase tracking-[0.22em] text-white/35"
+                  className="px-3 pb-1.5 text-[9.5px] font-semibold uppercase tracking-[0.28em] text-white/35"
                 >
                   {section.label}
                 </motion.p>
@@ -233,7 +254,7 @@ function SidebarContent({
             <ul className="space-y-0.5">
               {section.items.map((item, j) => (
                 <li key={j}>
-                  <SidebarRow item={item} collapsed={collapsed} />
+                  <SidebarRow item={item} collapsed={collapsed} accent={accent} />
                 </li>
               ))}
             </ul>
@@ -242,19 +263,30 @@ function SidebarContent({
       </nav>
 
       {footer && (
-        <div className="shrink-0 border-t border-white/[0.05] p-2">
-          {footer}
-        </div>
+        <div
+          aria-hidden
+          className="mx-3 h-px shrink-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent"
+        />
       )}
-    </>
+      {footer && <div className="shrink-0 p-2">{footer}</div>}
+    </div>
   )
 }
 
-function SidebarRow({ item, collapsed }: { item: AppShellItem; collapsed: boolean }) {
+function SidebarRow({
+  item,
+  collapsed,
+  accent,
+}: {
+  item: AppShellItem
+  collapsed: boolean
+  accent: [string, string]
+}) {
+  const [accentA, accentB] = accent
   const className = cn(
-    'group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition-colors',
+    'group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] transition-colors',
     item.active
-      ? 'bg-white/[0.08] text-white'
+      ? 'text-white'
       : 'text-white/65 hover:bg-white/[0.04] hover:text-white',
     collapsed && 'justify-center px-0',
   )
@@ -264,12 +296,23 @@ function SidebarRow({ item, collapsed }: { item: AppShellItem; collapsed: boolea
         <motion.span
           layoutId="app-shell-active"
           aria-hidden
-          className="absolute inset-y-1 left-0 w-[3px] rounded-full bg-violet-400"
+          className="absolute inset-0 rounded-lg"
+          style={{
+            background: `linear-gradient(135deg, ${accentA}22 0%, ${accentB}1e 100%)`,
+            border: `1px solid ${accentB}33`,
+            boxShadow: `inset 0 1px 0 ${accentB}1f, 0 4px 20px -8px ${accentB}55`,
+          }}
           transition={SPRING}
         />
       )}
       {item.icon && (
-        <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-4 [&>svg]:w-4">
+        <span
+          className={cn(
+            'relative inline-flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-4 [&>svg]:w-4',
+            item.active && 'text-white',
+          )}
+          style={item.active ? { color: '#fff' } : undefined}
+        >
           {item.icon}
         </span>
       )}
@@ -281,16 +324,21 @@ function SidebarRow({ item, collapsed }: { item: AppShellItem; collapsed: boolea
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -4 }}
             transition={{ duration: 0.16 }}
-            className="min-w-0 flex-1 truncate"
+            className="relative min-w-0 flex-1 truncate font-medium"
           >
             {item.label}
           </motion.span>
         )}
       </AnimatePresence>
-      {!collapsed && item.badge && <span className="shrink-0">{item.badge}</span>}
+      {!collapsed && item.badge && (
+        <span className="relative shrink-0">{item.badge}</span>
+      )}
       {/* Tooltip when collapsed */}
       {collapsed && (
-        <span className="pointer-events-none absolute left-full ml-2 hidden whitespace-nowrap rounded-md border border-white/10 bg-zinc-900 px-2 py-1 text-[11px] text-white opacity-0 shadow-lg group-hover:block group-hover:opacity-100">
+        <span
+          className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 hidden -translate-y-1/2 whitespace-nowrap rounded-md border border-white/10 bg-zinc-950 px-2 py-1 text-[11px] text-white shadow-xl group-hover:block"
+          role="tooltip"
+        >
           {item.label}
         </span>
       )}

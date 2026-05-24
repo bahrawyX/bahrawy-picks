@@ -31,7 +31,7 @@ export default function MoodSliderDocs() {
       title="Mood Slider"
       slug="mood-slider"
       description="A slider whose handle is an SVG smiley face that morphs through expressions as you drag — eyes, eyebrows, mouth curve, and cheek blush all interpolate from one value. The track gradient cycles through a hue range to match."
-      category="153 · form"
+      category="156 · form"
     >
       <DocsSection title="Drag to change the mood">
         <DemoCard className="min-h-[260px]">
