@@ -193,8 +193,13 @@ export function MoodSlider({
           ))}
         </div>
 
+        {/* The track lives inside a flex-row "rail" container that is
+            as tall as the handle. The track is centered vertically
+            inside it (`my-auto`) and the handle is absolutely positioned
+            against the rail (not the track), so we never have to
+            compensate for a height mismatch between track and handle —
+            both share the same vertical axis. */}
         <div
-          ref={trackRef}
           onPointerDown={onPointerDown}
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
@@ -204,12 +209,7 @@ export function MoodSlider({
           aria-valuemin={0}
           aria-valuemax={1}
           aria-valuenow={value}
-          className="relative h-2 w-full cursor-grab rounded-full outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30"
-          style={{
-            background: trackGradient,
-            boxShadow:
-              'inset 0 0.5px 0 rgba(255,255,255,0.18), inset 0 -0.5px 0 rgba(0,0,0,0.35)',
-          }}
+          className="relative flex h-5 w-full cursor-grab items-center outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           onKeyDown={(e) => {
             const segs = Math.max(2, steps) - 1
             const stepSize = 1 / segs
@@ -219,16 +219,25 @@ export function MoodSlider({
             if (e.key === 'End') setValue(1)
           }}
         >
-          {/* Handle — clean white disc with Apple spring scale.
-              Inset the X position so the handle stays fully on the track:
-              at value=0 → handle's LEFT aligns with track's left edge,
-              at value=1 → handle's RIGHT aligns with track's right edge. */}
-          <motion.div
-            className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+          {/* Track — flat colored bar, vertically centered in the rail */}
+          <div
+            ref={trackRef}
+            className="pointer-events-none h-[6px] w-full rounded-full"
             style={{
-              left: `calc(${value} * (100% - 18px) + 9px)`,
+              background: trackGradient,
               boxShadow:
-                '0 1px 2px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.25)',
+                'inset 0 0 0 0.5px rgba(255,255,255,0.06)',
+            }}
+          />
+          {/* Handle — clean white disc, vertically centered with the
+              track via the parent rail's `items-center`. X inset so
+              the disc stays inside the rail at both extremes. */}
+          <motion.div
+            className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+            style={{
+              left: `calc(${value} * (100% - 16px) + 8px)`,
+              boxShadow:
+                '0 0 0 0.5px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.25)',
             }}
             animate={{ scale: handleScale }}
             transition={APPLE_SPRING}

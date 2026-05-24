@@ -10,33 +10,26 @@
  * then keep going past the camera and exit behind your head.
  *
  * Implementation notes:
+ *  - The stack sits inside a container with `perspective: 1200px`.
+ *  - Each line is positioned absolutely at the centre with its own
+ *    `translateZ(z)`. As `progress` (0→1) advances, every line's z
+ *    is shifted by `progress × travel`, where `travel` is the total
+ *    distance the camera moves over the pin.
+ *  - Per-frame we also compute an opacity envelope: lines fade in
+ *    as they approach (z > -nearLimit), peak at z ≈ 0, then fade
+ *    out as they pass behind (z > closeLimit).
+ *  - Scroll progress is read via `ScrollTrigger.onUpdate` and
+ *    written to a ref; a tiny RAF reconciler writes the transforms.
+ *    GSAP is only used for the pin + progress.
  *
- *  - Plain `useLayoutEffect(() => {…}, [])` instead of `useGSAP`.
- *    The latter wraps everything in a `gsap.context()` that gets
- *    reverted on every cleanup → in React StrictMode that meant the
- *    line transforms / opacities were briefly snapped back to their
- *    initial CSS between mounts, which read as a duplicated effect.
- *    A plain effect with empty deps + explicit refs gives us one
- *    setup, one teardown, and zero auto-revert surprises.
- *
- *  - The opacity envelope is a pure function of each line's Z, so it
- *    works identically on scroll-back. No AnimatePresence, no stuck
- *    exits, no overlapping lines.
- *
- *  - The final standing headline + CTA fade in via the same RAF as
- *    the 3D scene fades out — one source of truth means no chance
- *    of one trigger firing ahead of another.
- *
- *  - Camera `travel` auto-bumps so that the last line always clears
- *    the close-cull limit by p = 1, leaving the final headline alone
- *    on stage.
+ * The whole thing is one container, one RAF loop, N spans.
  */
 
 import * as React from 'react'
+import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
-import { useMotionValue, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 if (typeof window !== 'undefined') {
@@ -48,7 +41,9 @@ if (typeof window !== 'undefined') {
 // ---------------------------------------------------------------------------
 
 export interface TypeTunnelLine {
+  /** The text for this layer. Short = better. */
   text: React.ReactNode
+  /** Optional tiny eyebrow rendered above the line. */
   eyebrow?: React.ReactNode
 }
 
@@ -59,15 +54,20 @@ export interface TypeTunnelCta {
 }
 
 export interface TypeTunnelProps {
+  /** Lines to fly through. Order = traversal order. */
   lines: TypeTunnelLine[]
+  /** Final standing headline after the tunnel — fades in at the end. */
   finalLine?: TypeTunnelLine
+  /** Optional CTA after the final line. */
   cta?: TypeTunnelCta
   /** Pin duration in viewport heights. Default 4. */
   scrollLength?: number
-  /** Total Z-axis travel distance in px. Default 2400. Auto-bumped to fit all lines. */
+  /** Total Z-axis travel distance in px. Default 2400. */
   travel?: number
-  /** Spacing between lines along Z. Default 600. */
+  /** Initial spacing between lines along Z. Default 600. */
   spacing?: number
+  /** Accent color used for ambient glow + final-line text shadow. */
+  accentColor?: string
   className?: string
 }
 
@@ -82,131 +82,139 @@ export function TypeTunnel({
   scrollLength = 4,
   travel = 2400,
   spacing = 600,
+  accentColor = '#A78BFA',
   className,
 }: TypeTunnelProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
   const pinRef = React.useRef<HTMLDivElement>(null)
-  const sceneRef = React.useRef<HTMLDivElement>(null)
   const lineRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const finalRef = React.useRef<HTMLDivElement>(null)
   const ctaRef = React.useRef<HTMLDivElement>(null)
 
-  // Ensure travel is large enough to push every line past the close
-  // cull by p = 1.
-  const computedTravel = Math.max(travel, (lines.length - 1) * spacing + 360)
+  // Progress 0→1 from ScrollTrigger.
+  const progressRef = React.useRef(0)
 
-  // Stash live prop values so the once-on-mount effect always reads
-  // current numbers without forcing the heavy setup to re-run.
-  const propsRef = React.useRef({
-    travel: computedTravel,
-    spacing,
-    scrollLength,
-  })
-  propsRef.current = { travel: computedTravel, spacing, scrollLength }
+  useGSAP(
+    () => {
+      if (!sectionRef.current || !pinRef.current) return
 
-  const rawProgress = useMotionValue(0)
-  const smoothProgress = useSpring(rawProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  })
+      // -------- Initial states --------
+      // The further-back lines start invisible (out of focus).
+      lineRefs.current.forEach((el, i) => {
+        if (!el) return
+        const z0 = -i * spacing - 200
+        el.style.transform = `translate3d(-50%, -50%, ${z0}px)`
+        // Hidden until the camera approaches.
+        el.style.opacity = i === 0 ? '0.2' : '0'
+      })
+      if (finalRef.current)
+        gsap.set(finalRef.current, { autoAlpha: 0, y: 18 })
+      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 14 })
 
-  React.useLayoutEffect(() => {
-    if (!sectionRef.current || !pinRef.current) return
+      // -------- Pin + scrubbed progress --------
+      const st = ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: () => `+=${scrollLength * window.innerHeight}`,
+        pin: pinRef.current,
+        scrub: 0.4,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          progressRef.current = self.progress
+        },
+      })
 
-    // ---- Envelope constants ----
-    const nearLimit = 220
-    const closeLimit = 90
+      // -------- Final line + CTA fades in at the end --------
+      const finalTween = finalRef.current
+        ? gsap.to(finalRef.current, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: () => `top+=${0.85 * scrollLength * window.innerHeight} top`,
+              end: () => `top+=${0.97 * scrollLength * window.innerHeight} top`,
+              toggleActions: 'play none none reverse',
+            },
+          })
+        : null
+      const ctaTween = ctaRef.current
+        ? gsap.to(ctaRef.current, {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: () => `top+=${0.92 * scrollLength * window.innerHeight} top`,
+              end: () => `top+=${scrollLength * window.innerHeight} top`,
+              toggleActions: 'play none none reverse',
+            },
+          })
+        : null
 
-    // ---- The reconciler — pure function of smoothProgress ----
-    const draw = () => {
-      const p = smoothProgress.get()
-      const tr = propsRef.current.travel
-      const sp = propsRef.current.spacing
-      const shift = p * tr
+      // -------- RAF reconciler — Z + opacity per line --------
+      // The camera moves forward by `progress × travel` px each frame,
+      // so each line's effective `z = baseZ + progressShift` where
+      // `baseZ_i = -i * spacing`.
+      //
+      // The opacity envelope is TIGHT on purpose — only the closest
+      // line to the camera should be visible at a time. With `spacing`
+      // = 600 px and a visible band of ~300 px (-220 → +90), neighbour
+      // lines never overlap on screen — the user reads one headline,
+      // it dissolves, the next one arrives.
+      const nearLimit = 220 // start fade-in this far behind the camera
+      const closeLimit = 90 // start fade-out this far past the camera
 
-      // 3D lines
-      const arr = lineRefs.current
-      for (let i = 0; i < arr.length; i++) {
-        const el = arr[i]
-        if (!el) continue
-        const baseZ = -i * sp
-        const z = baseZ + shift
-
-        // Cull lines too far from the camera.
-        if (z > closeLimit + 220 || z < -nearLimit * 1.4) {
-          el.style.opacity = '0'
+      let raf = 0
+      const draw = () => {
+        const p = progressRef.current
+        const shift = p * travel
+        for (let i = 0; i < lineRefs.current.length; i++) {
+          const el = lineRefs.current[i]
+          if (!el) continue
+          const baseZ = -i * spacing
+          const z = baseZ + shift
+          // Cull lines that are far from the camera so we skip layout
+          // entirely.
+          if (z > closeLimit + 220 || z < -nearLimit * 1.4) {
+            el.style.opacity = '0'
+            el.style.transform = `translate3d(-50%, -50%, ${z}px)`
+            continue
+          }
+          // Tight opacity envelope — fast in, fast out, single line on
+          // screen at a time. Squared for a punchier curve.
+          let opacity = 0
+          if (z > closeLimit) {
+            // Past the camera — quick exit.
+            const t = 1 - (z - closeLimit) / 180
+            opacity = Math.max(0, t * t)
+          } else if (z > -nearLimit) {
+            // Approaching — sharper fade-in than before.
+            const t = Math.min(1, (z + nearLimit) / (nearLimit * 0.55))
+            opacity = t * t
+          }
+          el.style.opacity = String(opacity)
           el.style.transform = `translate3d(-50%, -50%, ${z}px)`
-          continue
         }
-
-        let opacity = 0
-        if (z > closeLimit) {
-          const t = 1 - (z - closeLimit) / 180
-          opacity = Math.max(0, t * t)
-        } else if (z > -nearLimit) {
-          const t = Math.min(1, (z + nearLimit) / (nearLimit * 0.55))
-          opacity = t * t
-        }
-        el.style.opacity = String(opacity)
-        el.style.transform = `translate3d(-50%, -50%, ${z}px)`
+        raf = requestAnimationFrame(draw)
       }
+      raf = requestAnimationFrame(draw)
 
-      // 3D scene fade-out near the end so the final line can read clean.
-      if (sceneRef.current) {
-        const sceneA =
-          p <= 0.78 ? 1 : p >= 0.9 ? 0 : 1 - (p - 0.78) / 0.12
-        sceneRef.current.style.opacity = String(sceneA)
+      return () => {
+        cancelAnimationFrame(raf)
+        st.kill()
+        finalTween?.scrollTrigger?.kill()
+        ctaTween?.scrollTrigger?.kill()
       }
-      // Final line fades in p = 0.86 → 0.94.
-      if (finalRef.current) {
-        const t = Math.max(0, Math.min(1, (p - 0.86) / 0.08))
-        finalRef.current.style.opacity = String(t)
-        finalRef.current.style.transform = `translateY(${(1 - t) * 14}px)`
-      }
-      // CTA fades in p = 0.93 → 1.0.
-      if (ctaRef.current) {
-        const t = Math.max(0, Math.min(1, (p - 0.93) / 0.07))
-        ctaRef.current.style.opacity = String(t)
-        ctaRef.current.style.transform = `translateY(${(1 - t) * 10}px)`
-      }
-    }
-
-    // Prime the very first frame synchronously so we don't show the
-    // initial JSX opacity-0 state for even one paint.
-    draw()
-
-    // ---- ScrollTrigger pin + scrub ----
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: 'top top',
-      end: () => `+=${propsRef.current.scrollLength * window.innerHeight}`,
-      pin: pinRef.current,
-      scrub: true,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        rawProgress.set(self.progress)
-      },
-    })
-
-    // ---- RAF loop reads smoothProgress every frame ----
-    let raf = 0
-    let cancelled = false
-    const tick = () => {
-      if (cancelled) return
-      draw()
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-
-    return () => {
-      cancelled = true
-      cancelAnimationFrame(raf)
-      st.kill()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    },
+    {
+      scope: sectionRef,
+      dependencies: [lines, finalLine, cta, scrollLength, travel, spacing],
+    },
+  )
 
   return (
     <div
@@ -218,43 +226,41 @@ export function TypeTunnel({
         ref={pinRef}
         className="relative h-screen w-full overflow-hidden"
         style={{
+          // The container holds the 3D scene.
           perspective: '1200px',
           perspectiveOrigin: '50% 50%',
         }}
       >
-        {/* Subtle Apple atmosphere — neutral, no accent tint. */}
+        {/* Soft accent vignette — gives the tunnel some atmosphere. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background:
-              'radial-gradient(60% 50% at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 60%)',
+            background: `radial-gradient(60% 50% at 50% 50%, ${accentColor}1a 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 60%)`,
           }}
         />
 
-        {/* Dot grid for depth perception */}
+        {/* Star-field-ish dot grid so the user can FEEL the depth */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              'radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)',
+              'radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1px)',
             backgroundSize: '32px 32px',
             WebkitMaskImage:
               'radial-gradient(60% 60% at 50% 50%, black 0%, transparent 75%)',
             maskImage:
               'radial-gradient(60% 60% at 50% 50%, black 0%, transparent 75%)',
-            opacity: 0.5,
+            opacity: 0.55,
           }}
         />
 
-        {/* 3D scene — start visible, RAF fades it out at the end */}
+        {/* 3D scene */}
         <div
-          ref={sceneRef}
           className="absolute inset-0"
           style={{
             transformStyle: 'preserve-3d',
-            willChange: 'opacity',
           }}
         >
           {lines.map((line, i) => (
@@ -265,11 +271,6 @@ export function TypeTunnel({
               }}
               className="absolute left-1/2 top-1/2 text-center"
               style={{
-                // Start at the base Z with opacity 0 so React's initial
-                // paint matches what the RAF will compute on its first
-                // tick — no first-frame flash even before JS runs.
-                transform: `translate3d(-50%, -50%, ${-i * spacing}px)`,
-                opacity: 0,
                 transformStyle: 'preserve-3d',
                 willChange: 'transform, opacity',
                 width: 'max-content',
@@ -277,15 +278,16 @@ export function TypeTunnel({
               }}
             >
               {line.eyebrow && (
-                <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.32em] text-white/60">
                   {line.eyebrow}
                 </p>
               )}
               <h2
-                className="font-display text-balance font-semibold leading-[0.92] tracking-tight text-white"
+                className="text-balance font-semibold leading-[0.92] tracking-tight text-white"
                 style={{
                   fontSize: 'clamp(48px, 10vw, 168px)',
                   letterSpacing: '-0.035em',
+                  textShadow: `0 0 40px ${accentColor}55`,
                 }}
               >
                 {line.text}
@@ -294,29 +296,27 @@ export function TypeTunnel({
           ))}
         </div>
 
-        {/* Final standing line + CTA — live OUTSIDE the 3D scene */}
+        {/* Final standing line + CTA — these live OUTSIDE the 3D scene
+            so they don't get z-transformed. */}
         {(finalLine || cta) && (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
             {finalLine && (
               <div
                 ref={finalRef}
                 className="pointer-events-auto"
-                style={{
-                  opacity: 0,
-                  transform: 'translateY(14px)',
-                  willChange: 'transform, opacity',
-                }}
+                style={{ willChange: 'transform, opacity' }}
               >
                 {finalLine.eyebrow && (
-                  <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+                  <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.32em] text-white/60">
                     {finalLine.eyebrow}
                   </p>
                 )}
                 <h2
-                  className="font-display text-balance font-semibold leading-[0.92] tracking-tight text-white"
+                  className="text-balance font-semibold leading-[0.92] tracking-tight text-white"
                   style={{
                     fontSize: 'clamp(48px, 9vw, 144px)',
                     letterSpacing: '-0.035em',
+                    textShadow: `0 0 36px ${accentColor}88, 0 0 90px ${accentColor}44`,
                   }}
                 >
                   {finalLine.text}
@@ -324,19 +324,14 @@ export function TypeTunnel({
               </div>
             )}
             {cta && (
-              <div
-                ref={ctaRef}
-                className="pointer-events-auto mt-8"
-                style={{
-                  opacity: 0,
-                  transform: 'translateY(10px)',
-                  willChange: 'transform, opacity',
-                }}
-              >
+              <div ref={ctaRef} className="pointer-events-auto mt-8">
                 <a
                   href={cta.href ?? '#'}
                   onClick={cta.onClick}
-                  className="group inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                  style={{
+                    boxShadow: `0 0 28px ${accentColor}55, 0 0 60px ${accentColor}22`,
+                  }}
                 >
                   {cta.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -349,7 +344,7 @@ export function TypeTunnel({
         {/* Tiny hint at the bottom */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/40"
+          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
         >
           Scroll forward
         </div>
