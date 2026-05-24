@@ -819,4 +819,40 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'iOS slide-to-unlock pattern. Draggable knob on a pill track with a color fill that grows with progress. Release past threshold confirms; release before springs back.',
   },
+  {
+    title: 'Split Panel',
+    slug: 'split-panel',
+    description:
+      'Two panes with a draggable divider. Drag to resize; cross min/max and the panel rubber-bands. Optional snap points. Horizontal or vertical, full keyboard support.',
+  },
+  {
+    title: 'Image Compare',
+    slug: 'image-compare',
+    description:
+      'Drag-to-wipe before/after slider. Top image is clipped via CSS clip-path at handle position; click or drag anywhere to move. Horizontal or vertical, keyboard nav.',
+  },
+  {
+    title: 'Audio Player',
+    slug: 'audio-player',
+    description:
+      'Real audio player around <audio>. Play/pause, time, volume + mute, and a waveform-as-seek-bar where bars left of the playhead glow accent-colored. Click to seek, drag to scrub.',
+  },
+  {
+    title: 'Avatar with Status',
+    slug: 'avatar-status',
+    description:
+      'Avatar primitive with initials fallback (deterministic color from name hash), corner status dot (online/away/busy/offline), and optional name + role. Online pulses.',
+  },
+  {
+    title: 'Bar Chart',
+    slug: 'bar-chart',
+    description:
+      'Single-series categorical bar chart. Animated entrance per bar, hover lift + tooltip, optional gridlines + value labels, per-bar colors, niced-up max. Vertical or horizontal.',
+  },
+  {
+    title: 'Wallet Pass',
+    slug: 'wallet-pass',
+    description:
+      'Apple Wallet-style metallic pass card with perforated top edge (real CSS-mask cutouts), gradient palettes per variant, and a CSS-drawn barcode at the bottom.',
+  },
 ]

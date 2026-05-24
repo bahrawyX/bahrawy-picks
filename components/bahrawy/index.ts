@@ -561,3 +561,16 @@ export type { ImageCompareProps } from './image-compare'
 
 export { AudioPlayer } from './audio-player'
 export type { AudioPlayerProps } from './audio-player'
+
+export { AvatarStatus } from './avatar-status'
+export type { AvatarStatusProps, AvatarStatusState } from './avatar-status'
+
+export { BarChart } from './bar-chart'
+export type { BarChartProps, BarChartDatum } from './bar-chart'
+
+export { WalletPass } from './wallet-pass'
+export type {
+  WalletPassProps,
+  WalletPassVariant,
+  WalletPassDetail,
+} from './wallet-pass'
