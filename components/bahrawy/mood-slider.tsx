@@ -219,13 +219,16 @@ export function MoodSlider({
             if (e.key === 'End') setValue(1)
           }}
         >
-          {/* Handle — clean white disc with Apple spring scale. */}
+          {/* Handle — clean white disc with Apple spring scale.
+              Inset the X position so the handle stays fully on the track:
+              at value=0 → handle's LEFT aligns with track's left edge,
+              at value=1 → handle's RIGHT aligns with track's right edge. */}
           <motion.div
             className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
             style={{
-              left: `${value * 100}%`,
+              left: `calc(${value} * (100% - 18px) + 9px)`,
               boxShadow:
-                '0 1px 2px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.32)',
+                '0 1px 2px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.25)',
             }}
             animate={{ scale: handleScale }}
             transition={APPLE_SPRING}

@@ -69,9 +69,9 @@ export interface PaperTearProps {
   cta?: PaperTearCta
   /** Pin duration in viewport heights. Default 2.4. */
   scrollLength?: number
-  /** Number of jagged points along the tear line. Default 36. */
+  /** Number of jagged points along the tear line. Default 56. */
   detail?: number
-  /** Vertical wobble amplitude of the tear, in % of height. Default 4. */
+  /** Vertical wobble amplitude of the tear, in 0..1 of height. Default 0.06. */
   jitter?: number
   /** Random seed — change to get a different tear shape. Default 1. */
   seed?: number
@@ -119,19 +119,26 @@ function buildTearPaths(detail: number, jitter: number, seed: number) {
   const xs: number[] = [0]
   for (let i = 1; i < detail; i++) {
     const baseX = i / detail
-    const wobble = (rand() - 0.5) * (1 / detail) * 0.6
+    const wobble = (rand() - 0.5) * (1 / detail) * 0.85
     xs.push(Math.max(0, Math.min(1, baseX + wobble)))
   }
   xs.push(1)
-  // Y values with a low-frequency drift + high-frequency teeth.
+  // Y values with three layers — low-freq drift, mid-freq teeth, and
+  // occasional bigger spikes (every ~5th point) that read as real torn
+  // paper fibres instead of a uniform wave.
   const ys: number[] = []
   let drift = 0
   for (let i = 0; i < xs.length; i++) {
-    drift += (rand() - 0.5) * 0.012
-    drift = Math.max(-jitter * 0.6, Math.min(jitter * 0.6, drift))
-    const tooth = (rand() - 0.5) * jitter
-    ys.push(midY + drift + tooth)
+    drift += (rand() - 0.5) * 0.018
+    drift = Math.max(-jitter * 0.7, Math.min(jitter * 0.7, drift))
+    const tooth = (rand() - 0.5) * jitter * 1.2
+    const spike = rand() < 0.18 ? (rand() - 0.5) * jitter * 1.8 : 0
+    ys.push(midY + drift + tooth + spike)
   }
+  // Anchor the very ends near the middle so the tear doesn't open into
+  // a gap at the edges.
+  ys[0] = midY + (rand() - 0.5) * jitter * 0.4
+  ys[ys.length - 1] = midY + (rand() - 0.5) * jitter * 0.4
   const fmt = (n: number) => n.toFixed(4)
   // Top sheet: rectangle 0..1 across, top side flat, bottom side jagged.
   const topPath = [
@@ -164,8 +171,8 @@ export function PaperTear({
   bottom,
   cta,
   scrollLength = 2.4,
-  detail = 36,
-  jitter = 0.04,
+  detail = 56,
+  jitter = 0.06,
   seed = 1,
   className,
 }: PaperTearProps) {
@@ -363,16 +370,20 @@ export function PaperTear({
               'linear-gradient(180deg, #fafaf7 0%, #ede9dd 100%)',
             transformOrigin: '50% 100%',
             willChange: 'transform, opacity',
+            // Soft drop-shadow toward the tear edge — sells the "real paper
+            // cut" depth without bleeding into the bottom sheet.
+            filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))',
           }}
         >
           <PaperGrain opacity={0.18} dark />
-          {/* Subtle inner shadow at the tear edge — sells the depth. */}
+          {/* Inner shadow at the tear edge — anchors the cream to the
+              cut and gives the bottom sheet something to sit against. */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.15) 100%)',
+                'linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.05) 80%, rgba(0,0,0,0.18) 100%)',
             }}
           />
 

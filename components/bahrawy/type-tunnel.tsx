@@ -85,9 +85,25 @@ export function TypeTunnel({
 }: TypeTunnelProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
   const pinRef = React.useRef<HTMLDivElement>(null)
+  const sceneRef = React.useRef<HTMLDivElement>(null)
   const lineRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const finalRef = React.useRef<HTMLDivElement>(null)
   const ctaRef = React.useRef<HTMLDivElement>(null)
+
+  // Make sure the camera ALWAYS travels far enough to push every 3D
+  // line past the closeLimit by the time scroll reaches 100%. If
+  // `travel` is smaller than the minimum needed, bump it.
+  const computedTravel = React.useMemo(
+    () => Math.max(travel, (lines.length - 1) * spacing + 360),
+    [travel, lines.length, spacing],
+  )
+
+  // Stash the moving values in a ref so the once-on-mount useGSAP
+  // callback always sees the latest props without re-running its setup
+  // (which was the source of "effect happens twice" in dev mode where
+  // a parent re-render handed us a new inline `lines` array).
+  const propsRef = React.useRef({ travel: computedTravel, spacing, scrollLength })
+  propsRef.current = { travel: computedTravel, spacing, scrollLength }
 
   // Raw progress 0→1 from ScrollTrigger.
   const rawProgress = useMotionValue(0)
@@ -108,13 +124,20 @@ export function TypeTunnel({
       // loop will write the real opacity on the first frame.
       lineRefs.current.forEach((el, i) => {
         if (!el) return
-        const z0 = -i * spacing
+        const z0 = -i * propsRef.current.spacing
         el.style.transform = `translate3d(-50%, -50%, ${z0}px)`
         el.style.opacity = '0'
       })
-      if (finalRef.current)
-        gsap.set(finalRef.current, { autoAlpha: 0, y: 18 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 14 })
+      // Use plain opacity / transform (not gsap autoAlpha which also
+      // toggles visibility) so the RAF loop owns visibility unilaterally.
+      if (finalRef.current) {
+        finalRef.current.style.opacity = '0'
+        finalRef.current.style.transform = 'translateY(14px)'
+      }
+      if (ctaRef.current) {
+        ctaRef.current.style.opacity = '0'
+        ctaRef.current.style.transform = 'translateY(10px)'
+      }
 
       // -------- Pin + scrubbed progress --------
       // Scrub 0 (instant) — the smoothing lives in the Framer spring
@@ -122,7 +145,7 @@ export function TypeTunnel({
       const st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
-        end: () => `+=${scrollLength * window.innerHeight}`,
+        end: () => `+=${propsRef.current.scrollLength * window.innerHeight}`,
         pin: pinRef.current,
         scrub: true,
         anticipatePin: 1,
@@ -133,36 +156,11 @@ export function TypeTunnel({
       })
 
       // -------- Final line + CTA fades in at the end --------
-      const finalTween = finalRef.current
-        ? gsap.to(finalRef.current, {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.4,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: () => `top+=${0.85 * scrollLength * window.innerHeight} top`,
-              end: () => `top+=${0.97 * scrollLength * window.innerHeight} top`,
-              toggleActions: 'play none none reverse',
-            },
-          })
-        : null
-      const ctaTween = ctaRef.current
-        ? gsap.to(ctaRef.current, {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.4,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: () => `top+=${0.92 * scrollLength * window.innerHeight} top`,
-              end: () => `top+=${scrollLength * window.innerHeight} top`,
-              toggleActions: 'play none none reverse',
-            },
-          })
-        : null
+      // (Driven by the RAF loop below, not separate ScrollTriggers —
+      // a single source of truth means no chance of one trigger firing
+      // ahead of another during scroll-back.)
 
-      // -------- RAF reconciler — Z + opacity per line --------
+      // -------- RAF reconciler — Z + opacity per line + scene fade --------
       // We read the SMOOTHED progress every frame and write transform
       // + opacity. Because the envelope is a pure function of Z, it
       // works identically when the user scrolls back — no stale state,
@@ -171,13 +169,18 @@ export function TypeTunnel({
       const closeLimit = 90 // start fade-out this far past the camera
 
       let raf = 0
+      let cancelled = false
+
       const draw = () => {
+        if (cancelled) return
         const p = smoothProgress.get()
-        const shift = p * travel
+        const shift = p * propsRef.current.travel
+        const sp = propsRef.current.spacing
+
         for (let i = 0; i < lineRefs.current.length; i++) {
           const el = lineRefs.current[i]
           if (!el) continue
-          const baseZ = -i * spacing
+          const baseZ = -i * sp
           const z = baseZ + shift
           // Cull lines far from the camera.
           if (z > closeLimit + 220 || z < -nearLimit * 1.4) {
@@ -185,7 +188,6 @@ export function TypeTunnel({
             el.style.transform = `translate3d(-50%, -50%, ${z}px)`
             continue
           }
-          // Tight envelope — single line on screen at a time.
           let opacity = 0
           if (z > closeLimit) {
             const t = 1 - (z - closeLimit) / 180
@@ -197,20 +199,46 @@ export function TypeTunnel({
           el.style.opacity = String(opacity)
           el.style.transform = `translate3d(-50%, -50%, ${z}px)`
         }
+
+        // Fade the entire 3D scene OUT as scroll enters the final
+        // segment so the final line + CTA can read against a clean
+        // background. 0.78 → 0.9 hands the stage over.
+        if (sceneRef.current) {
+          const sceneA =
+            p <= 0.78 ? 1 : p >= 0.9 ? 0 : 1 - (p - 0.78) / 0.12
+          sceneRef.current.style.opacity = String(sceneA)
+        }
+
+        // Final line: fade in at 0.86 → full at 0.94.
+        if (finalRef.current) {
+          const t = Math.max(0, Math.min(1, (p - 0.86) / 0.08))
+          finalRef.current.style.opacity = String(t)
+          finalRef.current.style.transform = `translateY(${(1 - t) * 14}px)`
+        }
+        // CTA: fade in slightly after the final line.
+        if (ctaRef.current) {
+          const t = Math.max(0, Math.min(1, (p - 0.93) / 0.07))
+          ctaRef.current.style.opacity = String(t)
+          ctaRef.current.style.transform = `translateY(${(1 - t) * 10}px)`
+        }
+
         raf = requestAnimationFrame(draw)
       }
       raf = requestAnimationFrame(draw)
 
       return () => {
+        cancelled = true
         cancelAnimationFrame(raf)
         st.kill()
-        finalTween?.scrollTrigger?.kill()
-        ctaTween?.scrollTrigger?.kill()
       }
     },
     {
+      // Run ONCE on mount; the propsRef closure keeps the loop honest
+      // about live prop values without forcing the heavy GSAP setup to
+      // re-run (which was the source of duplicated effects in
+      // React StrictMode / on parent re-renders).
       scope: sectionRef,
-      dependencies: [lines, finalLine, cta, scrollLength, travel, spacing],
+      dependencies: [],
     },
   )
 
@@ -254,11 +282,13 @@ export function TypeTunnel({
           }}
         />
 
-        {/* 3D scene */}
+        {/* 3D scene — ref'd so the RAF loop can fade it out at the end */}
         <div
+          ref={sceneRef}
           className="absolute inset-0"
           style={{
             transformStyle: 'preserve-3d',
+            willChange: 'opacity',
           }}
         >
           {lines.map((line, i) => (
@@ -300,7 +330,7 @@ export function TypeTunnel({
               <div
                 ref={finalRef}
                 className="pointer-events-auto"
-                style={{ willChange: 'transform, opacity' }}
+                style={{ opacity: 0, willChange: 'transform, opacity' }}
               >
                 {finalLine.eyebrow && (
                   <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
@@ -319,7 +349,11 @@ export function TypeTunnel({
               </div>
             )}
             {cta && (
-              <div ref={ctaRef} className="pointer-events-auto mt-8">
+              <div
+                ref={ctaRef}
+                className="pointer-events-auto mt-8"
+                style={{ opacity: 0, willChange: 'transform, opacity' }}
+              >
                 <a
                   href={cta.href ?? '#'}
                   onClick={cta.onClick}

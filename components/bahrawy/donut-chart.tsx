@@ -114,38 +114,48 @@ export function DonutChart({
         onPointerLeave={() => setHover(null)}
       >
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          {/* Slices are rendered into a single rotated group. We sort
+              so the hovered slice paints LAST → it sits on top of its
+              neighbours when we fatten the stroke. */}
           <g transform={`rotate(-90 ${cx} ${cy})`}>
-            {slices.map((s, i) => {
-              const lifted = hover === i
-              const dx = lifted ? Math.cos(s.angle) * liftPx : 0
-              const dy = lifted ? Math.sin(s.angle) * liftPx : 0
-              return (
-                <motion.circle
-                  key={i}
-                  cx={cx}
-                  cy={cy}
-                  r={radius}
-                  fill="none"
-                  stroke={s.color}
-                  strokeWidth={thickness}
-                  strokeLinecap="butt"
-                  strokeDashoffset={s.offset}
-                  initial={{ strokeDasharray: `0 ${C}` }}
-                  animate={{
-                    strokeDasharray: `${s.arcLen} ${C - s.arcLen}`,
-                    x: dx,
-                    y: dy,
-                  }}
-                  transition={{
-                    strokeDasharray: { duration: 0.95, delay: 0.12 + i * 0.09, ease: EASE },
-                    x: { type: 'spring', stiffness: 420, damping: 32 },
-                    y: { type: 'spring', stiffness: 420, damping: 32 },
-                  }}
-                  onPointerEnter={() => showTooltip && setHover(i)}
-                  style={{ cursor: showTooltip ? 'pointer' : 'default' }}
-                />
-              )
-            })}
+            {slices
+              .map((s, i) => ({ s, i }))
+              .sort((a, b) => (hover === a.i ? 1 : hover === b.i ? -1 : 0))
+              .map(({ s, i }) => {
+                const lifted = hover === i
+                const dx = lifted ? Math.cos(s.angle) * liftPx : 0
+                const dy = lifted ? Math.sin(s.angle) * liftPx : 0
+                // Fatten the stroke on hover so the slice visibly thickens
+                // outward + inward, not just translates.
+                const w = lifted ? thickness * 1.18 : thickness
+                return (
+                  <motion.circle
+                    key={i}
+                    cx={cx}
+                    cy={cy}
+                    r={radius}
+                    fill="none"
+                    stroke={s.color}
+                    strokeLinecap="butt"
+                    strokeDashoffset={s.offset}
+                    initial={{ strokeDasharray: `0 ${C}`, strokeWidth: thickness }}
+                    animate={{
+                      strokeDasharray: `${s.arcLen} ${C - s.arcLen}`,
+                      strokeWidth: w,
+                      x: dx,
+                      y: dy,
+                    }}
+                    transition={{
+                      strokeDasharray: { duration: 0.95, delay: 0.12 + i * 0.09, ease: EASE },
+                      strokeWidth: { type: 'spring', stiffness: 460, damping: 32 },
+                      x: { type: 'spring', stiffness: 420, damping: 32 },
+                      y: { type: 'spring', stiffness: 420, damping: 32 },
+                    }}
+                    onPointerEnter={() => showTooltip && setHover(i)}
+                    style={{ cursor: showTooltip ? 'pointer' : 'default' }}
+                  />
+                )
+              })}
           </g>
         </svg>
 
