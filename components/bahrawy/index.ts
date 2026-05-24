@@ -600,3 +600,15 @@ export type { SegmentedControlProps, SegmentedControlOption } from './segmented-
 export { LineChart } from './line-chart'
 export type { LineChartProps, LineChartDatum } from './line-chart'
 
+export { Dialog } from './dialog'
+export type { DialogProps } from './dialog'
+
+export { Popover } from './popover'
+export type { PopoverProps, PopoverSide, PopoverAlign } from './popover'
+
+export { ActivityRings } from './activity-rings'
+export type { ActivityRingsProps, ActivityRing } from './activity-rings'
+
+export { DonutChart } from './donut-chart'
+export type { DonutChartProps, DonutChartDatum } from './donut-chart'
+

@@ -1726,6 +1726,42 @@ export const registry: RegistryEntry[] = [
     category: 'data',
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '166',
+    slug: 'dialog',
+    name: 'Dialog',
+    description: 'Apple-style centered modal. Vibrancy backdrop with blur, scale-in spring entrance, focus trap with restore-on-close, ESC + backdrop click to dismiss, body scroll lock, title + description + footer slots, destructive intent.',
+    category: 'overlay',
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '167',
+    slug: 'popover',
+    name: 'Popover',
+    description: 'Anchored interactive popup. Controlled open, anchor via ref, side + align placement, auto-flip on insufficient room, vibrancy panel with optional arrow, click-outside + ESC dismiss, repositions on scroll/resize.',
+    category: 'overlay',
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '168',
+    slug: 'activity-rings',
+    name: 'Activity Rings',
+    description: 'Apple Watch-style concentric fitness rings. Each ring has value/goal/color, animated pathLength entrance, overshoot draws a brighter second pass on top. Soft glow per ring via SVG filter, optional center stat + legend.',
+    category: 'data',
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '169',
+    slug: 'donut-chart',
+    name: 'Donut Chart',
+    description: 'Animated SVG donut chart. Each slice draws in clockwise via dasharray animation, hover lifts the slice outward along its midpoint vector, vibrancy tooltip with value + %, center label slot, interactive legend.',
+    category: 'data',
+    dependencies: ['framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

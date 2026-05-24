@@ -903,4 +903,28 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Stripe/Linear-style smooth line chart. Catmull-Rom-to-bezier smoothing, accent gradient fill, animated pathLength entrance, hover crosshair + vibrancy tooltip pinned to the nearest data point, niced Y-axis ticks.',
   },
+  {
+    title: 'Dialog',
+    slug: 'dialog',
+    description:
+      'Apple-style centered modal. Vibrancy backdrop with blur, scale-in spring entrance, focus trap with restore-on-close, ESC + backdrop click to dismiss, body scroll lock, title + description + footer slots, destructive intent.',
+  },
+  {
+    title: 'Popover',
+    slug: 'popover',
+    description:
+      'Anchored interactive popup. Controlled open, anchor via ref, side + align placement, auto-flip on insufficient room, vibrancy panel with optional arrow, click-outside + ESC dismiss, repositions on scroll/resize.',
+  },
+  {
+    title: 'Activity Rings',
+    slug: 'activity-rings',
+    description:
+      'Apple Watch-style concentric fitness rings. Each ring has value/goal/color, animated pathLength entrance, overshoot draws a brighter second pass on top. Soft glow per ring, optional center stat + legend.',
+  },
+  {
+    title: 'Donut Chart',
+    slug: 'donut-chart',
+    description:
+      'Animated SVG donut chart. Each slice draws in clockwise via dasharray animation, hover lifts the slice outward along its midpoint vector, vibrancy tooltip with value + %, center label slot, interactive legend.',
+  },
 ]
