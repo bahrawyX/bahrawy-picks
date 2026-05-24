@@ -55,10 +55,10 @@ export interface SchemaProps {
   onTablesChange?: (next: SchemaTable[]) => void
   /** Force admin mode on/off. Defaults to true when onTablesChange is provided. */
   admin?: boolean
-  /** Canvas width in px. Default 760. */
-  width?: number
-  /** Canvas height in px. Default 460. */
-  height?: number
+  /** Canvas width — px or CSS string (e.g. '100%'). Default '100%'. */
+  width?: number | string
+  /** Canvas height — px or CSS string. Default 600. */
+  height?: number | string
   /** Show row types. Default true. */
   showTypes?: boolean
   className?: string
@@ -100,8 +100,8 @@ export function Schema({
   tables,
   onTablesChange,
   admin: adminProp,
-  width = 760,
-  height = 460,
+  width = '100%',
+  height = 600,
   showTypes = true,
   className,
 }: SchemaProps) {
@@ -111,6 +111,9 @@ export function Schema({
   const [connections, setConnections] = React.useState<Connection[]>([])
   const [hovered, setHovered] = React.useState<string | null>(null)
   const [dragTick, setDragTick] = React.useState(0)
+  // Track the canvas's actual measured pixel size so the SVG element
+  // (which doesn't itself stretch) can match the container for FK lines.
+  const [canvasSize, setCanvasSize] = React.useState({ w: 0, h: 0 })
 
   // ---- state mutation helpers (all gated on onTablesChange) -----------------
   const commit = React.useCallback(
@@ -140,12 +143,15 @@ export function Schema({
     const baseName = 'table'
     let n = tables.length + 1
     while (tables.find((t) => t.name === `${baseName}_${n}`)) n++
+    // Wrap inside the measured canvas size so new tables always land on-screen.
+    const w = canvasSize.w || 800
+    const h = canvasSize.h || 600
     const next: SchemaTable[] = [
       ...tables,
       {
         name: `${baseName}_${n}`,
-        x: 32 + ((tables.length * 24) % Math.max(60, width - 240)),
-        y: 32 + ((tables.length * 24) % Math.max(60, height - 200)),
+        x: 40 + ((tables.length * 28) % Math.max(60, w - 260)),
+        y: 60 + ((tables.length * 28) % Math.max(60, h - 220)),
         columns: [{ name: 'id', type: 'uuid', primary: true }],
       },
     ]
@@ -222,6 +228,7 @@ export function Schema({
       const canvas = canvasRef.current
       if (!canvas) return
       const cRect = canvas.getBoundingClientRect()
+      setCanvasSize({ w: cRect.width, h: cRect.height })
       const next: Connection[] = []
       for (const f of fks) {
         const fromEl = rowRefs.current.get(`${f.from.table}.${f.from.column}`)
@@ -272,50 +279,71 @@ export function Schema({
     <div
       ref={canvasRef}
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0a0a0c]',
+        'relative overflow-hidden rounded-[20px] border border-white/[0.08]',
         className,
       )}
-      style={{ width, height }}
+      style={{
+        width,
+        height,
+        background:
+          'radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,0.025), rgba(0,0,0,0) 60%), #0a0a0c',
+        boxShadow:
+          '0 1px 0 rgba(255,255,255,0.05) inset, 0 0 0 0.5px rgba(255,255,255,0.04), 0 20px 48px -16px rgba(0,0,0,0.45)',
+      }}
     >
-      {/* Dot grid */}
+      {/* Dot grid — slightly larger spacing for a calmer field */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '20px 20px',
+            'radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+          maskImage:
+            'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 100%)',
+          WebkitMaskImage:
+            'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 100%)',
         }}
       />
 
-      {/* Admin toolbar */}
+      {/* Admin toolbar — vibrancy pill */}
       {admin && (
-        <div className="absolute right-3 top-3 z-30 flex items-center gap-1.5">
+        <div
+          className="absolute right-4 top-4 z-30 flex items-center gap-1 rounded-full border border-white/[0.08] p-1 backdrop-blur-xl"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(40,40,46,0.7) 0%, rgba(24,24,28,0.8) 100%)',
+            boxShadow:
+              '0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 20px -8px rgba(0,0,0,0.55)',
+          }}
+        >
           <button
             type="button"
             onClick={addTable}
-            className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.06] px-2.5 text-[11.5px] font-medium text-white/85 backdrop-blur-md transition-colors hover:bg-white/[0.12] hover:text-white"
+            className="inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-display text-[12px] font-semibold tracking-tight text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
           >
-            <Plus className="h-3 w-3" strokeWidth={2.5} />
-            Table
+            <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
+            Add table
           </button>
+          <span aria-hidden className="h-3.5 w-px bg-white/[0.08]" />
           <button
             type="button"
             onClick={exportJson}
             aria-label="Export schema as JSON"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.06] text-white/85 backdrop-blur-md transition-colors hover:bg-white/[0.12] hover:text-white"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/[0.08] hover:text-white"
+            title="Export schema as JSON"
           >
-            <Download className="h-3 w-3" strokeWidth={2.25} />
+            <Download className="h-3.5 w-3.5" strokeWidth={2.25} />
           </button>
         </div>
       )}
 
-      {/* SVG FK layer */}
+      {/* SVG FK layer — matches measured canvas pixels so bezier coords map 1:1 */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        width={width}
-        height={height}
+        width={canvasSize.w || '100%'}
+        height={canvasSize.h || '100%'}
       >
         {connections.map((c) => {
           const involved =
@@ -381,8 +409,8 @@ export function Schema({
       {/* Empty state in admin mode */}
       {admin && tables.length === 0 && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <p className="font-display text-[13px] tracking-tight text-white/40">
-            Click <span className="text-white/65">+ Table</span> to start.
+          <p className="font-display text-[14px] tracking-tight text-white/45">
+            Click <span className="text-white/75">+ Add table</span> to start.
           </p>
         </div>
       )}
@@ -457,16 +485,17 @@ function TableCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={APPLE_SPRING}
-      className="min-w-[200px] select-none overflow-visible"
+      whileHover={admin ? { y: 0 } : undefined}
+      className="min-w-[220px] select-none overflow-visible"
     >
       <div
         className={cn(
-          'overflow-hidden rounded-xl border border-white/[0.08] backdrop-blur-md',
-          'bg-[linear-gradient(180deg,rgba(28,28,30,0.94)_0%,rgba(20,20,22,0.96)_100%)]',
+          'overflow-hidden rounded-[14px] border border-white/[0.08] backdrop-blur-xl',
+          'bg-[linear-gradient(180deg,rgba(32,32,36,0.94)_0%,rgba(20,20,22,0.97)_100%)]',
         )}
         style={{
           boxShadow:
-            '0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 24px -8px rgba(0,0,0,0.55), 0 0 0 0.5px rgba(255,255,255,0.04)',
+            '0 1px 0 rgba(255,255,255,0.06) inset, 0 0 0 0.5px rgba(255,255,255,0.04), 0 14px 32px -12px rgba(0,0,0,0.6), 0 28px 56px -24px rgba(0,0,0,0.45)',
         }}
       >
         {/* Header — drag handle in admin mode */}
@@ -479,7 +508,7 @@ function TableCard({
             dragControls.start(e)
           }}
           className={cn(
-            'group/header relative flex items-center gap-2 border-b border-white/[0.06] px-3 py-2',
+            'group/header relative flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.015] px-3.5 py-2.5',
             admin && 'cursor-grab active:cursor-grabbing',
           )}
         >
@@ -510,17 +539,17 @@ function TableCard({
           ) : (
             <span
               onDoubleClick={() => admin && setEditingName(true)}
-              className="font-mono text-[12px] font-semibold tracking-tight text-white/90"
+              className="font-display text-[13px] font-semibold tracking-tight text-white"
               title={admin ? 'Double-click to rename' : undefined}
             >
               {table.name}
             </span>
           )}
-          <span
-            aria-hidden
-            className="ml-auto block h-1 w-6 rounded-full"
-            style={{ background: accent }}
-          />
+          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-medium tabular-nums text-white/35">
+            {table.columns.length}
+            <span aria-hidden>·</span>
+            <span aria-hidden>cols</span>
+          </span>
           {admin && (
             <button
               type="button"
@@ -561,7 +590,7 @@ function TableCard({
           <button
             type="button"
             onClick={onAddColumn}
-            className="flex w-full items-center justify-center gap-1.5 border-t border-white/[0.04] bg-white/[0.015] py-1.5 text-[10.5px] font-medium tracking-tight text-white/45 transition-colors hover:bg-white/[0.04] hover:text-white/85"
+            className="flex w-full items-center justify-center gap-1.5 border-t border-white/[0.04] bg-white/[0.015] py-2 text-[11px] font-medium tracking-tight text-white/45 transition-colors hover:bg-white/[0.05] hover:text-white/85"
           >
             <Plus className="h-3 w-3" strokeWidth={2.25} />
             Add column
@@ -624,8 +653,8 @@ function ColumnRow({
       onMouseEnter={() => setHovered(key)}
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        'group/col relative flex items-center gap-2 px-3 py-1.5 transition-colors',
-        isHovered ? 'bg-white/[0.06]' : 'bg-transparent hover:bg-white/[0.03]',
+        'group/col relative flex items-center gap-2 px-3.5 py-2 transition-colors',
+        isHovered ? 'bg-white/[0.05]' : 'bg-transparent hover:bg-white/[0.03]',
       )}
     >
       {/* Primary-key toggle / FK dot / plain bullet */}

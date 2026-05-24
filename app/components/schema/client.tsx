@@ -8,8 +8,8 @@ import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page
 const INITIAL_TABLES: SchemaTable[] = [
   {
     name: 'users',
-    x: 24,
-    y: 28,
+    x: 48,
+    y: 72,
     columns: [
       { name: 'id', type: 'uuid', primary: true },
       { name: 'email', type: 'text' },
@@ -19,8 +19,8 @@ const INITIAL_TABLES: SchemaTable[] = [
   },
   {
     name: 'posts',
-    x: 300,
-    y: 80,
+    x: 400,
+    y: 140,
     columns: [
       { name: 'id', type: 'uuid', primary: true },
       { name: 'author_id', type: 'uuid', references: { table: 'users', column: 'id' } },
@@ -32,8 +32,8 @@ const INITIAL_TABLES: SchemaTable[] = [
   },
   {
     name: 'comments',
-    x: 580,
-    y: 36,
+    x: 760,
+    y: 72,
     columns: [
       { name: 'id', type: 'uuid', primary: true },
       { name: 'post_id', type: 'uuid', references: { table: 'posts', column: 'id' } },
@@ -44,8 +44,8 @@ const INITIAL_TABLES: SchemaTable[] = [
   },
   {
     name: 'reactions',
-    x: 580,
-    y: 252,
+    x: 760,
+    y: 360,
     columns: [
       { name: 'id', type: 'uuid', primary: true },
       { name: 'post_id', type: 'uuid', references: { table: 'posts', column: 'id' }, nullable: true },
@@ -98,18 +98,18 @@ export default function SchemaDocs() {
       category="14 · data"
     >
       <DocsSection title="Admin mode — drag, edit, link">
-        <DemoCard className="min-h-[560px] items-start py-8">
-          <div className="flex w-full flex-col gap-3 overflow-x-auto">
-            <div className="flex items-center justify-between gap-3">
+        <DemoCard className="items-stretch p-4 sm:p-6">
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-display text-[13px] tracking-tight text-white/65">
-                Drag any table by its header. Double-click a name to rename, click a type to
-                change it, click the key to toggle primary, click the link icon to set a
+                Drag any table by its header · double-click a name to rename · click a type to
+                change it · click the key to toggle primary · click the link icon to set a
                 foreign key.
               </p>
               <button
                 type="button"
                 onClick={() => setTables(INITIAL_TABLES)}
-                className="shrink-0 rounded-full border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium tracking-tight text-white/85 transition-colors hover:bg-white/[0.08]"
+                className="shrink-0 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 font-display text-[12px] font-medium tracking-tight text-white/85 transition-colors hover:bg-white/[0.08]"
               >
                 Reset schema
               </button>
@@ -117,18 +117,16 @@ export default function SchemaDocs() {
             <Schema
               tables={tables}
               onTablesChange={setTables}
-              width={760}
-              height={460}
+              width="100%"
+              height={680}
             />
           </div>
         </DemoCard>
       </DocsSection>
 
       <DocsSection title="View only — pass tables without onTablesChange">
-        <DemoCard className="min-h-[520px] items-start py-8">
-          <div className="overflow-x-auto">
-            <Schema tables={INITIAL_TABLES} width={760} height={460} />
-          </div>
+        <DemoCard className="items-stretch p-4 sm:p-6">
+          <Schema tables={INITIAL_TABLES} width="100%" height={520} />
         </DemoCard>
       </DocsSection>
 
@@ -142,8 +140,8 @@ export default function SchemaDocs() {
             ['tables', 'SchemaTable[] — each { name, x, y, columns, accent? }.'],
             ['onTablesChange', '(next) => void — provide to enable admin mode (drag + edit).'],
             ['admin', 'Force admin mode on/off. Defaults to true when onTablesChange is provided.'],
-            ['width', 'Canvas width in px. Default 760.'],
-            ['height', 'Canvas height in px. Default 460.'],
+            ['width', 'Canvas width — number (px) or string. Default "100%".'],
+            ['height', 'Canvas height — number (px) or string. Default 600.'],
             ['showTypes', 'Show the type label on each column row. Default true.'],
             ['className', 'Extra classes on the canvas.'],
           ].map(([n, b]) => (
