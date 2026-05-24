@@ -66,8 +66,6 @@ export interface TypeTunnelProps {
   travel?: number
   /** Initial spacing between lines along Z. Default 600. */
   spacing?: number
-  /** Accent color used for ambient glow + final-line text shadow. */
-  accentColor?: string
   className?: string
 }
 
@@ -82,7 +80,6 @@ export function TypeTunnel({
   scrollLength = 4,
   travel = 2400,
   spacing = 600,
-  accentColor = '#A78BFA',
   className,
 }: TypeTunnelProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
@@ -231,12 +228,14 @@ export function TypeTunnel({
           perspectiveOrigin: '50% 50%',
         }}
       >
-        {/* Soft accent vignette — gives the tunnel some atmosphere. */}
+        {/* Soft neutral vignette — gives the tunnel some atmosphere
+            without any accent tint. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: `radial-gradient(60% 50% at 50% 50%, ${accentColor}1a 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 60%)`,
+            background:
+              'radial-gradient(60% 50% at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 70%), radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 60%)',
           }}
         />
 
@@ -287,7 +286,6 @@ export function TypeTunnel({
                 style={{
                   fontSize: 'clamp(48px, 10vw, 168px)',
                   letterSpacing: '-0.035em',
-                  textShadow: `0 0 40px ${accentColor}55`,
                 }}
               >
                 {line.text}
@@ -316,7 +314,6 @@ export function TypeTunnel({
                   style={{
                     fontSize: 'clamp(48px, 9vw, 144px)',
                     letterSpacing: '-0.035em',
-                    textShadow: `0 0 36px ${accentColor}88, 0 0 90px ${accentColor}44`,
                   }}
                 >
                   {finalLine.text}
@@ -329,9 +326,6 @@ export function TypeTunnel({
                   href={cta.href ?? '#'}
                   onClick={cta.onClick}
                   className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                  style={{
-                    boxShadow: `0 0 28px ${accentColor}55, 0 0 60px ${accentColor}22`,
-                  }}
                 >
                   {cta.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
