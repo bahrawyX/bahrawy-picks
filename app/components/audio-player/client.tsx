@@ -14,8 +14,12 @@ const SNIPPET = `import { AudioPlayer } from '@/components/bahrawy/audio-player'
   accent="#A78BFA"
 />`
 
-// Royalty-free sample from Mozilla's web docs assets.
-const SAMPLE_SRC = 'https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3'
+// SoundHelix — algorithmically-composed test tracks (~5-7 min electronic
+// pieces). Public test assets with CORS enabled. Used for years across the
+// web audio ecosystem as the de-facto demo music.
+const TRACK_1 = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3'
+const TRACK_2 = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3'
+const TRACK_3 = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
 
 export default function AudioPlayerDocs() {
   return (
@@ -28,7 +32,7 @@ export default function AudioPlayerDocs() {
       <DocsSection title="Default (violet, synthetic waveform)">
         <DemoCard className="min-h-[220px]">
           <AudioPlayer
-            src={SAMPLE_SRC}
+            src={TRACK_1}
             title="Side B · Closer"
             artist="Bahrawy"
             accent="#A78BFA"
@@ -39,7 +43,7 @@ export default function AudioPlayerDocs() {
       <DocsSection title="Cyan, denser waveform">
         <DemoCard className="min-h-[220px]">
           <AudioPlayer
-            src={SAMPLE_SRC}
+            src={TRACK_2}
             title="Velvet light"
             artist="Bahrawy"
             accent="#22D3EE"
@@ -51,9 +55,9 @@ export default function AudioPlayerDocs() {
       <DocsSection title="With cover art">
         <DemoCard className="min-h-[220px]">
           <AudioPlayer
-            src={SAMPLE_SRC}
+            src={TRACK_3}
             title="Honest mistake"
-            artist="Bahrawy · 3:55"
+            artist="Bahrawy"
             accent="#F472B6"
             coverArt="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&h=200&fit=crop&q=80"
           />
