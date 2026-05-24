@@ -201,7 +201,7 @@ export function Dialog({
                   <h2
                     id={titleId}
                     className={cn(
-                      'text-[17px] font-semibold tracking-tight',
+                      'font-display text-[17px] font-semibold tracking-tight',
                       intent === 'destructive' ? 'text-[#FF453A]' : 'text-white',
                     )}
                   >

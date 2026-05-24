@@ -9,6 +9,7 @@ const SNIPPET = `import { BrowserWindow } from '@/components/bahrawy/browser-win
 <BrowserWindow
   url="https://bahrawy.me/components"
   animateUrl
+  secure
   variant="dark"
   height={420}
 >
@@ -21,14 +22,14 @@ function HeroContent() {
       className="flex h-full w-full items-center justify-center"
       style={{
         background:
-          'radial-gradient(120% 100% at 30% 20%, rgba(167,139,250,0.18), transparent 55%), radial-gradient(120% 100% at 80% 80%, rgba(34,211,238,0.14), transparent 55%), #0a0a0c',
+          'radial-gradient(120% 100% at 30% 20%, rgba(255,255,255,0.06), transparent 55%), radial-gradient(120% 100% at 80% 80%, rgba(255,255,255,0.04), transparent 55%), #0a0a0c',
       }}
     >
       <div className="px-8 text-center">
         <p className="text-[10px] uppercase tracking-[0.32em] text-white/45">
           One library
         </p>
-        <h3 className="mt-2 text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <h3 className="mt-2 text-balance font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           151 components.<br />Copy, paste, ship.
         </h3>
         <p className="mt-3 text-[12px] text-white/55">
@@ -48,7 +49,7 @@ function MarketingContent() {
       <p className="text-[10px] uppercase tracking-[0.32em] text-zinc-500">
         Pricing
       </p>
-      <h3 className="mt-2 text-balance text-4xl font-semibold tracking-tight text-zinc-900">
+      <h3 className="mt-2 text-balance font-display text-4xl font-semibold tracking-tight text-zinc-900">
         Free for hobby projects.
       </h3>
       <p className="mt-3 max-w-md text-center text-[12.5px] text-zinc-500">
@@ -66,10 +67,10 @@ export default function BrowserWindowDocs() {
     <DocsPage
       title="Browser Window"
       slug="browser-window"
-      description="The mac-window-chrome wrapper every product landing page needs to frame a screenshot. Traffic lights, optional back/forward/reload buttons, a URL bar with a lock icon, and your content inside. Pass animateUrl and the URL types itself in character-by-character with a blinking caret — perfect for a 'watch how it works' hero demo."
+      description="The mac-window-chrome wrapper every product landing page needs to frame a screenshot. Big Sur / Sequoia accuracy — radial-gradient traffic lights with hover glyphs, vibrancy title bar, lucide nav buttons, and a centered URL bar with a lock icon. Pass animateUrl and the URL types itself in character-by-character with a blinking caret."
       category="22 · decoration"
     >
-      <DocsSection title="Dark — animated URL">
+      <DocsSection title="Dark — animated URL with secure indicator">
         <DemoCard className="min-h-[520px]">
           <div className="w-full max-w-3xl">
             <BrowserWindow
@@ -77,6 +78,7 @@ export default function BrowserWindowDocs() {
               animateUrl
               urlSpeed={28}
               variant="dark"
+              secure
               height={400}
               title="Components — Bahrawy"
             >
@@ -86,12 +88,13 @@ export default function BrowserWindowDocs() {
         </DemoCard>
       </DocsSection>
 
-      <DocsSection title="Light — neutral frame for screenshots">
+      <DocsSection title="Light — Big Sur neutral frame">
         <DemoCard className="min-h-[520px]">
           <div className="w-full max-w-3xl">
             <BrowserWindow
               url="https://stripe.com/pricing"
               variant="light"
+              secure
               height={400}
             >
               <MarketingContent />
@@ -127,9 +130,10 @@ export default function BrowserWindowDocs() {
             ['url', 'String shown in the address bar.'],
             ['animateUrl', 'Type the URL out character-by-character on mount. Default false.'],
             ['urlSpeed', 'Chars/sec when animating. Default 32.'],
-            ['variant', '"dark" (matches Bahrawy) or "light" (neutral). Default "dark".'],
+            ['variant', '"dark" (Sequoia) or "light" (Big Sur). Default "dark".'],
             ['showActions', 'Back / forward / reload buttons. Default true.'],
-            ['title', 'Optional centered title (e.g. "Inbox · Linear").'],
+            ['secure', 'Color the lock icon green to indicate HTTPS.'],
+            ['title', 'Optional title (e.g. "Inbox · Linear") shown on right.'],
             ['height', 'Body height — passes through to the content slot.'],
             ['children', 'Content rendered below the chrome.'],
             ['className', 'Extra classes on the outer frame.'],

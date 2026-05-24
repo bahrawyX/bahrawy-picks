@@ -89,7 +89,7 @@ export function Ticker({
         </span>
       )}
 
-      <span className="relative text-[12px] font-semibold tracking-tight text-white/90">
+      <span className="relative font-display text-[12px] font-semibold tracking-tight text-white/90">
         {symbol}
       </span>
 

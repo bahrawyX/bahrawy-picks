@@ -310,7 +310,7 @@ export function SpotlightTour({
                 <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/40">
                   Step {step + 1} / {steps.length}
                 </p>
-                <h3 className="mt-1 text-[14px] font-semibold tracking-tight text-white">
+                <h3 className="mt-1 font-display text-[14px] font-semibold tracking-tight text-white">
                   {current.title}
                 </h3>
               </div>

@@ -20,7 +20,8 @@ export function TimelineConnector({
   return (
     <div
       className={cn(
-        isVertical ? 'h-full w-0.5' : 'h-0.5 w-full',
+        // Hairline rail — 1px line, no gradient. Matches the refined dot border.
+        isVertical ? 'h-full w-px' : 'h-px w-full',
         'overflow-hidden',
         className
       )}
@@ -28,7 +29,7 @@ export function TimelineConnector({
       <div
         className={cn(
           'h-full w-full',
-          color ?? 'bg-white/[0.08]',
+          color ?? 'bg-white/[0.06]',
           isVertical ? 'origin-top animate-tl-grow-y' : 'origin-left animate-tl-grow-y'
         )}
         style={{ animationDelay: `${Math.round(delay * 1000)}ms` }}

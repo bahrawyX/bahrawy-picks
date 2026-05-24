@@ -137,7 +137,7 @@ export function Status({
           <p className="text-[10.5px] font-medium uppercase tracking-[0.18em] text-white/40">
             {title}
           </p>
-          <p className="mt-0.5 text-[14px] font-semibold tracking-tight text-white">
+          <p className="mt-0.5 font-display text-[14px] font-semibold tracking-tight text-white">
             {OVERALL_HEADLINE[state]}
           </p>
         </div>

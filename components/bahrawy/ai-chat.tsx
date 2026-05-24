@@ -71,7 +71,7 @@ export function AIChat({
     >
       <header className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
         <Sparkles className="h-3.5 w-3.5 text-violet-300" strokeWidth={2.5} />
-        <span className="text-[11.5px] font-semibold tracking-tight text-white/85">
+        <span className="font-display text-[11.5px] font-semibold tracking-tight text-white/85">
           Assistant
         </span>
         <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/35">

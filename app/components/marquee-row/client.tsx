@@ -22,14 +22,14 @@ const SNIPPET = `import { MarqueeRow } from '@/components/bahrawy'
 </MarqueeRow>`
 
 const LOGOS = [
-  { name: 'React', color: 'text-cyan-400' },
-  { name: 'Next.js', color: 'text-white' },
-  { name: 'TypeScript', color: 'text-blue-400' },
-  { name: 'Tailwind', color: 'text-sky-400' },
-  { name: 'Framer', color: 'text-purple-400' },
-  { name: 'Vercel', color: 'text-white' },
-  { name: 'Prisma', color: 'text-teal-400' },
-  { name: 'Stripe', color: 'text-violet-400' },
+  { name: 'React' },
+  { name: 'Next.js' },
+  { name: 'TypeScript' },
+  { name: 'Tailwind' },
+  { name: 'Framer' },
+  { name: 'Vercel' },
+  { name: 'Prisma' },
+  { name: 'Stripe' },
 ]
 
 const TESTIMONIALS = [
@@ -53,19 +53,19 @@ export default function MarqueeRowDocs() {
       description="Infinite scrolling marquee that duplicates children for seamless looping. Pure CSS animation — no JS loop. Pauses on hover with configurable speed and direction."
     >
       <DocsSection title="Logo strip">
-        <DemoCard className="flex-col gap-6">
-          <MarqueeRow speed={speed} reverse={reverse} pauseOnHover={pauseOnHover}>
-            {LOGOS.map((logo) => (
-              <div
-                key={logo.name}
-                className="flex h-12 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-5"
-              >
-                <span className={`text-sm font-semibold ${logo.color}`}>
+        <DemoCard className="min-h-[140px] items-center justify-center">
+          <div className="w-full">
+            <MarqueeRow speed={speed} reverse={reverse} pauseOnHover={pauseOnHover} gap={48}>
+              {LOGOS.map((logo) => (
+                <span
+                  key={logo.name}
+                  className="font-display text-[18px] font-semibold tracking-tight text-white/70 transition-colors hover:text-white"
+                >
                   {logo.name}
                 </span>
-              </div>
-            ))}
-          </MarqueeRow>
+              ))}
+            </MarqueeRow>
+          </div>
         </DemoCard>
 
         <ControlsRow>

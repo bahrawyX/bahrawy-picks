@@ -1,7 +1,7 @@
 'use client'
 
 import { type ReactNode } from 'react'
-import { Check, X, AlertTriangle } from 'lucide-react'
+import { Check, X, AlertTriangle, Circle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type EventStatus = 'completed' | 'current' | 'upcoming' | 'error' | 'warning'
@@ -14,35 +14,38 @@ interface TimelineDotProps {
   delay?: number
 }
 
+// Per-status: hairline border tint + icon color + the default icon node.
+// Background stays a vibrancy white/[0.04] for all variants so the colored
+// border + icon do the differentiation work (no fully filled bg pills).
 const statusConfig: Record<EventStatus, {
-  bg: string
-  ring: string
+  border: string
+  iconColor: string
   icon: ReactNode
 }> = {
   completed: {
-    bg: 'bg-emerald-500',
-    ring: 'ring-emerald-500/20',
-    icon: <Check className="h-3 w-3 text-white" strokeWidth={3} />,
+    border: 'border-emerald-400/30',
+    iconColor: 'text-emerald-300',
+    icon: <Check className="h-3.5 w-3.5" strokeWidth={2.25} />,
   },
   current: {
-    bg: 'bg-white',
-    ring: 'ring-white/20',
-    icon: null,
+    border: 'border-white/[0.18]',
+    iconColor: 'text-white/85',
+    icon: <Circle className="h-2 w-2 fill-current" strokeWidth={0} />,
   },
   upcoming: {
-    bg: 'bg-transparent',
-    ring: 'ring-white/10',
+    border: 'border-white/[0.08]',
+    iconColor: 'text-white/40',
     icon: null,
   },
   error: {
-    bg: 'bg-red-500',
-    ring: 'ring-red-500/20',
-    icon: <X className="h-3 w-3 text-white" strokeWidth={3} />,
+    border: 'border-rose-400/30',
+    iconColor: 'text-rose-300',
+    icon: <X className="h-3.5 w-3.5" strokeWidth={2.25} />,
   },
   warning: {
-    bg: 'bg-amber-500',
-    ring: 'ring-amber-500/20',
-    icon: <AlertTriangle className="h-3 w-3 text-white" strokeWidth={2.5} />,
+    border: 'border-amber-400/30',
+    iconColor: 'text-amber-300',
+    icon: <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.25} />,
   },
 }
 
@@ -54,37 +57,42 @@ export function TimelineDot({
   delay = 0,
 }: TimelineDotProps) {
   const config = statusConfig[status]
-  const bgClass = iconBackground ?? color ?? config.bg
-  const isUpcoming = status === 'upcoming'
+  // Caller-provided color overrides the per-status icon color (border stays).
+  const iconColorStyle = color ? { color } : undefined
 
   return (
     <div
       className="relative z-10 flex items-center justify-center animate-tl-scale-in"
       style={{ animationDelay: `${Math.round(delay * 1000)}ms` }}
     >
-      {/* Pulse ring for current — pure CSS for smooth infinite loop */}
+      {/* Pulse ring for current — hairline, no color flash */}
       {status === 'current' && (
         <div
-          className={cn(
-            'absolute h-7 w-7 rounded-full animate-tl-pulse-ring',
-            color ?? 'bg-white/40',
-          )}
+          className="absolute h-8 w-8 rounded-full border border-white/[0.12] animate-tl-pulse-ring"
         />
       )}
 
-      {/* Dot */}
+      {/* Icon container — 32px perfect circle, vibrancy fill, hairline border,
+          subtle depth shadow. Variant tint lives on the border + the icon. */}
       <div
         className={cn(
-          'flex h-6 w-6 items-center justify-center rounded-full ring-4',
-          isUpcoming
-            ? 'border-2 border-white/[0.15] bg-white/[0.06] ring-white/[0.04]'
-            : bgClass,
-          !isUpcoming && config.ring,
-          status === 'error' && 'animate-tl-shake'
+          'flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-md',
+          'bg-white/[0.04]',
+          config.border,
+          config.iconColor,
+          status === 'error' && 'animate-tl-shake',
         )}
-        style={status === 'error' && delay > 0 ? { animationDelay: `${Math.round((delay + 0.1) * 1000)}ms` } : undefined}
+        style={{
+          boxShadow: '0 4px 12px -4px rgba(0,0,0,0.4)',
+          background: iconBackground,
+          ...(status === 'error' && delay > 0
+            ? { animationDelay: `${Math.round((delay + 0.1) * 1000)}ms` }
+            : {}),
+        }}
       >
-        {icon ?? config.icon}
+        <span className="inline-flex items-center justify-center" style={iconColorStyle}>
+          {icon ?? config.icon}
+        </span>
       </div>
     </div>
   )

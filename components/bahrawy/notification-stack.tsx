@@ -215,7 +215,7 @@ function NotificationCard({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <p className="truncate text-[12.5px] font-semibold tracking-tight text-white/90">
+          <p className="truncate font-display text-[12.5px] font-semibold tracking-tight text-white/90">
             {notification.title}
           </p>
           {notification.unread && (

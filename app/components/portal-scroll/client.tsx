@@ -8,20 +8,21 @@ const SNIPPET = `import { PortalScroll } from '@/components/bahrawy/portal-scrol
 
 <PortalScroll
   outer={{
-    image: '/outside.jpg',
-    eyebrow: 'Chapter I',
+    image:
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&auto=format&fit=crop&q=80',
+    eyebrow: 'Portal Scroll',
     title: 'You\\'re standing outside.',
     subtitle: 'The story is behind the door.',
   }}
   inner={{
-    image: '/inside.jpg',
-    eyebrow: 'Chapter II — Step through',
-    title: 'Welcome inside.',
+    image:
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&auto=format&fit=crop&q=80',
+    eyebrow: 'Step through',
+    title: 'Step through.',
     subtitle: 'Everything past this point is what we ship — taste, process, motion.',
   }}
   cta={{ label: 'Browse the work', href: '/components' }}
   scrollLength={3.5}
-  accentColor="#F472B6"
 />`
 
 export default function PortalScrollDocs() {
@@ -29,7 +30,7 @@ export default function PortalScrollDocs() {
     <DocsPage
       title="Portal Scroll"
       slug="portal-scroll"
-      description="A pinned scroll section built around one image: you're standing outside a moody scene, and a glowing circular portal opens in the centre of the viewport and grows until it consumes the screen, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge."
+      description="A pinned scroll section built around one image: you're standing outside a moody scene, and a circular portal opens in the centre of the viewport and grows until it consumes the screen, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a single white hairline rides the portal edge — no glow, no accent color."
       category="17 · gsap-section"
     >
       <DocsSection
@@ -42,23 +43,21 @@ export default function PortalScrollDocs() {
       <PortalScroll
         outer={{
           image:
-            'https://images.unsplash.com/photo-1531256456869-ce942a665e80?w=1800&q=80&auto=format&fit=crop',
-          eyebrow: 'Side A',
-          title: 'The face they show.',
-          subtitle: 'Composed. On brand. On message.',
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&auto=format&fit=crop&q=80',
+          eyebrow: 'Portal Scroll',
+          title: 'Outside, at dusk.',
+          subtitle: 'A door you haven’t walked through yet.',
         }}
         inner={{
           image:
-            'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=1800&q=80&auto=format&fit=crop',
-          eyebrow: 'Side B',
-          title: 'The mood they keep.',
+            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&auto=format&fit=crop&q=80',
+          eyebrow: 'Inside',
+          title: 'Step through.',
           subtitle:
-            'Saturated, lit a certain way, ready when the camera turns.',
+            'A clearer light, a quieter water — the place the work actually lives.',
         }}
         cta={{ label: 'Browse the work' }}
         scrollLength={3.5}
-        shape="diamond"
-        accentColor="#F472B6"
       />
 
       <div className="h-24" aria-hidden />
@@ -74,10 +73,9 @@ export default function PortalScrollDocs() {
             ['Cursor parallax inside', "Two layered transforms inside the portal: the background image moves OPPOSITE the cursor (push-back), the headline moves WITH the cursor at 35% magnitude (foreground). Lerped at 0.08/0.10 in a single RAF loop so it stays smooth."],
             ['Letter-by-letter inner title', "Inner `title` is split into chars, each in its own `<span>`. GSAP staggers them by 0.025s once the portal is large enough to fit the line. Non-string titles fall back to a plain `<h2>`."],
             ['Outer fades back', "As the portal grows past 0.18 of the timeline, the outer headline + hint fade to autoAlpha 0 and lift slightly. The outer image also scales 1 → 1.05 across the whole pin so the new scene feels deeper."],
-            ['Spinning rim sweep', "Layered on top of the rim outline: a `conic-gradient` div with `mask: radial-gradient(circle, transparent calc(100% − 6px), black calc(100% − 4px), black 100%)` that constrains the gradient to a 4px-wide ring, then a CSS keyframe rotates it. Uses `mix-blend-mode: screen` so it adds to the rim glow."],
-            ['Scan dot orbit', "A wrapper rotates around the rim's centre via CSS keyframes; the dot sits at the wrapper's top edge and rides the perimeter regardless of rim size. No `offset-path` math needed — the size is implicit from the wrapper."],
-            ['Rim fades at the end', "The rim's `autoAlpha` is tweened from 0 → 1 just after the portal starts opening, then back to 0 once the portal nears full size — so the bright ring doesn't fight the inner headline at the moment of arrival."],
-            ['Reduced motion', "All keyframe-based rim animations are gated by `@media (prefers-reduced-motion: reduce)`. The portal still opens via scroll, just without the spinning sweep + orbiting scan."],
+            ['Hairline rim, plain white dot', "The portal edge is a single 1px white outline at 8% opacity — no conic sweep, no glow, no accent color. A 6px white dot rides the perimeter via a rotating wrapper, with a soft drop-shadow for legibility."],
+            ['Rim fades at the end', "The rim's `autoAlpha` is tweened from 0 → 1 just after the portal starts opening, then back to 0 once the portal nears full size — so the line doesn't fight the inner headline at the moment of arrival."],
+            ['Reduced motion', "The orbit / scan keyframes are gated by `@media (prefers-reduced-motion: reduce)`. The portal still opens via scroll, just without the moving dot."],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
               <code className="font-mono text-xs text-white">{n}</code>
@@ -94,7 +92,8 @@ export default function PortalScrollDocs() {
             ['inner', 'PortalScrollScene — same shape. Revealed INSIDE the portal. Title is split letter-by-letter if it\'s a string.'],
             ['cta', '{ label, href?, onClick? } — final call-to-action inside the portal.'],
             ['scrollLength', 'Pin duration in viewport heights. Default 3.5.'],
-            ['accentColor', 'Rim glow, eyebrow dot, scan dot. Default #F472B6.'],
+            ['shape', '\'circle\' | \'diamond\' — portal mask shape. Default \'circle\'.'],
+            ['accentColor', 'Optional faint tint for the outer scroll-hint dot only. Default white. The rim itself is always plain white at 8% opacity.'],
             ['parallaxStrength', 'Max cursor-parallax shift in px inside the portal. Default 28.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (

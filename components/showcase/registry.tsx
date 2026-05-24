@@ -217,7 +217,7 @@ export const registry: RegistryEntry[] = [
     slug: 'portal-scroll',
     name: 'Portal Scroll',
     description:
-      "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge.",
+      "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a single white hairline rides the portal edge.",
     category: 'gsap-section',
     dependencies: ['gsap', '@gsap/react', 'lucide-react'],
   },

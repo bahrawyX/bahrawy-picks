@@ -61,17 +61,18 @@ type TokenKind =
   | 'punct'
   | 'text'
 
-// Xcode Dark inspired palette — tuned for SF Mono on dark
+// Restrained Linear / Xcode-Dark-Default palette — tuned for SF Mono on dark.
+// Deliberately desaturated so syntax reads without "popping" off the page.
 const COLORS: Record<TokenKind, string> = {
-  comment: 'text-zinc-500',
-  string: 'text-[#FF8170]',       // SF red-orange
-  number: 'text-[#D9C97E]',       // muted yellow
-  keyword: 'text-[#FC5FA3]',      // SF pink
-  builtin: 'text-[#5DD8FF]',      // SF cyan
-  tag: 'text-[#67B7A4]',          // SF teal
-  attr: 'text-[#41A1C0]',         // SF blue-cyan
-  punct: 'text-white/45',
-  text: 'text-[#E5E5EA]',
+  comment: 'text-[#6C7986]',      // muted slate, Linear-style
+  string: 'text-[#C4A875]',       // tan/sand, not pink-red
+  number: 'text-[#B58A6F]',       // softer warm
+  keyword: 'text-[#C586C0]',      // muted lavender
+  builtin: 'text-[#7AC7CC]',      // muted teal
+  tag: 'text-[#B0B0B5]',          // soft gray — JSX tags read but don't pop
+  attr: 'text-[#9CDCFE]',         // VS Code blue
+  punct: 'text-white/40',
+  text: 'text-white/85',
 }
 
 const JS_KEYWORDS = new Set([
@@ -354,9 +355,9 @@ export function CodeWindow({
             ))}
           </div>
           {filename && (
-            <code className="min-w-0 flex-1 truncate text-center font-mono text-[11.5px] font-medium tracking-tight text-white/55">
+            <span className="min-w-0 flex-1 truncate text-center font-display text-[12px] font-medium tracking-tight text-white/55">
               {filename}
-            </code>
+            </span>
           )}
           <div className="flex shrink-0 items-center gap-2">
             <span className="hidden rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.12em] text-white/55 sm:inline">

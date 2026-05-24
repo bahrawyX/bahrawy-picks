@@ -51,7 +51,10 @@ export function MarqueeRow({
   return (
     <div
       className={cn(
-        'group flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]',
+        // Soft edge fade pulled in tighter so cells crop cleanly without
+        // ghosting them out across half the row. `flex items-center` keeps
+        // any mixed-height children vertically centred along the same line.
+        'group flex w-full items-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]',
         className
       )}
     >
@@ -60,7 +63,7 @@ export function MarqueeRow({
           key={i}
           aria-hidden={i === 1}
           className={cn(
-            'flex shrink-0 animate-marquee',
+            'flex shrink-0 items-center animate-marquee',
             reverse && '[animation-direction:reverse]',
             pauseOnHover && 'group-hover:[animation-play-state:paused]'
           )}

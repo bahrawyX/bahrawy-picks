@@ -8,16 +8,12 @@ import {
 import {
   Bell,
   ChevronDown,
-  CircleDot,
   FileText,
   Folder,
+  Home,
   Inbox,
-  LayoutGrid,
-  Plus,
   Search,
   Settings,
-  Sparkles,
-  Users,
 } from 'lucide-react'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection, DemoCard } from '@/components/showcase/docs-page'
@@ -29,17 +25,18 @@ const SNIPPET = `import { AppShell } from '@/components/bahrawy/app-shell'
   topbar={<Topbar />}
   sidebar={[
     {
-      label: 'Workspace',
+      label: 'General',
       items: [
-        { label: 'Inbox',   icon: <Inbox />,     href: '/inbox',   active: true,  badge: <span>12</span> },
-        { label: 'Issues',  icon: <CircleDot />, href: '/issues' },
+        { label: 'Home',   icon: <Home />,   onClick: () => setActive('home'),   active: active === 'home' },
+        { label: 'Search', icon: <Search />, onClick: () => setActive('search'), active: active === 'search' },
+        { label: 'Inbox',  icon: <Inbox />,  onClick: () => setActive('inbox'),  active: active === 'inbox', badge: <Badge>3</Badge> },
       ],
     },
     {
-      label: 'Library',
+      label: 'Workspace',
       items: [
-        { label: 'Docs',     icon: <FileText />, href: '/docs' },
-        { label: 'Settings', icon: <Settings />, href: '/settings' },
+        { label: 'Projects',  icon: <Folder />,   href: '/projects' },
+        { label: 'Documents', icon: <FileText />, href: '/documents' },
       ],
     },
   ]}
@@ -50,128 +47,171 @@ const SNIPPET = `import { AppShell } from '@/components/bahrawy/app-shell'
 
 function Brand() {
   return (
-    <div className="flex items-center gap-2">
-      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-400/20 text-violet-200">
-        <Sparkles className="h-3.5 w-3.5" strokeWidth={2.5} />
+    <div className="flex items-center gap-2.5">
+      <span
+        aria-hidden
+        className="flex h-7 w-7 items-center justify-center rounded-[7px] border border-white/[0.1] bg-gradient-to-br from-white/[0.14] to-white/[0.04] font-display text-[13px] font-semibold text-white"
+      >
+        B
       </span>
-      <span className="truncate text-[13px] font-semibold tracking-tight text-white">
+      <span className="truncate font-display text-[14px] font-semibold tracking-tight text-white">
         Bahrawy
       </span>
     </div>
   )
 }
 
-function Badge({ count }: { count: number }) {
+function Badge({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-md bg-white/[0.08] px-1 font-mono text-[10px] tabular-nums text-white/75">
-      {count}
+    <span className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-md bg-white/[0.08] px-1.5 font-mono text-[10px] tabular-nums text-white/65">
+      {children}
     </span>
   )
 }
 
 function UserChip() {
   return (
-    <button className="flex w-full items-center gap-2 rounded-lg p-1.5 transition-colors hover:bg-white/[0.04]">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-400/45 to-rose-400/45 text-[10px] font-semibold text-white">
+    <button className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/[0.04]">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/[0.1] bg-gradient-to-br from-white/[0.14] to-white/[0.04] text-[11px] font-semibold text-white">
         AB
       </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block truncate text-[11.5px] font-medium text-white">
+        <span className="block truncate text-[12px] font-medium tracking-tight text-white">
           Abdelrahman
         </span>
-        <span className="block truncate text-[10px] text-white/45">
-          abdelrahman@bahrawy.me
+        <span className="block truncate text-[10.5px] text-white/45">
+          Pro plan
         </span>
       </span>
-      <ChevronDown className="h-3 w-3 shrink-0 text-white/35" strokeWidth={2.5} />
+      <ChevronDown className="h-3.5 w-3.5 shrink-0 text-white/40" strokeWidth={2} />
     </button>
   )
 }
 
-function Topbar() {
+function Topbar({ active }: { active: string }) {
+  const label = TITLES[active] ?? 'Home'
   return (
     <div className="flex items-center gap-2">
-      <h2 className="truncate text-[13px] font-semibold tracking-tight text-white">
-        Inbox
+      <h2 className="truncate font-display text-[15px] font-semibold tracking-tight text-white">
+        {label}
       </h2>
-      <span className="text-white/30">·</span>
-      <span className="text-[11px] text-white/45">12 new this week</span>
       <div className="ml-auto flex items-center gap-1.5">
-        <button className="hidden h-7 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 text-[11px] text-white/65 transition-colors hover:bg-white/[0.08] hover:text-white sm:inline-flex">
-          <Search className="h-3 w-3" strokeWidth={2.5} />
+        <button className="hidden h-8 items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.04] px-2.5 text-[11.5px] text-white/65 transition-colors hover:bg-white/[0.08] hover:text-white sm:inline-flex">
+          <Search className="h-3.5 w-3.5" strokeWidth={2} />
           Search
-          <kbd className="rounded border border-white/10 bg-black/40 px-1 py-px font-mono text-[9px] text-white/45">
+          <kbd className="rounded border border-white/[0.06] bg-black/40 px-1 py-px font-mono text-[9.5px] text-white/45">
             ⌘K
           </kbd>
         </button>
-        <button className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white">
-          <Bell className="h-3.5 w-3.5" strokeWidth={2.5} />
-        </button>
-        <button className="inline-flex h-7 items-center gap-1.5 rounded-full bg-white px-2.5 text-[11.5px] font-semibold text-black transition-transform hover:scale-[1.03]">
-          <Plus className="h-3 w-3" strokeWidth={3} />
-          New
+        <button className="inline-flex h-8 w-8 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white">
+          <Bell className="h-3.5 w-3.5" strokeWidth={2} />
         </button>
       </div>
     </div>
   )
 }
 
-function FakeInboxBody() {
-  const rows = [
-    { from: '@haydenbleasel', subject: 'Re: Spotlight Tour polish',     time: 'just now', unread: true },
-    { from: '@leerob',        subject: 'OG image regenerate for /og',   time: '2m',       unread: true },
-    { from: '@shadcn',        subject: 'Nebula colors look amazing',    time: '14m',      unread: false },
-    { from: '@vercel',        subject: 'Deployment succeeded — main',   time: '32m',      unread: false },
-    { from: '@github',        subject: '12 new stars this week',        time: '1h',       unread: false },
-    { from: '@stripe',        subject: 'Invoice #INV-3092 paid',        time: '3h',       unread: false },
+const TITLES: Record<string, string> = {
+  home: 'Home',
+  search: 'Search',
+  inbox: 'Inbox',
+  projects: 'Projects',
+  documents: 'Documents',
+  settings: 'Settings',
+}
+
+function Dashboard() {
+  const stats = [
+    { label: 'Revenue', value: '$84,231', delta: '+12.4%' },
+    { label: 'Active users', value: '12,847', delta: '+3.1%' },
+    { label: 'Conversion', value: '4.82%', delta: '+0.6%' },
+  ]
+  const activity = [
+    { who: 'Lee Robinson',  what: 'opened a pull request',   when: 'just now' },
+    { who: 'Hayden Bleasel', what: 'merged main',             when: '2m ago' },
+    { who: 'shadcn',        what: 'commented on #482',        when: '14m ago' },
+    { who: 'Emil Kowalski', what: 'deployed to production',   when: '32m ago' },
   ]
   return (
-    <ul className="divide-y divide-white/[0.04]">
-      {rows.map((r, i) => (
-        <li
-          key={i}
-          className="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02]"
-        >
-          <span
-            aria-hidden
-            className={
-              'block h-1.5 w-1.5 shrink-0 rounded-full ' +
-              (r.unread ? 'bg-violet-400' : 'bg-transparent')
-            }
-          />
-          <span className="w-32 shrink-0 truncate text-[12px] font-medium text-white/85">
-            {r.from}
-          </span>
-          <span className="min-w-0 flex-1 truncate text-[12px] text-white/70">
-            {r.subject}
-          </span>
-          <span className="shrink-0 font-mono text-[10.5px] text-white/35">
-            {r.time}
-          </span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-6">
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
+          >
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-white/45">
+              {s.label}
+            </p>
+            <p className="mt-2 font-display text-[28px] font-semibold tracking-tight text-white tabular-nums">
+              {s.value}
+            </p>
+            <p className="mt-1 text-[11.5px] text-emerald-400/80 tabular-nums">
+              {s.delta}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Activity feed */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02]">
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+          <h3 className="font-display text-[13px] font-semibold tracking-tight text-white">
+            Recent activity
+          </h3>
+          <button className="text-[11px] text-white/45 transition-colors hover:text-white/75">
+            View all
+          </button>
+        </div>
+        <ul className="divide-y divide-white/[0.04]">
+          {activity.map((a, i) => (
+            <li key={i} className="flex items-center gap-3 px-4 py-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-[10.5px] font-semibold text-white/75">
+                {a.who
+                  .split(' ')
+                  .map((w) => w[0])
+                  .join('')
+                  .slice(0, 2)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[12.5px] text-white/85">
+                  <span className="font-medium text-white">{a.who}</span>{' '}
+                  <span className="text-white/55">{a.what}</span>
+                </p>
+              </div>
+              <span className="shrink-0 font-mono text-[10.5px] text-white/35">
+                {a.when}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   )
 }
 
 export default function AppShellDocs() {
-  const [active, setActive] = React.useState('inbox')
+  const [active, setActive] = React.useState('home')
   const sections: AppShellSection[] = [
     {
-      label: 'Workspace',
+      label: 'General',
       items: [
-        { label: 'Inbox',     icon: <Inbox />,      onClick: () => setActive('inbox'),     active: active === 'inbox', badge: <Badge count={12} /> },
-        { label: 'Issues',    icon: <CircleDot />,  onClick: () => setActive('issues'),    active: active === 'issues' },
-        { label: 'Projects',  icon: <Folder />,     onClick: () => setActive('projects'),  active: active === 'projects', badge: <Badge count={3} /> },
-        { label: 'Team',      icon: <Users />,      onClick: () => setActive('team'),      active: active === 'team' },
+        { label: 'Home',   icon: <Home />,   onClick: () => setActive('home'),   active: active === 'home' },
+        { label: 'Search', icon: <Search />, onClick: () => setActive('search'), active: active === 'search' },
+        { label: 'Inbox',  icon: <Inbox />,  onClick: () => setActive('inbox'),  active: active === 'inbox', badge: <Badge>3</Badge> },
       ],
     },
     {
-      label: 'Library',
+      label: 'Workspace',
       items: [
-        { label: 'Components', icon: <LayoutGrid />, onClick: () => setActive('components'), active: active === 'components' },
-        { label: 'Docs',       icon: <FileText />,   onClick: () => setActive('docs'),       active: active === 'docs' },
-        { label: 'Settings',   icon: <Settings />,   onClick: () => setActive('settings'),   active: active === 'settings' },
+        { label: 'Projects',  icon: <Folder />,   onClick: () => setActive('projects'),  active: active === 'projects' },
+        { label: 'Documents', icon: <FileText />, onClick: () => setActive('documents'), active: active === 'documents' },
+      ],
+    },
+    {
+      items: [
+        { label: 'Settings', icon: <Settings />, onClick: () => setActive('settings'), active: active === 'settings' },
       ],
     },
   ]
@@ -180,35 +220,19 @@ export default function AppShellDocs() {
     <DocsPage
       title="App Shell"
       slug="app-shell"
-      description="The layout primitive every SaaS starts with. A left rail (brand + nav sections + footer), an optional topbar, and the main content area. Spring-animated collapse to icon-only mode — labels fade out as the rail shrinks; mobile-first via a slide-in drawer."
+      description="The layout primitive every SaaS starts with. Fixed 256px vibrancy sidebar with grouped sections + a brand area, a 52px topbar that spans the content column, and a generous main area. Active items become a neutral pill that springs between rows via shared layoutId. Mobile drawer behind a blurred scrim."
       category="21 · layout"
     >
-      <DocsSection title="Full shell (click the chevron to collapse)">
-        <DemoCard className="min-h-[560px] overflow-hidden p-0">
-          <div className="h-[540px] w-full">
+      <DocsSection title="Full shell — click items in the sidebar">
+        <DemoCard className="min-h-[640px] overflow-hidden p-0">
+          <div className="h-[620px] w-full">
             <AppShell
               brand={<Brand />}
               sidebar={sections}
               sidebarFooter={<UserChip />}
-              topbar={<Topbar />}
+              topbar={<Topbar active={active} />}
             >
-              <FakeInboxBody />
-            </AppShell>
-          </div>
-        </DemoCard>
-      </DocsSection>
-
-      <DocsSection title="Starts collapsed">
-        <DemoCard className="min-h-[480px] overflow-hidden p-0">
-          <div className="h-[460px] w-full">
-            <AppShell
-              brand={<Brand />}
-              sidebar={sections}
-              sidebarFooter={<UserChip />}
-              topbar={<Topbar />}
-              defaultCollapsed
-            >
-              <FakeInboxBody />
+              <Dashboard />
             </AppShell>
           </div>
         </DemoCard>
@@ -226,9 +250,7 @@ export default function AppShellDocs() {
             ['topbar', 'Optional topbar contents — hidden if omitted.'],
             ['sidebarFooter', 'Bottom-of-rail footer slot (user chip, etc).'],
             ['children', 'Main content area — scrolls independently.'],
-            ['defaultCollapsed', 'Start with the rail collapsed. Default false.'],
-            ['collapsible', 'Show the collapse toggle. Default true.'],
-            ['sidebarWidth / collapsedWidth', 'Width in px. Defaults 240 / 68.'],
+            ['sidebarWidth', 'Sidebar width in px. Default 256.'],
             ['className', 'Extra classes on the outer frame.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

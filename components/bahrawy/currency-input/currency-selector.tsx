@@ -116,8 +116,17 @@ export function CurrencySelector({
               </div>
             </div>
 
-            {/* List */}
-            <div className="max-h-60 overflow-y-auto p-1 scrollbar-hide">
+            {/* List — overscroll-contain stops the parent page scroll;
+                data-lenis-prevent stops the Lenis smooth-scroll provider
+                from swallowing the wheel events inside the dropdown. */}
+            <div
+              data-lenis-prevent
+              className="max-h-60 overflow-y-auto overscroll-contain p-1"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(255,255,255,0.18) transparent',
+              }}
+            >
               {currencyList.length === 0 ? (
                 <p className="px-3 py-4 text-center text-sm text-white/30">
                   No currencies found

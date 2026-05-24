@@ -394,7 +394,7 @@ export function CmdBar({
                         </span>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-semibold tracking-tight text-white">
+                        <p className="truncate font-display text-[13px] font-semibold tracking-tight text-white">
                           {current.label}
                         </p>
                         {current.hint && (

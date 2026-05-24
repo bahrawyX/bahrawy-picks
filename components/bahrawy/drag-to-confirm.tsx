@@ -1,22 +1,27 @@
 'use client'
 
 /**
- * <DragToConfirm />
+ * <DragToConfirm />  —  Apple Design System polish
  *
  * The iOS slide-to-unlock pattern, modernised. A knob sits at the
- * left of a pill track; drag it to the right and a colored fill grows
- * behind it. If you release past the threshold (default 90%) it locks
- * to the right, fires `onConfirm`, and the label swaps to a confirmed
- * state with a check icon. If you release before the threshold, the
- * knob springs back to start and `onCancel` fires.
+ * left of a pill track; drag it to the right and a soft white fill
+ * grows behind it. If you release past the threshold (default 90%) it
+ * locks to the right, fires `onConfirm`, the track briefly flashes
+ * white, and the label swaps to a confirmed state with a check icon.
+ * If you release before the threshold, the knob springs back to start
+ * and `onCancel` fires.
  *
  * Used for destructive or payment actions where a single click feels
  * too easy. The tactile gesture forces intent.
+ *
+ * Monochrome by design — no accent color, no glow. The `variant` and
+ * `accent` props are preserved for API compatibility but the visual
+ * language stays vibrancy-white.
  */
 
 import * as React from 'react'
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
-import { Check, ChevronRight } from 'lucide-react'
+import { Check, ChevronsRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface DragToConfirmProps {
@@ -28,9 +33,9 @@ export interface DragToConfirmProps {
   onConfirm?: () => void
   /** Fires when the user releases before the threshold. */
   onCancel?: () => void
-  /** Visual variant — default uses emerald, danger uses rose. */
+  /** Visual variant — kept for API compatibility (monochrome design). */
   variant?: 'default' | 'danger' | 'custom'
-  /** Custom accent (hex). Overrides variant accent. */
+  /** Custom accent (hex) — kept for API compatibility (monochrome design). */
   accent?: string
   /** Reset the confirmed state back to idle (controlled). */
   confirmed?: boolean
@@ -38,28 +43,25 @@ export interface DragToConfirmProps {
   threshold?: number
   /** Disable interaction. */
   disabled?: boolean
-  /** Icon shown on the knob in the idle state. Default ChevronRight. */
+  /** Icon shown on the knob in the idle state. Default ChevronsRight. */
   idleIcon?: React.ReactNode
   /** Track height in px. Default 52. */
   height?: number
   className?: string
 }
 
-const ACCENTS = {
-  default: '#34D399', // emerald-400
-  danger: '#FB7185',  // rose-400
-}
-
-const SPRING_BACK = { type: 'spring' as const, stiffness: 500, damping: 36, mass: 0.5 }
-const SPRING_CONFIRM = { type: 'spring' as const, stiffness: 320, damping: 28 }
+// Apple springs — same physics across press, release, confirm.
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
+const SPRING_BACK = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
+const SPRING_CONFIRM = { type: 'spring' as const, stiffness: 380, damping: 30, mass: 0.6 }
 
 export function DragToConfirm({
   label = 'Slide to confirm',
   confirmedLabel = 'Confirmed',
   onConfirm,
   onCancel,
-  variant = 'default',
-  accent,
+  variant: _variant = 'default',
+  accent: _accent,
   confirmed: controlledConfirmed,
   threshold = 0.9,
   disabled = false,
@@ -67,9 +69,15 @@ export function DragToConfirm({
   height = 52,
   className,
 }: DragToConfirmProps) {
+  // Mark intentionally-unused-for-visuals props so the linter stays quiet
+  // while preserving the public API.
+  void _variant
+  void _accent
+
   const trackRef = React.useRef<HTMLDivElement>(null)
   const [trackWidth, setTrackWidth] = React.useState(0)
   const [confirmed, setConfirmed] = React.useState(false)
+  const [flash, setFlash] = React.useState(false)
   const isControlled = controlledConfirmed !== undefined
   const isConfirmed = isControlled ? controlledConfirmed : confirmed
 
@@ -79,13 +87,13 @@ export function DragToConfirm({
 
   const x = useMotionValue(0)
   const progress = useTransform(x, [0, Math.max(1, maxX)], [0, 1])
-  // Fill width grows with progress, plus a bit extra so it pokes past the knob's edge.
+  // Fill width grows with the knob — covers the knob plus a little.
   const fillWidth = useTransform(
     progress,
     [0, 1],
     [`${knobSize + PADDING * 2}px`, '100%'],
   )
-  const labelOpacity = useTransform(progress, [0, 0.55], [1, 0])
+  const labelOpacity = useTransform(progress, [0, 0.5], [1, 0])
 
   // Measure the track on mount and on resize.
   React.useEffect(() => {
@@ -104,11 +112,15 @@ export function DragToConfirm({
   React.useEffect(() => {
     if (isControlled && !controlledConfirmed) {
       animate(x, 0, SPRING_BACK)
+      setFlash(false)
     }
   }, [controlledConfirmed, isControlled, x])
 
-  const accentColor =
-    accent ?? (variant === 'danger' ? ACCENTS.danger : ACCENTS.default)
+  const fireConfirmFlash = React.useCallback(() => {
+    setFlash(true)
+    // Brief flash, then settle.
+    window.setTimeout(() => setFlash(false), 320)
+  }, [])
 
   const handleEnd = () => {
     if (disabled || isConfirmed) return
@@ -117,6 +129,7 @@ export function DragToConfirm({
     if (reached) {
       animate(x, maxX, SPRING_CONFIRM)
       if (!isControlled) setConfirmed(true)
+      fireConfirmFlash()
       onConfirm?.()
     } else {
       animate(x, 0, SPRING_BACK)
@@ -128,50 +141,55 @@ export function DragToConfirm({
     <div
       ref={trackRef}
       className={cn(
-        'relative inline-flex w-full max-w-md select-none items-center overflow-hidden rounded-full border border-white/10 bg-white/[0.04]',
+        'relative isolate inline-flex w-full max-w-md select-none items-center overflow-hidden rounded-full border border-white/[0.06] backdrop-blur-xl',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
-      style={{ height }}
+      style={{
+        height,
+        background:
+          'linear-gradient(180deg, rgba(28,28,30,0.85) 0%, rgba(20,20,22,0.92) 100%)',
+        boxShadow:
+          'inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 0.5px rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.4)',
+      }}
     >
-      {/* Color fill */}
+      {/* Progress fill — solid white at moderate opacity, no gradient. */}
       <motion.div
         aria-hidden
-        className="absolute inset-y-0 left-0 rounded-full"
-        style={{
-          width: fillWidth,
-          background: `linear-gradient(90deg, ${accentColor}55, ${accentColor}cc)`,
-        }}
+        className="pointer-events-none absolute inset-y-0 left-0 rounded-full bg-white/15"
+        style={{ width: fillWidth }}
       />
 
-      {/* Idle label */}
+      {/* Confirm flash overlay — brief solid white. */}
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{ opacity: flash ? 0.9 : 0 }}
+        transition={APPLE_SPRING}
+        className="pointer-events-none absolute inset-0 rounded-full bg-white"
+      />
+
+      {/* Idle label — fades out as the knob slides past. */}
       <motion.span
         aria-hidden
         style={{ opacity: isConfirmed ? 0 : labelOpacity }}
-        className="pointer-events-none absolute inset-0 flex items-center justify-center text-[12.5px] font-semibold tracking-tight text-white/65"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight text-white/70"
       >
-        <span className="inline-flex items-center gap-2">
-          <motion.span
-            animate={{ x: [0, 4, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="opacity-50"
-            aria-hidden
-          >
-            →
-          </motion.span>
-          {label}
-        </span>
+        {label}
       </motion.span>
 
       {/* Confirmed label */}
       {isConfirmed && (
         <motion.span
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 2 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={SPRING_CONFIRM}
-          className="pointer-events-none absolute inset-0 flex items-center justify-center text-[12.5px] font-semibold tracking-tight text-white"
+          className={cn(
+            'pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight',
+            flash ? 'text-zinc-900' : 'text-white',
+          )}
         >
-          <Check className="mr-1.5 h-3.5 w-3.5" strokeWidth={3} />
+          <Check className="mr-1.5 h-4 w-4" strokeWidth={2.75} />
           {confirmedLabel}
         </motion.span>
       )}
@@ -184,18 +202,33 @@ export function DragToConfirm({
         dragMomentum={false}
         onDragEnd={handleEnd}
         style={{ x, marginLeft: PADDING, width: knobSize, height: knobSize }}
-        whileTap={{ scale: 0.95 }}
+        whileTap={{ scale: 0.96 }}
+        transition={APPLE_SPRING}
         className={cn(
-          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-white text-zinc-900 shadow-lg shadow-black/40',
+          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-white',
           !disabled && !isConfirmed && 'cursor-grab active:cursor-grabbing',
           disabled && 'cursor-not-allowed',
         )}
+        // Multi-layer Apple knob shadow: inner top highlight, close drop, ambient.
+        // eslint-disable-next-line react/forbid-component-props
+        // (style merged inline so the dynamic x/width works alongside)
       >
-        {isConfirmed ? (
-          <Check className="h-4 w-4" strokeWidth={3} />
-        ) : (
-          (idleIcon ?? <ChevronRight className="h-4 w-4" strokeWidth={3} />)
-        )}
+        {/* Shadow layer — applied here so it doesn't fight the inline transform style. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{
+            boxShadow:
+              'inset 0 1px 0 rgba(255,255,255,0.5), 0 4px 12px -2px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.5)',
+          }}
+        />
+        <span className="relative flex items-center justify-center text-black/65">
+          {isConfirmed ? (
+            <Check className="h-4 w-4" strokeWidth={2.75} />
+          ) : (
+            (idleIcon ?? <ChevronsRight className="h-4 w-4" strokeWidth={2.25} />)
+          )}
+        </span>
       </motion.div>
     </div>
   )

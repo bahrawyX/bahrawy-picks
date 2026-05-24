@@ -52,8 +52,8 @@ function CenteredItem({
       <motion.div
         animate={
           isActive
-            ? { scale: 1.03, boxShadow: '0 0 24px rgba(255,255,255,0.06)' }
-            : { scale: 1, boxShadow: '0 0 0px rgba(255,255,255,0)' }
+            ? { scale: 1.03, boxShadow: '0 4px 12px -4px rgba(0,0,0,0.4)' }
+            : { scale: 1, boxShadow: '0 0 0px rgba(0,0,0,0)' }
         }
         transition={springSnappy}
         className="w-full rounded-xl"
@@ -83,8 +83,8 @@ export function CenteredTimeline({
 
   return (
     <div className={cn('relative', className)}>
-      {/* Horizontal connector */}
-      <div className="absolute left-0 right-0 top-8 z-0 h-0.5 bg-white/[0.06]" />
+      {/* Horizontal connector — hairline aligned to the dot center (top-5 + 16px dot half = mid) */}
+      <div className="absolute left-0 right-0 top-[36px] z-0 h-px bg-white/[0.06]" />
 
       {/* Scrollable row */}
       <div

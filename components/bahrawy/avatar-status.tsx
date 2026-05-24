@@ -174,7 +174,7 @@ export function AvatarStatus({
       {showName && (
         <span className="flex min-w-0 flex-col leading-tight">
           <span
-            className="truncate font-semibold tracking-tight text-white"
+            className="truncate font-display font-semibold tracking-tight text-white"
             style={{ fontSize: dims.textPx }}
           >
             {name}

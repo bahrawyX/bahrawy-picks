@@ -4,31 +4,17 @@
  * <PortalScroll />
  *
  * A pinned scroll section built around one image metaphor: you are
- * standing *outside* a scene, and a glowing circular portal opens in
- * the middle of the viewport to reveal a completely different scene
- * inside. Keep scrolling and the portal grows until it has consumed
- * the whole screen — you have "stepped through."
+ * standing *outside* a scene, and a circular portal opens in the middle
+ * of the viewport to reveal a completely different scene inside. Keep
+ * scrolling and the portal grows until it has consumed the whole screen
+ * — you have "stepped through."
  *
- * What makes it feel alive:
- *
- *  1. The portal is driven by ONE tweened radius value (`radius.value`)
- *     that simultaneously rewrites the inner layer's `clip-path` and
- *     the rim's pixel width/height. They can never desync.
- *
- *  2. The inner content has CURSOR parallax. The background and the
- *     foreground inside the portal drift in opposite directions as you
- *     move your mouse — the scene behind the portal reads as a real
- *     space, not a flat image.
- *
- *  3. The inner headline arrives letter-by-letter, staggered by GSAP,
- *     timed to land just as the portal is large enough to fit it.
- *
- *  4. The rim has a spinning conic-gradient sweep + a scan dot riding
- *     the perimeter via CSS `offset-path: circle()`. Both fade out as
- *     the portal nears full size so the rim doesn't fight the inner
- *     content at the end.
- *
- * One section, two scenes, one continuous gesture.
+ * Refined Apple / Emil Kowalski taste:
+ *  - No neon glow, no accent-colored shadows
+ *  - The portal edge is a single white hairline at 8% opacity
+ *  - The scan dot is a small plain white dot with a soft drop shadow
+ *  - Everything else (parallax, letter-by-letter reveal, scroll-pinned
+ *    grow) is preserved
  */
 
 import * as React from 'react'
@@ -79,11 +65,14 @@ export interface PortalScrollProps {
    * Shape of the portal mask.
    *  - 'circle'  (default) → a growing circle, classic spotlight feel
    *  - 'diamond'           → a growing diamond (rotated square),
-   *    sharper and more architectural; rim renders as a rotated
-   *    square outline with a scan dot orbiting the 4 corners.
+   *    sharper and more architectural
    */
   shape?: 'circle' | 'diamond'
-  /** Rim + glow color. Default '#F472B6' (pink-ish). */
+  /**
+   * Kept for API compatibility — no longer used for glow / shadow.
+   * Only consumed as the tint of the small scroll-hint dot in the
+   * outer scene (if you want a faint brand cue). Default is white.
+   */
   accentColor?: string
   /** Strength of cursor parallax inside the portal, in px. Default 28. */
   parallaxStrength?: number
@@ -110,7 +99,7 @@ export function PortalScroll({
   cta,
   scrollLength = 3.5,
   shape = 'circle',
-  accentColor = '#F472B6',
+  accentColor,
   parallaxStrength = 28,
   className,
 }: PortalScrollProps) {
@@ -141,6 +130,8 @@ export function PortalScroll({
   const mouseRef = React.useRef({ x: 0, y: 0 })
 
   const chars = React.useMemo(() => titleChars(inner.title), [inner.title])
+  // Faint cue color for the outer scroll hint only. Default is plain white.
+  const hintColor = accentColor ?? 'rgba(255,255,255,0.7)'
 
   useGSAP(
     () => {
@@ -449,7 +440,7 @@ export function PortalScroll({
                 {outer.eyebrow}
               </p>
             )}
-            <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white/80 sm:text-5xl">
+            <h2 className="text-balance font-display text-3xl font-semibold leading-tight tracking-tight text-white/80 sm:text-5xl">
               {outer.title}
             </h2>
             {outer.subtitle && (
@@ -466,7 +457,7 @@ export function PortalScroll({
           >
             <span
               className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full"
-              style={{ background: accentColor, boxShadow: `0 0 8px ${accentColor}` }}
+              style={{ background: hintColor }}
             />
             Scroll to step through
           </div>
@@ -509,15 +500,11 @@ export function PortalScroll({
             {inner.eyebrow && (
               <div
                 ref={innerEyebrowRef}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/85 backdrop-blur sm:mb-6"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-black/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/85 backdrop-blur sm:mb-6"
               >
                 <span
                   aria-hidden
-                  className="block h-1.5 w-1.5 rounded-full"
-                  style={{
-                    background: accentColor,
-                    boxShadow: `0 0 8px ${accentColor}`,
-                  }}
+                  className="block h-1.5 w-1.5 rounded-full bg-white/80"
                 />
                 {inner.eyebrow}
               </div>
@@ -525,11 +512,8 @@ export function PortalScroll({
 
             {chars.length > 0 ? (
               <h2
-                className="text-balance text-4xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl"
-                style={{
-                  letterSpacing: '-0.025em',
-                  textShadow: `0 0 30px ${accentColor}55, 0 0 80px ${accentColor}22`,
-                }}
+                className="text-balance font-display text-5xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl"
+                style={{ letterSpacing: '-0.025em' }}
               >
                 {chars.map((ch, i) => (
                   <span
@@ -544,17 +528,12 @@ export function PortalScroll({
                         : undefined
                     }
                   >
-                    {ch === ' ' ? ' ' : ch}
+                    {ch === ' ' ? ' ' : ch}
                   </span>
                 ))}
               </h2>
             ) : (
-              <h2
-                className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl"
-                style={{
-                  textShadow: `0 0 30px ${accentColor}55`,
-                }}
-              >
+              <h2 className="text-balance font-display text-5xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
                 {inner.title}
               </h2>
             )}
@@ -574,9 +553,6 @@ export function PortalScroll({
                   href={cta.href ?? '#'}
                   onClick={cta.onClick}
                   className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
-                  style={{
-                    boxShadow: `0 0 28px ${accentColor}55, 0 0 64px ${accentColor}22`,
-                  }}
                 >
                   {cta.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -587,86 +563,49 @@ export function PortalScroll({
         </div>
 
         {/* ─────────────────────────────────────────────────────────
-            RIM — sits over both scenes at the portal edge. Render
-            shape-specific outline + scan animation.
+            RIM — a single hairline white outline at the portal edge,
+            plus a small white scan dot riding the perimeter. No glow,
+            no accent color, no conic sweep.
         ───────────────────────────────────────────────────────── */}
         <div
           ref={rimRef}
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{
-            width: 0,
-            height: 0,
-            // Drop-shadow glow only for the circle variant; diamond has
-            // a crisp outline by request.
-            filter:
-              shape === 'diamond'
-                ? undefined
-                : `drop-shadow(0 0 18px ${accentColor})`,
-          }}
+          style={{ width: 0, height: 0 }}
         >
           {shape === 'diamond' ? (
             <>
-              {/* Diamond outline = a rotated square sized so its
-                  bounding box matches the rim container. Crisp line
-                  only — no inner glow, no outer shadow. */}
               <div
-                className="absolute left-1/2 top-1/2"
+                className="absolute left-1/2 top-1/2 border border-white/[0.1]"
                 style={{
-                  // edge length = side / sqrt(2) of bounding box ≈ 70.71%
                   width: '70.71%',
                   height: '70.71%',
                   transform: 'translate(-50%, -50%) rotate(45deg)',
-                  border: `1.5px solid ${accentColor}`,
                 }}
               />
-              {/* Scan dot — left/top keyframes through the 4 diamond
-                  corners trace the perimeter as straight edges. */}
               <div
-                className="bahrawy-portal-diamond-scan absolute"
+                className="bahrawy-portal-diamond-scan absolute rounded-full bg-white"
                 style={{
-                  width: 10,
-                  height: 10,
-                  marginLeft: -5,
-                  marginTop: -5,
-                  borderRadius: '9999px',
-                  background: accentColor,
-                  boxShadow: `0 0 14px ${accentColor}, 0 0 28px ${accentColor}88`,
+                  width: 6,
+                  height: 6,
+                  marginLeft: -3,
+                  marginTop: -3,
+                  filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.35))',
                 }}
               />
             </>
           ) : (
             <>
-              {/* Static thin circular outline. */}
-              <div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  border: `1.5px solid ${accentColor}`,
-                  boxShadow: `inset 0 0 24px ${accentColor}33, 0 0 14px ${accentColor}66`,
-                }}
-              />
-              {/* Spinning conic-gradient sweep, masked to the rim only. */}
-              <div
-                className="bahrawy-portal-spin absolute inset-0 rounded-full"
-                style={{
-                  background: `conic-gradient(from 0deg, transparent 0deg, ${accentColor} 25deg, transparent 70deg, transparent 180deg, ${accentColor}aa 205deg, transparent 250deg)`,
-                  WebkitMaskImage:
-                    'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
-                  maskImage:
-                    'radial-gradient(circle, transparent calc(100% - 6px), black calc(100% - 4px), black 100%)',
-                  mixBlendMode: 'screen',
-                }}
-              />
+              {/* Single hairline outline. */}
+              <div className="absolute inset-0 rounded-full border border-white/[0.1]" />
               {/* Scan dot orbiting the rim via a rotating wrapper. */}
               <div className="bahrawy-portal-orbit absolute inset-0 rounded-full">
                 <div
-                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
                   style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '9999px',
-                    background: accentColor,
-                    boxShadow: `0 0 14px ${accentColor}, 0 0 28px ${accentColor}88`,
+                    width: 6,
+                    height: 6,
+                    filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.35))',
                   }}
                 />
               </div>
@@ -676,10 +615,6 @@ export function PortalScroll({
 
         {/* Keyframes for the rim animations */}
         <style>{`
-          .bahrawy-portal-spin {
-            animation: bahrawy-portal-spin-kf 6s linear infinite;
-            will-change: transform;
-          }
           .bahrawy-portal-orbit {
             animation: bahrawy-portal-orbit-kf 4.5s linear infinite;
             will-change: transform;
@@ -688,10 +623,6 @@ export function PortalScroll({
           .bahrawy-portal-diamond-scan {
             animation: bahrawy-portal-diamond-scan-kf 4.8s linear infinite;
             will-change: left, top;
-          }
-          @keyframes bahrawy-portal-spin-kf {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
           }
           @keyframes bahrawy-portal-orbit-kf {
             from { transform: rotate(0deg); }
@@ -705,7 +636,6 @@ export function PortalScroll({
             100% { left: 50%; top: 0%; }
           }
           @media (prefers-reduced-motion: reduce) {
-            .bahrawy-portal-spin,
             .bahrawy-portal-orbit,
             .bahrawy-portal-diamond-scan { animation: none !important; }
           }

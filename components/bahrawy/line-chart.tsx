@@ -386,7 +386,7 @@ export function LineChart({
               {hoverDatum.label}
             </p>
             <p
-              className="mt-0.5 text-[13px] font-semibold tabular-nums tracking-tight"
+              className="mt-0.5 font-display text-[13px] font-semibold tabular-nums tracking-tight"
               style={{ color: accent }}
             >
               {format(hoverDatum.value)}
