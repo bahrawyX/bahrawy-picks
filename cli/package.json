@@ -1,13 +1,19 @@
 {
   "name": "bahrawy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Add Bahrawy components to your project — copy, paste, ship.",
   "bin": {
     "bahrawy": "./dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
+    "generate": "node scripts/generate-registry.mjs",
+    "build": "node scripts/generate-registry.mjs && tsc",
+    "prepublishOnly": "npm run build",
     "dev": "ts-node src/index.ts"
   },
   "keywords": [
