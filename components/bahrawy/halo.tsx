@@ -50,14 +50,11 @@ export interface HaloProps {
   className?: string
 }
 
+// NOTE: Three.js ShaderMaterial auto-prepends `position`, `normal`, `uv`,
+// `modelMatrix`, `viewMatrix`, `modelViewMatrix`, `projectionMatrix`,
+// `normalMatrix`, `cameraPosition`, and (when used with InstancedMesh)
+// `instanceMatrix`. Redeclaring any of these here would be a GLSL error.
 const VERT = /* glsl */ `
-attribute vec3 position;
-attribute vec3 normal;
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-uniform mat3 normalMatrix;
-
 uniform vec3  uCursor;     // world-space cursor on the plane y=0
 uniform vec3  uCursorVel;  // world-space velocity (XZ)
 uniform float uTime;
@@ -97,9 +94,8 @@ void main() {
 }
 `
 
+// NOTE: precision is auto-set by Three.js — don't redeclare here.
 const FRAG = /* glsl */ `
-precision highp float;
-
 varying float vBump;
 varying vec3  vNormal;
 
