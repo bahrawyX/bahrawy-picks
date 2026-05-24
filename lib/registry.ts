@@ -885,4 +885,22 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Notion/Linear-style selection action bar. Highlight text → vibrancy pill toolbar floats above the selection (auto-flips below if no room), each action fires with the selected text + rect.',
   },
+  {
+    title: 'Bottom Sheet',
+    slug: 'bottom-sheet',
+    description:
+      'iOS share-sheet-style drawer. Vibrancy backdrop with blur, drag handle, snap detents (e.g. peek 40%, full 92%), drag-down-to-dismiss with momentum, ESC + backdrop click to close. Apple spring physics.',
+  },
+  {
+    title: 'Segmented Control',
+    slug: 'segmented-control',
+    description:
+      'iOS-style segmented picker. Pill wrapper with vibrancy, animated white indicator pill sliding between segments via layoutId, supports icons + labels, three sizes, optional full-width.',
+  },
+  {
+    title: 'Line Chart',
+    slug: 'line-chart',
+    description:
+      'Stripe/Linear-style smooth line chart. Catmull-Rom-to-bezier smoothing, accent gradient fill, animated pathLength entrance, hover crosshair + vibrancy tooltip pinned to the nearest data point, niced Y-axis ticks.',
+  },
 ]

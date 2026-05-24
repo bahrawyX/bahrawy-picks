@@ -591,3 +591,12 @@ export type { ImageLightboxProps, LightboxImage } from './image-lightbox'
 export { FloatingToolbar } from './floating-toolbar'
 export type { FloatingToolbarProps, FloatingToolbarAction } from './floating-toolbar'
 
+export { BottomSheet } from './bottom-sheet'
+export type { BottomSheetProps } from './bottom-sheet'
+
+export { SegmentedControl } from './segmented-control'
+export type { SegmentedControlProps, SegmentedControlOption } from './segmented-control'
+
+export { LineChart } from './line-chart'
+export type { LineChartProps, LineChartDatum } from './line-chart'
+

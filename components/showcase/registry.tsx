@@ -1699,6 +1699,33 @@ export const registry: RegistryEntry[] = [
     category: 'overlay',
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '163',
+    slug: 'bottom-sheet',
+    name: 'Bottom Sheet',
+    description: 'iOS share-sheet-style drawer. Vibrancy backdrop with blur, drag handle, snap detents (e.g. peek 40%, full 92%), drag-down-to-dismiss with momentum-projected snap, ESC + backdrop click to close. Apple spring physics.',
+    category: 'overlay',
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '164',
+    slug: 'segmented-control',
+    name: 'Segmented Control',
+    description: 'iOS-style segmented picker. Pill wrapper with vibrancy, animated white indicator pill sliding between segments via layoutId, supports icons + labels, three sizes, optional full-width.',
+    category: 'form',
+    dependencies: ['framer-motion'],
+  },
+  {
+    kind: 'docs',
+    id: '165',
+    slug: 'line-chart',
+    name: 'Line Chart',
+    description: 'Stripe/Linear-style smooth line chart. Catmull-Rom-to-bezier smoothing, accent gradient fill, animated pathLength entrance, hover crosshair + vibrancy tooltip pinned to the nearest data point, niced Y-axis ticks.',
+    category: 'data',
+    dependencies: ['framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {
