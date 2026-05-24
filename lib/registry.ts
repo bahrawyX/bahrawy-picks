@@ -327,13 +327,31 @@ export const componentRegistry: RegistryItem[] = [
     title: 'Globe',
     slug: 'globe',
     description:
-      'Pure-SVG rotating 3D sphere with great-circle arc lines between geographic points. Hubs pulse, arcs draw themselves in, far-side points fade.',
+      'GitHub-style WebGL globe (Three.js). Dotted sphere via InstancedMesh, arcs that arch ABOVE the surface, fresnel atmospheric glow, pulsing hub rings.',
   },
   {
     title: 'Notification Stack',
     slug: 'notification-stack',
     description:
       'iOS-style stacked notifications. Cards peek behind the top one when collapsed; hover fans them out with spring physics; click ✕ to dismiss with a slide-out.',
+  },
+  {
+    title: 'Particle Field',
+    slug: 'particle-field',
+    description:
+      'WebGL particle field (Three.js). 8000 GL points in a grid; cursor raycasts onto a plane and pushes nearby particles outward with quadratic falloff. Single draw call, custom point shader.',
+  },
+  {
+    title: 'Hyperspeed',
+    slug: 'hyperspeed',
+    description:
+      'Fullscreen OGL fragment shader. Warp-speed star streaks: each pixel marches outward through layered seeded star fields. Single triangle, pure GLSL.',
+  },
+  {
+    title: 'Aurora',
+    slug: 'aurora',
+    description:
+      'Fullscreen OGL fragment shader. Four-octave value noise warped with curl-ish offsets, mapped through a 3-color gradient to paint living aurora bands.',
   },
   {
     title: 'Accordion',

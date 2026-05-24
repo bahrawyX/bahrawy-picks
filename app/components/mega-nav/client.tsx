@@ -247,7 +247,7 @@ const items = [
       title="Mega Nav"
       slug="mega-nav"
       description="A floating top navigation bar with a frosted-glass backdrop and hover-driven mega-menus. Backdrop deepens on scroll, content crossfades when moving between items, mobile collapses to a stacked sheet. Demo themed in Apple's style — store nav with Mac / iPad / iPhone / Watch / AirPods / TV & Home / Support categories."
-      category="111 · navigation"
+      category="114 · navigation"
     >
       <DocsSection
         title="Live demo"

@@ -37,7 +37,7 @@ export default function TextRevealDocs() {
       title="Text Reveal"
       slug="text-reveal"
       description="Words, characters, or lines appear with a clip-mask reveal effect. Each text unit slides up from below, triggered when the element enters the viewport."
-      category="57 · MOTION"
+      category="60 · MOTION"
     >
       <DocsSection title="Preview" description="Adjust the controls below and hit Replay to see the animation again.">
         <DemoCard className="items-center justify-center min-h-[200px]">

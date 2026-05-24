@@ -16,7 +16,7 @@ export default function DrawerDocs() {
       title="Drawer"
       slug="drawer"
       description="Slide-in panel from any of the four edges. Dim backdrop, Escape closes it, spring entry."
-      category="103 · overlay"
+      category="106 · overlay"
     >
       <DocsSection title="Live demo" description="Click the button to open. Try changing the side.">
         <DemoCard className="min-h-[260px]">

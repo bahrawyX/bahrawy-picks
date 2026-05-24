@@ -32,7 +32,7 @@ export default function CursorLensDocs() {
       title="Cursor Lens"
       slug="cursor-lens"
       description="An invisible cursor mask that reveals a different scene underneath as you hover. No ring, no chrome — just a soft radial fade so the boundary between the two scenes is impossible to spot. The inner image is gently magnified at the cursor focal point, the inner text is drawn crisp on top, and a click pins the lens at that spot so you can step back and look."
-      category="118 · interactive"
+      category="121 · interactive"
     >
       <DocsSection
         title="Live demo"

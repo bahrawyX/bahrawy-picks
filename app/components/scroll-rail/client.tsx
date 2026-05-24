@@ -84,7 +84,7 @@ export default function ScrollRailDocs() {
       title="Scroll Rail"
       slug="scroll-rail"
       description="A pinned section whose children live in a horizontal track and glide left as the page scrolls down. The travel is auto-measured so the last card always lands flush at the right edge, and the motion is spring-smoothed so it feels analog — not frame-locked to scroll."
-      category="72 · scroll"
+      category="75 · scroll"
     >
       <DocsSection
         title="Live demo"

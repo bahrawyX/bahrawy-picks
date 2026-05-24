@@ -22,7 +22,7 @@ export default function SkeletonDocs() {
       title="Skeleton"
       slug="skeleton"
       description="Shimmer placeholders for loading states. Use Skeleton for arbitrary shapes (rect, circle, pill) and SkeletonText for multi-line text blocks that taper on the last line."
-      category="79 · ui"
+      category="82 · ui"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[320px] items-start">

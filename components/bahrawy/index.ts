@@ -521,3 +521,12 @@ export type {
   NotificationStackProps,
   Notification,
 } from './notification-stack'
+
+export { ParticleField } from './particle-field'
+export type { ParticleFieldProps } from './particle-field'
+
+export { Hyperspeed } from './hyperspeed'
+export type { HyperspeedProps } from './hyperspeed'
+
+export { Aurora } from './aurora'
+export type { AuroraProps } from './aurora'

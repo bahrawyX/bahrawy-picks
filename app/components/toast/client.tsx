@@ -86,7 +86,7 @@ function SomeChild() {
       title="Toast"
       slug="toast"
       description="Imperative toast notifications. Wrap your tree (or section) in <ToastProvider>, then call useToast().push() anywhere inside. Toasts slide in, stack with offset, and auto-dismiss."
-      category="78 · overlay"
+      category="81 · overlay"
     >
       <DocsSection title="Live demo" description="Click any button to fire a toast. They stack at the configured corner.">
         <ToastProvider position={position} duration={duration} key={position}>

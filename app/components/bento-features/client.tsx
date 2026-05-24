@@ -58,7 +58,7 @@ export default function BentoFeaturesDocs() {
       title="Bento Features"
       slug="bento-features"
       description="A feature bento grid section with mixed-size cards. Each card scroll-reveals with a small stagger; accent gradients give the grid a hint of color without going loud."
-      category="95 · section"
+      category="98 · section"
     >
       <DocsSection title="Live demo">
         <div className="overflow-hidden rounded-2xl border border-white/10">
