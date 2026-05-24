@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: 'https://bahrawy.me/components',
+    url: 'https://bahrawy-picks.vercel.app/components',
     title: 'Components — Browse the Bahrawy library',
     description: `Browse all ${READY_COUNT}+ animated React components. Copy, paste, ship.`,
     images: ['/og-image.png'],

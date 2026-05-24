@@ -202,7 +202,7 @@ export async function GET(req: NextRequest) {
               fontWeight: 500,
             }}
           >
-            bahrawy.me/components/{slug || ''}
+            bahrawy-picks.vercel.app/components/{slug || ''}
           </div>
         </div>
       </div>

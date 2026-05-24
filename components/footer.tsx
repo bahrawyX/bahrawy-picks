@@ -11,12 +11,12 @@ export function Footer() {
           </span>
           <span className="h-4 w-px bg-white/10" aria-hidden />
           <a
-            href="https://bahrawy.me"
+            href="https://bahrawy-picks.vercel.app"
             target="_blank"
             rel="noreferrer noopener"
             className="transition-colors duration-m3-enter ease-m3-enter hover:text-white"
           >
-            bahrawy.me
+            bahrawy-picks.vercel.app
           </a>
         </div>
         <p className="text-xs text-white/40">

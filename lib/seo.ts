@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { registry, type RegistryEntry } from '@/components/showcase/registry'
 
-export const SITE_URL = 'https://bahrawy.me'
+export const SITE_URL = 'https://bahrawy-picks.vercel.app'
 export const SITE_NAME = 'Bahrawy'
 
 const CATEGORY_LABEL: Record<string, string> = {

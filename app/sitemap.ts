@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { registry } from '@/components/showcase/registry'
 
-const SITE_URL = 'https://bahrawy.me'
+const SITE_URL = 'https://bahrawy-picks.vercel.app'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()

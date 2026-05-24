@@ -19,7 +19,7 @@ const bricolage = Bricolage_Grotesque({
   weight: ['400', '500', '600', '700', '800'],
 })
 
-const SITE_URL = 'https://bahrawy.me'
+const SITE_URL = 'https://bahrawy-picks.vercel.app'
 const SITE_NAME = 'Picks'
 const SITE_TITLE = 'Picks — Beautifully crafted React components'
 const SITE_DESCRIPTION =
