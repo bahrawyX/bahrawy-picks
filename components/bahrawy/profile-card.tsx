@@ -135,7 +135,7 @@ export function ProfileCard({
             style={{ width: 72, height: 72 }}
           >
             <span
-              className="relative inline-flex h-full w-full items-center justify-center overflow-hidden rounded-full ring-[5px]"
+              className="relative inline-flex h-full w-full items-center justify-center overflow-hidden rounded-full ring-[3px]"
               style={{
                 background: showImage
                   ? '#1c1c1e'

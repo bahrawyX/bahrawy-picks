@@ -165,8 +165,9 @@ function SidebarContent({
 }) {
   return (
     <div className="relative flex h-full min-h-0 flex-col">
-      {/* Brand area — 64px tall, hairline bottom border */}
-      <div className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] px-4">
+      {/* Brand area — height matches the topbar so the divider stays one
+          continuous horizontal line across the whole shell. */}
+      <div className="flex h-[52px] shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] px-4">
         <div className="min-w-0 flex-1">{brand}</div>
         {onCloseMobile && (
           <button
