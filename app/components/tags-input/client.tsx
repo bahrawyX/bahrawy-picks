@@ -60,7 +60,7 @@ export default function TagsInputDocs() {
       title="Tags Input"
       slug="tags-input"
       description="Multi-tag text input with chip UI, auto-suggestions, validation, and animated add/remove transitions."
-      category="20 · DATA"
+      category="43 · DATA"
     >
       {/* ---- Basic ---- */}
       <DocsSection title="Basic">

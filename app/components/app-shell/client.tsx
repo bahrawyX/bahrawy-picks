@@ -181,7 +181,7 @@ export default function AppShellDocs() {
       title="App Shell"
       slug="app-shell"
       description="The layout primitive every SaaS starts with. A left rail (brand + nav sections + footer), an optional topbar, and the main content area. Spring-animated collapse to icon-only mode — labels fade out as the rail shrinks; mobile-first via a slide-in drawer."
-      category="61 · layout"
+      category="21 · layout"
     >
       <DocsSection title="Full shell (click the chevron to collapse)">
         <DemoCard className="min-h-[560px] overflow-hidden p-0">

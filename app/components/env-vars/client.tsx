@@ -21,7 +21,7 @@ export default function EnvVarsDocs() {
       title="Env Vars"
       slug="env-vars"
       description="A Vercel-style environment-variable display. Each row is a monospace name with an optional Required pill, a value masked to dots, and a copy button. The header eye-toggle reveals every value at once. Read-only display — not an editor."
-      category="41 · data"
+      category="64 · data"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[320px] items-start py-8">

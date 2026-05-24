@@ -47,7 +47,7 @@ export default function MarqueeRowDocs() {
 
   return (
     <DocsPage
-      category="12 · motion"
+      category="36 · motion"
       title="Marquee row"
       slug="marquee-row"
       description="Infinite scrolling marquee that duplicates children for seamless looping. Pure CSS animation — no JS loop. Pauses on hover with configurable speed and direction."

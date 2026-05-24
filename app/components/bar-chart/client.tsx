@@ -54,7 +54,7 @@ export default function BarChartDocs() {
       title="Bar Chart"
       slug="bar-chart"
       description="A single-series categorical bar chart. Each bar animates in from the baseline on mount with a staggered spring; hover any bar to lift it slightly and show a tooltip. Optional gridlines, value labels on top, per-bar color overrides, niced-up Y-axis max. Vertical or horizontal. Pure SVG — sharp at any size."
-      category="68 · data"
+      category="74 · data"
     >
       <DocsSection title="Monthly revenue ($)">
         <DemoCard className="min-h-[340px]">

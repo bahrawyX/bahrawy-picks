@@ -57,7 +57,7 @@ export default function ImageCropperDocs() {
       title="Image Cropper"
       slug="image-cropper"
       description="Canvas-based image cropper with drag-to-crop, zoom, rotation, flip, aspect ratio presets, and file output."
-      category="22 · DATA"
+      category="45 · DATA"
     >
       {/* ---- Free crop ---- */}
       <DocsSection title="Free crop (upload)">

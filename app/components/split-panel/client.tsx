@@ -87,7 +87,7 @@ export default function SplitPanelDocs() {
       title="Split Panel"
       slug="split-panel"
       description="Two panes with a draggable divider — the Linear/Notion editor pattern. Drag the divider to resize; cross min/max and the panel rubber-bands. Optional snap points magnet the divider toward specific sizes. Works horizontal or vertical. Keyboard: ←/→ (or ↑/↓) to nudge, Shift for big steps, Home/End to slam to min/max."
-      category="64 · layout"
+      category="71 · layout"
     >
       <DocsSection title="Horizontal (drag divider →)">
         <DemoCard className="min-h-[460px] overflow-hidden p-0">

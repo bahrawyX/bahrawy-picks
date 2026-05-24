@@ -48,7 +48,7 @@ export default function ColorPickerDocs() {
       title="Color Picker"
       slug="color-picker"
       description="Full-featured color picker with saturation canvas, hue slider, swatches palette, format switching, and color history."
-      category="21 · DATA"
+      category="44 · DATA"
     >
       {/* ---- Basic ---- */}
       <DocsSection title="Basic">

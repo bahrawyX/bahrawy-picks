@@ -50,7 +50,7 @@ export default function RevealOnScrollDocs() {
 
   return (
     <DocsPage
-      category="14 · motion"
+      category="38 · motion"
       title="Reveal on scroll"
       slug="reveal-on-scroll"
       description="Animate elements into view when they enter the viewport. Supports directional slides, stagger groups, and one-shot or repeating animations."

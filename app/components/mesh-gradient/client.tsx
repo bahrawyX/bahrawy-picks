@@ -21,7 +21,7 @@ export default function MeshGradientDocs() {
       title="Mesh Gradient"
       slug="mesh-gradient"
       description="A Stripe-homepage-style fluid mesh gradient rendered in a single OGL fragment shader. Five colored blobs drift around the canvas — each with a hand-tuned base position, per-blob orbit speed, and phase offset. Soft smoothstep falloff + chained mix() calls melt adjacent colors into each other rather than blocking out. Subtle film grain prevents banding on big flat blends."
-      category="58 · background"
+      category="05 · background"
     >
       <DocsSection title="Default (violet / cyan / pink / amber / green)">
         <DemoCard className="min-h-[480px] overflow-hidden p-0">

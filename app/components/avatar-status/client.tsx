@@ -21,7 +21,7 @@ export default function AvatarStatusDocs() {
       title="Avatar with Status"
       slug="avatar-status"
       description="The single primitive every chat, collab, or directory UI uses. Image avatar with a graceful initials fallback (initials are derived from the name; the gradient bg is hashed from the name so the same person always gets the same color across your app). Status dot in the corner with a ring matching the background for the 'punched out' look. Online state pulses subtly. Sizes sm/md/lg/xl."
-      category="67 · ui"
+      category="25 · ui"
     >
       <DocsSection title="All states + sizes">
         <DemoCard className="min-h-[260px]">

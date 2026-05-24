@@ -54,7 +54,7 @@ export default function StepperDocs() {
 
   return (
     <DocsPage
-      category="04 · navigation"
+      category="28 · navigation"
       title="Stepper"
       slug="stepper"
       description="Multi-step progress indicator with spring-animated state transitions. Horizontal or vertical, with completed / current / upcoming / error states."

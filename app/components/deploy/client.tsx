@@ -61,7 +61,7 @@ export default function DeployDocs() {
       title="Deploy"
       slug="deploy"
       description="A Vercel-style deployment card. Status drives the whole visual — Queued is idle, Building shows a shimmering scanline across the top with a live elapsed counter, Ready pulses softly with a check, Failed gives the card a brief shake. Inside: branch chip, commit message, short SHA, author avatar, environment chip."
-      category="51 · data"
+      category="16 · data"
     >
       <DocsSection title="Live cycle (queued → building → ready)">
         <DemoCard className="min-h-[200px]">

@@ -90,7 +90,7 @@ export default function AIChatDocs() {
       title="AI Chat"
       slug="ai-chat"
       description="A Claude/ChatGPT-style chat view. User messages right-aligned in soft dark bubbles; assistant messages left-aligned with an avatar and a brighter card. Any message flagged streaming reveals one character at a time with a blinking caret pinned to the write head. A thinking flag renders pulsing dots while the next response is being prepared."
-      category="52 · data"
+      category="11 · data"
     >
       <DocsSection title="Live (auto-scripted exchange)">
         <DemoCard className="min-h-[520px] items-start py-8">

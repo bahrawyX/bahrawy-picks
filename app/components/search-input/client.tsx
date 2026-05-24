@@ -17,7 +17,7 @@ export default function SearchInputDocs() {
       title="Search Input"
       slug="search-input"
       description="Standalone search field with an animated icon, clear button, debounced onSearch, and a loading spinner."
-      category="124 · form"
+      category="126 · form"
     >
       <DocsSection title="Live demo" description="Type to see the icon nudge and the clear button fade in.">
         <DemoCard className="min-h-[280px] items-stretch">

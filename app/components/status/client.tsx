@@ -41,7 +41,7 @@ export default function StatusDocs() {
       title="Status"
       slug="status"
       description="A Vercel/Atlassian Statuspage-style service status display. A big banner up top derives its state from the worst-off service (outage > maintenance > degraded > operational), and each service row shows its individual state plus an optional 90-day uptime ribbon."
-      category="46 · data"
+      category="68 · data"
     >
       <DocsSection title="All operational">
         <DemoCard className="min-h-[420px] items-start py-8">

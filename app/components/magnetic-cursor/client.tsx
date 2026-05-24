@@ -27,7 +27,7 @@ export default function MagneticCursorDocs() {
 
   return (
     <DocsPage
-      category="09 · cursor"
+      category="33 · cursor"
       title="Magnetic cursor"
       slug="magnetic-cursor"
       description="Wraps any element and makes it magnetically attract toward the cursor on hover. Spring-physics powered elastic snapping with configurable strength and radius."

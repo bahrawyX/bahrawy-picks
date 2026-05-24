@@ -60,7 +60,7 @@ export default function DateRangePickerDocs() {
 
   return (
     <DocsPage
-      category="07 · form"
+      category="31 · form"
       title="Date range picker"
       slug="date-range-picker"
       description="Two-month range picker built on react-day-picker v9 with Framer Motion animations. Includes preset shortcuts, popover on desktop, drawer on mobile."

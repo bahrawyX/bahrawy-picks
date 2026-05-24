@@ -46,7 +46,7 @@ export default function FloatingDockDocs() {
 
   return (
     <DocsPage
-      category="13 · navigation"
+      category="37 · navigation"
       title="Floating dock"
       slug="floating-dock"
       description="macOS-style dock that magnifies icons near the cursor. Framer Motion spring physics for smooth, GPU-accelerated scaling with tooltips."

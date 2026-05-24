@@ -20,7 +20,7 @@ export default function AuroraDocs() {
       title="Aurora"
       slug="aurora"
       description="A fullscreen OGL fragment shader that paints living aurora-style color bands. We layer four octaves of value-noise, warp the sampling coordinates with curl-ish offsets, then map the result through a 3-color gradient. A vertical mask fades the bottom out so the bands feel like they're hanging in the upper atmosphere."
-      category="57 · background"
+      category="03 · background"
     >
       <DocsSection title="Green → cyan → violet (classic)">
         <DemoCard className="min-h-[480px] overflow-hidden p-0">

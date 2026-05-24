@@ -112,7 +112,7 @@ export default function NotificationStackDocs() {
       title="Notification Stack"
       slug="notification-stack"
       description="iOS-style stacked notification cards. Only the top one is fully visible by default — the next 1–2 peek out behind it at slightly smaller scale. Hover (or focus) and the whole stack fans out into a list with spring physics; leave and they re-stack. Click the X on any card to dismiss it with a slide-out animation."
-      category="54 · data"
+      category="12 · data"
     >
       <DocsSection title="Live (hover to fan, click ✕ to dismiss)">
         <DemoCard className="min-h-[560px] items-start py-10">

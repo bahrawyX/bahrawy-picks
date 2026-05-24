@@ -307,7 +307,7 @@ export default function TimelineDocs() {
 
   return (
     <DocsPage
-      category="18 · data"
+      category="41 · data"
       title="Timeline"
       slug="timeline"
       description="Four variants: vertical, alternating, horizontal, and activity feed. Scroll-driven connector line, animated status dots, expandable events, and live feed support."

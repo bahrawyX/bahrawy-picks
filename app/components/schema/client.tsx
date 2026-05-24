@@ -90,7 +90,7 @@ export default function SchemaDocs() {
       title="Schema"
       slug="schema"
       description="A mini database ER diagram. Tables render as cards at the positions you specify; columns list their name + type with a key glyph on primary keys. SVG bezier lines draw themselves between every column that declares a foreign key and the row it points to — measured after mount, redrawn on resize. Hover a column to highlight its relationship."
-      category="50 · data"
+      category="14 · data"
     >
       <DocsSection title="Blog schema (4 tables, 4 FKs)">
         <DemoCard className="min-h-[520px] items-start py-8">

@@ -6,6 +6,148 @@ export interface RegistryItem {
 
 export const componentRegistry: RegistryItem[] = [
   {
+    title: 'Globe',
+    slug: 'globe',
+    description:
+      'GitHub-style WebGL globe (Three.js). Dotted sphere via InstancedMesh, arcs that arch ABOVE the surface, fresnel atmospheric glow, pulsing hub rings.',
+  },
+  {
+    title: 'Aurora',
+    slug: 'aurora',
+    description:
+      'Fullscreen OGL fragment shader. Four-octave value noise warped with curl-ish offsets, mapped through a 3-color gradient to paint living aurora bands.',
+  },
+  {
+    title: 'Nebula',
+    slug: 'nebula',
+    description:
+      'Cosmic dust cloud with stars (OGL shader). Two parallax layers of 4-octave fbm noise generate cloud density with depth; star field overlay twinkles via sin-based brightness variation.',
+  },
+  {
+    title: 'Mesh Gradient',
+    slug: 'mesh-gradient',
+    description:
+      'Stripe-homepage-style fluid mesh gradient (OGL shader). Five colored blobs drift around the canvas; soft falloff + chained mix() melt adjacent colors into each other.',
+  },
+  {
+    title: 'Hyperspeed',
+    slug: 'hyperspeed',
+    description:
+      'Fullscreen OGL fragment shader. Warp-speed star streaks: each pixel marches outward through layered seeded star fields. Single triangle, pure GLSL.',
+  },
+  {
+    title: 'Particle Field',
+    slug: 'particle-field',
+    description:
+      'WebGL particle field (Three.js). 8000 GL points in a grid; cursor raycasts onto a plane and pushes nearby particles outward with quadratic falloff. Single draw call, custom point shader.',
+  },
+  {
+    title: 'Spotlight Tour',
+    slug: 'spotlight-tour',
+    description:
+      'Interactive onboarding overlay. Dim the page, cut a soft-cornered glowing hole around the active target via the box-shadow technique, anchor a tooltip with prev/next/skip and step dots. Auto-measure, auto-scroll, auto-flip placement, keyboard nav.',
+  },
+  {
+    title: 'Live Cursors',
+    slug: 'live-cursors',
+    description:
+      'Figma/Vercel-style multiplayer cursors with colored chat bubbles. Spring-driven movement, optional typing dots, white bubbles that pop on a dark canvas.',
+  },
+  {
+    title: 'Cmd Bar 2.0',
+    slug: 'cmd-bar',
+    description:
+      'Raycast-style command palette with a right-side preview pane. Arrow-key through results and the preview swaps live to show context for the highlighted item.',
+  },
+  {
+    title: 'AI Chat',
+    slug: 'ai-chat',
+    description:
+      'Claude/ChatGPT-style chat view with streaming text (char-by-char with a blinking caret), a thinking 3-dot indicator, and user + assistant avatars.',
+  },
+  {
+    title: 'Notification Stack',
+    slug: 'notification-stack',
+    description:
+      'iOS-style stacked notifications. Cards peek behind the top one when collapsed; hover fans them out with spring physics; click ✕ to dismiss with a slide-out.',
+  },
+  {
+    title: 'Dynamic Island',
+    slug: 'dynamic-island',
+    description:
+      'iPhone-style notch that morphs smoothly between rich states — idle, ring, timer, record, music, maps, airdrop. Spring-physics layout animation.',
+  },
+  {
+    title: 'Schema',
+    slug: 'schema',
+    description:
+      'Mini database ER diagram. Tables render as cards with column rows; SVG bezier lines draw between every foreign-key column and the row it references.',
+  },
+  {
+    title: 'Terminal',
+    slug: 'terminal',
+    description:
+      'Live-looking terminal that auto-types a scripted sequence of commands + outputs. Mac-style header, blinking cursor, pause-on-hover, play/pause/replay controls, optional looping.',
+  },
+  {
+    title: 'Deploy',
+    slug: 'deploy',
+    description:
+      'Vercel-style deployment card. Status drives the visual: queued / building (shimmer + live elapsed counter) / ready (soft pulse) / failed (shake) / cancelled.',
+  },
+  {
+    title: 'Portal Scroll',
+    slug: 'portal-scroll',
+    description:
+      "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge until it fills the screen.",
+  },
+  {
+    title: 'Cinema Reel',
+    slug: 'cinema-reel',
+    description: 'A pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, and the rest dim — like a real projector.',
+  },
+  {
+    title: 'Vinyl Player',
+    slug: 'vinyl-player',
+    description: 'A turntable with a spinning vinyl record + tonearm that rotates to drop into each track. Per-track info panel + a live waveform highlights the active track. Pure scroll-driven motion.',
+  },
+  {
+    title: 'Drag to Confirm',
+    slug: 'drag-to-confirm',
+    description:
+      'iOS slide-to-unlock pattern. Draggable knob on a pill track with a color fill that grows with progress. Release past threshold confirms; release before springs back.',
+  },
+  {
+    title: 'App Shell',
+    slug: 'app-shell',
+    description:
+      'The layout primitive every SaaS starts with. Collapsible left rail (brand + sections + footer), optional topbar, main content. Mobile drawer, active highlight via layoutId.',
+  },
+  {
+    title: 'Browser Window',
+    slug: 'browser-window',
+    description:
+      'Mac-style window chrome wrapper. Traffic lights, optional back/forward/reload, URL bar with optional char-by-char animated typing. Dark + light variants.',
+  },
+  {
+    title: 'Code Window',
+    slug: 'code-window',
+    description:
+      'Static syntax-highlighted code in a mac-style window frame. Hand-rolled tokeniser, line numbers, copy button, optional line highlighting.',
+  },
+  {
+    title: 'Profile Card',
+    slug: 'profile-card',
+    description:
+      'GitHub-style hover preview card. Gradient header, avatar overlapping the seam, bio + meta + stats + primary/secondary actions.',
+  },
+  {
+    title: 'Avatar with Status',
+    slug: 'avatar-status',
+    description:
+      'Avatar primitive with initials fallback (deterministic color from name hash), corner status dot (online/away/busy/offline), and optional name + role. Online pulses.',
+  },
+  {
     title: 'Phone Input',
     slug: 'phone-input',
     description:
@@ -240,12 +382,6 @@ export const componentRegistry: RegistryItem[] = [
       'Sticky-stacked cards inspired by Olivier Larose — each card scales gently as the next slides up on top. Pure framer-motion useScroll, GPU-only transforms.',
   },
   {
-    title: 'Dynamic Island',
-    slug: 'dynamic-island',
-    description:
-      'iPhone-style notch that morphs smoothly between rich states — idle, ring, timer, record, music, maps, airdrop. Spring-physics layout animation.',
-  },
-  {
     title: 'Queue',
     slug: 'queue',
     description:
@@ -276,12 +412,6 @@ export const componentRegistry: RegistryItem[] = [
       'Install-command snippet with a tab bar (npm/pnpm/yarn/bun, or any tabs), spring-animated active pill, crossfaded code body, one-click copy with checkmark.',
   },
   {
-    title: 'Live Cursors',
-    slug: 'live-cursors',
-    description:
-      'Figma/Vercel-style multiplayer cursors with colored chat bubbles. Spring-driven movement, optional typing dots, white bubbles that pop on a dark canvas.',
-  },
-  {
     title: 'Status',
     slug: 'status',
     description:
@@ -298,72 +428,6 @@ export const componentRegistry: RegistryItem[] = [
     slug: 'logs',
     description:
       'Terminal-style log stream. Timestamp + colored level pill + optional [source] tag + message. Filter chips toggle visible levels, auto-scroll follows new entries.',
-  },
-  {
-    title: 'Terminal',
-    slug: 'terminal',
-    description:
-      'Live-looking terminal that auto-types a scripted sequence of commands + outputs. Mac-style header, blinking cursor, pause-on-hover, play/pause/replay controls, optional looping.',
-  },
-  {
-    title: 'Schema',
-    slug: 'schema',
-    description:
-      'Mini database ER diagram. Tables render as cards with column rows; SVG bezier lines draw between every foreign-key column and the row it references.',
-  },
-  {
-    title: 'Deploy',
-    slug: 'deploy',
-    description:
-      'Vercel-style deployment card. Status drives the visual: queued / building (shimmer + live elapsed counter) / ready (soft pulse) / failed (shake) / cancelled.',
-  },
-  {
-    title: 'AI Chat',
-    slug: 'ai-chat',
-    description:
-      'Claude/ChatGPT-style chat view with streaming text (char-by-char with a blinking caret), a thinking 3-dot indicator, and user + assistant avatars.',
-  },
-  {
-    title: 'Globe',
-    slug: 'globe',
-    description:
-      'GitHub-style WebGL globe (Three.js). Dotted sphere via InstancedMesh, arcs that arch ABOVE the surface, fresnel atmospheric glow, pulsing hub rings.',
-  },
-  {
-    title: 'Notification Stack',
-    slug: 'notification-stack',
-    description:
-      'iOS-style stacked notifications. Cards peek behind the top one when collapsed; hover fans them out with spring physics; click ✕ to dismiss with a slide-out.',
-  },
-  {
-    title: 'Particle Field',
-    slug: 'particle-field',
-    description:
-      'WebGL particle field (Three.js). 8000 GL points in a grid; cursor raycasts onto a plane and pushes nearby particles outward with quadratic falloff. Single draw call, custom point shader.',
-  },
-  {
-    title: 'Hyperspeed',
-    slug: 'hyperspeed',
-    description:
-      'Fullscreen OGL fragment shader. Warp-speed star streaks: each pixel marches outward through layered seeded star fields. Single triangle, pure GLSL.',
-  },
-  {
-    title: 'Aurora',
-    slug: 'aurora',
-    description:
-      'Fullscreen OGL fragment shader. Four-octave value noise warped with curl-ish offsets, mapped through a 3-color gradient to paint living aurora bands.',
-  },
-  {
-    title: 'Mesh Gradient',
-    slug: 'mesh-gradient',
-    description:
-      'Stripe-homepage-style fluid mesh gradient (OGL shader). Five colored blobs drift around the canvas; soft falloff + chained mix() melt adjacent colors into each other.',
-  },
-  {
-    title: 'Nebula',
-    slug: 'nebula',
-    description:
-      'Cosmic dust cloud with stars (OGL shader). Two parallax layers of 4-octave fbm noise generate cloud density with depth; star field overlay twinkles via sin-based brightness variation.',
   },
   {
     title: 'Accordion',
@@ -654,12 +718,6 @@ export const componentRegistry: RegistryItem[] = [
       'A pinned scroll section that pairs cursor magnetism with a scroll-driven wave. A canvas dot lattice repels around your cursor with a spring while a glowing accent line sweeps top-to-bottom; each headline locks in as the wave passes it, then a description and CTA fade in.',
   },
   {
-    title: 'Portal Scroll',
-    slug: 'portal-scroll',
-    description:
-      "Pinned scroll section built around one image: you're outside a moody scene, a circular portal opens in the centre and grows to consume the viewport, revealing a completely different scene inside. Cursor parallax inside the portal sells the depth, the inner headline arrives letter-by-letter, and a spinning conic-gradient rim with a scan dot rides the portal edge until it fills the screen.",
-  },
-  {
     title: 'Cursor Lens',
     slug: 'cursor-lens',
     description:
@@ -751,16 +809,6 @@ export const componentRegistry: RegistryItem[] = [
     description: 'A pinned scroll section built around a giant rotating dial. Chapters sit around the perimeter at evenly-spaced angles; scroll rotates the dial clockwise so each chapter passes under a top pointer, and the content panel on the right crossfades to that chapter.',
   },
   {
-    title: 'Cinema Reel',
-    slug: 'cinema-reel',
-    description: 'A pinned scroll section that unspools a horizontal film strip from vertical scroll. Reel hubs spin at the edges, sprocket holes line the top and bottom, the centered frame pops forward, and the rest dim — like a real projector.',
-  },
-  {
-    title: 'Vinyl Player',
-    slug: 'vinyl-player',
-    description: 'A turntable with a spinning vinyl record + tonearm that rotates to drop into each track. Per-track info panel + a live waveform highlights the active track. Pure scroll-driven motion.',
-  },
-  {
     title: 'Receipt Unroll',
     slug: 'receipt-unroll',
     description: "A paper receipt unrolls from a printer slot at the top as you scroll. Header, line items type in one at a time, subtotal/total animate at the bottom, scalloped edges + barcode at the very bottom.",
@@ -796,30 +844,6 @@ export const componentRegistry: RegistryItem[] = [
     description: 'A slider whose handle is an SVG smiley that morphs through expressions as you drag — eyes, brows, mouth, cheeks all interpolate. Track gradient shifts through a hue range in step.',
   },
   {
-    title: 'Spotlight Tour',
-    slug: 'spotlight-tour',
-    description:
-      'Interactive onboarding overlay. Dim the page, cut a soft-cornered glowing hole around the active target via the box-shadow technique, anchor a tooltip with prev/next/skip and step dots. Auto-measure, auto-scroll, auto-flip placement, keyboard nav.',
-  },
-  {
-    title: 'App Shell',
-    slug: 'app-shell',
-    description:
-      'The layout primitive every SaaS starts with. Collapsible left rail (brand + sections + footer), optional topbar, main content. Mobile drawer, active highlight via layoutId.',
-  },
-  {
-    title: 'Browser Window',
-    slug: 'browser-window',
-    description:
-      'Mac-style window chrome wrapper. Traffic lights, optional back/forward/reload, URL bar with optional char-by-char animated typing. Dark + light variants.',
-  },
-  {
-    title: 'Drag to Confirm',
-    slug: 'drag-to-confirm',
-    description:
-      'iOS slide-to-unlock pattern. Draggable knob on a pill track with a color fill that grows with progress. Release past threshold confirms; release before springs back.',
-  },
-  {
     title: 'Split Panel',
     slug: 'split-panel',
     description:
@@ -838,33 +862,9 @@ export const componentRegistry: RegistryItem[] = [
       'Real audio player around <audio>. Play/pause, time, volume + mute, and a waveform-as-seek-bar where bars left of the playhead glow accent-colored. Click to seek, drag to scrub.',
   },
   {
-    title: 'Avatar with Status',
-    slug: 'avatar-status',
-    description:
-      'Avatar primitive with initials fallback (deterministic color from name hash), corner status dot (online/away/busy/offline), and optional name + role. Online pulses.',
-  },
-  {
     title: 'Bar Chart',
     slug: 'bar-chart',
     description:
       'Single-series categorical bar chart. Animated entrance per bar, hover lift + tooltip, optional gridlines + value labels, per-bar colors, niced-up max. Vertical or horizontal.',
-  },
-  {
-    title: 'Profile Card',
-    slug: 'profile-card',
-    description:
-      'GitHub-style hover preview card. Gradient header, avatar overlapping the seam, bio + meta + stats + primary/secondary actions.',
-  },
-  {
-    title: 'Code Window',
-    slug: 'code-window',
-    description:
-      'Static syntax-highlighted code in a mac-style window frame. Hand-rolled tokeniser, line numbers, copy button, optional line highlighting.',
-  },
-  {
-    title: 'Cmd Bar 2.0',
-    slug: 'cmd-bar',
-    description:
-      'Raycast-style command palette with a right-side preview pane. Arrow-key through results and the preview swaps live to show context for the highlighted item.',
   },
 ]

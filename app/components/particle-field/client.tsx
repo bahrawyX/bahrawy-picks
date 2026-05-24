@@ -21,7 +21,7 @@ export default function ParticleFieldDocs() {
       title="Particle Field"
       slug="particle-field"
       description="A real WebGL particle field rendered with Three.js. 8000 GL points sit in a grid; each frame the cursor is raycast onto a plane and any particle inside the influence radius gets pushed outward in proportion to (1 − dist/radius)². Particles spring back when the cursor leaves, with a tiny continuous Z-wave so the field stays alive on idle. Single draw call, custom point shader, additive blending."
-      category="55 · background"
+      category="07 · background"
     >
       <DocsSection title="Move your cursor over the field">
         <DemoCard className="min-h-[520px] overflow-hidden p-0">

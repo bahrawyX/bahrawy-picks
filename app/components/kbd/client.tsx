@@ -21,7 +21,7 @@ export default function KbdDocs() {
       title="Kbd"
       slug="kbd"
       description="Keyboard shortcut display with automatic platform detection and Mac/Windows symbol mapping."
-      category="35 · UI"
+      category="58 · UI"
     >
       {/* Basic */}
       <DocsSection title="Basic shortcuts">

@@ -26,7 +26,7 @@ export default function CountUpDocs() {
       title="Count Up"
       slug="count-up"
       description="Animated number counter with spring physics, in-view triggering, and Intl.NumberFormat formatting."
-      category="34 · MOTION"
+      category="57 · MOTION"
     >
       {/* Basic */}
       <DocsSection title="Basic">

@@ -199,7 +199,7 @@ export default function AutocompleteDocs() {
 
   return (
     <DocsPage
-      category="17 · form"
+      category="40 · form"
       title="Autocomplete"
       slug="autocomplete"
       description="Static, async, and creatable combobox with single and multi-select, debounced search, and chip UI. Built on shadcn Popover + Command."

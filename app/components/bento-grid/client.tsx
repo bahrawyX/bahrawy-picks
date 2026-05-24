@@ -36,7 +36,7 @@ export default function BentoGridDocs() {
 
   return (
     <DocsPage
-      category="11 · layout"
+      category="35 · layout"
       title="Bento grid"
       slug="bento-grid"
       description="Responsive bento-style grid layout with animated cards that can span multiple columns and rows. Framer Motion entrance animations included."

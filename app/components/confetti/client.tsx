@@ -49,7 +49,7 @@ export default function ConfettiDocs() {
       title="Confetti"
       slug="confetti"
       description="Canvas-based confetti particle system with configurable colors, gravity, spread, and imperative fire() API."
-      category="33 · MOTION"
+      category="56 · MOTION"
     >
       {/* Single fullscreen canvas for the whole page */}
       <ConfettiCanvas ref={ref} />

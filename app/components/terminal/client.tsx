@@ -59,7 +59,7 @@ export default function TerminalDocs() {
       title="Terminal"
       slug="terminal"
       description="A live-looking terminal that auto-types a scripted sequence — command, output, pause, command… — like the demo terminals on the Vercel and Stripe homepages. Blinking cursor, pause-on-hover so visitors can read mid-stream, and an optional play / pause / replay control in the title bar."
-      category="49 · data"
+      category="15 · data"
     >
       <DocsSection title="Install + build + deploy (looping)">
         <DemoCard className="min-h-[420px] items-start py-8">

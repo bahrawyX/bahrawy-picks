@@ -27,7 +27,7 @@ export default function AudioPlayerDocs() {
       title="Audio Player"
       slug="audio-player"
       description="A real audio player built around <audio>. Play/pause, current/total time, volume + mute, and the signature: a waveform-as-seek-bar where the bars left of the playhead glow accent-colored and the rest stay muted. Click any bar to seek; drag to scrub. If you pass `waveform` (pre-computed amplitudes) it uses those; otherwise it generates a deterministic synthetic waveform from the src URL so the same track always looks the same."
-      category="66 · ui"
+      category="73 · ui"
     >
       <DocsSection title="Default (violet, synthetic waveform)">
         <DemoCard className="min-h-[220px]">

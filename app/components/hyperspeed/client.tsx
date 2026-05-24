@@ -21,7 +21,7 @@ export default function HyperspeedDocs() {
       title="Hyperspeed"
       slug="hyperspeed"
       description="A fullscreen OGL fragment shader that simulates Star-Wars-style warp-speed star streaks. Each pixel marches outward from a central focal point through layered seeded star fields, accumulating light proportional to inverse distance from the streak axis. Pure shader — no geometry. The whole thing runs in a single triangle."
-      category="56 · background"
+      category="06 · background"
     >
       <DocsSection title="Warp 1">
         <DemoCard className="min-h-[480px] overflow-hidden p-0">

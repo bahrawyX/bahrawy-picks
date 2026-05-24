@@ -14,7 +14,7 @@ export default function StatCardDocs() {
       title="Stat Card"
       slug="stat-card"
       description="Compact dashboard card: label + spring-animated number + delta badge + inline sparkline that draws itself on mount."
-      category="119 · data"
+      category="121 · data"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[260px] items-stretch">

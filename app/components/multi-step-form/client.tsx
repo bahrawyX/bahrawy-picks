@@ -201,7 +201,7 @@ export default function MultiStepFormDocs() {
 
   return (
     <DocsPage
-      category="06 · form"
+      category="30 · form"
       title="Multi-step form"
       slug="multi-step-form"
       description="A wizard built on React Hook Form with per-step Zod validation. Slides between steps with Framer Motion and persists field values when navigating back."

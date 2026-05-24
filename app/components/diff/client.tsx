@@ -48,7 +48,7 @@ export default function DiffDocs() {
       title="Diff"
       slug="diff"
       description="A GitHub-style unified code diff. File header with the filename, optional language chip, and +N/−N stats. Body is monospace lines with old + new line numbers, a ± gutter glyph, and tinted row backgrounds — red for removed, green for added, neutral for context."
-      category="47 · data"
+      category="69 · data"
     >
       <DocsSection title="TypeScript diff">
         <DemoCard className="min-h-[300px]">

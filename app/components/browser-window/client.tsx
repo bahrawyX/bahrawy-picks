@@ -67,7 +67,7 @@ export default function BrowserWindowDocs() {
       title="Browser Window"
       slug="browser-window"
       description="The mac-window-chrome wrapper every product landing page needs to frame a screenshot. Traffic lights, optional back/forward/reload buttons, a URL bar with a lock icon, and your content inside. Pass animateUrl and the URL types itself in character-by-character with a blinking caret — perfect for a 'watch how it works' hero demo."
-      category="62 · decoration"
+      category="22 · decoration"
     >
       <DocsSection title="Dark — animated URL">
         <DemoCard className="min-h-[520px]">

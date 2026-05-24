@@ -10,7 +10,7 @@ export default function NeonPulseDocs() {
       title="Neon Pulse"
       slug="neon-pulse"
       description="A piece of text that wears a neon sign's glow: layered text-shadows at increasing radii, a gentle breathing pulse on opacity, and an occasional flicker that snaps brightness down for one beat."
-      category="145 · text effect"
+      category="146 · text effect"
     >
       <DocsSection title="Cyan">
         <DemoCard className="min-h-[220px]">

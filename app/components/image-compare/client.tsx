@@ -30,7 +30,7 @@ export default function ImageCompareDocs() {
       title="Image Compare"
       slug="image-compare"
       description="The drag-to-wipe before/after slider every redesign post uses. Two images stacked; the top image is clipped via CSS clip-path at the handle's position so the bottom one shows through. Click or drag anywhere in the frame to move the handle. Keyboard support: ←/→ nudge by 4%, Shift for 16%, Home/End slam to 0/100. Horizontal or vertical."
-      category="65 · decoration"
+      category="72 · decoration"
     >
       <DocsSection title="Color grade — desaturated → full color">
         <DemoCard className="min-h-[460px]">

@@ -101,7 +101,7 @@ export default function CodeWindowDocs() {
       title="Code Window"
       slug="code-window"
       description="Static syntax-highlighted code in a mac-style window frame. Different from Code Editor (which is interactive Monaco) — this is a read-only 'screenshot in a window' for landing pages, docs, and marketing content. Traffic lights + filename + language chip in the chrome, line numbers + copy button in the body. Highlighting is a lightweight hand-rolled tokeniser for JS/TS/TSX/CSS/JSON/Bash — no Shiki, no Prism, no build-step dependency."
-      category="70 · decoration"
+      category="23 · decoration"
     >
       <DocsSection title="TypeScript (with line highlights)">
         <DemoCard className="min-h-[520px]">

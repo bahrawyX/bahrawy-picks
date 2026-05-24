@@ -37,7 +37,7 @@ export default function SpotlightCardDocs() {
 
   return (
     <DocsPage
-      category="10 · card"
+      category="34 · card"
       title="Spotlight card"
       slug="spotlight-card"
       description="A card with a radial spotlight glow that follows the cursor. Zero dependencies — pure CSS radial-gradient repositioned on mouse move."

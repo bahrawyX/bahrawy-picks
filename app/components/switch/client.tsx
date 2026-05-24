@@ -41,7 +41,7 @@ const [enabled, setEnabled] = useState(false)
       title="Switch"
       slug="switch"
       description="An animated toggle switch with a spring thumb. Three sizes, controlled or uncontrolled, optional label."
-      category="94 · form"
+      category="96 · form"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[260px]">

@@ -221,7 +221,7 @@ export default function CmdBarDocs() {
       title="Cmd Bar 2.0"
       slug="cmd-bar"
       description="A Raycast-style command palette with a right-side preview pane. As you arrow-key through results, the preview swaps live to show context for the highlighted item — description, metadata, even mini-renders. Two-column layout, portal-mounted overlay, ↑↓ navigation, Enter to fire, Esc to close. The richer companion to the existing flat Command Palette."
-      category="71 · overlay"
+      category="10 · overlay"
     >
       <DocsSection title="Live demo (open with the button)">
         <DemoCard className="min-h-[260px]">

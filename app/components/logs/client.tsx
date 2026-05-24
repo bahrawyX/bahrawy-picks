@@ -68,7 +68,7 @@ export default function LogsDocs() {
       title="Logs"
       slug="logs"
       description="A terminal-style log stream. Each entry is a monospace row with a faint timestamp, a colored level pill, an optional [source] tag, and the message body. Filter chips at the top toggle which levels are visible; auto-scroll keeps the most recent line in view as new entries arrive."
-      category="48 · data"
+      category="70 · data"
     >
       <DocsSection title="Live (entries stream in)">
         <DemoCard className="min-h-[480px] items-start py-8">

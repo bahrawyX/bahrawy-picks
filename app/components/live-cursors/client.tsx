@@ -102,7 +102,7 @@ export default function LiveCursorsDocs() {
       title="Live Cursors"
       slug="live-cursors"
       description="Figma/Vercel-style multiplayer cursors with chat bubbles. Each cursor is a colored arrow that springs to its (x, y) target, with an optional bubble showing the user's @handle and message. A typing flag swaps the message body for three pulsing dots so you can show 'someone is typing' without a message yet."
-      category="45 · cursor"
+      category="09 · cursor"
     >
       <DocsSection title="Live demo">
         <DemoCard className="relative min-h-[340px] overflow-hidden p-0">

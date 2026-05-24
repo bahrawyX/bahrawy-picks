@@ -59,7 +59,7 @@ export default function GlobeDocs() {
       title="Globe"
       slug="globe"
       description="A pure-SVG rotating 3D sphere with great-circle arc lines between geographic points. Each frame, every point's (lat, lng) is mapped to a unit sphere, rotated by the current spin angle plus a small tilt, and orthographically projected — points on the far side fade out; arcs sample along the great-circle and break when they cross the horizon. Hubs pulse softly."
-      category="53 · data"
+      category="02 · data"
     >
       <DocsSection title="Edge network">
         <DemoCard className="min-h-[520px]">

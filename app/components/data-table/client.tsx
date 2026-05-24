@@ -245,7 +245,7 @@ export default function DataTableDocs() {
 
   return (
     <DocsPage
-      category="16 · data"
+      category="39 · data"
       title="Data table"
       slug="data-table"
       description="Production-grade data table with sorting, filtering, pagination, row selection, virtualization, and column resizing. Built on TanStack Table."

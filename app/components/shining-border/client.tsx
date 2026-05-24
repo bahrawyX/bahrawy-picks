@@ -75,7 +75,7 @@ function SimpleCard({ title, subtitle }: { title: string; subtitle?: string }) {
 export default function ShiningBorderDocs() {
   return (
     <DocsPage
-      category="39 · decoration"
+      category="62 · decoration"
       title="Shining border"
       slug="shining-border"
       description="A wrapper component that adds an animated glowing beam traveling around its border. Uses a conic gradient rotated continuously via Framer Motion."

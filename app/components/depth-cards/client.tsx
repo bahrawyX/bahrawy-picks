@@ -91,7 +91,7 @@ export default function DepthCardsDocs() {
       title="Depth Cards"
       slug="depth-cards"
       description="A 3D diorama. Layered cards sit at different Z depths inside a perspective container; moving your cursor over the scene tilts the camera so the cards parallax against each other. Spring-eased tilt, per-card counter-parallax, depth-falloff glow halos — look-around at depth, no scroll required."
-      category="140 · interactive"
+      category="141 · interactive"
     >
       <DocsSection
         title="Live demo"

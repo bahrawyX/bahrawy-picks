@@ -37,7 +37,7 @@ export default function NumberInputDocs() {
 
   return (
     <DocsPage
-      category="05 · form"
+      category="29 · form"
       title="Number input"
       slug="number-input"
       description="Stepper-flanked numeric input with +/- buttons, long-press to spin, arrow-key support (shift x 10), and Intl.NumberFormat blur formatting."

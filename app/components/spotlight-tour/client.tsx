@@ -43,7 +43,7 @@ export default function SpotlightTourDocs() {
       title="Spotlight Tour"
       slug="spotlight-tour"
       description="Interactive onboarding overlay. Dim the page, cut a soft-cornered glowing hole around the active target via the box-shadow trick (`box-shadow: 0 0 0 9999px rgba(0,0,0,.78)` on a rect sized to the target), anchor a tooltip with prev/next/skip/step-dots. Targets accept either a ref or a CSS selector. Auto-measures, auto-scroll-into-view, auto-flips tooltip placement based on viewport room. Keyboard nav: ←/→ between steps, Esc to close."
-      category="60 · overlay"
+      category="08 · overlay"
     >
       <DocsSection title="Tour a sample toolbar">
         <DemoCard className="min-h-[360px]">

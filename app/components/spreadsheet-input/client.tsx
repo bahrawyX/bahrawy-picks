@@ -136,7 +136,7 @@ export default function SpreadsheetInputDocs() {
       title="Spreadsheet Input"
       slug="spreadsheet-input"
       description="Mini Excel-style editable grid with cell types, formulas, virtualization, CSV import/export, and clipboard support."
-      category="37 · FORM"
+      category="60 · FORM"
     >
       {/* Basic */}
       <DocsSection title="Basic">

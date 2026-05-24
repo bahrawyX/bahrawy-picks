@@ -37,7 +37,7 @@ export default function ProfileCardDocs() {
       title="Profile Card"
       slug="profile-card"
       description="The hover-or-click preview every social or collab UI shows when you tap an avatar — GitHub-style. Gradient header strip → avatar overlapping the seam → name + handle + role → bio → meta rows → stats → primary action + secondary action. Status dot on the avatar uses the same online/away/busy/offline logic as <AvatarStatus />."
-      category="69 · card"
+      category="24 · card"
     >
       <DocsSection title="Full card with stats">
         <DemoCard className="min-h-[520px]">

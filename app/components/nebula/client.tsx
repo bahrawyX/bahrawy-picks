@@ -21,7 +21,7 @@ export default function NebulaDocs() {
       title="Nebula"
       slug="nebula"
       description="A cosmic dust cloud with stars, rendered in a single OGL fragment shader. Two parallax layers of 4-octave fbm noise — each at a different scale and drift speed — generate cloud density with real depth; the deeper layer moves slower. Density maps through a 3-color gradient. A hash-on-grid-cells star field twinkles on top with sin-based brightness variation."
-      category="59 · background"
+      category="04 · background"
     >
       <DocsSection title="Default (deep indigo → violet → pink)">
         <DemoCard className="min-h-[480px] overflow-hidden p-0">

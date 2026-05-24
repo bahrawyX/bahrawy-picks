@@ -30,7 +30,7 @@ export default function DragToConfirmDocs() {
       title="Drag to Confirm"
       slug="drag-to-confirm"
       description="The iOS slide-to-unlock pattern, modernised. A knob sits at the left of a pill track; drag it right and a colored fill grows behind. Release past the threshold (default 90%) → fires onConfirm + locks to a confirmed state with a check. Release before → springs back to start. Used for destructive or payment actions where a single click feels too easy — the gesture forces intent."
-      category="63 · form"
+      category="20 · form"
     >
       <DocsSection title="Default (emerald) — auto-resets so you can keep trying">
         <DemoCard className="min-h-[200px]">
