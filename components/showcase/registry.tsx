@@ -1672,6 +1672,33 @@ export const registry: RegistryEntry[] = [
     category: 'form',
     dependencies: [],
   },
+  {
+    kind: 'docs',
+    id: '160',
+    slug: 'sidebar-nav',
+    name: 'Sidebar Nav',
+    description: 'Apple-style app sidebar navigation primitive. Vibrancy panel, grouped + collapsible sections, animated active-item pill via layoutId, icon + label + optional badge, optional sticky footer.',
+    category: 'navigation',
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '161',
+    slug: 'image-lightbox',
+    name: 'Image Lightbox',
+    description: 'Click-to-zoom gallery with vibrancy backdrop, prev/next arrow + on-screen controls, arrow-key navigation, swipe-to-navigate on touch, optional caption pill, counter chip, and Esc to close.',
+    category: 'overlay',
+    dependencies: ['framer-motion', 'lucide-react'],
+  },
+  {
+    kind: 'docs',
+    id: '162',
+    slug: 'floating-toolbar',
+    name: 'Floating Toolbar',
+    description: 'Notion/Linear-style selection action bar. Highlight text → vibrancy pill toolbar floats above the selection (auto-flips below if no room), each action fires with the selected text + rect.',
+    category: 'overlay',
+    dependencies: ['framer-motion'],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

@@ -1,13 +1,14 @@
 'use client'
 
 /**
- * <CodeWindow />
+ * <CodeWindow />  —  Apple Design System polish
  *
- * Static syntax-highlighted code inside a mac-style window frame.
+ * Static syntax-highlighted code inside an Apple-styled window frame.
  * Different from CodeEditor (which is interactive Monaco) — this is a
  * read-only "screenshot in a window" for landing pages, docs, and
- * marketing content. Traffic lights + filename + language chip in the
- * chrome; line numbers + a copy button in the body. Highlighting is a
+ * marketing content. Vibrancy traffic lights, generous 20px corner
+ * radius, multi-layer shadow, glassy chrome with backdrop-blur,
+ * pill copy button with 0.96 press feedback. Highlighting is a
  * lightweight hand-rolled tokeniser for common JS/TS/TSX/CSS/JSON
  * idioms — no Shiki, no Prism, no build-step dependency.
  *
@@ -35,16 +36,18 @@ export interface CodeWindowProps {
   showLineNumbers?: boolean
   /** Highlight specific line ranges (e.g. [[3, 5], 8] — both single + range). */
   highlight?: (number | [number, number])[]
-  /** Accent for highlighted lines. Default '#A78BFA'. */
+  /** Accent for highlighted lines. Default '#5E5CE6' (SF indigo). */
   highlightAccent?: string
   /** Hide the mac chrome (just code in a card). Default false. */
   bare?: boolean
   className?: string
 }
 
+// Apple-style spring
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
+
 // ---------------------------------------------------------------------------
 // Tokeniser — small, fast, good enough for marketing snippets.
-// Order matters: more specific patterns first.
 // ---------------------------------------------------------------------------
 
 type TokenKind =
@@ -58,16 +61,17 @@ type TokenKind =
   | 'punct'
   | 'text'
 
+// Xcode Dark inspired palette — tuned for SF Mono on dark
 const COLORS: Record<TokenKind, string> = {
   comment: 'text-zinc-500',
-  string: 'text-emerald-300',
-  number: 'text-amber-300',
-  keyword: 'text-violet-300',
-  builtin: 'text-cyan-300',
-  tag: 'text-rose-300',
-  attr: 'text-amber-200',
+  string: 'text-[#FF8170]',       // SF red-orange
+  number: 'text-[#D9C97E]',       // muted yellow
+  keyword: 'text-[#FC5FA3]',      // SF pink
+  builtin: 'text-[#5DD8FF]',      // SF cyan
+  tag: 'text-[#67B7A4]',          // SF teal
+  attr: 'text-[#41A1C0]',         // SF blue-cyan
   punct: 'text-white/45',
-  text: 'text-white/85',
+  text: 'text-[#E5E5EA]',
 }
 
 const JS_KEYWORDS = new Set([
@@ -176,7 +180,6 @@ function tokenizeCssLine(line: string): Token[] {
   if (line.trim().startsWith('/*') || line.trim().startsWith('//')) {
     return [{ kind: 'comment', value: line }]
   }
-  // selector { ... }
   const out: Token[] = []
   const re = /([\w-]+)\s*:|([\w-]+)|([{}:;,()])|("[^"]*"|'[^']*')|(\d+(?:\.\d+)?(?:px|rem|em|%|s|ms|deg|vh|vw)?)|(#[\dA-Fa-f]+)/g
   let lastIdx = 0
@@ -203,7 +206,6 @@ function tokenizeJsonLine(line: string): Token[] {
   while ((m = re.exec(line)) !== null) {
     if (m.index > lastIdx) out.push({ kind: 'text', value: line.slice(lastIdx, m.index) })
     if (m[1]) {
-      // Key vs string value: if followed by colon, treat as attr.
       out.push({ kind: m[2] ? 'attr' : 'string', value: m[1] })
       if (m[2]) out.push({ kind: 'punct', value: m[2] })
     } else if (m[3]) out.push({ kind: 'number', value: m[3] })
@@ -276,11 +278,12 @@ export function CodeWindow({
   showCopy = true,
   showLineNumbers = true,
   highlight,
-  highlightAccent = '#A78BFA',
+  highlightAccent = '#5E5CE6',
   bare = false,
   className,
 }: CodeWindowProps) {
   const [copied, setCopied] = React.useState(false)
+  const [trafficHover, setTrafficHover] = React.useState(false)
   const lines = code.split('\n')
 
   const onCopy = async () => {
@@ -294,67 +297,113 @@ export function CodeWindow({
   }
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={APPLE_SPRING}
       className={cn(
-        'overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0c] shadow-2xl shadow-black/40',
+        'relative isolate overflow-hidden rounded-[20px] border border-white/[0.08]',
+        // Layered vibrancy background
+        'bg-[linear-gradient(180deg,rgba(28,28,30,0.97)_0%,rgba(18,18,20,0.99)_100%)]',
         className,
       )}
+      style={{
+        // Apple multi-layer shadow: hairline + close drop + ambient diffusion
+        boxShadow: `
+          0 1px 0 rgba(255,255,255,0.06) inset,
+          0 0 0 0.5px rgba(255,255,255,0.05),
+          0 10px 28px -10px rgba(0,0,0,0.55),
+          0 28px 64px -18px rgba(0,0,0,0.45)
+        `,
+      }}
     >
-      {/* Chrome */}
+      {/* Chrome — macOS Big Sur / Sequoia style */}
       {!bare && (
-        <header className="flex items-center gap-3 border-b border-white/[0.06] bg-white/[0.02] px-3 py-2">
-          <div className="flex shrink-0 items-center gap-1.5">
-            <span className="block h-3 w-3 rounded-full bg-rose-400/90" />
-            <span className="block h-3 w-3 rounded-full bg-amber-400/90" />
-            <span className="block h-3 w-3 rounded-full bg-emerald-400/90" />
+        <header
+          className="flex items-center gap-3 border-b border-white/[0.06] px-3.5 py-2.5 backdrop-blur-xl"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(46,46,50,0.5) 0%, rgba(32,32,36,0.5) 100%)',
+          }}
+        >
+          {/* Traffic lights with vibrancy + hover glyphs */}
+          <div
+            className="flex shrink-0 items-center gap-2"
+            onMouseEnter={() => setTrafficHover(true)}
+            onMouseLeave={() => setTrafficHover(false)}
+          >
+            {[
+              { bg: '#FF5F57', ring: '#E0443E', glyph: '×' },
+              { bg: '#FEBC2E', ring: '#DEA123', glyph: '−' },
+              { bg: '#28C840', ring: '#1AAB29', glyph: '+' },
+            ].map((l, i) => (
+              <span
+                key={i}
+                className="relative inline-flex h-3 w-3 items-center justify-center rounded-full"
+                style={{
+                  background: `radial-gradient(circle at 30% 30%, ${l.bg} 0%, ${l.ring} 100%)`,
+                  boxShadow: `0 0 0 0.5px ${l.ring}, 0 1px 1px rgba(0,0,0,0.3)`,
+                }}
+              >
+                {trafficHover && (
+                  <span className="text-[8px] font-bold leading-none text-black/55">
+                    {l.glyph}
+                  </span>
+                )}
+              </span>
+            ))}
           </div>
           {filename && (
-            <code className="min-w-0 flex-1 truncate font-mono text-[11.5px] tracking-tight text-white/70">
+            <code className="min-w-0 flex-1 truncate text-center font-mono text-[11.5px] font-medium tracking-tight text-white/55">
               {filename}
             </code>
           )}
-          <span className="hidden shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/55 sm:inline">
-            {language}
-          </span>
-          {showCopy && (
-            <button
-              type="button"
-              onClick={onCopy}
-              aria-label="Copy code"
-              className="inline-flex h-6 w-6 items-center justify-center rounded-md text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {copied ? (
-                  <motion.span
-                    key="check"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.16 }}
-                    className="text-emerald-300"
-                  >
-                    <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="copy"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.16 }}
-                  >
-                    <Copy className="h-3.5 w-3.5" strokeWidth={2} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
-          )}
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.12em] text-white/55 sm:inline">
+              {language}
+            </span>
+            {showCopy && (
+              <motion.button
+                type="button"
+                onClick={onCopy}
+                whileTap={{ scale: 0.92 }}
+                transition={APPLE_SPRING}
+                aria-label="Copy code"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/[0.06] bg-white/[0.04] text-white/55 backdrop-blur transition-colors hover:bg-white/[0.08] hover:text-white"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {copied ? (
+                    <motion.span
+                      key="check"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.5, opacity: 0 }}
+                      transition={APPLE_SPRING}
+                      className="text-[#30D158]"
+                    >
+                      <Check className="h-3.5 w-3.5" strokeWidth={2.75} />
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="copy"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.5, opacity: 0 }}
+                      transition={APPLE_SPRING}
+                    >
+                      <Copy className="h-3.5 w-3.5" strokeWidth={2} />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            )}
+          </div>
         </header>
       )}
 
       {/* Body */}
       <div className="overflow-x-auto">
-        <pre className="m-0 font-mono text-[12.5px] leading-relaxed">
+        <pre className="m-0 py-2 font-mono text-[12.5px] leading-[1.65]">
           {lines.map((line, i) => {
             const lineNum = i + 1
             const hit = isHighlighted(lineNum, highlight)
@@ -366,7 +415,7 @@ export function CodeWindow({
                 style={
                   hit
                     ? {
-                        background: `linear-gradient(90deg, ${highlightAccent}1c 0%, ${highlightAccent}0a 60%, transparent 100%)`,
+                        background: `linear-gradient(90deg, ${highlightAccent}26 0%, ${highlightAccent}0c 60%, transparent 100%)`,
                         boxShadow: `inset 2px 0 0 ${highlightAccent}`,
                       }
                     : undefined
@@ -376,7 +425,7 @@ export function CodeWindow({
                   <span
                     aria-hidden
                     className={cn(
-                      'sticky left-0 inline-block w-10 shrink-0 select-none border-r border-white/[0.04] px-2 text-right font-mono text-[11px] tabular-nums',
+                      'sticky left-0 inline-block w-11 shrink-0 select-none px-2.5 text-right font-mono text-[11px] tabular-nums',
                       hit ? 'text-white/55' : 'text-white/25',
                     )}
                   >
@@ -399,6 +448,6 @@ export function CodeWindow({
           })}
         </pre>
       </div>
-    </div>
+    </motion.div>
   )
 }

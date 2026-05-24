@@ -578,3 +578,16 @@ export type { CodeWindowProps, CodeLanguage } from './code-window'
 export { CmdBar } from './cmd-bar'
 export type { CmdBarProps, CmdBarGroup, CmdBarItem } from './cmd-bar'
 
+export { SidebarNav } from './sidebar-nav'
+export type {
+  SidebarNavProps,
+  SidebarNavItem,
+  SidebarNavSection,
+} from './sidebar-nav'
+
+export { ImageLightbox } from './image-lightbox'
+export type { ImageLightboxProps, LightboxImage } from './image-lightbox'
+
+export { FloatingToolbar } from './floating-toolbar'
+export type { FloatingToolbarProps, FloatingToolbarAction } from './floating-toolbar'
+

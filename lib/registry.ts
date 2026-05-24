@@ -867,4 +867,22 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Single-series categorical bar chart. Animated entrance per bar, hover lift + tooltip, optional gridlines + value labels, per-bar colors, niced-up max. Vertical or horizontal.',
   },
+  {
+    title: 'Sidebar Nav',
+    slug: 'sidebar-nav',
+    description:
+      'Apple-style app sidebar navigation primitive. Vibrancy panel, grouped + collapsible sections, animated active-item pill via layoutId, icon + label + optional badge, optional sticky footer.',
+  },
+  {
+    title: 'Image Lightbox',
+    slug: 'image-lightbox',
+    description:
+      'Click-to-zoom gallery with vibrancy backdrop, prev/next arrow + on-screen controls, arrow-key navigation, swipe-to-navigate on touch, optional caption pill, counter chip, and Esc to close.',
+  },
+  {
+    title: 'Floating Toolbar',
+    slug: 'floating-toolbar',
+    description:
+      'Notion/Linear-style selection action bar. Highlight text → vibrancy pill toolbar floats above the selection (auto-flips below if no room), each action fires with the selected text + rect.',
+  },
 ]

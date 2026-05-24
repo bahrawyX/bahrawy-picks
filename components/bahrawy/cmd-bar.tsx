@@ -1,12 +1,13 @@
 'use client'
 
 /**
- * <CmdBar />  (Raycast-style command palette)
+ * <CmdBar />  (Raycast-style command palette — Apple Design System polish)
  *
  * A two-column layout with a filterable list on the left and a live
- * preview pane on the right. As the user arrow-keys through results,
- * the preview swaps to show context for the highlighted item — its
- * description, metadata, and any custom preview node you pass in.
+ * preview pane on the right. Apple-y polish: vibrancy `backdrop-blur-2xl`
+ * panel, 24px corner radius, multi-layer shadow, SF indigo accent,
+ * Apple spring physics for layout transitions, pill kbd hints,
+ * tap-scale on items.
  *
  * Open / close, search input, ↑↓ navigation, Enter to fire the
  * item's onSelect, Esc to close. Portal-mounted so it overlays
@@ -50,9 +51,13 @@ export interface CmdBarProps {
   placeholder?: string
   /** Empty-state copy. */
   emptyMessage?: React.ReactNode
-  /** Accent color for the highlighted-row pill + Enter chip. */
+  /** Accent color for the highlighted-row pill + Enter chip. Default SF indigo. */
   accent?: string
 }
+
+// Apple-y spring (snappy panel transitions)
+const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
+const APPLE_LAYOUT_SPRING = { type: 'spring' as const, stiffness: 480, damping: 36 }
 
 function strFromNode(n: React.ReactNode): string {
   if (n == null || typeof n === 'boolean') return ''
@@ -70,7 +75,7 @@ export function CmdBar({
   groups,
   placeholder = 'Search commands…',
   emptyMessage = 'No matches.',
-  accent = '#A78BFA',
+  accent = '#5E5CE6',
 }: CmdBarProps) {
   const [query, setQuery] = React.useState('')
   const [activeIdx, setActiveIdx] = React.useState(0)
@@ -166,49 +171,71 @@ export function CmdBar({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[150] flex items-start justify-center px-4 pt-[10vh] sm:pt-[14vh]"
         >
+          {/* Vibrancy scrim — heavy blur like iOS notification shade */}
           <button
             type="button"
             aria-label="Close"
             onClick={() => onOpenChange(false)}
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 backdrop-blur-2xl"
+            style={{
+              background:
+                'radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.78) 100%)',
+            }}
           />
 
           <motion.div
             key="cmdbar-panel"
             role="dialog"
             aria-modal="true"
-            initial={{ y: -10, opacity: 0, scale: 0.97 }}
+            initial={{ y: -16, opacity: 0, scale: 0.96 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: -6, opacity: 0, scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-            className="relative grid w-full max-w-3xl grid-cols-[1fr_280px] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 shadow-2xl shadow-black/60"
-            style={{ height: 460 }}
+            exit={{ y: -8, opacity: 0, scale: 0.97 }}
+            transition={APPLE_SPRING}
+            className="relative isolate grid w-full max-w-3xl grid-cols-[1fr_300px] overflow-hidden rounded-[24px] border border-white/[0.08]"
+            style={{
+              height: 460,
+              // Vibrancy panel
+              background:
+                'linear-gradient(180deg, rgba(36,36,40,0.82) 0%, rgba(22,22,26,0.88) 100%)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+              // Multi-layer shadow with accent glow
+              boxShadow: `
+                0 1px 0 rgba(255,255,255,0.08) inset,
+                0 0 0 0.5px rgba(255,255,255,0.06),
+                0 24px 60px -12px rgba(0,0,0,0.6),
+                0 48px 96px -24px rgba(0,0,0,0.4),
+                0 0 120px -20px ${accent}44
+              `,
+            }}
           >
             {/* Left column — search + list */}
             <div className="flex min-h-0 flex-col border-r border-white/[0.06]">
               {/* Search */}
-              <div className="flex items-center gap-3 border-b border-white/10 px-4">
-                <Search className="h-4 w-4 shrink-0 text-white/50" />
+              <div className="flex items-center gap-3 border-b border-white/[0.06] px-5">
+                <Search className="h-4 w-4 shrink-0 text-white/50" strokeWidth={2.25} />
                 <input
                   ref={inputRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onInputKey}
                   placeholder={placeholder}
-                  className="h-12 w-full bg-transparent text-[14px] text-white placeholder:text-white/40 focus:outline-none"
+                  className="h-14 w-full bg-transparent text-[15px] tracking-tight text-white placeholder:text-white/40 focus:outline-none"
                 />
                 {query && (
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => setQuery('')}
+                    whileTap={{ scale: 0.88 }}
+                    transition={APPLE_SPRING}
                     aria-label="Clear"
-                    className="rounded-full p-1 text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+                    className="rounded-full border border-white/[0.08] bg-white/[0.04] p-1 text-white/55 backdrop-blur transition-colors hover:bg-white/[0.1] hover:text-white"
                   >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+                    <X className="h-3 w-3" strokeWidth={2.5} />
+                  </motion.button>
                 )}
               </div>
 
@@ -219,14 +246,14 @@ export function CmdBar({
                 data-lenis-prevent
               >
                 {flat.length === 0 ? (
-                  <p className="px-3 py-10 text-center text-sm text-white/45">
+                  <p className="px-3 py-12 text-center text-[13px] tracking-tight text-white/45">
                     {emptyMessage}
                   </p>
                 ) : (
                   filtered.map((group, gi) => (
                     <div key={gi} className="mb-2 last:mb-0">
                       {group.label && (
-                        <p className="px-3 pb-1 pt-1 text-[9.5px] font-medium uppercase tracking-[0.22em] text-white/35">
+                        <p className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
                           {group.label}
                         </p>
                       )}
@@ -236,7 +263,7 @@ export function CmdBar({
                           const active = idx === activeIdx
                           return (
                             <li key={item.id}>
-                              <button
+                              <motion.button
                                 id={`cmd-bar-item-${idx}`}
                                 type="button"
                                 onMouseEnter={() => setActiveIdx(idx)}
@@ -244,26 +271,34 @@ export function CmdBar({
                                   item.onSelect?.()
                                   onOpenChange(false)
                                 }}
+                                whileTap={{ scale: 0.985 }}
+                                transition={APPLE_SPRING}
                                 className={cn(
-                                  'group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[12.5px] transition-colors',
+                                  'group relative flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2 text-left text-[13px] tracking-tight transition-colors',
                                   active
                                     ? 'text-white'
-                                    : 'text-white/70 hover:bg-white/[0.04] hover:text-white',
+                                    : 'text-white/75 hover:text-white',
                                 )}
                               >
                                 {active && (
                                   <motion.span
                                     layoutId="cmd-bar-active"
-                                    className="absolute inset-0 rounded-lg"
+                                    className="absolute inset-0 rounded-[10px]"
                                     style={{
-                                      background: `${accent}1f`,
-                                      border: `1px solid ${accent}33`,
+                                      background: `linear-gradient(180deg, ${accent}33 0%, ${accent}22 100%)`,
+                                      border: `0.5px solid ${accent}55`,
+                                      boxShadow: `0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 12px -4px ${accent}55`,
                                     }}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                                    transition={APPLE_LAYOUT_SPRING}
                                   />
                                 )}
                                 {item.icon && (
-                                  <span className="relative inline-flex h-4 w-4 shrink-0 items-center justify-center [&>svg]:h-4 [&>svg]:w-4">
+                                  <span
+                                    className={cn(
+                                      'relative inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md [&>svg]:h-3.5 [&>svg]:w-3.5',
+                                      active ? 'text-white' : 'text-white/70',
+                                    )}
+                                  >
                                     {item.icon}
                                   </span>
                                 )}
@@ -271,11 +306,23 @@ export function CmdBar({
                                   {item.label}
                                 </span>
                                 {item.hint && (
-                                  <span className="relative shrink-0 text-[11px] text-white/40">
+                                  <span className="relative shrink-0 text-[11.5px] tracking-tight text-white/40">
                                     {item.hint}
                                   </span>
                                 )}
-                              </button>
+                                {active && (
+                                  <motion.span
+                                    initial={{ opacity: 0, x: -4 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={APPLE_SPRING}
+                                    className="relative ml-1"
+                                  >
+                                    <Kbd>
+                                      <CornerDownLeft className="h-2.5 w-2.5" strokeWidth={2.5} />
+                                    </Kbd>
+                                  </motion.span>
+                                )}
+                              </motion.button>
                             </li>
                           )
                         })}
@@ -286,7 +333,13 @@ export function CmdBar({
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between gap-3 border-t border-white/10 bg-black/30 px-4 py-2 text-[10px] text-white/45">
+              <div
+                className="flex items-center justify-between gap-3 border-t border-white/[0.06] px-5 py-2.5 text-[10.5px] tracking-tight text-white/45 backdrop-blur"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)',
+                }}
+              >
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center gap-1.5">
                     <Kbd>↑↓</Kbd>
@@ -294,7 +347,7 @@ export function CmdBar({
                   </span>
                   <span className="inline-flex items-center gap-1.5">
                     <Kbd>
-                      <CornerDownLeft className="h-2.5 w-2.5" />
+                      <CornerDownLeft className="h-2.5 w-2.5" strokeWidth={2.5} />
                     </Kbd>
                     select
                   </span>
@@ -303,47 +356,65 @@ export function CmdBar({
                     close
                   </span>
                 </div>
-                <span className="tabular-nums">{flat.length}</span>
+                <span className="font-medium tabular-nums text-white/55">
+                  {flat.length}
+                </span>
               </div>
             </div>
 
-            {/* Right column — preview pane */}
-            <div className="relative flex min-h-0 flex-col bg-white/[0.012]">
+            {/* Right column — preview pane (vibrancy inner well) */}
+            <div
+              className="relative flex min-h-0 flex-col"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(255,255,255,0.005) 100%)',
+              }}
+            >
               <AnimatePresence mode="wait" initial={false}>
                 {current ? (
                   <motion.div
                     key={current.id}
-                    initial={{ opacity: 0, x: 6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -6 }}
-                    transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, x: 8, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, x: -6, filter: 'blur(4px)' }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                     className="flex h-full flex-col p-4"
                   >
                     <div className="flex items-center gap-2.5">
                       {current.icon && (
                         <span
-                          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/85 [&>svg]:h-3.5 [&>svg]:w-3.5"
-                          style={{ background: `${accent}1f`, border: `1px solid ${accent}33` }}
+                          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] text-white [&>svg]:h-4 [&>svg]:w-4"
+                          style={{
+                            background: `linear-gradient(180deg, ${accent}33 0%, ${accent}22 100%)`,
+                            border: `0.5px solid ${accent}55`,
+                            boxShadow: `0 1px 0 rgba(255,255,255,0.1) inset, 0 4px 12px -4px ${accent}66`,
+                          }}
                         >
                           {current.icon}
                         </span>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[12.5px] font-semibold tracking-tight text-white">
+                        <p className="truncate text-[13px] font-semibold tracking-tight text-white">
                           {current.label}
                         </p>
                         {current.hint && (
-                          <p className="truncate text-[10.5px] text-white/45">
+                          <p className="truncate text-[11px] tracking-tight text-white/45">
                             {current.hint}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    {/* Preview body */}
-                    <div className="mt-3 min-h-0 flex-1 overflow-auto rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
+                    {/* Preview body — vibrancy well */}
+                    <div
+                      className="mt-3 min-h-0 flex-1 overflow-auto rounded-[14px] border border-white/[0.06] p-3.5 backdrop-blur"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
+                      }}
+                    >
                       {current.preview ?? (
-                        <p className="text-[11.5px] leading-relaxed text-white/55">
+                        <p className="text-[12px] leading-relaxed tracking-tight text-white/55">
                           No additional preview for this action.
                         </p>
                       )}
@@ -351,14 +422,20 @@ export function CmdBar({
 
                     {/* Meta footer */}
                     {current.meta && current.meta.length > 0 && (
-                      <ul className="mt-3 divide-y divide-white/[0.05] rounded-md border border-white/[0.06] bg-white/[0.02]">
+                      <ul
+                        className="mt-3 divide-y divide-white/[0.05] overflow-hidden rounded-[12px] border border-white/[0.06] backdrop-blur"
+                        style={{
+                          background:
+                            'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
+                        }}
+                      >
                         {current.meta.map((m, i) => (
                           <li
                             key={i}
-                            className="flex items-center justify-between gap-3 px-2.5 py-1.5 text-[10.5px]"
+                            className="flex items-center justify-between gap-3 px-3 py-2 text-[11px] tracking-tight"
                           >
-                            <span className="text-white/40">{m.label}</span>
-                            <span className="truncate font-mono text-white/75">
+                            <span className="text-white/45">{m.label}</span>
+                            <span className="truncate font-mono text-white/80">
                               {m.value}
                             </span>
                           </li>
@@ -369,7 +446,7 @@ export function CmdBar({
                 ) : (
                   <div
                     key="empty"
-                    className="flex h-full items-center justify-center p-6 text-center text-[11.5px] text-white/40"
+                    className="flex h-full items-center justify-center p-6 text-center text-[12px] tracking-tight text-white/40"
                   >
                     Highlight a command to preview it.
                   </div>
@@ -386,7 +463,14 @@ export function CmdBar({
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex items-center gap-0.5 rounded border border-white/10 bg-black/40 px-1.5 py-0.5 font-mono text-[9.5px] text-white/65">
+    <kbd
+      className="inline-flex h-[18px] min-w-[18px] items-center justify-center gap-0.5 rounded-[5px] border border-white/[0.1] px-1 font-mono text-[9.5px] font-medium text-white/70"
+      style={{
+        background:
+          'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset, 0 1px 1px rgba(0,0,0,0.3)',
+      }}
+    >
       {children}
     </kbd>
   )
