@@ -31,7 +31,7 @@ export default function PaperTearDocs() {
       title="Paper Tear"
       slug="paper-tear"
       description="Two sheets of paper stacked on top of each other. As you scroll into the section, the top sheet tears off along a deterministic jagged SVG path and lifts away with a subtle tilt + fade, revealing the bottom sheet underneath. Both halves carry a paper-grain texture so the tear feels physical."
-      category="125 · gsap-section"
+      category="126 · gsap-section"
     >
       <DocsSection
         title="Live demo"

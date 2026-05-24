@@ -23,7 +23,7 @@ export default function SparklineDocs() {
       title="Sparkline"
       slug="sparkline"
       description="A tiny SVG line chart that draws itself on mount. Optional area fill, optional end-point dot."
-      category="112 · data"
+      category="113 · data"
     >
       <DocsSection title="Live demo">
         <DemoCard className="min-h-[280px]">

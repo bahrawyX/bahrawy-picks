@@ -59,7 +59,7 @@ export default function PricingToggleDocs() {
       title="Pricing Toggle"
       slug="pricing-toggle"
       description="Pricing card grid with a monthly/annual billing toggle. Flipping the toggle springs the price number to its new value — each digit settles via a motion-value spring."
-      category="89 · pricing"
+      category="90 · pricing"
     >
       <DocsSection title="Live demo" description="Click the billing toggle to flip prices.">
         <div className="overflow-hidden rounded-2xl border border-white/10">

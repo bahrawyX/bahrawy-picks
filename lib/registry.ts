@@ -354,10 +354,16 @@ export const componentRegistry: RegistryItem[] = [
       'Fullscreen OGL fragment shader. Four-octave value noise warped with curl-ish offsets, mapped through a 3-color gradient to paint living aurora bands.',
   },
   {
-    title: 'Liquid Chrome',
-    slug: 'liquid-chrome',
+    title: 'Mesh Gradient',
+    slug: 'mesh-gradient',
     description:
-      'High-poly icosphere whose vertex shader displaces each vertex along its normal by 3D simplex noise — surface morphs like liquid metal. Custom fragment shader fakes an iridescent chrome environment without a cubemap.',
+      'Stripe-homepage-style fluid mesh gradient (OGL shader). Five colored blobs drift around the canvas; soft falloff + chained mix() melt adjacent colors into each other.',
+  },
+  {
+    title: 'Nebula',
+    slug: 'nebula',
+    description:
+      'Cosmic dust cloud with stars (OGL shader). Two parallax layers of 4-octave fbm noise generate cloud density with depth; star field overlay twinkles via sin-based brightness variation.',
   },
   {
     title: 'Accordion',

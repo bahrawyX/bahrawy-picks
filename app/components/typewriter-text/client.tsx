@@ -41,7 +41,7 @@ export default function TypewriterTextDocs() {
       title="Typewriter Text"
       slug="typewriter-text"
       description="Animated typewriter effect that types, pauses, and deletes through an array of strings. Configurable speeds, cursor style, and looping."
-      category="63 · MOTION"
+      category="64 · MOTION"
     >
       <DocsSection title="Preview" description="Watch the typewriter cycle through phrases with adjustable timing.">
         <DemoCard className="items-center justify-center min-h-[200px]">

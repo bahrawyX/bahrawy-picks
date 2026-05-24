@@ -27,7 +27,7 @@ export default function HabitHeatmapDocs() {
       title="Habit Heatmap"
       slug="habit-heatmap"
       description="A GitHub-style contribution grid. 7 rows (one per weekday) × N columns (one per week). Each cell's fill scales with the value through a 5-step accent ramp. Hover for a date + count tooltip; click a cell to handle the event."
-      category="144 · data"
+      category="145 · data"
     >
       <DocsSection title="Live demo · default" description="No data provided — a stable demo grid is generated for the last 26 weeks.">
         <DemoCard>

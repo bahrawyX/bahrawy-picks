@@ -6,10 +6,10 @@ import {
 } from '@/lib/seo'
 import Client from './client'
 
-export const metadata: Metadata = metadataForSlug('liquid-chrome')
+export const metadata: Metadata = metadataForSlug('mesh-gradient')
 
-const breadcrumb = breadcrumbJsonLdForSlug('liquid-chrome')
-const component = componentJsonLdForSlug('liquid-chrome')
+const breadcrumb = breadcrumbJsonLdForSlug('mesh-gradient')
+const component = componentJsonLdForSlug('mesh-gradient')
 
 export default function Page() {
   return (

@@ -531,5 +531,8 @@ export type { HyperspeedProps } from './hyperspeed'
 export { Aurora } from './aurora'
 export type { AuroraProps } from './aurora'
 
-export { LiquidChrome } from './liquid-chrome'
-export type { LiquidChromeProps } from './liquid-chrome'
+export { MeshGradient } from './mesh-gradient'
+export type { MeshGradientProps } from './mesh-gradient'
+
+export { Nebula } from './nebula'
+export type { NebulaProps } from './nebula'
