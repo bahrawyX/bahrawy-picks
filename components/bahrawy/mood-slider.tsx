@@ -163,7 +163,7 @@ export function MoodSlider({
         <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/35">
           feeling
         </span>
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={moodWord}
             initial={{ opacity: 0, y: 4, filter: 'blur(2px)' }}
