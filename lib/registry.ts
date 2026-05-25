@@ -899,4 +899,40 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'Animated SVG donut chart. Each slice draws in clockwise via dasharray animation, hover lifts the slice outward along its midpoint vector, vibrancy tooltip with value + %, center label slot, interactive legend.',
   },
+  {
+    title: 'Slider',
+    slug: 'slider',
+    description:
+      'Apple-style range slider. Supports single value or [low, high] range, ticks, value tooltip on hover/drag, keyboard nav. Clean white disc handle with Apple spring on hover/drag scale.',
+  },
+  {
+    title: 'Pagination',
+    slug: 'pagination',
+    description:
+      'Apple-style page navigator. Numbered pills with ellipsis-collapsing for long ranges (always shows first, last, window around current), prev/next chevrons, layoutId-driven active pill that glides between pages.',
+  },
+  {
+    title: 'Toggle Group',
+    slug: 'toggle-group',
+    description:
+      'Multi-select pill row. Cousin of Segmented Control but selection is a Set, not a single value. Two visual modes: pills (separate, breathing room) or segmented (joined). Three sizes, icons + labels.',
+  },
+  {
+    title: 'Calendar',
+    slug: 'calendar',
+    description:
+      'Apple-style standalone month-grid date picker. Single or multiple date selection, locale-aware weekday names, today indicator dot, layoutId-driven selection that glides between days, month navigation.',
+  },
+  {
+    title: 'Reactions Picker',
+    slug: 'reactions-picker',
+    description:
+      'Slack/Messages-style emoji reactions popup. Row of emojis with macOS Dock-magnification on cursor proximity, click fires onPick. Vibrancy pill, Apple spring on the magnify scale.',
+  },
+  {
+    title: 'Bottom Tab Bar',
+    slug: 'bottom-tab-bar',
+    description:
+      'iOS-style mobile bottom navigation. Floating vibrancy pill with 3-5 tabs, icon + label, active tab gets a soft white pill that glides between tabs via layoutId, optional badge per tab.',
+  },
 ]

@@ -598,3 +598,21 @@ export type { ActivityRingsProps, ActivityRing } from './activity-rings'
 export { DonutChart } from './donut-chart'
 export type { DonutChartProps, DonutChartDatum } from './donut-chart'
 
+export { Slider } from './slider'
+export type { SliderProps } from './slider'
+
+export { Pagination } from './pagination'
+export type { PaginationProps } from './pagination'
+
+export { ToggleGroup } from './toggle-group'
+export type { ToggleGroupProps, ToggleGroupOption } from './toggle-group'
+
+export { Calendar } from './calendar'
+export type { CalendarProps } from './calendar'
+
+export { ReactionsPicker } from './reactions-picker'
+export type { ReactionsPickerProps } from './reactions-picker'
+
+export { BottomTabBar } from './bottom-tab-bar'
+export type { BottomTabBarProps, BottomTabBarItem } from './bottom-tab-bar'
+
