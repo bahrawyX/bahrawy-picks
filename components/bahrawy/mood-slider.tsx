@@ -233,9 +233,13 @@ export function MoodSlider({
               track via the parent rail's `items-center`. X inset so
               the disc stays inside the rail at both extremes. */}
           <motion.div
-            className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+            className="pointer-events-none absolute top-1/2 h-4 w-4 rounded-full bg-white"
             style={{
               left: `calc(${value} * (100% - 16px) + 8px)`,
+              // Compose the -50% centering into framer-motion's transform so
+              // animate={{ scale }} doesn't blow away the translate.
+              x: '-50%',
+              y: '-50%',
               boxShadow:
                 '0 0 0 0.5px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.25)',
             }}

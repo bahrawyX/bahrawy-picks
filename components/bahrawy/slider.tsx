@@ -230,12 +230,16 @@ function Thumb({
     <motion.div
       onPointerEnter={onHoverStart}
       onPointerLeave={onHoverEnd}
-      className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+      className="absolute top-1/2 h-4 w-4 rounded-full bg-white"
       style={{
         // Inset the X position so the disc stays fully on the track:
         // at pct=0 → left edge of handle on track's left; at pct=100 →
         // right edge of handle on track's right.
         left: `calc(${pct}% + ${8 - (pct / 100) * 16}px)`,
+        // Compose the -50% centering into framer-motion's transform so
+        // animate={{ scale }} doesn't blow away the translate.
+        x: '-50%',
+        y: '-50%',
         boxShadow: '0 0 0 0.5px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.25)',
       }}
       initial={false}
