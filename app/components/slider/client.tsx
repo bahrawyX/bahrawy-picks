@@ -16,9 +16,9 @@ const [r, setR] = useState<[number, number]>([20, 80])
 <Slider range value={r} onValueChange={setR} min={0} max={100} />`
 
 export default function SliderDocs() {
-  const [single, setSingle] = React.useState(64)
-  const [range, setRange] = React.useState<[number, number]>([24, 72])
-  const [vol, setVol] = React.useState(0.65)
+  const [single, setSingle] = React.useState(50)
+  const [range, setRange] = React.useState<[number, number]>([25, 75])
+  const [vol, setVol] = React.useState(0.5)
 
   return (
     <DocsPage

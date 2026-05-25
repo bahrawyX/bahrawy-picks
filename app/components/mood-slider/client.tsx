@@ -28,7 +28,7 @@ const MOOD_WORD = (v: number) => {
 }
 
 export default function MoodSliderDocs() {
-  const [v, setV] = React.useState(0.6)
+  const [v, setV] = React.useState(0.5)
   return (
     <DocsPage
       title="Mood Slider"
