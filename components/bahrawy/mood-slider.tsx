@@ -239,6 +239,7 @@ export function MoodSlider({
               boxShadow:
                 '0 0 0 0.5px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.25)',
             }}
+            initial={false}
             animate={{ scale: handleScale }}
             transition={APPLE_SPRING}
           />

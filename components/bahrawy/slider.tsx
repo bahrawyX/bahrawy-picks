@@ -238,6 +238,7 @@ function Thumb({
         left: `calc(${pct}% + ${8 - (pct / 100) * 16}px)`,
         boxShadow: '0 0 0 0.5px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.25)',
       }}
+      initial={false}
       animate={{ scale }}
       transition={APPLE_SPRING}
     >
