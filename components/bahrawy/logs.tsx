@@ -11,10 +11,16 @@
  *
  * Pass entries from any source — fetch, EventSource, websocket — and
  * they render in the order received.
+ *
+ * Past `virtualizeOver` filtered entries (default 200) the row list is
+ * windowed with @tanstack/react-virtual and the per-row entrance
+ * animations are dropped — they fight virtualization. Below the
+ * threshold every row animates in as before.
  */
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { cn } from '@/lib/utils'
 
 export type LogLevel = 'info' | 'success' | 'warn' | 'error' | 'debug'
@@ -35,8 +41,12 @@ export interface LogsProps {
   showFilters?: boolean
   /** Auto-scroll to the bottom when new entries appear. Default true. */
   autoScroll?: boolean
+  /** Show the pulsing "live" pill in the filter bar. Default false. */
+  live?: boolean
   /** Container max height. Default '380px'. */
   height?: string | number
+  /** Virtualize the row list once filtered entries exceed this count. Default 200. */
+  virtualizeOver?: number
   className?: string
 }
 
@@ -77,7 +87,9 @@ export function Logs({
   entries,
   showFilters = true,
   autoScroll = true,
+  live = false,
   height = '380px',
+  virtualizeOver = 200,
   className,
 }: LogsProps) {
   const [active, setActive] = React.useState<Set<LogLevel>>(
@@ -90,11 +102,37 @@ export function Logs({
     [entries, active],
   )
 
+  const virtualized = filtered.length > virtualizeOver
+
+  const virtualizer = useVirtualizer({
+    count: virtualized ? filtered.length : 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 28,
+    overscan: 12,
+  })
+
+  // Track whether the user is pinned to the bottom, so auto-scroll
+  // doesn't yank them back down while they read history.
+  const pinnedRef = React.useRef(true)
+  React.useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const onScroll = () => {
+      pinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
   // Auto-scroll to bottom as entries change.
   React.useEffect(() => {
-    if (!autoScroll || !scrollRef.current) return
-    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-  }, [filtered.length, autoScroll])
+    if (!autoScroll || !pinnedRef.current) return
+    if (virtualized) {
+      virtualizer.scrollToIndex(filtered.length - 1, { align: 'end' })
+    } else if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [filtered.length, autoScroll, virtualized, virtualizer])
 
   const counts = React.useMemo(() => {
     const c: Record<LogLevel, number> = {
@@ -151,27 +189,62 @@ export function Logs({
               </button>
             )
           })}
-          <div className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
-            <span
-              aria-hidden
-              className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400"
-            />
-            live
-          </div>
+          {live && (
+            <div className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
+              <span
+                aria-hidden
+                className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400"
+              />
+              live
+            </div>
+          )}
         </div>
       )}
 
       <div
         ref={scrollRef}
+        role="log"
+        aria-live="polite"
         className="overflow-y-auto"
         style={{ maxHeight: height }}
         data-lenis-prevent
       >
-        <AnimatePresence initial={false}>
-          {filtered.map((entry) => (
-            <LogRow key={entry.id} entry={entry} />
-          ))}
-        </AnimatePresence>
+        {virtualized ? (
+          <div
+            style={{
+              height: virtualizer.getTotalSize(),
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const entry = filtered[virtualItem.index]
+              return (
+                <div
+                  key={entry.id}
+                  data-index={virtualItem.index}
+                  ref={virtualizer.measureElement}
+                  style={{
+                    position: 'absolute',
+                    top: virtualItem.start,
+                    left: 0,
+                    width: '100%',
+                  }}
+                >
+                  <div className={ROW_CLASS}>
+                    <LogRowBody entry={entry} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <AnimatePresence initial={false}>
+            {filtered.map((entry) => (
+              <LogRow key={entry.id} entry={entry} />
+            ))}
+          </AnimatePresence>
+        )}
         {filtered.length === 0 && (
           <p className="px-4 py-8 text-center font-mono text-[11px] text-white/35">
             No entries match the active filters.
@@ -184,13 +257,10 @@ export function Logs({
 
 // ---------------------------------------------------------------------------
 
-function LogRow({ entry }: { entry: LogEntry }) {
-  const meta = LEVEL_META[entry.level]
-  const ts =
-    entry.timestamp instanceof Date
-      ? formatTime(entry.timestamp)
-      : (entry.timestamp ?? '')
+const ROW_CLASS =
+  'flex items-baseline gap-2.5 border-b border-white/[0.03] px-3 py-1.5 font-mono text-[12px] leading-snug last:border-b-0'
 
+function LogRow({ entry }: { entry: LogEntry }) {
   return (
     <motion.div
       layout="position"
@@ -198,8 +268,22 @@ function LogRow({ entry }: { entry: LogEntry }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-      className="flex items-baseline gap-2.5 border-b border-white/[0.03] px-3 py-1.5 font-mono text-[12px] leading-snug last:border-b-0"
+      className={ROW_CLASS}
     >
+      <LogRowBody entry={entry} />
+    </motion.div>
+  )
+}
+
+function LogRowBody({ entry }: { entry: LogEntry }) {
+  const meta = LEVEL_META[entry.level]
+  const ts =
+    entry.timestamp instanceof Date
+      ? formatTime(entry.timestamp)
+      : (entry.timestamp ?? '')
+
+  return (
+    <>
       {ts && (
         <span className="shrink-0 text-[10.5px] tabular-nums text-white/30">
           {ts}
@@ -219,7 +303,7 @@ function LogRow({ entry }: { entry: LogEntry }) {
         </span>
       )}
       <span className="min-w-0 flex-1 text-white/85">{entry.message}</span>
-    </motion.div>
+    </>
   )
 }
 

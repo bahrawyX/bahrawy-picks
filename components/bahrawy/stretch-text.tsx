@@ -63,13 +63,42 @@ export function StretchText({
 
   const chars = React.useMemo(() => [...children], [children])
 
+  // Cached wrapper left edge + a measurement epoch shared with the letters.
+  // Rects are measured lazily once per epoch; resize/scroll bumps the epoch
+  // instead of re-measuring on every pointermove.
+  const wrapperLeftRef = React.useRef<number | null>(null)
+  const measureEpochRef = React.useRef(0)
+
   const onPointerMove = (e: React.PointerEvent) => {
     const wrap = wrapperRef.current
     if (!wrap) return
-    const r = wrap.getBoundingClientRect()
-    cursorX.set(e.clientX - r.left)
+    if (wrapperLeftRef.current === null) {
+      wrapperLeftRef.current = wrap.getBoundingClientRect().left
+    }
+    cursorX.set(e.clientX - wrapperLeftRef.current)
   }
   const onPointerLeave = () => cursorX.set(-1)
+
+  // Invalidate the cached measurements whenever the page scrolls, the
+  // window resizes, or the wrapper itself changes size (font swap, etc.).
+  React.useEffect(() => {
+    const wrap = wrapperRef.current
+    if (!wrap) return
+    const invalidate = () => {
+      wrapperLeftRef.current = null
+      measureEpochRef.current++
+    }
+    window.addEventListener('resize', invalidate)
+    window.addEventListener('scroll', invalidate, { passive: true, capture: true })
+    const ro =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(invalidate) : null
+    ro?.observe(wrap)
+    return () => {
+      window.removeEventListener('resize', invalidate)
+      window.removeEventListener('scroll', invalidate, true)
+      ro?.disconnect()
+    }
+  }, [])
 
   // If the preference flips mid-hover, release any active stretch.
   React.useEffect(() => {
@@ -97,6 +126,7 @@ export function StretchText({
           radius={radius}
           maxScale={maxScale}
           maxSpacing={maxSpacing}
+          measureEpochRef={measureEpochRef}
         />
       ))}
     </span>
@@ -115,6 +145,7 @@ interface LetterProps {
   radius: number
   maxScale: number
   maxSpacing: number
+  measureEpochRef: React.MutableRefObject<number>
 }
 
 function Letter({
@@ -123,20 +154,32 @@ function Letter({
   radius,
   maxScale,
   maxSpacing,
+  measureEpochRef,
 }: LetterProps) {
   const ref = React.useRef<HTMLSpanElement>(null)
+
+  // Cached center (relative to the wrapper) — measured lazily once per
+  // epoch instead of one getBoundingClientRect pair per pointermove.
+  const centerRef = React.useRef<{ epoch: number; value: number } | null>(null)
 
   // Proximity ∈ [0, 1] — 1 means cursor is exactly on this letter.
   const proximity = useTransform(cursorX, (x) => {
     if (x < 0) return 0
     const el = ref.current
     if (!el) return 0
-    // Letter's center, relative to the wrapper.
-    const elRect = el.getBoundingClientRect()
-    const parent = el.parentElement?.getBoundingClientRect()
-    if (!parent) return 0
-    const center = elRect.left - parent.left + elRect.width / 2
-    const d = Math.abs(x - center)
+    let cached = centerRef.current
+    if (!cached || cached.epoch !== measureEpochRef.current) {
+      // Letter's center, relative to the wrapper.
+      const elRect = el.getBoundingClientRect()
+      const parent = el.parentElement?.getBoundingClientRect()
+      if (!parent) return 0
+      cached = {
+        epoch: measureEpochRef.current,
+        value: elRect.left - parent.left + elRect.width / 2,
+      }
+      centerRef.current = cached
+    }
+    const d = Math.abs(x - cached.value)
     if (d >= radius) return 0
     // Gaussian falloff, normalized so d=0 → 1, d=radius → ≈ 0.
     // sigma = radius / 2.5 gives a smooth, full-bodied bell.

@@ -3,6 +3,7 @@
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 function hexToVec3(hex) {
   const h = hex.replace('#', '')
@@ -149,6 +150,11 @@ export default function LineWaves({
 }) {
   const containerRef = useRef(null)
   const reduced = usePrefersReducedMotion()
+  const active = useOnScreen(containerRef)
+  // Refs let the offscreen gate start/stop the loop without re-running
+  // the setup effect (which would rebuild the GL context).
+  const activeRef = useRef(active)
+  const loopRef = useRef(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -242,14 +248,27 @@ export default function LineWaves({
 
       renderer.render({ scene: mesh })
     }
+    let running = false
+    loopRef.current = {
+      start: () => {
+        if (running || reduced) return
+        running = true
+        animationFrameId = requestAnimationFrame(update)
+      },
+      stop: () => {
+        running = false
+        cancelAnimationFrame(animationFrameId)
+      },
+    }
     if (reduced) {
       // Reduced motion: draw a single static frame, skip the RAF loop.
       renderer.render({ scene: mesh })
-    } else {
-      animationFrameId = requestAnimationFrame(update)
+    } else if (activeRef.current) {
+      loopRef.current.start()
     }
 
     return () => {
+      loopRef.current = null
       cancelAnimationFrame(animationFrameId)
       window.removeEventListener('resize', resize)
       if (enableMouseInteraction) {
@@ -277,6 +296,14 @@ export default function LineWaves({
     mouseInfluence,
     reduced,
   ])
+
+  // Pause the RAF while scrolled offscreen or the tab is hidden — the GL
+  // context and last rendered frame stay intact; resume when visible.
+  useEffect(() => {
+    activeRef.current = active
+    if (active) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [active])
 
   return (
     <div

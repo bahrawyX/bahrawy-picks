@@ -24,6 +24,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight, Disc3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -98,6 +99,13 @@ export function CinemaReel({
 
   const N = frames.length
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(sectionRef)
+  // Refs let the offscreen gate start/stop the RAF loop without re-running
+  // the GSAP setup (which would rebuild the pin + timeline).
+  const onScreenRef = React.useRef(onScreen)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(
+    null,
+  )
 
   useGSAP(
     () => {
@@ -123,10 +131,19 @@ export function CinemaReel({
       //   - per-frame scale + brightness + opacity based on distance from
       //     the centered "playhead" position
       //   - reel hub rotation (proportional to progress)
-      // Runs as a permanent RAF loop normally; with reduced motion it is
-      // invoked directly from scroll updates instead (positions are set
-      // without a running animation loop, and the decorative reel spin /
-      // frame scale are skipped).
+      // Runs as a RAF loop while the section is on screen; with reduced
+      // motion it is invoked directly from scroll updates instead
+      // (positions are set without a running animation loop, and the
+      // decorative reel spin / frame scale are skipped).
+
+      // Cached pin width — measured once here and again on ScrollTrigger
+      // refresh (which also covers resizes) instead of per frame.
+      let pinW = pinRef.current.getBoundingClientRect().width
+      const measure = () => {
+        if (pinRef.current) pinW = pinRef.current.getBoundingClientRect().width
+      }
+      ScrollTrigger.addEventListener('refresh', measure)
+
       let raf = 0
       const draw = () => {
         if (!stripRef.current || !pinRef.current) {
@@ -135,8 +152,7 @@ export function CinemaReel({
         }
         const p = progressRef.current
 
-        const rect = pinRef.current.getBoundingClientRect()
-        const vw = rect.width
+        const vw = pinW
         // Resolve frameWidth from vh units → px so resize keeps things
         // aligned. (frameWidth is in vh by convention.)
         const fW = (frameWidth / 100) * window.innerHeight
@@ -222,15 +238,29 @@ export function CinemaReel({
         )
       }
 
+      let running = false
+      loopRef.current = {
+        start: () => {
+          if (running || reduced) return
+          running = true
+          raf = requestAnimationFrame(draw)
+        },
+        stop: () => {
+          running = false
+          cancelAnimationFrame(raf)
+        },
+      }
       if (reduced) {
         // Paint the current scroll position once; onUpdate handles the rest.
         draw()
-      } else {
-        raf = requestAnimationFrame(draw)
+      } else if (onScreenRef.current) {
+        loopRef.current.start()
       }
 
       return () => {
+        loopRef.current = null
         cancelAnimationFrame(raf)
+        ScrollTrigger.removeEventListener('refresh', measure)
       }
     },
     {
@@ -238,6 +268,14 @@ export function CinemaReel({
       dependencies: [frames, scrollLength, frameWidth, accentColor, reduced],
     },
   )
+
+  // Pause the reconciler while scrolled offscreen or the tab is hidden —
+  // the last written frame stays put; resume when visible.
+  React.useEffect(() => {
+    onScreenRef.current = onScreen
+    if (onScreen) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [onScreen])
 
   return (
     <div

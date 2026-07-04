@@ -26,7 +26,7 @@ export function createTextColumn<TData>(
   key: keyof TData & string,
   header: string,
   options?: BaseColumnOptions
-): ColumnDef<TData, string> {
+): ColumnDef<TData, unknown> {
   return {
     accessorKey: key,
     header: ({ column }) => <ColumnHeader column={column} title={header} />,
@@ -50,7 +50,7 @@ export function createNumberColumn<TData>(
   key: keyof TData & string,
   header: string,
   options?: BaseColumnOptions & { format?: Intl.NumberFormatOptions }
-): ColumnDef<TData, number> {
+): ColumnDef<TData, unknown> {
   const fmt = options?.format
     ? new Intl.NumberFormat(undefined, options.format)
     : null
@@ -82,7 +82,7 @@ export function createDateColumn<TData>(
   key: keyof TData & string,
   header: string,
   options?: BaseColumnOptions & { dateStyle?: Intl.DateTimeFormatOptions['dateStyle'] }
-): ColumnDef<TData, string> {
+): ColumnDef<TData, unknown> {
   const dateStyle = options?.dateStyle ?? 'medium'
   return {
     accessorKey: key,
@@ -120,7 +120,7 @@ export function createBadgeColumn<TData>(
   header: string,
   colorMap: Record<string, string>,
   options?: BaseColumnOptions
-): ColumnDef<TData, string> {
+): ColumnDef<TData, unknown> {
   return {
     accessorKey: key,
     header: ({ column }) => <ColumnHeader column={column} title={header} />,
@@ -161,7 +161,7 @@ export function createBooleanColumn<TData>(
   key: keyof TData & string,
   header: string,
   options?: BaseColumnOptions & { trueLabel?: string; falseLabel?: string }
-): ColumnDef<TData, boolean> {
+): ColumnDef<TData, unknown> {
   const tLabel = options?.trueLabel ?? 'Yes'
   const fLabel = options?.falseLabel ?? 'No'
   return {

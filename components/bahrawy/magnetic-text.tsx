@@ -62,21 +62,47 @@ export function MagneticText({
     const onLeave = () => {
       mouseRef.current.active = false
     }
-    window.addEventListener('pointermove', onMove)
-    container.addEventListener('pointerleave', onLeave)
-
     const states = chars.map(() => ({ x: 0, y: 0 }))
-    let raf = 0
-    const r2 = radius * radius
 
-    const tick = () => {
-      const { x: mx, y: my, active } = mouseRef.current
+    // Cached resting char centers — measured once per pointer-session /
+    // resize / scroll (coalesced to at most one measure pass per frame)
+    // instead of one getBoundingClientRect per char per frame.
+    const centers = chars.map(() => ({ x: 0, y: 0 }))
+    let dirty = true
+    const invalidate = () => {
+      dirty = true
+    }
+    const measure = () => {
       for (let i = 0; i < charRefs.current.length; i++) {
         const el = charRefs.current[i]
         if (!el) continue
         const rect = el.getBoundingClientRect()
-        const cx = rect.left + rect.width / 2
-        const cy = rect.top + rect.height / 2
+        // Subtract the current displacement so the cached value is the
+        // char's resting center.
+        centers[i].x = rect.left + rect.width / 2 - states[i].x
+        centers[i].y = rect.top + rect.height / 2 - states[i].y
+      }
+      dirty = false
+    }
+
+    window.addEventListener('pointermove', onMove)
+    container.addEventListener('pointerleave', onLeave)
+    container.addEventListener('pointerenter', invalidate)
+    window.addEventListener('resize', invalidate)
+    window.addEventListener('scroll', invalidate, { passive: true, capture: true })
+
+    let raf = 0
+    const r2 = radius * radius
+
+    const tick = () => {
+      if (dirty) measure()
+      const { x: mx, y: my, active } = mouseRef.current
+      for (let i = 0; i < charRefs.current.length; i++) {
+        const el = charRefs.current[i]
+        if (!el) continue
+        // Current center = resting center + the transform we last wrote.
+        const cx = centers[i].x + states[i].x
+        const cy = centers[i].y + states[i].y
         const dx = mx - cx
         const dy = my - cy
         const dsq = dx * dx + dy * dy
@@ -101,6 +127,9 @@ export function MagneticText({
       cancelAnimationFrame(raf)
       window.removeEventListener('pointermove', onMove)
       container.removeEventListener('pointerleave', onLeave)
+      container.removeEventListener('pointerenter', invalidate)
+      window.removeEventListener('resize', invalidate)
+      window.removeEventListener('scroll', invalidate, true)
     }
   }, [reduced, chars.length, radius, strength, lerp, sign])
 

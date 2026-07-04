@@ -24,6 +24,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -133,6 +134,13 @@ export function PortalScroll({
 
   const chars = React.useMemo(() => titleChars(inner.title), [inner.title])
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(sectionRef)
+  // Refs let the offscreen gate start/stop the parallax loop without
+  // re-running the GSAP setup (which would rebuild the pin + timeline).
+  const onScreenRef = React.useRef(onScreen)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(
+    null,
+  )
   // Faint cue color for the outer scroll hint. Default is plain white.
   const hintColor = accentColor ?? 'rgba(255,255,255,0.7)'
   // Rim tint — hairline outline stays faint, scan dot stays solid.
@@ -244,11 +252,23 @@ export function PortalScroll({
         }
         raf = requestAnimationFrame(loop)
       }
+      let running = false
+      loopRef.current = {
+        start: () => {
+          if (running || reduced) return
+          running = true
+          raf = requestAnimationFrame(loop)
+        },
+        stop: () => {
+          running = false
+          cancelAnimationFrame(raf)
+        },
+      }
       // Skip the pointer-parallax loop entirely when reduced motion is
       // preferred — the inner scene stays put.
       if (!reduced) {
         window.addEventListener('pointermove', onPointerMove)
-        raf = requestAnimationFrame(loop)
+        if (onScreenRef.current) loopRef.current.start()
       }
 
       // ------------------------------------------------------------------
@@ -390,6 +410,7 @@ export function PortalScroll({
       // Cleanup
       // ------------------------------------------------------------------
       return () => {
+        loopRef.current = null
         cancelAnimationFrame(raf)
         window.removeEventListener('pointermove', onPointerMove)
         window.removeEventListener('resize', computeMaxR)
@@ -410,6 +431,14 @@ export function PortalScroll({
       ],
     },
   )
+
+  // Pause the parallax loop while scrolled offscreen or the tab is hidden —
+  // the last written transforms stay put; resume when visible.
+  React.useEffect(() => {
+    onScreenRef.current = onScreen
+    if (onScreen) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [onScreen])
 
   // Best-effort aria-label so screen readers get the inner sentence.
   const ariaLabel =

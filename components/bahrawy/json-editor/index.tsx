@@ -30,7 +30,7 @@ export interface JsonEditorProps {
 // ---------------------------------------------------------------------------
 
 function deepClone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj))
+  return structuredClone(obj)
 }
 
 function setNestedValue(
@@ -197,10 +197,13 @@ export function JsonEditor({
   }, [currentValue])
 
   // Tree entries
-  const rootType = Array.isArray(currentValue) ? 'array' : 'object'
-  const rootEntries = rootType === 'array'
-    ? (currentValue as unknown[]).map((v, i) => [i, v] as const)
-    : Object.entries(currentValue as Record<string, unknown>)
+  const rootEntries = useMemo(
+    () =>
+      Array.isArray(currentValue)
+        ? (currentValue as unknown[]).map((v, i) => [i, v] as const)
+        : Object.entries(currentValue as Record<string, unknown>),
+    [currentValue],
+  )
 
   return (
     <div
@@ -256,6 +259,10 @@ export function JsonEditor({
       </div>
 
       {/* Content */}
+      {/* TODO: virtualize the tree view for very large documents. Rows are
+          rendered recursively with expand/collapse height animations, so
+          windowing would require flattening the expanded nodes first —
+          invasive enough that it's deferred for now. */}
       <div className="max-h-[500px] overflow-auto bg-black/40 scrollbar-hide">
         {mode === 'tree' ? (
           <div className="py-2">

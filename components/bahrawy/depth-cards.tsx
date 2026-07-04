@@ -28,6 +28,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -102,6 +103,7 @@ export function DepthCards({
   })
 
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(containerRef)
 
   React.useEffect(() => {
     const container = containerRef.current
@@ -122,6 +124,9 @@ export function DepthCards({
       }
       return
     }
+
+    // Offscreen or hidden tab: hold the current pose — no listeners, no RAF.
+    if (!onScreen) return
 
     const onPointerMove = (e: PointerEvent) => {
       const r = container.getBoundingClientRect()
@@ -173,7 +178,7 @@ export function DepthCards({
       container.removeEventListener('pointermove', onPointerMove)
       container.removeEventListener('pointerleave', onPointerLeave)
     }
-  }, [tiltStrength, zSpacing, lerp, reduced])
+  }, [tiltStrength, zSpacing, lerp, reduced, onScreen])
 
   // Sort items so the deepest are painted first; front cards land on top
   // and aren't fighting deeper cards for z-index (though preserve-3d

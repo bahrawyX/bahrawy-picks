@@ -17,6 +17,7 @@ import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 export interface HyperspeedProps {
   /** Forward speed. Default 1. */
@@ -108,6 +109,11 @@ export function Hyperspeed({
 }: HyperspeedProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
+  const active = useOnScreen(mountRef)
+  // Refs let the offscreen gate start/stop the loop without re-running
+  // the setup effect (which would rebuild the GL context).
+  const activeRef = React.useRef(active)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(null)
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -154,20 +160,33 @@ export function Hyperspeed({
     ro.observe(mount)
 
     let raf = 0
+    let running = false
     const start = performance.now()
     const animate = (time: number) => {
       program.uniforms.uTime.value = (time - start) / 1000
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
+    loopRef.current = {
+      start: () => {
+        if (running || reduced) return
+        running = true
+        raf = requestAnimationFrame(animate)
+      },
+      stop: () => {
+        running = false
+        cancelAnimationFrame(raf)
+      },
+    }
     if (reduced) {
       // Reduced motion: draw a single static frame, skip the RAF loop.
       renderer.render({ scene: mesh })
-    } else {
-      raf = requestAnimationFrame(animate)
+    } else if (activeRef.current) {
+      loopRef.current.start()
     }
 
     return () => {
+      loopRef.current = null
       cancelAnimationFrame(raf)
       ro.disconnect()
       if (gl.canvas.parentElement === mount) mount.removeChild(gl.canvas)
@@ -177,6 +196,14 @@ export function Hyperspeed({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speed, density, color, intensity, reduced])
+
+  // Pause the RAF while scrolled offscreen or the tab is hidden — the GL
+  // context and last rendered frame stay intact; resume when visible.
+  React.useEffect(() => {
+    activeRef.current = active
+    if (active) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [active])
 
   return (
     <div

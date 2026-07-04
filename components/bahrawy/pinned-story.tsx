@@ -26,6 +26,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Anton } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 // Register the plugin once per module load (safe in client components).
 if (typeof window !== 'undefined') {
@@ -78,6 +79,10 @@ export function PinnedStory({
   const numberRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const progressRef = React.useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(sectionRef)
+  // Scrubbed timeline progress, mirrored into a ref so the step counter
+  // can derive its readout without per-frame getComputedStyle reads.
+  const tlProgressRef = React.useRef(0)
 
   useGSAP(
     () => {
@@ -131,6 +136,11 @@ export function PinnedStory({
           scrub: 0.5,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+        },
+        // Mirror the scrubbed playhead into a ref — the counter reads the
+        // step from this instead of polling computed opacities.
+        onUpdate: () => {
+          tlProgressRef.current = tl.progress()
         },
       })
 
@@ -359,8 +369,9 @@ export function PinnedStory({
                 <span className="text-white/55">Step</span>{' '}
                 <CounterDisplay
                   total={steps.length}
-                  stepRefs={stepRefs}
+                  progressRef={tlProgressRef}
                   reduced={reduced}
+                  active={onScreen}
                 />
               </div>
             </div>
@@ -372,35 +383,29 @@ export function PinnedStory({
 }
 
 // ---------------------------------------------------------------------------
-// Tiny helper — derives the current step from which step-block has highest
-// opacity. Keeps the readout snappy without subscribing to scroll directly.
+// Tiny helper — derives the current step from the scrubbed timeline's
+// progress (mirrored into a ref by the parent). Each step's crossfade
+// occupies segment [(i−1)/N, i/N]; the incoming step overtakes the outgoing
+// one at the segment midpoint, so the readout flips at (i−0.5)/N.
 // ---------------------------------------------------------------------------
 
 function CounterDisplay({
   total,
-  stepRefs,
+  progressRef,
   reduced,
+  active,
 }: {
   total: number
-  stepRefs: React.MutableRefObject<(HTMLDivElement | null)[]>
+  progressRef: React.MutableRefObject<number>
   reduced: boolean
+  active: boolean
 }) {
   const [current, setCurrent] = React.useState(1)
 
   React.useEffect(() => {
     const compute = () => {
-      let bestI = 0
-      let bestO = -1
-      for (let i = 0; i < stepRefs.current.length; i++) {
-        const el = stepRefs.current[i]
-        if (!el) continue
-        const o = parseFloat(getComputedStyle(el).opacity)
-        if (o > bestO) {
-          bestO = o
-          bestI = i
-        }
-      }
-      setCurrent(bestI + 1)
+      const i = Math.floor(progressRef.current * total + 0.5)
+      setCurrent(Math.min(total, Math.max(1, i + 1)))
     }
 
     // With reduced motion, skip the permanent RAF loop — recompute the
@@ -411,6 +416,9 @@ function CounterDisplay({
       return () => window.removeEventListener('scroll', compute)
     }
 
+    // Offscreen (or hidden tab): hold the last readout — no RAF.
+    if (!active) return
+
     let raf = 0
     const tick = () => {
       compute()
@@ -418,7 +426,7 @@ function CounterDisplay({
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [stepRefs, reduced])
+  }, [progressRef, reduced, active, total])
 
   return (
     <span>

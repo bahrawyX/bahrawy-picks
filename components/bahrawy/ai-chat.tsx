@@ -12,10 +12,16 @@
  * starts.
  *
  * Auto-scrolls as new text arrives.
+ *
+ * Past `virtualizeOver` messages (default 200) the list is windowed
+ * with @tanstack/react-virtual (measured rows, since message heights
+ * vary) and the per-message entrance animation is dropped — it fights
+ * virtualization. Below the threshold messages animate in as before.
  */
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -41,6 +47,8 @@ export interface AIChatProps {
   height?: string | number
   /** Auto-scroll to bottom on new content. Default true. */
   autoScroll?: boolean
+  /** Virtualize the message list once it exceeds this count. Default 200. */
+  virtualizeOver?: number
   className?: string
 }
 
@@ -52,12 +60,26 @@ export function AIChat({
   userAvatar,
   height = '420px',
   autoScroll = true,
+  virtualizeOver = 200,
   className,
 }: AIChatProps) {
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
+  const virtualized = messages.length > virtualizeOver
+
+  const virtualizer = useVirtualizer({
+    count: virtualized ? messages.length : 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 72,
+    overscan: 8,
+  })
+
   React.useEffect(() => {
     if (!autoScroll) return
+    if (virtualized) {
+      virtualizer.scrollToIndex(messages.length - 1, { align: 'end' })
+      return
+    }
     const el = scrollRef.current
     if (el) el.scrollTop = el.scrollHeight
   })
@@ -82,19 +104,59 @@ export function AIChat({
 
       <div
         ref={scrollRef}
+        role="log"
+        aria-live="polite"
         className="flex-1 space-y-4 overflow-y-auto px-4 py-5"
         style={{ maxHeight: height }}
         data-lenis-prevent
       >
-        {messages.map((m) => (
-          <MessageRow
-            key={m.id}
-            message={m}
-            speed={speed}
-            assistantAvatar={assistantAvatar}
-            userAvatar={userAvatar}
-          />
-        ))}
+        {virtualized ? (
+          <div
+            style={{
+              height: virtualizer.getTotalSize(),
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const m = messages[virtualItem.index]
+              return (
+                <div
+                  key={m.id}
+                  data-index={virtualItem.index}
+                  ref={virtualizer.measureElement}
+                  className={
+                    virtualItem.index < messages.length - 1 ? 'pb-4' : undefined
+                  }
+                  style={{
+                    position: 'absolute',
+                    top: virtualItem.start,
+                    left: 0,
+                    width: '100%',
+                  }}
+                >
+                  <MessageRow
+                    message={m}
+                    speed={speed}
+                    assistantAvatar={assistantAvatar}
+                    userAvatar={userAvatar}
+                    animateEntrance={false}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          messages.map((m) => (
+            <MessageRow
+              key={m.id}
+              message={m}
+              speed={speed}
+              assistantAvatar={assistantAvatar}
+              userAvatar={userAvatar}
+            />
+          ))
+        )}
         <AnimatePresence>
           {thinking && (
             <motion.div
@@ -123,11 +185,14 @@ function MessageRow({
   speed,
   assistantAvatar,
   userAvatar,
+  animateEntrance = true,
 }: {
   message: ChatMessage
   speed: number
   assistantAvatar?: React.ReactNode
   userAvatar?: React.ReactNode
+  /** Disabled for virtualized rows — entrance animations fight virtualization. */
+  animateEntrance?: boolean
 }) {
   const isUser = message.role === 'user'
   // Stream the content one char at a time when requested.
@@ -140,7 +205,7 @@ function MessageRow({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
+      initial={animateEntrance ? { opacity: 0, y: 6 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
       className={cn(

@@ -73,7 +73,7 @@ export default function LogsDocs() {
       <DocsSection title="Live (entries stream in)">
         <DemoCard className="min-h-[480px] items-start py-8">
           <div className="w-full max-w-2xl">
-            <Logs entries={live} autoScroll height="380px" />
+            <Logs entries={live} autoScroll live height="380px" />
           </div>
         </DemoCard>
       </DocsSection>
@@ -103,7 +103,9 @@ export default function LogsDocs() {
             ['entries', 'LogEntry[] — { id, timestamp?, level, message, source? }.'],
             ['showFilters', 'Show level filter chips above the stream. Default true.'],
             ['autoScroll', 'Auto-scroll to the bottom on new entries. Default true.'],
+            ['live', 'Show the pulsing "live" pill in the filter bar. Default false.'],
             ['height', 'Max height of the scrolling region. Default "380px".'],
+            ['virtualizeOver', 'Virtualize the rows once filtered entries exceed this count. Default 200.'],
             ['className', 'Extra classes on the outer container.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
@@ -119,7 +121,7 @@ export default function LogsDocs() {
 
       <DocsSection title="Dependencies">
         <div className="flex flex-wrap gap-2">
-          {['framer-motion'].map((d) => (
+          {['framer-motion', '@tanstack/react-virtual'].map((d) => (
             <code key={d} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/80">
               {d}
             </code>

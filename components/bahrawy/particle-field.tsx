@@ -17,6 +17,7 @@ import * as React from 'react'
 import * as THREE from 'three'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 export interface ParticleFieldProps {
   /** Total particles. Default 8000. */
@@ -75,6 +76,11 @@ export function ParticleField({
 }: ParticleFieldProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
+  const active = useOnScreen(mountRef)
+  // Refs let the offscreen gate start/stop the loop without re-running
+  // the setup effect (which would rebuild the GL context).
+  const activeRef = React.useRef(active)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(null)
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -162,6 +168,7 @@ export function ParticleField({
 
     // ── Animation loop ────────────────────────────────────────────
     let raf = 0
+    let running = false
     const animate = (time: number) => {
       const t = time / 1000
 
@@ -214,12 +221,23 @@ export function ParticleField({
       renderer.render(scene, camera)
       raf = requestAnimationFrame(animate)
     }
+    loopRef.current = {
+      start: () => {
+        if (running || reduced) return
+        running = true
+        raf = requestAnimationFrame(animate)
+      },
+      stop: () => {
+        running = false
+        cancelAnimationFrame(raf)
+      },
+    }
     if (reduced) {
       // Reduced motion: draw a single static frame (particles at rest),
       // skip the RAF loop.
       renderer.render(scene, camera)
-    } else {
-      raf = requestAnimationFrame(animate)
+    } else if (activeRef.current) {
+      loopRef.current.start()
     }
 
     // ── Resize ────────────────────────────────────────────────────
@@ -230,12 +248,27 @@ export function ParticleField({
       renderer.setSize(w, h, false)
       camera.aspect = w / h
       camera.updateProjectionMatrix()
-      // Resizing clears the buffer — repaint the static frame.
-      if (reduced) renderer.render(scene, camera)
+      // Keep the grid's world-space aspect in sync with the container so
+      // resizing doesn't skew it.
+      const H3r = (W3 * h) / w
+      for (let i = 0; i < total; i++) {
+        basePositions[i * 3 + 1] =
+          (Math.floor(i / cols) / (rows - 1)) * H3r - H3r / 2
+      }
+      // Resizing clears the buffer — repaint the static frame (snapping
+      // the resting particles onto the recomputed grid first).
+      if (reduced) {
+        for (let i = 0; i < total; i++) {
+          positions[i * 3 + 1] = basePositions[i * 3 + 1]
+        }
+        ;(geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true
+        renderer.render(scene, camera)
+      }
     })
     ro.observe(mount)
 
     return () => {
+      loopRef.current = null
       cancelAnimationFrame(raf)
       ro.disconnect()
       mount.removeEventListener('mousemove', onMove)
@@ -249,6 +282,14 @@ export function ParticleField({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count, color, radius, strength, size, reduced])
+
+  // Pause the RAF while scrolled offscreen or the tab is hidden — the GL
+  // context and last rendered frame stay intact; resume when visible.
+  React.useEffect(() => {
+    activeRef.current = active
+    if (active) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [active])
 
   return (
     <div

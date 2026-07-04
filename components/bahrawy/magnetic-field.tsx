@@ -32,6 +32,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -132,6 +133,13 @@ export function MagneticField({
   const dotsRef = React.useRef<Dot[]>([])
   const dimsRef = React.useRef({ w: 0, h: 0, cols: 0, rows: 0, spacing: 0 })
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(sectionRef)
+  // Refs let the offscreen gate start/stop the RAF loop without re-running
+  // the GSAP setup (which would rebuild the pin + triggers).
+  const onScreenRef = React.useRef(onScreen)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(
+    null,
+  )
 
   useGSAP(
     () => {
@@ -423,16 +431,29 @@ export function MagneticField({
         if (!reduced) raf = requestAnimationFrame(draw)
       }
       drawFrame = draw
+      let running = false
+      loopRef.current = {
+        start: () => {
+          if (running || reduced) return
+          running = true
+          raf = requestAnimationFrame(draw)
+        },
+        stop: () => {
+          running = false
+          cancelAnimationFrame(raf)
+        },
+      }
       if (reduced) {
         draw()
-      } else {
-        raf = requestAnimationFrame(draw)
+      } else if (onScreenRef.current) {
+        loopRef.current.start()
       }
 
       // ----------------------------------------------------------------
       // Cleanup
       // ----------------------------------------------------------------
       return () => {
+        loopRef.current = null
         cancelAnimationFrame(raf)
         window.removeEventListener('resize', resize)
         pinRef.current?.removeEventListener('pointermove', onMove)
@@ -457,6 +478,14 @@ export function MagneticField({
       ],
     },
   )
+
+  // Pause the draw loop while scrolled offscreen or the tab is hidden —
+  // the canvas keeps its last painted frame; resume when visible.
+  React.useEffect(() => {
+    onScreenRef.current = onScreen
+    if (onScreen) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [onScreen])
 
   // For SR + crawlers, the sentence formed by the lines is the meaningful
   // content.

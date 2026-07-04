@@ -32,6 +32,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -92,6 +93,13 @@ export function TypeTunnel({
   // Progress 0→1 from ScrollTrigger.
   const progressRef = React.useRef(0)
   const reduced = usePrefersReducedMotion()
+  const onScreen = useOnScreen(sectionRef)
+  // Refs let the offscreen gate start/stop the RAF loop without re-running
+  // the GSAP setup (which would rebuild the pin + triggers).
+  const onScreenRef = React.useRef(onScreen)
+  const loopRef = React.useRef<{ start: () => void; stop: () => void } | null>(
+    null,
+  )
 
   useGSAP(
     () => {
@@ -212,13 +220,26 @@ export function TypeTunnel({
         if (!reduced) raf = requestAnimationFrame(draw)
       }
       drawFrame = draw
+      let running = false
+      loopRef.current = {
+        start: () => {
+          if (running || reduced) return
+          running = true
+          raf = requestAnimationFrame(draw)
+        },
+        stop: () => {
+          running = false
+          cancelAnimationFrame(raf)
+        },
+      }
       if (reduced) {
         draw()
-      } else {
-        raf = requestAnimationFrame(draw)
+      } else if (onScreenRef.current) {
+        loopRef.current.start()
       }
 
       return () => {
+        loopRef.current = null
         cancelAnimationFrame(raf)
         st.kill()
         finalTween?.scrollTrigger?.kill()
@@ -230,6 +251,14 @@ export function TypeTunnel({
       dependencies: [lines, finalLine, cta, scrollLength, travel, spacing, reduced],
     },
   )
+
+  // Pause the reconciler while scrolled offscreen or the tab is hidden —
+  // the last written frame stays put; resume when visible.
+  React.useEffect(() => {
+    onScreenRef.current = onScreen
+    if (onScreen) loopRef.current?.start()
+    else loopRef.current?.stop()
+  }, [onScreen])
 
   return (
     <div

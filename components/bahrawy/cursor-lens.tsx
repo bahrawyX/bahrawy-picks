@@ -28,6 +28,7 @@
 import * as React from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useOnScreen } from '@/lib/use-on-screen'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -141,11 +142,17 @@ export function CursorLens({
   // softness=1 → 0% solid (full fade).
   const softnessStop = `${(clamp01(1 - softness) * 100).toFixed(1)}%`
 
+  // False while scrolled offscreen or the tab is hidden — pauses the loop.
+  const onScreen = useOnScreen(containerRef)
+
   React.useEffect(() => {
     const container = containerRef.current
     const innerLayer = innerLayerRef.current
     const innerZoom = innerZoomRef.current
     if (!container || !innerLayer) return
+
+    // Offscreen or hidden tab: hold the last frame — no listeners, no RAF.
+    if (!onScreen) return
 
     // Start the lens in the middle so the first move-in animates smoothly
     // toward the cursor rather than jumping from (0,0).
@@ -260,7 +267,7 @@ export function CursorLens({
       container.removeEventListener('pointerleave', onPointerLeave)
       container.removeEventListener('pointerdown', onPointerDown)
     }
-  }, [size, softness, softnessStop, zoom, lerp, showRing, clickToLock])
+  }, [size, softness, softnessStop, zoom, lerp, showRing, clickToLock, onScreen])
 
   const outerAlt =
     outer.alt ?? (typeof outer.title === 'string' ? outer.title : '')
