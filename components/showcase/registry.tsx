@@ -1770,6 +1770,33 @@ export const registry: RegistryEntry[] = [
     category: 'navigation',
     dependencies: ['framer-motion'],
   },
+  {
+    kind: 'docs',
+    id: '176',
+    slug: 'hero-shader-bg',
+    name: 'Hero Shader Background',
+    description: 'Full-bleed animated GPU background stacking four shader layers: two-color Swirl base, cursor-reactive ChromaFlow accent bloom, FlutedGlass refraction ribs, and FilmGrain finish. Light + dark presets, accent color and every layer knob overridable.',
+    category: 'background',
+    dependencies: ['shaders'],
+  },
+  {
+    kind: 'docs',
+    id: '177',
+    slug: 'rolling-text',
+    name: 'Rolling Text',
+    description: 'Agency-style button label roll. Two stacked copies of the label in a one-line overflow-hidden window slide up 50% on hover so the duplicate rolls into place. Includes RollingButton: a ready pill with rolling label + arrow disc that un-rotates -45° to 0°.',
+    category: 'text',
+    dependencies: [],
+  },
+  {
+    kind: 'docs',
+    id: '178',
+    slug: 'expand-button',
+    name: 'Expand Button',
+    description: 'Round icon chip that expands sideways on hover to reveal its label — the "Learn more" pill on portfolio project cards. Pure CSS grid 0fr→1fr column animation (no width measurement), icon un-rotates from -45°, opens on self or parent-card hover.',
+    category: 'ui',
+    dependencies: [],
+  },
 ]
 
 export function getEntry(slug: string): RegistryEntry | undefined {

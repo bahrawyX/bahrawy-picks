@@ -71,6 +71,7 @@ export function SidebarNav({
   width = 248,
   className,
 }: SidebarNavProps) {
+  const id = React.useId()
   const firstItem = sections.flatMap((s) => s.items)[0]?.id ?? ''
   const [activeState, setActiveState] = React.useState(defaultActive ?? firstItem)
   const active = activeProp ?? activeState
@@ -174,7 +175,7 @@ export function SidebarNav({
                             >
                               {isActive && (
                                 <motion.span
-                                  layoutId="sidebar-nav-active"
+                                  layoutId={`sidebar-nav-active-${id}`}
                                   className="absolute inset-0 rounded-[10px]"
                                   style={{
                                     background: `linear-gradient(180deg, ${accent}38 0%, ${accent}22 100%)`,

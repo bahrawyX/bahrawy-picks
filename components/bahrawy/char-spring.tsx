@@ -12,6 +12,7 @@
 import * as React from 'react'
 import { motion, useInView } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface CharSpringProps {
   children: string
@@ -36,6 +37,8 @@ export function CharSpring({
 }: CharSpringProps) {
   const ref = React.useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: !replay, amount: 0.5 })
+  // Reduced motion: chars sit at their end state — no spring-up entrance.
+  const reduced = usePrefersReducedMotion()
   const chars = [...children]
 
   return (
@@ -51,15 +54,21 @@ export function CharSpring({
         <motion.span
           key={i}
           aria-hidden
-          initial={{ y: '110%', opacity: 0 }}
-          animate={inView ? { y: 0, opacity: 1 } : { y: '110%', opacity: 0 }}
-          transition={{
-            type: 'spring',
-            stiffness,
-            damping,
-            mass: 0.6,
-            delay: i * stagger,
-          }}
+          initial={reduced ? false : { y: '110%', opacity: 0 }}
+          animate={
+            reduced || inView ? { y: 0, opacity: 1 } : { y: '110%', opacity: 0 }
+          }
+          transition={
+            reduced
+              ? { duration: 0 }
+              : {
+                  type: 'spring',
+                  stiffness,
+                  damping,
+                  mass: 0.6,
+                  delay: i * stagger,
+                }
+          }
           className="inline-block whitespace-pre"
         >
           {ch === ' ' ? ' ' : ch}

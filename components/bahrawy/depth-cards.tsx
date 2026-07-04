@@ -27,6 +27,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -100,10 +101,27 @@ export function DepthCards({
     active: false,
   })
 
+  const reduced = usePrefersReducedMotion()
+
   React.useEffect(() => {
     const container = containerRef.current
     const pivot = pivotRef.current
     if (!container || !pivot) return
+
+    // Reduced motion: no tilt RAF — lay the cards out at their static
+    // depth positions once and skip pointer tracking entirely.
+    if (reduced) {
+      pivot.style.transform = 'rotateX(0deg) rotateY(0deg)'
+      for (let i = 0; i < cardRefs.current.length; i++) {
+        const el = cardRefs.current[i]
+        if (!el) continue
+        const depth = Number(el.dataset.depth ?? 0)
+        const z = -depth * zSpacing
+        const scale = 1 - depth * 0.045
+        el.style.transform = `translate3d(0px, 0px, ${z}px) scale(${scale})`
+      }
+      return
+    }
 
     const onPointerMove = (e: PointerEvent) => {
       const r = container.getBoundingClientRect()
@@ -155,7 +173,7 @@ export function DepthCards({
       container.removeEventListener('pointermove', onPointerMove)
       container.removeEventListener('pointerleave', onPointerLeave)
     }
-  }, [tiltStrength, zSpacing, lerp])
+  }, [tiltStrength, zSpacing, lerp, reduced])
 
   // Sort items so the deepest are painted first; front cards land on top
   // and aren't fighting deeper cards for z-index (though preserve-3d

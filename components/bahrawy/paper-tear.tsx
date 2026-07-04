@@ -32,6 +32,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -188,14 +189,21 @@ export function PaperTear({
     [detail, jitter, seed],
   )
 
+  const reduced = usePrefersReducedMotion()
+
   useGSAP(
     () => {
       if (!sectionRef.current || !pinRef.current) return
 
-      // Bottom content starts dimmed — comes alive after the tear.
+      // Bottom content starts dimmed — comes alive after the tear. With
+      // reduced motion the reveals are pure opacity fades (no drift).
       if (bottomContentRef.current)
-        gsap.set(bottomContentRef.current, { autoAlpha: 0.5, y: 18 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 14 })
+        gsap.set(bottomContentRef.current, {
+          autoAlpha: 0.5,
+          y: reduced ? 0 : 18,
+        })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -209,23 +217,32 @@ export function PaperTear({
         },
       })
 
-      // The top sheet lifts up + tilts + fades.
+      // The top sheet lifts up + tilts + fades. With reduced motion the
+      // big lift/tilt is replaced by a simple scrubbed crossfade.
       if (topRef.current) {
-        tl.to(
-          topRef.current,
-          {
-            y: '-110%',
-            rotation: -3.5,
-            duration: 1,
-            ease: 'power3.in',
-          },
-          0,
-        )
-        tl.to(
-          topRef.current,
-          { autoAlpha: 0.85, duration: 1, ease: 'none' },
-          0,
-        )
+        if (reduced) {
+          tl.to(
+            topRef.current,
+            { autoAlpha: 0, duration: 1, ease: 'none' },
+            0,
+          )
+        } else {
+          tl.to(
+            topRef.current,
+            {
+              y: '-110%',
+              rotation: -3.5,
+              duration: 1,
+              ease: 'power3.in',
+            },
+            0,
+          )
+          tl.to(
+            topRef.current,
+            { autoAlpha: 0.85, duration: 1, ease: 'none' },
+            0,
+          )
+        }
       }
       // Bottom content reveals as the top clears.
       if (bottomContentRef.current) {
@@ -256,7 +273,7 @@ export function PaperTear({
     },
     {
       scope: sectionRef,
-      dependencies: [top, bottom, cta, scrollLength, paths],
+      dependencies: [top, bottom, cta, scrollLength, paths, reduced],
     },
   )
 

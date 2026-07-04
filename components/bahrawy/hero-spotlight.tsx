@@ -27,6 +27,28 @@ export interface HeroSpotlightProps {
 
 const SMOOTH = { stiffness: 220, damping: 32, mass: 0.6 }
 
+/** Renders an `<a>` when the CTA has an href, otherwise a `<button>` with identical styling. */
+function CtaAction({
+  cta,
+  className,
+}: {
+  cta: { label: string; href?: string; onClick?: () => void }
+  className: string
+}) {
+  if (cta.href) {
+    return (
+      <a href={cta.href} onClick={cta.onClick} className={className}>
+        {cta.label}
+      </a>
+    )
+  }
+  return (
+    <button type="button" onClick={cta.onClick} className={className}>
+      {cta.label}
+    </button>
+  )
+}
+
 export function HeroSpotlight({
   eyebrow,
   title,
@@ -122,22 +144,16 @@ export function HeroSpotlight({
             className="mt-2 flex flex-wrap items-center justify-center gap-3"
           >
             {primaryCta && (
-              <a
-                href={primaryCta.href ?? '#'}
-                onClick={primaryCta.onClick}
+              <CtaAction
+                cta={primaryCta}
                 className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
-              >
-                {primaryCta.label}
-              </a>
+              />
             )}
             {secondaryCta && (
-              <a
-                href={secondaryCta.href ?? '#'}
-                onClick={secondaryCta.onClick}
+              <CtaAction
+                cta={secondaryCta}
                 className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10"
-              >
-                {secondaryCta.label}
-              </a>
+              />
             )}
           </motion.div>
         )}

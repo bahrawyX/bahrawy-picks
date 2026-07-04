@@ -22,6 +22,7 @@
 import * as React from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -55,6 +56,8 @@ export function StretchText({
   className,
 }: StretchTextProps) {
   const wrapperRef = React.useRef<HTMLSpanElement>(null)
+  // Reduced motion: no pointer-driven stretching — letters stay at rest.
+  const reduced = usePrefersReducedMotion()
   // Cursor X relative to the wrapper. -1 = inactive (cursor outside).
   const cursorX = useMotionValue<number>(-1)
 
@@ -68,11 +71,16 @@ export function StretchText({
   }
   const onPointerLeave = () => cursorX.set(-1)
 
+  // If the preference flips mid-hover, release any active stretch.
+  React.useEffect(() => {
+    if (reduced) cursorX.set(-1)
+  }, [reduced, cursorX])
+
   return (
     <span
       ref={wrapperRef}
-      onPointerMove={onPointerMove}
-      onPointerLeave={onPointerLeave}
+      onPointerMove={reduced ? undefined : onPointerMove}
+      onPointerLeave={reduced ? undefined : onPointerLeave}
       className={cn(
         'inline-flex select-none font-display',
         className,

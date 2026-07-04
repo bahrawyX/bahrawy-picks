@@ -48,6 +48,7 @@ export default function HeroMarqueeDocs() {
             ['primaryCta', '{ label, href? } — solid button.'],
             ['secondaryCta', '{ label, href? } — outlined button.'],
             ['rows', 'HeroMarqueeRow[] — customize words, direction, speed per row.'],
+            ['pauseOnHover', 'Pause every row while the section is hovered. Default true.'],
             ['minHeight', 'CSS min-height. Default 100vh.'],
             ['className', 'Extra classes on the section.'],
           ].map(([n, b]) => (

@@ -9,6 +9,7 @@ import {
   updateParticle,
   drawParticle,
 } from '@/lib/confetti-utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface ConfettiCanvasRef {
   fire: (overrides?: Partial<ConfettiConfig>) => void
@@ -26,6 +27,7 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
     const particlesRef = useRef<Particle[]>([])
     const animFrameRef = useRef<number>(0)
     const isRunning = useRef(false)
+    const reduced = usePrefersReducedMotion()
 
     const animate = useCallback(() => {
       const canvas = canvasRef.current
@@ -50,6 +52,8 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
 
     const fire = useCallback(
       (overrides?: Partial<ConfettiConfig>) => {
+        // Reduced motion: firing is a no-op — no particles are spawned.
+        if (reduced) return
         const canvas = canvasRef.current
         if (!canvas) return
 
@@ -62,7 +66,7 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
           animFrameRef.current = requestAnimationFrame(animate)
         }
       },
-      [animate],
+      [animate, reduced],
     )
 
     useImperativeHandle(ref, () => ({ fire }), [fire])

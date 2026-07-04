@@ -18,6 +18,7 @@
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 export interface TabItem {
   id: string
@@ -49,6 +50,7 @@ export function Tabs({
   )
   const active = value ?? internal
   const indicatorId = React.useId()
+  const uid = React.useId()
 
   const select = (id: string) => {
     if (value === undefined) setInternal(id)
@@ -56,6 +58,16 @@ export function Tabs({
   }
 
   const activeItem = items.find((i) => i.id === active) ?? items[0]
+  const activeIndex = Math.max(0, items.findIndex((i) => i.id === active))
+
+  const roving = useRovingTabindex({
+    count: items.length,
+    focusIndex: activeIndex,
+    onNavigate: (index) => {
+      const item = items[index]
+      if (item) select(item.id)
+    },
+  })
 
   return (
     <div className={cn('w-full', className)}>
@@ -63,15 +75,18 @@ export function Tabs({
         role="tablist"
         className="relative flex items-center gap-1 border-b border-white/10"
       >
-        {items.map((item) => {
+        {items.map((item, index) => {
           const isActive = item.id === active
           return (
             <button
               key={item.id}
               type="button"
               role="tab"
+              id={`${uid}-tab-${item.id}`}
               aria-selected={isActive}
+              aria-controls={`${uid}-panel-${item.id}`}
               onClick={() => select(item.id)}
+              {...roving.getItemProps(index)}
               className="relative px-4 py-2.5 text-sm font-medium text-white/60 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
               style={{ color: isActive ? accentColor : undefined }}
             >
@@ -94,6 +109,8 @@ export function Tabs({
           <motion.div
             key={active}
             role="tabpanel"
+            id={`${uid}-panel-${activeItem?.id}`}
+            aria-labelledby={`${uid}-tab-${activeItem?.id}`}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}

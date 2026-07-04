@@ -145,7 +145,7 @@ export function Calendar(props: CalendarProps) {
     () => weekdayHeaders(weekStartsOn, locale),
     [weekStartsOn, locale],
   )
-  const layoutId = React.useId().replace(/[^a-zA-Z0-9]/g, '')
+  const id = React.useId()
 
   return (
     <div
@@ -220,7 +220,9 @@ export function Calendar(props: CalendarProps) {
             >
               {selected && (
                 <motion.span
-                  layoutId={`calendar-sel-${layoutId}`}
+                  // In multiple mode several selected days are visible at once,
+                  // so a shared layoutId would animate one pill between them.
+                  {...(mode === 'single' ? { layoutId: `calendar-selected-${id}` } : {})}
                   className="absolute inset-0 rounded-full"
                   style={{
                     background:

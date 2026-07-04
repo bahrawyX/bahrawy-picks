@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,6 +32,10 @@ export function ScrollProgress({
 }: ScrollProgressProps) {
   const progress = useMotionValue(0)
   const smoothProgress = useSpring(progress, { stiffness: 100, damping: 30, mass: 0.5 })
+  const reduced = usePrefersReducedMotion()
+  // Reduced motion: keep the (scroll-linked, user-driven) bar but drop the
+  // spring smoothing so it tracks the scroll position directly.
+  const barProgress = reduced ? progress : smoothProgress
   const [percent, setPercent] = useState(0)
 
   useEffect(() => {
@@ -54,6 +59,7 @@ export function ScrollProgress({
     <>
       <motion.div
         data-testid="scroll-progress"
+        aria-hidden="true"
         className={cn(
           'fixed z-50',
           position === 'top' && 'left-0 right-0 top-0',
@@ -74,13 +80,13 @@ export function ScrollProgress({
             isHorizontal
               ? {
                   height: '100%',
-                  scaleX: smoothProgress,
+                  scaleX: barProgress,
                   transformOrigin: position === 'top' || position === 'bottom' ? 'left' : 'right',
                 }
               : {
                   width: '100%',
                   height: '100%',
-                  scaleY: smoothProgress,
+                  scaleY: barProgress,
                   transformOrigin: position === 'left' ? 'bottom' : 'top',
                 }
           }

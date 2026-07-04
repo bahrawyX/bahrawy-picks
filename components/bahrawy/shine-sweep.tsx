@@ -43,8 +43,10 @@ export function ShineSweep({
         backgroundPosition: '100% 50%',
         WebkitBackgroundClip: 'text',
         backgroundClip: 'text',
+        // Fill is hidden via -webkit-text-fill-color only. Setting `color:
+        // transparent` here would also blank the gradient's currentColor
+        // stops, leaving the text invisible outside the shine band.
         WebkitTextFillColor: 'transparent',
-        color: 'transparent',
       }}
     >
       {children}

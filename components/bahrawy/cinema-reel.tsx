@@ -23,6 +23,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight, Disc3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -96,6 +97,7 @@ export function CinemaReel({
   const progressRef = React.useRef(0)
 
   const N = frames.length
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -113,47 +115,22 @@ export function CinemaReel({
       // We compute pixel translations in the RAF loop so resizes are
       // handled cleanly; here we just animate `progressRef.current` via
       // the timeline and apply transforms each frame.
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: () => `+=${scrollLength * window.innerHeight}`,
-          pin: pinRef.current,
-          scrub: 0.35,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            progressRef.current = self.progress
-          },
-        },
-      })
 
-      if (eyebrowRef.current) {
-        tl.to(
-          eyebrowRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.05, ease: 'power2.out' },
-          0,
-        )
-      }
-      if (ctaRef.current) {
-        tl.to(
-          ctaRef.current,
-          { autoAlpha: 1, y: 0, duration: 0.06, ease: 'power2.out' },
-          0.92,
-        )
-      }
-
-      // ---- RAF reconciler -----------------------------------------------
+      // ---- Reconciler -----------------------------------------------------
       // Reads `progressRef.current` and writes:
       //   - strip translateX
       //   - sprocket strip translateX (in sync with main strip)
       //   - per-frame scale + brightness + opacity based on distance from
       //     the centered "playhead" position
       //   - reel hub rotation (proportional to progress)
+      // Runs as a permanent RAF loop normally; with reduced motion it is
+      // invoked directly from scroll updates instead (positions are set
+      // without a running animation loop, and the decorative reel spin /
+      // frame scale are skipped).
       let raf = 0
       const draw = () => {
         if (!stripRef.current || !pinRef.current) {
-          raf = requestAnimationFrame(draw)
+          if (!reduced) raf = requestAnimationFrame(draw)
           return
         }
         const p = progressRef.current
@@ -192,25 +169,65 @@ export function CinemaReel({
           const t = Math.max(0, 1 - dist)
           const scale = 0.92 + t * 0.08
           const opacity = 0.32 + t * 0.68
-          el.style.transform = `scale(${scale})`
+          if (!reduced) el.style.transform = `scale(${scale})`
           el.style.opacity = String(opacity)
         }
 
         // Reel hubs spin proportional to progress. The strip moves left,
         // so the left reel "pays out" (counter-clockwise from viewer) and
         // the right reel "takes up" (clockwise). Make it look like a real
-        // projector.
-        const spin = p * 360 * Math.max(1, N) // amount of total rotation
-        if (leftReelRef.current) {
-          leftReelRef.current.style.transform = `rotate(${-spin}deg)`
-        }
-        if (rightReelRef.current) {
-          rightReelRef.current.style.transform = `rotate(${-spin}deg)`
+        // projector. Skipped when reduced motion is preferred.
+        if (!reduced) {
+          const spin = p * 360 * Math.max(1, N) // amount of total rotation
+          if (leftReelRef.current) {
+            leftReelRef.current.style.transform = `rotate(${-spin}deg)`
+          }
+          if (rightReelRef.current) {
+            rightReelRef.current.style.transform = `rotate(${-spin}deg)`
+          }
         }
 
+        if (!reduced) raf = requestAnimationFrame(draw)
+      }
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: () => `+=${scrollLength * window.innerHeight}`,
+          pin: pinRef.current,
+          scrub: 0.35,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            progressRef.current = self.progress
+            // No RAF loop with reduced motion — set positions directly.
+            if (reduced) draw()
+          },
+        },
+      })
+
+      if (eyebrowRef.current) {
+        tl.to(
+          eyebrowRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.05, ease: 'power2.out' },
+          0,
+        )
+      }
+      if (ctaRef.current) {
+        tl.to(
+          ctaRef.current,
+          { autoAlpha: 1, y: 0, duration: 0.06, ease: 'power2.out' },
+          0.92,
+        )
+      }
+
+      if (reduced) {
+        // Paint the current scroll position once; onUpdate handles the rest.
+        draw()
+      } else {
         raf = requestAnimationFrame(draw)
       }
-      raf = requestAnimationFrame(draw)
 
       return () => {
         cancelAnimationFrame(raf)
@@ -218,7 +235,7 @@ export function CinemaReel({
     },
     {
       scope: sectionRef,
-      dependencies: [frames, scrollLength, frameWidth, accentColor],
+      dependencies: [frames, scrollLength, frameWidth, accentColor, reduced],
     },
   )
 

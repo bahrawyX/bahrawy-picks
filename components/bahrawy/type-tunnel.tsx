@@ -31,6 +31,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -90,6 +91,7 @@ export function TypeTunnel({
 
   // Progress 0→1 from ScrollTrigger.
   const progressRef = React.useRef(0)
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -105,10 +107,14 @@ export function TypeTunnel({
         el.style.opacity = i === 0 ? '0.2' : '0'
       })
       if (finalRef.current)
-        gsap.set(finalRef.current, { autoAlpha: 0, y: 18 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 14 })
+        gsap.set(finalRef.current, { autoAlpha: 0, y: reduced ? 0 : 18 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
 
       // -------- Pin + scrubbed progress --------
+      // Assigned below once the reconciler exists — the reduced-motion
+      // path repaints directly on scroll updates instead of via RAF.
+      let drawFrame: (() => void) | null = null
       const st = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
@@ -119,6 +125,7 @@ export function TypeTunnel({
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           progressRef.current = self.progress
+          if (reduced) drawFrame?.()
         },
       })
 
@@ -165,6 +172,9 @@ export function TypeTunnel({
       const nearLimit = 220 // start fade-in this far behind the camera
       const closeLimit = 90 // start fade-out this far past the camera
 
+      // With reduced motion the lines don't fly along Z — they hold a
+      // static centered position and simply crossfade using the same
+      // opacity envelope, repainted from scroll updates (no RAF loop).
       let raf = 0
       const draw = () => {
         const p = progressRef.current
@@ -174,11 +184,14 @@ export function TypeTunnel({
           if (!el) continue
           const baseZ = -i * spacing
           const z = baseZ + shift
+          const transform = reduced
+            ? 'translate3d(-50%, -50%, 0)'
+            : `translate3d(-50%, -50%, ${z}px)`
           // Cull lines that are far from the camera so we skip layout
           // entirely.
           if (z > closeLimit + 220 || z < -nearLimit * 1.4) {
             el.style.opacity = '0'
-            el.style.transform = `translate3d(-50%, -50%, ${z}px)`
+            el.style.transform = transform
             continue
           }
           // Tight opacity envelope — fast in, fast out, single line on
@@ -194,11 +207,16 @@ export function TypeTunnel({
             opacity = t * t
           }
           el.style.opacity = String(opacity)
-          el.style.transform = `translate3d(-50%, -50%, ${z}px)`
+          el.style.transform = transform
         }
+        if (!reduced) raf = requestAnimationFrame(draw)
+      }
+      drawFrame = draw
+      if (reduced) {
+        draw()
+      } else {
         raf = requestAnimationFrame(draw)
       }
-      raf = requestAnimationFrame(draw)
 
       return () => {
         cancelAnimationFrame(raf)
@@ -209,7 +227,7 @@ export function TypeTunnel({
     },
     {
       scope: sectionRef,
-      dependencies: [lines, finalLine, cta, scrollLength, travel, spacing],
+      dependencies: [lines, finalLine, cta, scrollLength, travel, spacing, reduced],
     },
   )
 

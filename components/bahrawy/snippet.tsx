@@ -63,6 +63,14 @@ export function Snippet({
   )
   const active = tabs.find((t) => t.label === activeLabel) ?? tabs[0]
   const [copied, setCopied] = React.useState(false)
+  const copyTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null)
+
+  // Clear any pending copy-feedback reset on unmount.
+  React.useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+    }
+  }, [])
 
   const handleCopy = async () => {
     if (!active) return
@@ -70,7 +78,8 @@ export function Snippet({
       await navigator.clipboard.writeText(active.code)
       onCopy?.(active)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1100)
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+      copyTimerRef.current = setTimeout(() => setCopied(false), 1100)
     } catch {
       /* clipboard blocked */
     }
@@ -170,6 +179,8 @@ function TabBar({
   activeLabel?: string
   onChange: (label: string) => void
 }) {
+  // Scope the shared-layout pill per instance so multiple Snippets don't collide.
+  const id = React.useId()
   return (
     <div
       role="tablist"
@@ -191,7 +202,7 @@ function TabBar({
           >
             {isActive && (
               <motion.span
-                layoutId="snippet-tab-pill"
+                layoutId={`snippet-tab-pill-${id}`}
                 className="absolute inset-0 rounded-md bg-white/[0.08]"
                 transition={SPRING}
               />

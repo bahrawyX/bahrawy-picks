@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Star, Heart, ThumbsUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { springSnappy } from '@/lib/motion'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -79,6 +80,28 @@ export function RatingInput({
 
   const interactive = !disabled && !readOnly
 
+  // Roving tabindex: arrows move between stars (half-steps when allowHalf)
+  // and selection follows focus.
+  const useHalfSteps = allowHalf && variant !== 'emoji'
+  const itemCount = useHalfSteps ? max * 2 : max
+  const valueForIndex = useCallback(
+    (i: number) => (useHalfSteps ? (i + 1) / 2 : i + 1),
+    [useHalfSteps],
+  )
+  const indexForValue = (val: number) =>
+    val <= 0 ? 0 : (useHalfSteps ? Math.round(val * 2) : Math.ceil(val)) - 1
+
+  const roving = useRovingTabindex({
+    count: itemCount,
+    onNavigate: (i) => {
+      if (!interactive) return
+      const val = valueForIndex(i)
+      if (!isControlled) setInternalValue(val)
+      onChange?.(val)
+    },
+    focusIndex: Math.min(indexForValue(currentValue), itemCount - 1),
+  })
+
   return (
     <div
       className={cn('flex items-center gap-2', className)}
@@ -99,6 +122,7 @@ export function RatingInput({
               <motion.button
                 key={i}
                 type="button"
+                {...roving.getItemProps(i)}
                 onClick={() => handleSelect(starIndex)}
                 onMouseEnter={() => interactive && setHoverValue(starIndex)}
                 disabled={disabled}
@@ -147,6 +171,7 @@ export function RatingInput({
                 {/* Left half */}
                 <button
                   type="button"
+                  {...roving.getItemProps(i * 2)}
                   onClick={() => handleSelect(halfVal)}
                   onMouseEnter={(e) => {
                     e.stopPropagation()
@@ -164,6 +189,7 @@ export function RatingInput({
                 {/* Right half */}
                 <button
                   type="button"
+                  {...roving.getItemProps(i * 2 + 1)}
                   onClick={() => handleSelect(starIndex)}
                   onMouseEnter={(e) => {
                     e.stopPropagation()
@@ -224,6 +250,7 @@ export function RatingInput({
             <motion.button
               key={i}
               type="button"
+              {...roving.getItemProps(i)}
               onClick={() => handleSelect(starIndex)}
               onMouseEnter={() => interactive && setHoverValue(starIndex)}
               disabled={disabled}

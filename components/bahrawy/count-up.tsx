@@ -9,6 +9,7 @@ import {
   motion,
 } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -53,6 +54,7 @@ export function CountUp({
   })
   const isInView = useInView(ref, { once: true, margin: '0px' })
   const hasAnimated = useRef(false)
+  const reduced = usePrefersReducedMotion()
 
   // Format the spring value as display text
   const displayValue = useTransform(springValue, (latest) => {
@@ -71,12 +73,19 @@ export function CountUp({
   useEffect(() => {
     if (isInView && !hasAnimated.current) {
       hasAnimated.current = true
+      // Reduced motion: jump straight to the final value — no spring, no
+      // delay. The springValue change listener below fires onComplete once.
+      if (reduced) {
+        motionValue.jump(to)
+        springValue.jump(to)
+        return
+      }
       const timer = setTimeout(() => {
         motionValue.set(to)
       }, delay * 1000)
       return () => clearTimeout(timer)
     }
-  }, [isInView, motionValue, to, delay])
+  }, [isInView, motionValue, springValue, to, delay, reduced])
 
   // onComplete when spring settles
   useEffect(() => {

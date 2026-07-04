@@ -16,6 +16,7 @@
 import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface HyperspeedProps {
   /** Forward speed. Default 1. */
@@ -106,6 +107,7 @@ export function Hyperspeed({
   className,
 }: HyperspeedProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -144,6 +146,8 @@ export function Hyperspeed({
       if (w === 0 || h === 0) return
       renderer.setSize(w, h)
       program.uniforms.uResolution.value = [w, h]
+      // Resizing clears the buffer — repaint the static frame.
+      if (reduced) renderer.render({ scene: mesh })
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -156,7 +160,12 @@ export function Hyperspeed({
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (reduced) {
+      // Reduced motion: draw a single static frame, skip the RAF loop.
+      renderer.render({ scene: mesh })
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
@@ -167,7 +176,7 @@ export function Hyperspeed({
       ext?.loseContext()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speed, density, color, intensity])
+  }, [speed, density, color, intensity, reduced])
 
   return (
     <div

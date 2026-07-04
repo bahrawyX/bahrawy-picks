@@ -16,6 +16,7 @@ import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export interface AppShellItem {
   href?: string
@@ -54,6 +55,20 @@ export function AppShell({
   className,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const drawerRef = React.useRef<HTMLElement>(null)
+
+  // Focus: move into the mobile drawer while open, restore on close.
+  useFocusTrap(drawerRef, mobileOpen)
+
+  // Close the mobile drawer on Escape.
+  React.useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
 
   return (
     <div
@@ -97,12 +112,14 @@ export function AppShell({
             />
             <motion.aside
               key="drawer"
+              ref={drawerRef}
+              tabIndex={-1}
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={SPRING}
               style={{ width: 288 }}
-              className="absolute inset-y-0 left-0 z-40 flex flex-col border-r border-white/[0.06] backdrop-blur-2xl md:hidden"
+              className="absolute inset-y-0 left-0 z-40 flex flex-col border-r border-white/[0.06] outline-none backdrop-blur-2xl md:hidden"
             >
               <div
                 aria-hidden

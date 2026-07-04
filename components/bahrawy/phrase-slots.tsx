@@ -26,6 +26,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Anton } from 'next/font/google'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -102,18 +103,24 @@ export function PhraseSlots({
   const headingRef = React.useRef<HTMLHeadingElement>(null)
   const descRef = React.useRef<HTMLParagraphElement>(null)
   const ctaRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
       if (!sectionRef.current || !pinRef.current) return
 
-      // Initial states.
-      if (eyebrowRef.current) gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
-      if (headingRef.current) gsap.set(headingRef.current, { autoAlpha: 0, y: 16 })
+      // Initial states. With reduced motion the translate offsets are
+      // zeroed so every reveal is a pure opacity fade.
+      if (eyebrowRef.current)
+        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
+      if (headingRef.current)
+        gsap.set(headingRef.current, { autoAlpha: 0, y: reduced ? 0 : 16 })
       if (underlineRef.current)
         gsap.set(underlineRef.current, { scaleX: 0, transformOrigin: '0% 50%' })
-      if (descRef.current) gsap.set(descRef.current, { autoAlpha: 0, y: 12 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
+      if (descRef.current)
+        gsap.set(descRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -151,17 +158,28 @@ export function PhraseSlots({
         // Spread landings between 0.20 and 0.84 of the timeline.
         const landAt = 0.2 + (i / last) * 0.64
 
-        tl.fromTo(
-          columnRefs.current[i],
-          { y: 0 },
-          {
-            y: -offsetPx,
-            // power3.out feels like a slot reel slowing down at the end.
-            ease: 'power3.out',
-            duration: landAt,
-          },
-          0,
-        )
+        if (reduced) {
+          // No slot-reel spin — the column sits on its target word and
+          // simply fades in at its landing point.
+          gsap.set(columnRefs.current[i], { y: -offsetPx, autoAlpha: 0 })
+          tl.to(
+            columnRefs.current[i],
+            { autoAlpha: 1, duration: 0.1, ease: 'power2.out' },
+            Math.max(0, landAt - 0.1),
+          )
+        } else {
+          tl.fromTo(
+            columnRefs.current[i],
+            { y: 0 },
+            {
+              y: -offsetPx,
+              // power3.out feels like a slot reel slowing down at the end.
+              ease: 'power3.out',
+              duration: landAt,
+            },
+            0,
+          )
+        }
       })
 
       // Underline draws once the last slot lands.
@@ -189,7 +207,7 @@ export function PhraseSlots({
         )
       }
     },
-    { scope: sectionRef, dependencies: [slots, scrollLength, slotHeight] },
+    { scope: sectionRef, dependencies: [slots, scrollLength, slotHeight, reduced] },
   )
 
   // For SR users + crawlers: the meaningful content is the target sentence.

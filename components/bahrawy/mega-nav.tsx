@@ -15,12 +15,18 @@
  * categories crossfades the inner content while the panel itself
  * holds its open state, so it reads as one continuous surface
  * (no flicker). Apple spring physics (stiffness 380 / damping 32).
+ *
+ * Keyboard: triggers are buttons — click/Enter/Space toggles the panel
+ * (hover-intent still works for mouse), Escape closes and restores
+ * focus to the trigger. Opening via keyboard moves focus into the
+ * panel, where a roving tabindex (arrows/Home/End) walks the links.
  */
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRight, Menu as MenuIcon, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -88,6 +94,9 @@ export function MegaNav({
   const [scrolled, setScrolled] = React.useState(false)
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const closeTimer = React.useRef<number | null>(null)
+  const panelId = React.useId()
+  const triggerRefs = React.useRef<(HTMLButtonElement | null)[]>([])
+  const focusPanelRef = React.useRef(false)
 
   const openMenu = React.useCallback((i: number) => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current)
@@ -111,16 +120,54 @@ export function MegaNav({
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // Return focus to the trigger that owns the open panel.
+        if (openIndex !== null) triggerRefs.current[openIndex]?.focus()
         setOpenIndex(null)
         setMobileOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [openIndex])
 
   const active = openIndex !== null ? items[openIndex] : null
   const hasMega = (it: MegaNavItem | null) => !!it?.sections?.length
+
+  // Roving tabindex across the open panel's links (flattened across
+  // sections) — arrows in any direction move focus, Home/End jump.
+  const panelLinkCount =
+    active?.sections?.reduce((n, s) => n + s.links.length, 0) ?? 0
+  const [panelIndex, setPanelIndex] = React.useState(0)
+  const roving = useRovingTabindex({
+    count: panelLinkCount,
+    orientation: 'both',
+    onNavigate: setPanelIndex,
+    focusIndex: Math.min(panelIndex, Math.max(0, panelLinkCount - 1)),
+  })
+  const { focusItem } = roving
+
+  // Start each newly opened panel from its first link.
+  React.useEffect(() => {
+    setPanelIndex(0)
+  }, [openIndex])
+
+  // When the panel was opened via click/Enter/Space, move focus into it.
+  React.useEffect(() => {
+    if (openIndex !== null && focusPanelRef.current) {
+      focusPanelRef.current = false
+      focusItem(0)
+    }
+  }, [openIndex, focusItem])
+
+  // Per-section offsets into the flattened link list.
+  const sectionOffsets: number[] = []
+  if (active?.sections) {
+    let acc = 0
+    for (const s of active.sections) {
+      sectionOffsets.push(acc)
+      acc += s.links.length
+    }
+  }
 
   return (
     <header
@@ -190,9 +237,28 @@ export function MegaNav({
                       </a>
                     ) : (
                       <button
+                        ref={(el) => {
+                          triggerRefs.current[i] = el
+                        }}
                         type="button"
+                        onClick={() => {
+                          if (!mega) return
+                          if (isOpen) {
+                            setOpenIndex(null)
+                          } else {
+                            // Click / Enter / Space: open and move focus
+                            // into the panel once it mounts. Skip the
+                            // auto-focus when switching between panels —
+                            // the crossfade (mode="wait") delays the new
+                            // links' mount, so there is nothing to focus
+                            // yet; Tab still reaches the panel.
+                            focusPanelRef.current = openIndex === null
+                            openMenu(i)
+                          }
+                        }}
                         aria-expanded={isOpen}
                         aria-haspopup={mega || undefined}
+                        aria-controls={mega ? panelId : undefined}
                         className={cn(
                           cls,
                           isOpen ? 'text-white' : 'text-white/85 hover:text-white',
@@ -228,6 +294,7 @@ export function MegaNav({
           {active && hasMega(active) && (
             <motion.div
               key="mega"
+              id={panelId}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -262,6 +329,7 @@ export function MegaNav({
                           {section.links.map((link, k) => (
                             <li key={k}>
                               <a
+                                {...roving.getItemProps(sectionOffsets[j] + k)}
                                 href={link.href ?? '#'}
                                 target={link.external ? '_blank' : undefined}
                                 rel={link.external ? 'noopener noreferrer' : undefined}

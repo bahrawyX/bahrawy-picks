@@ -20,6 +20,7 @@
 import * as React from 'react'
 import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -114,9 +115,25 @@ export function StaggerReveal({
 }: StaggerRevealProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once, amount: threshold })
+  const reduced = usePrefersReducedMotion()
 
-  const containerVariants = getContainerVariants(stagger, delay)
-  const itemVariants = getItemVariants(direction, distance, duration)
+  const containerVariants = getContainerVariants(
+    reduced ? 0 : stagger,
+    reduced ? 0 : delay,
+  )
+  // Reduced motion: collapse to the visible end state — no offset or fade.
+  const itemVariants: Variants = reduced
+    ? {
+        hidden: { opacity: 1, x: 0, y: 0, scale: 1 },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          transition: { duration: 0 },
+        },
+      }
+    : getItemVariants(direction, distance, duration)
 
   return (
     <motion.div

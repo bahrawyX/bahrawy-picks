@@ -31,6 +31,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -97,23 +98,33 @@ export function TimeDial({
   const ctaRef = React.useRef<HTMLDivElement>(null)
 
   const N = chapters.length
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
       if (!sectionRef.current || !pinRef.current) return
 
       // ---- Initial states ------------------------------------------------
+      // With reduced motion the crossfades drop their drift/scale pop —
+      // pure opacity fades, still scrubbed by scroll.
       if (eyebrowRef.current)
-        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
+        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
       chapterRefs.current.forEach((el, i) => {
         if (!el) return
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 14 })
+        gsap.set(el, {
+          autoAlpha: i === 0 ? 1 : 0,
+          y: i === 0 || reduced ? 0 : 14,
+        })
       })
       digitRefs.current.forEach((el, i) => {
         if (!el) return
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, scale: i === 0 ? 1 : 0.85 })
+        gsap.set(el, {
+          autoAlpha: i === 0 ? 1 : 0,
+          scale: i === 0 || reduced ? 1 : 0.85,
+        })
       })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
       if (hourHandRef.current)
         gsap.set(hourHandRef.current, { rotation: 0, transformOrigin: '50% 100%' })
       if (minuteHandRef.current)
@@ -159,8 +170,10 @@ export function TimeDial({
         )
       }
       // Minute hand: a few full rotations during the same scroll —
-      // gives that stopwatch / fast-forward feel.
-      if (minuteHandRef.current) {
+      // gives that stopwatch / fast-forward feel. Too much movement for
+      // reduced motion — skipped there (the hour hand still tells the
+      // chapter position).
+      if (minuteHandRef.current && !reduced) {
         tl.fromTo(
           minuteHandRef.current,
           { rotation: 0 },
@@ -183,7 +196,7 @@ export function TimeDial({
             chapterRefs.current[i - 1],
             {
               autoAlpha: 0,
-              y: -14,
+              y: reduced ? 0 : -14,
               duration: halfWindow,
               ease: 'power2.in',
             },
@@ -193,7 +206,7 @@ export function TimeDial({
             digitRefs.current[i - 1],
             {
               autoAlpha: 0,
-              scale: 0.85,
+              scale: reduced ? 1 : 0.85,
               duration: halfWindow,
               ease: 'power2.in',
             },
@@ -235,7 +248,7 @@ export function TimeDial({
     },
     {
       scope: sectionRef,
-      dependencies: [chapters, scrollLength, accentColor],
+      dependencies: [chapters, scrollLength, accentColor, reduced],
     },
   )
 

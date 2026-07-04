@@ -285,13 +285,22 @@ export function CodeWindow({
 }: CodeWindowProps) {
   const [copied, setCopied] = React.useState(false)
   const [trafficHover, setTrafficHover] = React.useState(false)
+  const copyTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null)
   const lines = code.split('\n')
+
+  // Clear any pending copy-feedback reset on unmount.
+  React.useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+    }
+  }, [])
 
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(code)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1100)
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current)
+      copyTimerRef.current = setTimeout(() => setCopied(false), 1100)
     } catch {
       /* clipboard blocked */
     }

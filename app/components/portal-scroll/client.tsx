@@ -93,7 +93,7 @@ export default function PortalScrollDocs() {
             ['cta', '{ label, href?, onClick? } — final call-to-action inside the portal.'],
             ['scrollLength', 'Pin duration in viewport heights. Default 3.5.'],
             ['shape', '\'circle\' | \'diamond\' — portal mask shape. Default \'circle\'.'],
-            ['accentColor', 'Optional faint tint for the outer scroll-hint dot only. Default white. The rim itself is always plain white at 8% opacity.'],
+            ['accentColor', 'Optional tint for the portal rim hairline, the orbiting scan dot, and the outer scroll-hint dot. Default plain white — still no glow or shadow.'],
             ['parallaxStrength', 'Max cursor-parallax shift in px inside the portal. Default 28.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (

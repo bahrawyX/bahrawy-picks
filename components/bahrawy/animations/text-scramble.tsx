@@ -20,6 +20,7 @@
 import * as React from 'react'
 import { useInView } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -95,6 +96,7 @@ export function TextScramble({
   const chars = resolveCharset(charset)
   const ref = React.useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true })
+  const reduced = usePrefersReducedMotion()
 
   const [displayedText, setDisplayedText] = React.useState<string[]>(() =>
     text.split(''),
@@ -125,19 +127,43 @@ export function TextScramble({
 
   // ---- Animation loop ----
   React.useEffect(() => {
+    // Reduced motion: skip scrambling entirely — show the final text and
+    // never start the RAF loop.
+    if (reduced) {
+      if (active) {
+        setActive(false)
+        setDisplayedText(text.split(''))
+        if (!hasCompletedRef.current) {
+          hasCompletedRef.current = true
+          onComplete?.()
+        }
+      }
+      return
+    }
     if (!active) return
 
     const textChars = text.split('')
     const intervalMs = 1000 / speed
     let startTime: number | null = null
+    let lastScramble = -Infinity
     let rafId: number
 
-    function tick(timestamp: number) {
+    // Start fully scrambled
+    let current = textChars.map((c) => (c === ' ' ? ' ' : randomChar(chars)))
+    setDisplayedText(current)
+
+    // Single RAF loop: resolution progress is checked every frame, but
+    // unresolved characters only re-scramble every `intervalMs` so the
+    // flicker rate actually follows the `speed` prop.
+    function loop(timestamp: number) {
       if (startTime === null) startTime = timestamp
       const elapsed = (timestamp - startTime) / 1000
+      const rescramble = timestamp - lastScramble >= intervalMs
+      if (rescramble) lastScramble = timestamp
 
       const next: string[] = []
       let allResolved = true
+      let changed = false
 
       for (let i = 0; i < textChars.length; i++) {
         const target = textChars[i]
@@ -154,17 +180,20 @@ export function TextScramble({
 
         if (elapsed >= resolveAt) {
           next.push(target)
+          if (current[i] !== target) changed = true
         } else {
-          // Only change at ~speed intervals to avoid excessive flicker
-          const cycleIndex = Math.floor(elapsed / (1 / speed))
-          // Use cycle index + char index for deterministic-ish but varied output
-          void cycleIndex
-          next.push(randomChar(chars))
           allResolved = false
+          if (rescramble) {
+            next.push(randomChar(chars))
+            changed = true
+          } else {
+            next.push(current[i])
+          }
         }
       }
 
-      setDisplayedText(next)
+      current = next
+      if (changed) setDisplayedText(next)
 
       if (allResolved) {
         setActive(false)
@@ -175,30 +204,13 @@ export function TextScramble({
         return
       }
 
-      rafId = requestAnimationFrame(tick)
+      rafId = requestAnimationFrame(loop)
     }
 
-    // Start with scrambled state
-    setDisplayedText(
-      textChars.map((c) => (c === ' ' ? ' ' : randomChar(chars))),
-    )
-
-    // Use setInterval-like pacing via rAF
-    let lastFrame = 0
-
-    function pacedTick(timestamp: number) {
-      if (timestamp - lastFrame >= intervalMs) {
-        lastFrame = timestamp
-        tick(timestamp)
-        return
-      }
-      rafId = requestAnimationFrame(pacedTick)
-    }
-
-    rafId = requestAnimationFrame(pacedTick)
+    rafId = requestAnimationFrame(loop)
 
     return () => cancelAnimationFrame(rafId)
-  }, [active, text, duration, speed, chars, stagger, onComplete])
+  }, [reduced, active, text, duration, speed, chars, stagger, onComplete])
 
   // ---- Hover handlers ----
   const handleMouseEnter = React.useCallback(() => {

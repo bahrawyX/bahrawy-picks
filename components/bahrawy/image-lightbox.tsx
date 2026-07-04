@@ -18,6 +18,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export interface LightboxImage {
   src: string
@@ -63,6 +64,10 @@ export function ImageLightbox({
   const [indexState, setIndexState] = React.useState(0)
   const open = openProp ?? openState
   const index = indexProp ?? indexState
+  const overlayRef = React.useRef<HTMLDivElement>(null)
+
+  // Focus: move into the overlay on open, Tab cycling, restore on close.
+  useFocusTrap(overlayRef, open)
 
   const setOpen = (v: boolean) => {
     if (openProp === undefined) setOpenState(v)
@@ -154,16 +159,19 @@ export function ImageLightbox({
             {open && current && (
               <motion.div
                 key="lightbox"
+                ref={overlayRef}
+                tabIndex={-1}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="fixed inset-0 z-[180] flex items-center justify-center"
+                className="fixed inset-0 z-[180] flex items-center justify-center outline-none"
               >
                 {/* Vibrancy scrim */}
                 <button
                   type="button"
                   aria-label="Close"
+                  tabIndex={-1}
                   onClick={close}
                   className="absolute inset-0 backdrop-blur-2xl"
                   style={{

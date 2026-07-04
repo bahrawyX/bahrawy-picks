@@ -16,6 +16,7 @@
 import * as React from 'react'
 import * as THREE from 'three'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface ParticleFieldProps {
   /** Total particles. Default 8000. */
@@ -73,6 +74,7 @@ export function ParticleField({
   className,
 }: ParticleFieldProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -212,7 +214,13 @@ export function ParticleField({
       renderer.render(scene, camera)
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (reduced) {
+      // Reduced motion: draw a single static frame (particles at rest),
+      // skip the RAF loop.
+      renderer.render(scene, camera)
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     // ── Resize ────────────────────────────────────────────────────
     const ro = new ResizeObserver(() => {
@@ -222,6 +230,8 @@ export function ParticleField({
       renderer.setSize(w, h, false)
       camera.aspect = w / h
       camera.updateProjectionMatrix()
+      // Resizing clears the buffer — repaint the static frame.
+      if (reduced) renderer.render(scene, camera)
     })
     ro.observe(mount)
 
@@ -238,7 +248,7 @@ export function ParticleField({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, color, radius, strength, size])
+  }, [count, color, radius, strength, size, reduced])
 
   return (
     <div

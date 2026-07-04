@@ -15,6 +15,7 @@
 import * as React from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -39,16 +40,18 @@ export function ParallaxSection({
   className,
 }: ParallaxSectionProps) {
   const ref = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start end', 'end start'],
   })
 
+  // Reduced motion: no parallax offset — content stays in place.
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    [speed * 100, -speed * 100],
+    reduced ? [0, 0] : [speed * 100, -speed * 100],
   )
 
   return (

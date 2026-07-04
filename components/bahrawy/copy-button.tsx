@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, Check, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -64,6 +64,13 @@ export function CopyButton({
 }: CopyButtonProps) {
   const [state, setState] = useState<CopyState>('idle')
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
+
+  // Clear any pending feedback reset on unmount.
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
 
   const handleCopy = useCallback(async () => {
     const writeFn = copyFn ?? navigator.clipboard.writeText.bind(navigator.clipboard)

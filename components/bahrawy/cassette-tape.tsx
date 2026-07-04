@@ -91,7 +91,6 @@ export function CassetteTape({
           playing={playing}
           onTogglePlay={() => setPlaying((p) => !p)}
           onFlip={() => setSide('B')}
-          spinSpeed={spinSpeed}
           instanceId={id}
         />
 
@@ -112,15 +111,16 @@ export function CassetteTape({
             playing={playing}
             onTogglePlay={() => setPlaying((p) => !p)}
             onFlip={() => setSide('A')}
-            spinSpeed={spinSpeed}
             instanceId={`${id}-b`}
           />
         </div>
       </div>
 
-      {/* Per-instance reel-spin keyframes — play-state bound to React state */}
+      {/* Per-instance reel-spin keyframes — play-state bound to React state.
+          Covers both faces: side A reels use the bare id, side B the -b suffix. */}
       <style>{`
-        .bahrawy-cassette-reel-${id} {
+        .bahrawy-cassette-reel-${id},
+        .bahrawy-cassette-reel-${id}-b {
           animation: bahrawy-cassette-spin-${id} ${spinSpeed}s linear infinite;
           animation-play-state: ${playing ? 'running' : 'paused'};
         }
@@ -154,7 +154,6 @@ function CassetteFace({
   playing: boolean
   onTogglePlay: () => void
   onFlip: () => void
-  spinSpeed: number
   instanceId: string
 }) {
   return (

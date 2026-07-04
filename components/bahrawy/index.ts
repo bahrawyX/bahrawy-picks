@@ -616,3 +616,12 @@ export type { ReactionsPickerProps } from './reactions-picker'
 export { BottomTabBar } from './bottom-tab-bar'
 export type { BottomTabBarProps, BottomTabBarItem } from './bottom-tab-bar'
 
+export { HeroShaderBg } from './hero-shader-bg'
+export type { HeroShaderBgProps } from './hero-shader-bg'
+
+export { RollingText, RollingButton } from './rolling-text'
+export type { RollingTextProps, RollingButtonProps } from './rolling-text'
+
+export { ExpandButton } from './expand-button'
+export type { ExpandButtonProps } from './expand-button'
+

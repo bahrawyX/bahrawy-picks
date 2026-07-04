@@ -4,12 +4,12 @@
  * <HeroCounter />
  *
  * Hero layout where a giant stat counts up on mount alongside a column of
- * feature blurbs. The number uses a spring on a motion value so the digits
- * settle into place rather than tick linearly.
+ * feature blurbs. The number tweens a motion value with a strong ease-out
+ * over `duration`, so the digits settle into place rather than tick linearly.
  */
 
 import * as React from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { animate, motion, useMotionValue, useTransform } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 export interface HeroCounterStat {
@@ -93,7 +93,7 @@ export function HeroCounter({
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: (startDelay + duration) / 1000 - 0.6, ease: [0.2, 0, 0, 1] }}
+            transition={{ duration: 0.6, delay: Math.max(0, (startDelay + duration) / 1000 - 0.6), ease: [0.2, 0, 0, 1] }}
             className="text-base font-medium uppercase tracking-[0.16em] text-white/55"
           >
             {stat.label}
@@ -174,17 +174,17 @@ interface CounterNumberProps {
 
 function CounterNumber({ value, prefix, suffix, startDelay, duration }: CounterNumberProps) {
   const raw = useMotionValue(0)
-  // Spring tuned to settle inside `duration` for typical 0→N steps.
-  const sp = useSpring(raw, { stiffness: 60, damping: 24, mass: 1 })
-  const rounded = useTransform(sp, (v) => Math.round(v).toLocaleString())
+  const rounded = useTransform(raw, (v) => Math.round(v).toLocaleString())
 
   React.useEffect(() => {
-    const id = window.setTimeout(() => raw.set(value), startDelay)
-    return () => window.clearTimeout(id)
-  }, [value, startDelay, raw])
-
-  // duration is used only by the consumer to know when other content can fade in
-  void duration
+    // Ease-out expo tween sized to `duration` — fast start, digits settle in.
+    const controls = animate(raw, value, {
+      delay: startDelay / 1000,
+      duration: duration / 1000,
+      ease: [0.16, 1, 0.3, 1],
+    })
+    return () => controls.stop()
+  }, [value, startDelay, duration, raw])
 
   return (
     <motion.div

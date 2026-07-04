@@ -336,39 +336,40 @@ export function ImageCropper({
       const natW = img.naturalWidth
       const natH = img.naturalHeight
 
-      // How the image is displayed (object-contain)
-      const displayRatio = Math.min(rect.width / natW, rect.height / natH) * zoom
-      const displayW = natW * displayRatio
-      const displayH = natH * displayRatio
+      // object-contain fit factor (before zoom): source px → container px
+      const fit = Math.min(rect.width / natW, rect.height / natH)
+      // Total on-screen scale of one source pixel
+      const scale = fit * zoom
 
-      // Image offset (centered + pan)
-      const imgOffX = (rect.width - displayW) / 2 + pan.x
-      const imgOffY = (rect.height - displayH) / 2 + pan.y
-
-      // Crop box in pixels
+      // Crop box in container pixels
       const cropPxX = (crop.x / 100) * rect.width
       const cropPxY = (crop.y / 100) * rect.height
       const cropPxW = (crop.w / 100) * rect.width
       const cropPxH = (crop.h / 100) * rect.height
 
-      // Map crop to image coordinates
-      const srcX = (cropPxX - imgOffX) / displayRatio
-      const srcY = (cropPxY - imgOffY) / displayRatio
-      const srcW = cropPxW / displayRatio
-      const srcH = cropPxH / displayRatio
-
-      const outW = Math.round(Math.max(1, srcW))
-      const outH = Math.round(Math.max(1, srcH))
+      // Output at source resolution: one output px = one source px at
+      // the current zoom.
+      const outW = Math.max(1, Math.round(cropPxW / scale))
+      const outH = Math.max(1, Math.round(cropPxH / scale))
       canvas.width = outW
       canvas.height = outH
 
-      // Apply transforms
+      // Replay the exact preview transform. On screen the image element
+      // fills the container and is transformed about the container
+      // center: translate(pan) scale(zoom) rotate(r) flip. Building the
+      // same chain here (read bottom-up: drawImage coords hit the last
+      // transform first) means rotation and flip land in the output
+      // exactly as previewed instead of being bolted onto the cropped
+      // canvas afterwards.
+      ctx.imageSmoothingQuality = 'high'
       ctx.save()
-      ctx.translate(outW / 2, outH / 2)
+      ctx.scale(1 / scale, 1 / scale) // container px → output px
+      ctx.translate(-cropPxX, -cropPxY) // container origin → crop origin
+      ctx.translate(rect.width / 2 + pan.x, rect.height / 2 + pan.y)
       ctx.rotate((rotation * Math.PI) / 180)
       ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1)
-      ctx.translate(-outW / 2, -outH / 2)
-      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, outW, outH)
+      ctx.scale(scale, scale) // source px → container px
+      ctx.drawImage(img, -natW / 2, -natH / 2)
       ctx.restore()
 
       const mimeType = `image/${outputFormat}`

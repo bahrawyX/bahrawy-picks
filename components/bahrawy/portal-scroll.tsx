@@ -23,6 +23,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -69,9 +70,10 @@ export interface PortalScrollProps {
    */
   shape?: 'circle' | 'diamond'
   /**
-   * Kept for API compatibility — no longer used for glow / shadow.
-   * Only consumed as the tint of the small scroll-hint dot in the
-   * outer scene (if you want a faint brand cue). Default is white.
+   * Optional accent tint (hex / css color) for the portal rim: the
+   * hairline outline, the orbiting scan dot, and the small scroll-hint
+   * dot in the outer scene. No glow or shadow — just a tint. Default
+   * is plain white.
    */
   accentColor?: string
   /** Strength of cursor parallax inside the portal, in px. Default 28. */
@@ -130,8 +132,14 @@ export function PortalScroll({
   const mouseRef = React.useRef({ x: 0, y: 0 })
 
   const chars = React.useMemo(() => titleChars(inner.title), [inner.title])
-  // Faint cue color for the outer scroll hint only. Default is plain white.
+  const reduced = usePrefersReducedMotion()
+  // Faint cue color for the outer scroll hint. Default is plain white.
   const hintColor = accentColor ?? 'rgba(255,255,255,0.7)'
+  // Rim tint — hairline outline stays faint, scan dot stays solid.
+  const rimBorderStyle = accentColor
+    ? { borderColor: `color-mix(in srgb, ${accentColor} 35%, transparent)` }
+    : undefined
+  const scanDotColor = accentColor ?? '#ffffff'
 
   useGSAP(
     () => {
@@ -189,14 +197,17 @@ export function PortalScroll({
       if (rimRef.current) {
         gsap.set(rimRef.current, { width: 0, height: 0, autoAlpha: 0 })
       }
+      // When reduced motion is preferred, skip the translate offsets so the
+      // scrubbed reveals become pure opacity fades.
       if (innerEyebrowRef.current)
-        gsap.set(innerEyebrowRef.current, { autoAlpha: 0, y: 14 })
+        gsap.set(innerEyebrowRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
       innerLetterRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { autoAlpha: 0, y: 26 })
+        if (el) gsap.set(el, { autoAlpha: 0, y: reduced ? 0 : 26 })
       })
       if (innerSubRef.current)
-        gsap.set(innerSubRef.current, { autoAlpha: 0, y: 14 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 14 })
+        gsap.set(innerSubRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
 
       // ------------------------------------------------------------------
       // Cursor tracking → parallax loop
@@ -208,7 +219,6 @@ export function PortalScroll({
         mouseRef.current.x = (e.clientX - cx) / cx
         mouseRef.current.y = (e.clientY - cy) / cy
       }
-      window.addEventListener('pointermove', onPointerMove)
 
       let bgX = 0,
         bgY = 0,
@@ -234,7 +244,12 @@ export function PortalScroll({
         }
         raf = requestAnimationFrame(loop)
       }
-      raf = requestAnimationFrame(loop)
+      // Skip the pointer-parallax loop entirely when reduced motion is
+      // preferred — the inner scene stays put.
+      if (!reduced) {
+        window.addEventListener('pointermove', onPointerMove)
+        raf = requestAnimationFrame(loop)
+      }
 
       // ------------------------------------------------------------------
       // Main timeline — pinned + scrubbed
@@ -293,8 +308,8 @@ export function PortalScroll({
           outerContentRef.current,
           {
             autoAlpha: 0,
-            y: -28,
-            scale: 0.96,
+            y: reduced ? 0 : -28,
+            scale: reduced ? 1 : 0.96,
             duration: 0.3,
             ease: 'power2.out',
           },
@@ -309,7 +324,7 @@ export function PortalScroll({
         )
       }
       // Outer image pulls back slightly so the new scene feels deeper.
-      if (outerImgRef.current) {
+      if (outerImgRef.current && !reduced) {
         tl.to(
           outerImgRef.current,
           { scale: 1.05, duration: 1, ease: 'power2.out' },
@@ -391,6 +406,7 @@ export function PortalScroll({
         accentColor,
         parallaxStrength,
         chars.length,
+        reduced,
       ],
     },
   )
@@ -581,15 +597,17 @@ export function PortalScroll({
                   width: '70.71%',
                   height: '70.71%',
                   transform: 'translate(-50%, -50%) rotate(45deg)',
+                  ...rimBorderStyle,
                 }}
               />
               <div
-                className="bahrawy-portal-diamond-scan absolute rounded-full bg-white"
+                className="bahrawy-portal-diamond-scan absolute rounded-full"
                 style={{
                   width: 6,
                   height: 6,
                   marginLeft: -3,
                   marginTop: -3,
+                  background: scanDotColor,
                   filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.35))',
                 }}
               />
@@ -597,14 +615,18 @@ export function PortalScroll({
           ) : (
             <>
               {/* Single hairline outline. */}
-              <div className="absolute inset-0 rounded-full border border-white/[0.1]" />
+              <div
+                className="absolute inset-0 rounded-full border border-white/[0.1]"
+                style={rimBorderStyle}
+              />
               {/* Scan dot orbiting the rim via a rotating wrapper. */}
               <div className="bahrawy-portal-orbit absolute inset-0 rounded-full">
                 <div
-                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+                  className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full"
                   style={{
                     width: 6,
                     height: 6,
+                    background: scanDotColor,
                     filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.35))',
                   }}
                 />

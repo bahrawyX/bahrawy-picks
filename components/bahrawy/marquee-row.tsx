@@ -63,7 +63,9 @@ export function MarqueeRow({
           key={i}
           aria-hidden={i === 1}
           className={cn(
-            'flex shrink-0 items-center animate-marquee',
+            // motion-reduce: drop the keyframe animation entirely so the row
+            // sits still (prefers-reduced-motion: reduce).
+            'flex shrink-0 items-center animate-marquee motion-reduce:animate-none',
             reverse && '[animation-direction:reverse]',
             pauseOnHover && 'group-hover:[animation-play-state:paused]'
           )}

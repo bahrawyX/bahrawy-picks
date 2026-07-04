@@ -18,6 +18,7 @@
 import * as React from 'react'
 import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -82,16 +83,23 @@ export function FlipText({
 }: FlipTextProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once })
+  const reduced = usePrefersReducedMotion()
 
   const chars = text.split('')
-  const variants = charVariants(duration)
+  // Reduced motion: collapse to the visible end state — no flip.
+  const variants: Variants = reduced
+    ? {
+        hidden: { rotateX: 0, opacity: 1 },
+        visible: { rotateX: 0, opacity: 1, transition: { duration: 0 } },
+      }
+    : charVariants(duration)
 
   return (
     <motion.div
       ref={ref}
       className={cn('inline-flex flex-wrap', className)}
       variants={containerVariants}
-      custom={stagger}
+      custom={reduced ? 0 : stagger}
       initial="hidden"
       animate={isInView ? 'visible' : 'hidden'}
     >

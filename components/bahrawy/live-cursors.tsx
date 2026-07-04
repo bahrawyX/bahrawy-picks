@@ -18,6 +18,7 @@
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface LiveCursorProps {
   /** Display name. The leading `@` is a convention, not enforced. */
@@ -144,6 +145,23 @@ function CursorPointer({ color }: { color: string }) {
 // ---------------------------------------------------------------------------
 
 function TypingDots({ color }: { color: string }) {
+  const reduced = usePrefersReducedMotion()
+
+  // Reduced motion: static dots — the bubble still reads as "typing".
+  if (reduced) {
+    return (
+      <span className="inline-flex items-center gap-1 py-1">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="block h-1.5 w-1.5 rounded-full opacity-60"
+            style={{ backgroundColor: color }}
+          />
+        ))}
+      </span>
+    )
+  }
+
   return (
     <span className="inline-flex items-center gap-1 py-1">
       {[0, 1, 2].map((i) => (

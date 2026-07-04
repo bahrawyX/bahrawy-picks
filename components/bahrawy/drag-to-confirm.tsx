@@ -14,9 +14,9 @@
  * Used for destructive or payment actions where a single click feels
  * too easy. The tactile gesture forces intent.
  *
- * Monochrome by design — no accent color, no glow. The `variant` and
- * `accent` props are preserved for API compatibility but the visual
- * language stays vibrancy-white.
+ * The accent drives the progress fill, the confirm flash and the
+ * confirmed label: `variant="default"` is emerald, `variant="danger"`
+ * is rose, and `accent` (any hex) overrides both.
  */
 
 import * as React from 'react'
@@ -33,9 +33,9 @@ export interface DragToConfirmProps {
   onConfirm?: () => void
   /** Fires when the user releases before the threshold. */
   onCancel?: () => void
-  /** Visual variant — kept for API compatibility (monochrome design). */
+  /** Visual variant — default uses emerald, danger uses rose. */
   variant?: 'default' | 'danger' | 'custom'
-  /** Custom accent (hex) — kept for API compatibility (monochrome design). */
+  /** Custom accent (hex) — overrides the variant accent. */
   accent?: string
   /** Reset the confirmed state back to idle (controlled). */
   confirmed?: boolean
@@ -55,13 +55,20 @@ const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mas
 const SPRING_BACK = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
 const SPRING_CONFIRM = { type: 'spring' as const, stiffness: 380, damping: 30, mass: 0.6 }
 
+// Accent per variant — `accent` prop overrides.
+const VARIANT_ACCENT: Record<NonNullable<DragToConfirmProps['variant']>, string> = {
+  default: '#34D399', // emerald
+  danger: '#FB7185', // rose
+  custom: '#FFFFFF',
+}
+
 export function DragToConfirm({
   label = 'Slide to confirm',
   confirmedLabel = 'Confirmed',
   onConfirm,
   onCancel,
-  variant: _variant = 'default',
-  accent: _accent,
+  variant = 'default',
+  accent,
   confirmed: controlledConfirmed,
   threshold = 0.9,
   disabled = false,
@@ -69,10 +76,7 @@ export function DragToConfirm({
   height = 52,
   className,
 }: DragToConfirmProps) {
-  // Mark intentionally-unused-for-visuals props so the linter stays quiet
-  // while preserving the public API.
-  void _variant
-  void _accent
+  const accentColor = accent ?? VARIANT_ACCENT[variant]
 
   const trackRef = React.useRef<HTMLDivElement>(null)
   const [trackWidth, setTrackWidth] = React.useState(0)
@@ -153,20 +157,24 @@ export function DragToConfirm({
           'inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 0.5px rgba(255,255,255,0.04), 0 1px 2px rgba(0,0,0,0.4)',
       }}
     >
-      {/* Progress fill — solid white at moderate opacity, no gradient. */}
+      {/* Progress fill — translucent accent, no gradient. */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 rounded-full bg-white/15"
-        style={{ width: fillWidth }}
+        className="pointer-events-none absolute inset-y-0 left-0 rounded-full"
+        style={{
+          width: fillWidth,
+          background: `color-mix(in srgb, ${accentColor} 28%, transparent)`,
+        }}
       />
 
-      {/* Confirm flash overlay — brief solid white. */}
+      {/* Confirm flash overlay — brief solid accent. */}
       <motion.div
         aria-hidden
         initial={false}
         animate={{ opacity: flash ? 0.9 : 0 }}
         transition={APPLE_SPRING}
-        className="pointer-events-none absolute inset-0 rounded-full bg-white"
+        className="pointer-events-none absolute inset-0 rounded-full"
+        style={{ background: accentColor }}
       />
 
       {/* Idle label — fades out as the knob slides past. */}
@@ -184,10 +192,8 @@ export function DragToConfirm({
           initial={{ opacity: 0, y: 2 }}
           animate={{ opacity: 1, y: 0 }}
           transition={SPRING_CONFIRM}
-          className={cn(
-            'pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight',
-            flash ? 'text-zinc-900' : 'text-white',
-          )}
+          className="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight"
+          style={{ color: flash ? '#18181b' : accentColor }}
         >
           <Check className="mr-1.5 h-4 w-4" strokeWidth={2.75} />
           {confirmedLabel}

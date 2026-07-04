@@ -14,6 +14,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex, type RovingItemProps } from '@/lib/use-roving-tabindex'
 
 export interface ReactionsPickerProps {
   /** Emojis shown in the quick row. */
@@ -42,6 +43,11 @@ export function ReactionsPicker({
 }: ReactionsPickerProps) {
   const rowRef = React.useRef<HTMLDivElement>(null)
   const [hoverX, setHoverX] = React.useState<number | null>(null)
+  const [focusWithin, setFocusWithin] = React.useState(false)
+
+  // Roving tabindex: arrows/Home/End move focus along the row,
+  // Enter/Space pick (native button activation).
+  const roving = useRovingTabindex({ count: emojis.length })
 
   const onMove = (e: React.PointerEvent) => {
     const r = rowRef.current?.getBoundingClientRect()
@@ -55,6 +61,10 @@ export function ReactionsPicker({
       ref={rowRef}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
+      onFocus={() => setFocusWithin(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false)
+      }}
       className={cn(
         'inline-flex items-center gap-1 rounded-full border border-white/[0.08] px-2 py-1.5 backdrop-blur-xl',
         className,
@@ -73,54 +83,84 @@ export function ReactionsPicker({
           index={i}
           count={emojis.length}
           hoverX={hoverX}
+          focusIndex={focusWithin ? roving.focusIndex : null}
           maxScale={maxScale}
           falloff={falloff}
           isSelected={selected.includes(e)}
           onPick={onPick}
+          itemProps={roving.getItemProps(i)}
         />
       ))}
     </div>
   )
 }
 
+// Layout pitch between emoji centers: h-8 w-8 button (32px) + gap-1 (4px).
+const ITEM_PITCH = 36
+
 function EmojiButton({
   emoji,
   index,
   count,
   hoverX,
+  focusIndex,
   maxScale,
   falloff,
   isSelected,
   onPick,
+  itemProps,
 }: {
   emoji: string
   index: number
   count: number
   hoverX: number | null
+  focusIndex: number | null
   maxScale: number
   falloff: number
   isSelected: boolean
   onPick: (e: string) => void
+  itemProps: RovingItemProps
 }) {
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const ref = React.useRef<HTMLButtonElement | null>(null)
+  const [center, setCenter] = React.useState<number | null>(null)
+
+  // Measure this button's center within the row outside of render —
+  // once on mount and again whenever a hover session starts, so the
+  // value tracks layout drift without reading rects during render.
+  const hovering = hoverX != null
+  React.useLayoutEffect(() => {
+    const el = ref.current
+    const parent = el?.parentElement
+    if (!el || !parent) return
+    const parentRect = parent.getBoundingClientRect()
+    const rect = el.getBoundingClientRect()
+    setCenter(rect.left - parentRect.left + rect.width / 2)
+  }, [hovering])
+
   let scale = 1
-  if (hoverX != null && ref.current) {
-    const parentRect = ref.current.parentElement?.getBoundingClientRect()
-    const rect = ref.current.getBoundingClientRect()
-    if (parentRect) {
-      const myCenter = rect.left - parentRect.left + rect.width / 2
-      const dist = Math.abs(hoverX - myCenter)
-      const t = Math.max(0, 1 - dist / falloff)
-      scale = 1 + (maxScale - 1) * t
-    }
+  if (hoverX != null && center != null) {
+    const dist = Math.abs(hoverX - center)
+    const t = Math.max(0, 1 - dist / falloff)
+    scale = 1 + (maxScale - 1) * t
+  } else if (focusIndex != null) {
+    // Keyboard focus drives the same magnification curve, using index
+    // distance × item pitch in place of the pointer distance.
+    const dist = Math.abs(index - focusIndex) * ITEM_PITCH
+    const t = Math.max(0, 1 - dist / falloff)
+    scale = 1 + (maxScale - 1) * t
   }
   void count
-  void index
 
   return (
     <motion.button
-      ref={ref}
+      ref={(el) => {
+        ref.current = el
+        itemProps.ref(el)
+      }}
       type="button"
+      tabIndex={itemProps.tabIndex}
+      onKeyDown={itemProps.onKeyDown}
+      onFocus={itemProps.onFocus}
       onClick={() => onPick(emoji)}
       animate={{ scale }}
       transition={APPLE_SPRING}

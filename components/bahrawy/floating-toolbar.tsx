@@ -132,6 +132,20 @@ export function FloatingToolbar({
     }
   }, [compute, pos])
 
+  // Escape dismisses the toolbar (and drops the selection so it doesn't
+  // immediately re-show on keyup).
+  React.useEffect(() => {
+    if (!pos) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPos(null)
+        window.getSelection()?.removeAllRanges()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [pos])
+
   // Close on outside click of the toolbar (but selection itself is fine)
   React.useEffect(() => {
     if (!pos) return
@@ -153,6 +167,8 @@ export function FloatingToolbar({
       {pos && (
         <motion.div
           ref={toolbarRef}
+          role="toolbar"
+          aria-label="Selection actions"
           initial={{
             opacity: 0,
             scale: 0.9,

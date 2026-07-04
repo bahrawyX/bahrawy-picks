@@ -23,7 +23,7 @@ export default function HeroCounterDocs() {
     <DocsPage
       title="Hero Counter"
       slug="hero-counter"
-      description="Hero layout where a giant stat counts up on mount alongside a column of feature blurbs. The number rides a spring on a motion value so the digits settle into place rather than tick linearly."
+      description="Hero layout where a giant stat counts up on mount alongside a column of feature blurbs. The number tweens with a strong ease-out over `duration` so the digits settle into place rather than tick linearly."
       category="101 · hero"
     >
       <DocsSection title="Live demo" description="The counter starts on mount — refresh to see it again.">

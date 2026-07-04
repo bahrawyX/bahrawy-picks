@@ -49,6 +49,7 @@ export function PricingToggle({
   accentColor = '#FFFFFF',
   className,
 }: PricingToggleProps) {
+  const id = React.useId()
   const [annual, setAnnual] = React.useState(false)
 
   return (
@@ -89,7 +90,7 @@ export function PricingToggle({
                 >
                   {isActive && (
                     <motion.span
-                      layoutId="pricing-toggle-thumb"
+                      layoutId={`pricing-toggle-thumb-${id}`}
                       className="absolute inset-0 rounded-full"
                       style={{ background: accentColor }}
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}

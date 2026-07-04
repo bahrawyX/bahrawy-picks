@@ -16,6 +16,7 @@
 import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface NebulaProps {
   /** Three colors blended across the cloud density. */
@@ -146,6 +147,7 @@ export function Nebula({
   className,
 }: NebulaProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -190,6 +192,8 @@ export function Nebula({
       if (w === 0 || h === 0) return
       renderer.setSize(w, h)
       program.uniforms.uResolution.value = [w, h]
+      // Resizing clears the buffer — repaint the static frame.
+      if (reduced) renderer.render({ scene: mesh })
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -202,7 +206,12 @@ export function Nebula({
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (reduced) {
+      // Reduced motion: draw a single static frame, skip the RAF loop.
+      renderer.render({ scene: mesh })
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
@@ -212,7 +221,7 @@ export function Nebula({
       ext?.loseContext()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colors[0], colors[1], colors[2], speed, starDensity, intensity, scale])
+  }, [colors[0], colors[1], colors[2], speed, starDensity, intensity, scale, reduced])
 
   return (
     <div

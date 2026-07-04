@@ -32,6 +32,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -117,27 +118,36 @@ export function ReceiptUnroll({
   const footerRef = React.useRef<HTMLDivElement>(null)
   const eyebrowRef = React.useRef<HTMLDivElement>(null)
   const ctaRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
       if (!sectionRef.current || !pinRef.current || !stripRef.current) return
 
       // -- Initial states ----------------------------------------------
+      // With reduced motion the translate offsets are zeroed so all the
+      // reveals are pure opacity fades.
       if (eyebrowRef.current)
-        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
-      if (headerRef.current) gsap.set(headerRef.current, { autoAlpha: 0, y: 8 })
+        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
+      if (headerRef.current)
+        gsap.set(headerRef.current, { autoAlpha: 0, y: reduced ? 0 : 8 })
       lineRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { autoAlpha: 0, y: 8 })
+        if (el) gsap.set(el, { autoAlpha: 0, y: reduced ? 0 : 8 })
       })
       if (subtotalRef.current)
-        gsap.set(subtotalRef.current, { autoAlpha: 0, y: 6 })
-      if (totalRef.current) gsap.set(totalRef.current, { autoAlpha: 0, y: 6 })
-      if (footerRef.current) gsap.set(footerRef.current, { autoAlpha: 0, y: 4 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
+        gsap.set(subtotalRef.current, { autoAlpha: 0, y: reduced ? 0 : 6 })
+      if (totalRef.current)
+        gsap.set(totalRef.current, { autoAlpha: 0, y: reduced ? 0 : 6 })
+      if (footerRef.current)
+        gsap.set(footerRef.current, { autoAlpha: 0, y: reduced ? 0 : 4 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
 
       // The strip starts above the viewport (hidden behind the printer
-      // slot). We pull it down to its final position over the pin.
-      gsap.set(stripRef.current, { y: '-95%' })
+      // slot). We pull it down to its final position over the pin. With
+      // reduced motion the strip sits fully unrolled from the start —
+      // the line items still fade in sequentially with scroll.
+      gsap.set(stripRef.current, { y: reduced ? '0%' : '-95%' })
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -160,15 +170,17 @@ export function ReceiptUnroll({
       }
 
       // -- Strip unrolls -----------------------------------------------
-      tl.to(
-        stripRef.current,
-        {
-          y: '0%',
-          duration: 1,
-          ease: 'none',
-        },
-        0,
-      )
+      if (!reduced) {
+        tl.to(
+          stripRef.current,
+          {
+            y: '0%',
+            duration: 1,
+            ease: 'none',
+          },
+          0,
+        )
+      }
 
       // -- Header lands very early -------------------------------------
       if (headerRef.current) {
@@ -234,7 +246,7 @@ export function ReceiptUnroll({
     },
     {
       scope: sectionRef,
-      dependencies: [lines, scrollLength, paperColor, inkColor, accentColor],
+      dependencies: [lines, scrollLength, paperColor, inkColor, accentColor, reduced],
     },
   )
 

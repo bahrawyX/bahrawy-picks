@@ -16,6 +16,7 @@
 import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface AuroraProps {
   /** Three hex colors blended across the bands. */
@@ -123,6 +124,7 @@ export function Aurora({
   className,
 }: AuroraProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const mount = mountRef.current
@@ -166,6 +168,8 @@ export function Aurora({
       if (w === 0 || h === 0) return
       renderer.setSize(w, h)
       program.uniforms.uResolution.value = [w, h]
+      // Resizing clears the buffer — repaint the static frame.
+      if (reduced) renderer.render({ scene: mesh })
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -178,7 +182,12 @@ export function Aurora({
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (reduced) {
+      // Reduced motion: draw a single static frame, skip the RAF loop.
+      renderer.render({ scene: mesh })
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
@@ -188,7 +197,7 @@ export function Aurora({
       ext?.loseContext()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colors[0], colors[1], colors[2], speed, scale, intensity])
+  }, [colors[0], colors[1], colors[2], speed, scale, intensity, reduced])
 
   return (
     <div

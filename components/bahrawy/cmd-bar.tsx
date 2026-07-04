@@ -19,6 +19,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CornerDownLeft, Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export interface CmdBarItem {
   id: string
@@ -81,6 +82,11 @@ export function CmdBar({
   const [activeIdx, setActiveIdx] = React.useState(0)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const listRef = React.useRef<HTMLDivElement>(null)
+  const panelRef = React.useRef<HTMLDivElement>(null)
+
+  // Tab cycling + focus restore on close. The search input already
+  // autofocuses itself on open, so the trap skips its own initial focus.
+  useFocusTrap(panelRef, open, { autoFocus: false })
 
   React.useEffect(() => {
     if (open) {
@@ -188,8 +194,10 @@ export function CmdBar({
 
           <motion.div
             key="cmdbar-panel"
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
+            tabIndex={-1}
             initial={{ y: -16, opacity: 0, scale: 0.96 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -8, opacity: 0, scale: 0.97 }}

@@ -94,6 +94,20 @@ export function MentionInput({
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [focused, setFocused] = useState(false)
+  const lastEmittedRef = useRef('')
+  const composingRef = useRef(false)
+
+  // Controlled value: write external changes into the editor, but never
+  // clobber what the user just typed (tracked via lastEmittedRef —
+  // rewriting contentEditable content resets the caret).
+  useEffect(() => {
+    const editor = editorRef.current
+    if (!editor || value === undefined) return
+    if (value !== lastEmittedRef.current) {
+      editor.textContent = value
+      lastEmittedRef.current = value
+    }
+  }, [value])
 
   // Inject mention chip styles
   useEffect(() => {
@@ -153,8 +167,49 @@ export function MentionInput({
     // Notify onChange
     const text = getTextWithMentions(editor)
     const mentions = extractMentions(editor)
+    lastEmittedRef.current = text
     onChange?.(text, mentions)
   }, [trigger, onChange, onSearch])
+
+  // Enforce maxLength for typed insertions (deletions always pass).
+  const handleBeforeInput = useCallback(
+    (e: React.FormEvent<HTMLDivElement>) => {
+      if (!maxLength || composingRef.current) return
+      const editor = editorRef.current
+      if (!editor) return
+      const inserted = (e.nativeEvent as InputEvent).data?.length ?? 0
+      if (inserted === 0) return
+      const sel = window.getSelection()
+      const replaced =
+        sel && sel.rangeCount > 0 ? sel.getRangeAt(0).toString().length : 0
+      const current = editor.textContent?.length ?? 0
+      if (current - replaced + inserted > maxLength) e.preventDefault()
+    },
+    [maxLength],
+  )
+
+  // Paste as plain text (contentEditable takes raw HTML otherwise),
+  // trimmed to whatever maxLength budget remains.
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      const editor = editorRef.current
+      if (!editor) return
+      let text = e.clipboardData.getData('text/plain')
+      if (maxLength) {
+        const sel = window.getSelection()
+        const replaced =
+          sel && sel.rangeCount > 0 ? sel.getRangeAt(0).toString().length : 0
+        const remaining =
+          maxLength - ((editor.textContent?.length ?? 0) - replaced)
+        text = text.slice(0, Math.max(0, remaining))
+      }
+      // execCommand keeps the caret in place and fires an input event,
+      // so handleInput picks the change up from there.
+      if (text) document.execCommand('insertText', false, text)
+    },
+    [maxLength],
+  )
 
   const handleSelect = useCallback(
     (suggestion: MentionSuggestion) => {
@@ -182,6 +237,9 @@ export function MentionInput({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
+      // Ignore keys while an IME composition session is active — Enter
+      // there confirms the composition, not a mention selection.
+      if (composingRef.current || e.nativeEvent.isComposing) return
       if (!showDropdown || suggestions.length === 0) {
         // Prevent Enter from creating new line in single-line mode
         if (e.key === 'Enter' && !multiline) {
@@ -223,7 +281,16 @@ export function MentionInput({
         contentEditable={!disabled}
         suppressContentEditableWarning
         onInput={handleInput}
+        onBeforeInput={handleBeforeInput}
+        onPaste={handlePaste}
         onKeyDown={handleKeyDown}
+        onCompositionStart={() => {
+          composingRef.current = true
+        }}
+        onCompositionEnd={() => {
+          composingRef.current = false
+          handleInput()
+        }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         role="textbox"

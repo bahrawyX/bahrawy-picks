@@ -25,6 +25,7 @@ import {
   type MotionStyle,
 } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -143,13 +144,14 @@ function FloatingItemRenderer({
   mouseY,
   containerRef,
 }: FloatingItemRendererProps) {
+  const reduced = usePrefersReducedMotion()
   const repelX = useMotionValue(0)
   const repelY = useMotionValue(0)
   const springX = useSpring(repelX, { stiffness: 100, damping: 20 })
   const springY = useSpring(repelY, { stiffness: 100, damping: 20 })
 
   React.useEffect(() => {
-    if (!mouseRepel) return
+    if (!mouseRepel || reduced) return
 
     const unsubX = mouseX.on('change', () => {
       const container = containerRef.current
@@ -179,7 +181,7 @@ function FloatingItemRenderer({
     })
 
     return unsubX
-  }, [mouseRepel, mouseX, mouseY, repelX, repelY, item.x, item.y, repelStrength, containerRef])
+  }, [mouseRepel, reduced, mouseX, mouseY, repelX, repelY, item.x, item.y, repelStrength, containerRef])
 
   const style: MotionStyle = {
     position: 'absolute',
@@ -188,22 +190,24 @@ function FloatingItemRenderer({
     width: item.size,
     height: item.size,
     opacity: item.opacity,
-    ...(mouseRepel ? { x: springX, y: springY } : {}),
+    ...(mouseRepel && !reduced ? { x: springX, y: springY } : {}),
   }
 
   return (
     <motion.div
       style={style}
-      animate={{
-        x: item.driftX,
-        y: item.driftY,
-      }}
-      transition={{
-        duration: item.driftDuration,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay: item.delay,
-      }}
+      // Reduced motion: static field — no infinite drift.
+      animate={reduced ? { x: 0, y: 0 } : { x: item.driftX, y: item.driftY }}
+      transition={
+        reduced
+          ? { duration: 0 }
+          : {
+              duration: item.driftDuration,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: item.delay,
+            }
+      }
     >
       {customChild ?? (
         <div
@@ -235,6 +239,7 @@ export function FloatingElements({
   className,
 }: FloatingElementsProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
   const mouseX = useMotionValue(-9999)
   const mouseY = useMotionValue(-9999)
 
@@ -262,9 +267,10 @@ export function FloatingElements({
   return (
     <div
       ref={containerRef}
+      aria-hidden="true"
       className={cn('relative overflow-hidden', className)}
-      onMouseMove={mouseRepel ? handleMouseMove : undefined}
-      onMouseLeave={mouseRepel ? handleMouseLeave : undefined}
+      onMouseMove={mouseRepel && !reduced ? handleMouseMove : undefined}
+      onMouseLeave={mouseRepel && !reduced ? handleMouseLeave : undefined}
     >
       {items.map((item) => (
         <FloatingItemRenderer

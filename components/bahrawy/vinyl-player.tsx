@@ -26,6 +26,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -89,6 +90,7 @@ export function VinylPlayer({
   const ctaRef = React.useRef<HTMLDivElement>(null)
 
   const N = tracks.length
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -99,7 +101,10 @@ export function VinylPlayer({
         gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
       trackRefs.current.forEach((el, i) => {
         if (!el) return
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, x: i === 0 ? 0 : 10 })
+        gsap.set(el, {
+          autoAlpha: i === 0 ? 1 : 0,
+          x: i === 0 || reduced ? 0 : 10,
+        })
       })
       if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
       if (recordRef.current)
@@ -134,7 +139,9 @@ export function VinylPlayer({
       }
 
       // -- Record spins -------------------------------------------------
-      if (recordRef.current) {
+      // Skipped with reduced motion — the scrubbed multi-rotation spin is
+      // a lot of movement; the record simply stays still.
+      if (recordRef.current && !reduced) {
         tl.fromTo(
           recordRef.current,
           { rotation: 0 },
@@ -199,7 +206,12 @@ export function VinylPlayer({
           const transAt = i / (N - 1)
           tl.to(
             trackRefs.current[i - 1],
-            { autoAlpha: 0, x: -10, duration: 0.04, ease: 'power2.in' },
+            {
+              autoAlpha: 0,
+              x: reduced ? 0 : -10,
+              duration: 0.04,
+              ease: 'power2.in',
+            },
             transAt - 0.05,
           )
           tl.to(
@@ -249,7 +261,7 @@ export function VinylPlayer({
     },
     {
       scope: sectionRef,
-      dependencies: [tracks, scrollLength, spins, accentColor],
+      dependencies: [tracks, scrollLength, spins, accentColor, reduced],
     },
   )
 

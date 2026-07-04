@@ -9,9 +9,11 @@
  */
 
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export type DrawerSide = 'left' | 'right' | 'top' | 'bottom'
 
@@ -40,6 +42,11 @@ export function Drawer({
   children,
   className,
 }: DrawerProps) {
+  const panelRef = React.useRef<HTMLElement>(null)
+
+  // Focus: initial move-in, Tab cycling, restore on close.
+  useFocusTrap(panelRef, open)
+
   // Close on Escape
   React.useEffect(() => {
     if (!open) return
@@ -49,6 +56,16 @@ export function Drawer({
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
+
+  // Body scroll lock.
+  React.useEffect(() => {
+    if (!open) return
+    const original = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = original
+    }
+  }, [open])
 
   const isHorizontal = side === 'left' || side === 'right'
   const initialOffset =
@@ -70,7 +87,9 @@ export function Drawer({
 
   const sizeStyle = isHorizontal ? { width: size } : { height: size }
 
-  return (
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -85,15 +104,17 @@ export function Drawer({
           />
 
           <motion.aside
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
+            tabIndex={-1}
             initial={initialOffset}
             animate={{ x: 0, y: 0 }}
             exit={initialOffset}
             transition={SPRING}
             style={sizeStyle}
             className={cn(
-              'z-50 flex max-h-screen max-w-full flex-col border-white/10 bg-zinc-950 shadow-2xl',
+              'z-50 flex max-h-screen max-w-full flex-col border-white/10 bg-zinc-950 shadow-2xl outline-none',
               positionClass,
               isHorizontal ? 'border-l border-r' : 'border-t border-b',
               className,
@@ -124,6 +145,7 @@ export function Drawer({
           </motion.aside>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }

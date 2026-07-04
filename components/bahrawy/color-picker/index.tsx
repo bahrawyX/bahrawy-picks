@@ -51,6 +51,14 @@ export interface ColorPickerProps {
 
 const HISTORY_KEY = 'bahrawy-color-history'
 
+/** 0..100 alpha → 2-digit hex pair, e.g. 50 → "80". */
+function alphaToHexPair(alpha: number): string {
+  return Math.round((alpha / 100) * 255)
+    .toString(16)
+    .padStart(2, '0')
+    .toUpperCase()
+}
+
 function useColorHistory() {
   const [history, setHistory] = useState<string[]>([])
 
@@ -180,6 +188,37 @@ function HueSlider({ hue, onChange }: { hue: number; onChange: (h: number) => vo
 }
 
 // ---------------------------------------------------------------------------
+// Alpha Slider
+// ---------------------------------------------------------------------------
+
+function AlphaSlider({
+  color,
+  alpha,
+  onChange,
+}: {
+  color: string
+  alpha: number
+  onChange: (a: number) => void
+}) {
+  return (
+    <div className="relative">
+      <input
+        type="range"
+        min={0}
+        max={100}
+        value={alpha}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="color-slider w-full"
+        style={{
+          // Transparent → color ramp over a checkerboard.
+          background: `linear-gradient(to right, transparent, ${color}), repeating-conic-gradient(rgba(255,255,255,0.18) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px`,
+        }}
+      />
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Swatch Grid
 // ---------------------------------------------------------------------------
 
@@ -224,14 +263,22 @@ export function ColorPicker({
   onChange,
   defaultValue = '#3B82F6',
   format = 'hex',
+  showAlpha = false,
+  swatches,
   showSwatches = true,
   showHistory = true,
   disabled = false,
   className,
 }: ColorPickerProps) {
   const isControlled = controlledValue !== undefined
-  const [internalHex, setInternalHex] = useState(defaultValue)
-  const currentHex = isControlled ? controlledValue : internalHex
+  const [internalValue, setInternalValue] = useState(defaultValue)
+  // Full value, possibly with an 8-digit hex alpha channel (e.g. #3B82F680).
+  const rawValue = isControlled ? controlledValue : internalValue
+  const hasAlphaChannel = /^#[0-9A-Fa-f]{8}$/.test(rawValue)
+  const currentHex = hasAlphaChannel ? rawValue.slice(0, 7) : rawValue
+  const alpha = hasAlphaChannel
+    ? Math.round((parseInt(rawValue.slice(7, 9), 16) / 255) * 100)
+    : 100
 
   // Derive HSV from hex
   const rgb = useMemo(() => hexToRgb(currentHex), [currentHex])
@@ -251,13 +298,22 @@ export function ColorPicker({
   }, [currentHex])
 
   const updateColor = useCallback(
-    (hex: string) => {
+    (hex: string, nextAlpha: number = alpha) => {
       const upper = hex.toUpperCase()
-      if (!isControlled) setInternalHex(upper)
-      onChange?.(upper)
+      const out =
+        showAlpha && nextAlpha < 100
+          ? `${upper}${alphaToHexPair(nextAlpha)}`
+          : upper
+      if (!isControlled) setInternalValue(out)
+      onChange?.(out)
       setHexInput(upper)
     },
-    [isControlled, onChange],
+    [isControlled, onChange, showAlpha, alpha],
+  )
+
+  const handleAlphaChange = useCallback(
+    (a: number) => updateColor(currentHex, a),
+    [currentHex, updateColor],
   )
 
   const handleSVChange = useCallback(
@@ -311,9 +367,19 @@ export function ColorPicker({
     [currentHex, addToHistory],
   )
 
-  const formattedColor = formatColor(rgb, activeFormat)
+  const formattedColor = useMemo(() => {
+    if (showAlpha && alpha < 100) {
+      const a = (alpha / 100).toFixed(2)
+      if (activeFormat === 'rgb') return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`
+      if (activeFormat === 'hsl') {
+        const { h, s, l } = rgbToHsl(rgb.r, rgb.g, rgb.b)
+        return `hsla(${h}, ${s}%, ${l}%, ${a})`
+      }
+    }
+    return formatColor(rgb, activeFormat)
+  }, [rgb, activeFormat, showAlpha, alpha])
 
-  const swatchColors = MATERIAL_SWATCHES
+  const swatchColors = swatches ?? MATERIAL_SWATCHES
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -328,9 +394,11 @@ export function ColorPicker({
         >
           <div
             className="h-5 w-5 rounded-md border border-white/10"
-            style={{ backgroundColor: currentHex }}
+            style={{
+              background: `linear-gradient(${rawValue}, ${rawValue}), repeating-conic-gradient(rgba(255,255,255,0.18) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px`,
+            }}
           />
-          <span className="font-mono text-white/70">{currentHex.toUpperCase()}</span>
+          <span className="font-mono text-white/70">{rawValue.toUpperCase()}</span>
         </button>
       </PopoverTrigger>
 
@@ -369,12 +437,19 @@ export function ColorPicker({
               {/* Hue slider */}
               <HueSlider hue={hue} onChange={handleHueChange} />
 
+              {/* Alpha slider */}
+              {showAlpha && (
+                <AlphaSlider color={currentHex} alpha={alpha} onChange={handleAlphaChange} />
+              )}
+
               {/* Preview + inputs */}
               <div className="flex items-center gap-3">
                 {/* Color preview */}
                 <div
                   className="h-10 w-10 shrink-0 rounded-lg border border-white/10"
-                  style={{ backgroundColor: currentHex }}
+                  style={{
+                    background: `linear-gradient(${rawValue}, ${rawValue}), repeating-conic-gradient(rgba(255,255,255,0.18) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px`,
+                  }}
                 />
 
                 {/* Input */}

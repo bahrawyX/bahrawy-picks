@@ -19,13 +19,16 @@
  *    right; etc.
  *
  * Pointer events: click trigger toggles, click outside closes, Escape
- * closes. Tabbable items inside follow the same flow.
+ * closes (returning focus to the trigger). While open the items form a
+ * `role="menu"` with a roving tabindex — arrows/Home/End move focus
+ * around the ring, Enter/Space activate.
  */
 
 import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -87,12 +90,20 @@ export function OrbitalMenu({
 }: OrbitalMenuProps) {
   const [open, setOpen] = React.useState(false)
   const wrapperRef = React.useRef<HTMLDivElement>(null)
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
+
+  // Roving tabindex over the items while open — arrows in any direction
+  // move focus around the ring, Home/End jump to the ends.
+  const roving = useRovingTabindex({ count: items.length, orientation: 'both' })
 
   // Close on outside-click + Escape.
   React.useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        setOpen(false)
+        triggerRef.current?.focus()
+      }
     }
     const onClick = (e: MouseEvent) => {
       if (
@@ -136,58 +147,15 @@ export function OrbitalMenu({
       ref={wrapperRef}
       className={cn('relative inline-flex items-center justify-center', className)}
     >
-      {/* Items */}
-      <AnimatePresence>
-        {open &&
-          items.map((item, i) => {
-            const θ = angleFor(i)
-            // Subtract sin because CSS Y goes down.
-            const dx = Math.cos(θ) * radius
-            const dy = -Math.sin(θ) * radius
-            const accent = item.accent ?? accentColor
-            return (
-              <motion.button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  item.onClick?.()
-                  setOpen(false)
-                }}
-                aria-label={item.label}
-                title={item.label}
-                initial={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
-                animate={{ x: dx, y: dy, opacity: 1, scale: 1 }}
-                exit={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
-                transition={{ ...SPRING, delay: i * 0.035 }}
-                className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-zinc-900/90 text-white/85 shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-white/25 hover:bg-zinc-800 hover:text-white"
-              >
-                {/* Optional accent dot in the corner — sets the item
-                    apart by colour without painting a neon halo. */}
-                <span
-                  aria-hidden
-                  className="absolute right-1 top-1 h-1 w-1 rounded-full"
-                  style={{ background: accent }}
-                />
-                {item.icon}
-                {/* Floating label */}
-                {item.label && (
-                  <span
-                    className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-white/75 opacity-0 backdrop-blur transition-opacity group-hover/oi:opacity-100"
-                  >
-                    {item.label}
-                  </span>
-                )}
-              </motion.button>
-            )
-          })}
-      </AnimatePresence>
-
-      {/* Trigger — solid accent, soft polished sheen, no glow */}
+      {/* Trigger — solid accent, soft polished sheen, no glow.
+          Rendered before the items so it comes first in DOM/tab order. */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-label={triggerLabel}
         aria-expanded={open}
+        aria-haspopup="menu"
         className={cn(
           'relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/15 text-white shadow-lg shadow-black/40 transition-transform active:scale-95',
         )}
@@ -205,6 +173,63 @@ export function OrbitalMenu({
           {triggerIcon}
         </motion.span>
       </button>
+
+      {/* Items */}
+      <AnimatePresence>
+        {open && (
+          <div
+            key="ring"
+            role="menu"
+            aria-label={triggerLabel}
+            className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          >
+            {items.map((item, i) => {
+              const θ = angleFor(i)
+              // Subtract sin because CSS Y goes down.
+              const dx = Math.cos(θ) * radius
+              const dy = -Math.sin(θ) * radius
+              const accent = item.accent ?? accentColor
+              return (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  {...roving.getItemProps(i)}
+                  onClick={() => {
+                    item.onClick?.()
+                    setOpen(false)
+                    triggerRef.current?.focus()
+                  }}
+                  aria-label={item.label ?? item.id}
+                  title={item.label}
+                  initial={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
+                  animate={{ x: dx, y: dy, opacity: 1, scale: 1 }}
+                  exit={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
+                  transition={{ ...SPRING, delay: i * 0.035 }}
+                  className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-zinc-900/90 text-white/85 shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-white/25 hover:bg-zinc-800 hover:text-white"
+                >
+                  {/* Optional accent dot in the corner — sets the item
+                      apart by colour without painting a neon halo. */}
+                  <span
+                    aria-hidden
+                    className="absolute right-1 top-1 h-1 w-1 rounded-full"
+                    style={{ background: accent }}
+                  />
+                  {item.icon}
+                  {/* Floating label */}
+                  {item.label && (
+                    <span
+                      className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-white/75 opacity-0 backdrop-blur transition-opacity group-hover/oi:opacity-100"
+                    >
+                      {item.label}
+                    </span>
+                  )}
+                </motion.button>
+              )
+            })}
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

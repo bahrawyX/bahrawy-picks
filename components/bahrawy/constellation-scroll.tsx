@@ -23,6 +23,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -123,6 +124,7 @@ export function ConstellationScroll({
 
   const progress = React.useRef({ value: 0 })
   const dims = React.useRef({ w: 0, h: 0, r: 0 })
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -152,6 +154,10 @@ export function ConstellationScroll({
       // Initial states — every node sits at the centre, slightly scaled
       // down so the stack reads as a single dot, and labels are hidden.
       // ----------------------------------------------------------------
+      // With reduced motion the nodes start (and stay) at their final
+      // ring positions — no fan-out translate. Reveals become pure
+      // opacity fades (offsets zeroed), still scrubbed by scroll.
+      progress.current.value = reduced ? 1 : 0
       nodeRefs.current.forEach((el) => {
         if (!el) return
         gsap.set(el, {
@@ -162,19 +168,24 @@ export function ConstellationScroll({
         })
       })
       labelRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { autoAlpha: 0, y: 6 })
+        if (el) gsap.set(el, { autoAlpha: 0, y: reduced ? 0 : 6 })
       })
       linkRefs.current.forEach((el) => {
         if (!el) return
         const len = el.getTotalLength?.() || 200
         el.style.strokeDasharray = String(len)
-        el.style.strokeDashoffset = String(len)
+        // No line-drawing motion when reduced — links just fade in.
+        el.style.strokeDashoffset = reduced ? '0' : String(len)
         el.style.opacity = '0'
       })
-      if (headerRef.current) gsap.set(headerRef.current, { autoAlpha: 0, y: 12 })
-      if (descRef.current) gsap.set(descRef.current, { autoAlpha: 0, y: 10 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 10 })
-      if (finaleRef.current) gsap.set(finaleRef.current, { autoAlpha: 0, y: 16 })
+      if (headerRef.current)
+        gsap.set(headerRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
+      if (descRef.current)
+        gsap.set(descRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
+      if (finaleRef.current)
+        gsap.set(finaleRef.current, { autoAlpha: 0, y: reduced ? 0 : 16 })
 
       // ----------------------------------------------------------------
       // Apply per-node positions for the current progress value.
@@ -227,17 +238,20 @@ export function ConstellationScroll({
       }
 
       // Constellation fan-out — one tween on a shared `progress.value`,
-      // eased so the spread starts fast and lands soft.
-      tl.to(
-        progress.current,
-        {
-          value: 1,
-          duration: 0.55,
-          ease: 'power3.out',
-          onUpdate: applyPositions,
-        },
-        0.05,
-      )
+      // eased so the spread starts fast and lands soft. Skipped when
+      // reduced motion is preferred (nodes already sit on the ring).
+      if (!reduced) {
+        tl.to(
+          progress.current,
+          {
+            value: 1,
+            duration: 0.55,
+            ease: 'power3.out',
+            onUpdate: applyPositions,
+          },
+          0.05,
+        )
+      }
 
       // Labels — fade in once the nodes are MOSTLY settled.
       const labelEls = labelRefs.current.filter(
@@ -288,16 +302,18 @@ export function ConstellationScroll({
       // pinned to 1 (no overshoot residue), bump link opacity slightly,
       // and bring in the optional finale headline. This gives the
       // animation a clear "done" state instead of trailing off.
-      tl.to(
-        progress.current,
-        {
-          value: 1,
-          duration: 0.05,
-          ease: 'none',
-          onUpdate: applyPositions,
-        },
-        0.92,
-      )
+      if (!reduced) {
+        tl.to(
+          progress.current,
+          {
+            value: 1,
+            duration: 0.05,
+            ease: 'none',
+            onUpdate: applyPositions,
+          },
+          0.92,
+        )
+      }
       if (drawLinks && linkRefs.current.length) {
         tl.to(
           linkRefs.current.filter(Boolean),
@@ -329,7 +345,15 @@ export function ConstellationScroll({
     },
     {
       scope: sectionRef,
-      dependencies: [nodes, scrollLength, radius, nodeSize, drawLinks, accentColor],
+      dependencies: [
+        nodes,
+        scrollLength,
+        radius,
+        nodeSize,
+        drawLinks,
+        accentColor,
+        reduced,
+      ],
     },
   )
 

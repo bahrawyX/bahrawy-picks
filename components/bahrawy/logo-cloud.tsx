@@ -47,7 +47,7 @@ export function LogoCloud({
         {marquee ? (
           <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
             <div
-              className="inline-flex w-max animate-marquee whitespace-nowrap"
+              className="inline-flex w-max animate-marquee whitespace-nowrap motion-reduce:animate-none"
               style={{ ['--duration' as string]: `${duration}s` }}
             >
               {[0, 1].map((dup) => (

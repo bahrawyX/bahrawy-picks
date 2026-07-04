@@ -23,6 +23,7 @@ import * as React from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export type PopoverSide = 'top' | 'right' | 'bottom' | 'left'
 export type PopoverAlign = 'start' | 'center' | 'end'
@@ -153,6 +154,24 @@ export function Popover({
 }: PopoverProps) {
   const popRef = React.useRef<HTMLDivElement>(null)
   const [pos, setPos] = React.useState<PositionResult | null>(null)
+  const panelId = React.useId()
+
+  // Focus: move into the panel on open, Tab cycling, restore on close.
+  useFocusTrap(popRef, open)
+
+  // The trigger markup is the consumer's, so reflect the popup state on
+  // the anchor element imperatively (aria-expanded + aria-controls).
+  React.useEffect(() => {
+    const anchor = anchorRef.current
+    if (!anchor) return
+    anchor.setAttribute('aria-expanded', open ? 'true' : 'false')
+    if (open) anchor.setAttribute('aria-controls', panelId)
+    else anchor.removeAttribute('aria-controls')
+    return () => {
+      anchor.removeAttribute('aria-expanded')
+      anchor.removeAttribute('aria-controls')
+    }
+  }, [open, anchorRef, panelId])
 
   const reposition = React.useCallback(() => {
     const anchor = anchorRef.current?.getBoundingClientRect()
@@ -230,7 +249,9 @@ export function Popover({
       {open && (
         <motion.div
           ref={popRef}
+          id={panelId}
           role="dialog"
+          tabIndex={-1}
           initial={{
             opacity: 0,
             scale: 0.94,
@@ -253,7 +274,7 @@ export function Popover({
             opacity: pos ? undefined : 0,
           }}
           className={cn(
-            'rounded-[14px] border border-white/[0.08] backdrop-blur-2xl',
+            'rounded-[14px] border border-white/[0.08] outline-none backdrop-blur-2xl',
             className,
           )}
         >

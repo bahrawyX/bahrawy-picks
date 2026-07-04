@@ -12,6 +12,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 export interface BottomTabBarItem<V extends string = string> {
   value: V
@@ -57,9 +58,19 @@ export function BottomTabBar<V extends string = string>({
     onValueChange?.(v)
   }
 
+  const selectedIndex = Math.max(0, items.findIndex((i) => i.value === value))
+
+  const roving = useRovingTabindex({
+    count: items.length,
+    focusIndex: selectedIndex,
+    onNavigate: (index) => {
+      const item = items[index]
+      if (item) select(item.value)
+    },
+  })
+
   return (
-    <div
-      role="tablist"
+    <nav
       className={cn(
         'flex items-center gap-1 rounded-full border border-white/[0.08] p-1 backdrop-blur-2xl',
         floating && 'fixed bottom-4 left-1/2 z-50 -translate-x-1/2',
@@ -72,15 +83,20 @@ export function BottomTabBar<V extends string = string>({
           '0 1px 0 rgba(255,255,255,0.06) inset, 0 0 0 0.5px rgba(255,255,255,0.05), 0 18px 40px -12px rgba(0,0,0,0.55)',
       }}
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const selected = item.value === value
+        const badgeText =
+          typeof item.badge === 'string' || typeof item.badge === 'number'
+            ? `${item.label}, ${item.badge} new`
+            : undefined
         return (
           <motion.button
             key={item.value}
             type="button"
-            role="tab"
-            aria-selected={selected}
+            aria-current={selected ? 'page' : undefined}
+            aria-label={badgeText}
             onClick={() => select(item.value)}
+            {...roving.getItemProps(index)}
             whileTap={{ scale: 0.94 }}
             transition={SPRING}
             className={cn(
@@ -120,6 +136,6 @@ export function BottomTabBar<V extends string = string>({
           </motion.button>
         )
       })}
-    </div>
+    </nav>
   )
 }

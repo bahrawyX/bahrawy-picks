@@ -31,6 +31,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -130,6 +131,7 @@ export function MagneticField({
   const mouseRef = React.useRef({ x: -9999, y: -9999, active: false })
   const dotsRef = React.useRef<Dot[]>([])
   const dimsRef = React.useRef({ w: 0, h: 0, cols: 0, rows: 0, spacing: 0 })
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -144,13 +146,21 @@ export function MagneticField({
       // ----------------------------------------------------------------
       // Initial element states
       // ----------------------------------------------------------------
+      // Reduced motion: reveals become pure opacity fades (no lift/scale).
       if (eyebrowRef.current)
-        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 10 })
+        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: reduced ? 0 : 10 })
       lineRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { autoAlpha: 0.06, y: 22, scale: 0.94 })
+        if (el)
+          gsap.set(el, {
+            autoAlpha: 0.06,
+            y: reduced ? 0 : 22,
+            scale: reduced ? 1 : 0.94,
+          })
       })
-      if (descRef.current) gsap.set(descRef.current, { autoAlpha: 0, y: 12 })
-      if (ctaRef.current) gsap.set(ctaRef.current, { autoAlpha: 0, y: 12 })
+      if (descRef.current)
+        gsap.set(descRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
+      if (ctaRef.current)
+        gsap.set(ctaRef.current, { autoAlpha: 0, y: reduced ? 0 : 12 })
 
       // ----------------------------------------------------------------
       // Canvas sizing + dot lattice (recomputed on resize)
@@ -201,12 +211,18 @@ export function MagneticField({
       const onLeave = () => {
         mouseRef.current.active = false
       }
-      pinRef.current.addEventListener('pointermove', onMove)
-      pinRef.current.addEventListener('pointerleave', onLeave)
+      // No cursor magnetism when reduced motion is preferred.
+      if (!reduced) {
+        pinRef.current.addEventListener('pointermove', onMove)
+        pinRef.current.addEventListener('pointerleave', onLeave)
+      }
 
       // ----------------------------------------------------------------
       // Pin + drive progress
       // ----------------------------------------------------------------
+      // Assigned below once the draw loop exists — lets the reduced-motion
+      // path redraw a single static frame on scroll updates.
+      let drawFrame: (() => void) | null = null
       const pinST = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
@@ -217,6 +233,7 @@ export function MagneticField({
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           progressRef.current = self.progress
+          if (reduced) drawFrame?.()
         },
       })
 
@@ -301,13 +318,15 @@ export function MagneticField({
       }
 
       // ----------------------------------------------------------------
-      // RAF draw loop — runs every frame.
+      // RAF draw loop — runs every frame. With reduced motion there is
+      // no loop: a single static frame is drawn (dots at rest, no spring
+      // physics), redrawn only when scroll moves the wave.
       // ----------------------------------------------------------------
       let raf = 0
       const draw = () => {
         const { w, h } = dimsRef.current
         if (w === 0 || h === 0) {
-          raf = requestAnimationFrame(draw)
+          if (!reduced) raf = requestAnimationFrame(draw)
           return
         }
 
@@ -364,13 +383,21 @@ export function MagneticField({
               ty += (dy / dist) * k * magnetStrength
             }
           }
-          // Spring step (semi-implicit Euler with damping).
-          d.vx += (tx - d.x) * 0.18
-          d.vy += (ty - d.y) * 0.18
-          d.vx *= 0.78
-          d.vy *= 0.78
-          d.x += d.vx
-          d.y += d.vy
+          if (reduced) {
+            // Static frame — dots sit at their resting positions.
+            d.x = tx
+            d.y = ty
+            d.vx = 0
+            d.vy = 0
+          } else {
+            // Spring step (semi-implicit Euler with damping).
+            d.vx += (tx - d.x) * 0.18
+            d.vy += (ty - d.y) * 0.18
+            d.vx *= 0.78
+            d.vy *= 0.78
+            d.x += d.vx
+            d.y += d.vy
+          }
 
           // Wave proximity → boost
           const waveDist = Math.abs(d.y - waveY)
@@ -393,9 +420,14 @@ export function MagneticField({
         // Reset shadow so the next frame's gradient isn't tainted.
         ctx.shadowBlur = 0
 
+        if (!reduced) raf = requestAnimationFrame(draw)
+      }
+      drawFrame = draw
+      if (reduced) {
+        draw()
+      } else {
         raf = requestAnimationFrame(draw)
       }
-      raf = requestAnimationFrame(draw)
 
       // ----------------------------------------------------------------
       // Cleanup
@@ -421,6 +453,7 @@ export function MagneticField({
         gridDensity,
         magnetRadius,
         magnetStrength,
+        reduced,
       ],
     },
   )

@@ -2,6 +2,7 @@
 
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { useEffect, useRef } from 'react'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 function hexToVec3(hex) {
   const h = hex.replace('#', '')
@@ -147,6 +148,7 @@ export default function LineWaves({
   mouseInfluence = 2.0,
 }) {
   const containerRef = useRef(null)
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -179,6 +181,8 @@ export default function LineWaves({
           gl.canvas.height,
           gl.canvas.width / gl.canvas.height,
         ]
+        // Resizing clears the buffer — repaint the static frame.
+        if (reduced) renderer.render({ scene: mesh })
       }
     }
     window.addEventListener('resize', resize)
@@ -215,7 +219,7 @@ export default function LineWaves({
     container.appendChild(gl.canvas)
     gl.canvas.style.display = 'block'
 
-    if (enableMouseInteraction) {
+    if (enableMouseInteraction && !reduced) {
       gl.canvas.addEventListener('mousemove', handleMouseMove)
       gl.canvas.addEventListener('mouseleave', handleMouseLeave)
     }
@@ -238,7 +242,12 @@ export default function LineWaves({
 
       renderer.render({ scene: mesh })
     }
-    animationFrameId = requestAnimationFrame(update)
+    if (reduced) {
+      // Reduced motion: draw a single static frame, skip the RAF loop.
+      renderer.render({ scene: mesh })
+    } else {
+      animationFrameId = requestAnimationFrame(update)
+    }
 
     return () => {
       cancelAnimationFrame(animationFrameId)
@@ -266,6 +275,7 @@ export default function LineWaves({
     color3,
     enableMouseInteraction,
     mouseInfluence,
+    reduced,
   ])
 
   return (

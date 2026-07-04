@@ -11,6 +11,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface LoaderDotsProps {
   /** Dot diameter in px. Default 8. */
@@ -31,6 +32,8 @@ export function LoaderDots({
   label,
   className,
 }: LoaderDotsProps) {
+  const reduced = usePrefersReducedMotion()
+
   return (
     <span
       role="status"
@@ -42,13 +45,22 @@ export function LoaderDots({
           <motion.span
             key={i}
             initial={{ opacity: 0.25, y: 0 }}
-            animate={{ opacity: [0.25, 1, 0.25], y: [0, -size * 0.5, 0] }}
-            transition={{
-              duration,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: i * (duration / 6),
-            }}
+            // Reduced motion: static dots — no infinite pulse.
+            animate={
+              reduced
+                ? { opacity: 1, y: 0 }
+                : { opacity: [0.25, 1, 0.25], y: [0, -size * 0.5, 0] }
+            }
+            transition={
+              reduced
+                ? { duration: 0 }
+                : {
+                    duration,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: i * (duration / 6),
+                  }
+            }
             style={{ width: size, height: size, background: color }}
             className="block rounded-full"
           />

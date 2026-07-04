@@ -40,6 +40,30 @@ export interface PricingTierProps {
 
 const ITEM_SPRING = { type: 'spring' as const, stiffness: 220, damping: 28, mass: 0.8 }
 
+/** Renders an `<a>` when the CTA has an href, otherwise a `<button>` with identical styling. */
+function CtaAction({
+  cta,
+  className,
+  style,
+}: {
+  cta: { label: string; href?: string; onClick?: () => void }
+  className: string
+  style?: React.CSSProperties
+}) {
+  if (cta.href) {
+    return (
+      <a href={cta.href} onClick={cta.onClick} className={className} style={style}>
+        {cta.label}
+      </a>
+    )
+  }
+  return (
+    <button type="button" onClick={cta.onClick} className={className} style={style}>
+      {cta.label}
+    </button>
+  )
+}
+
 export function PricingTier({
   plans,
   eyebrow,
@@ -152,9 +176,8 @@ export function PricingTier({
               </ul>
 
               <div className="mt-auto">
-                <a
-                  href={plan.cta.href ?? '#'}
-                  onClick={plan.cta.onClick}
+                <CtaAction
+                  cta={plan.cta}
                   className={cn(
                     'inline-flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors',
                     plan.featured
@@ -162,9 +185,7 @@ export function PricingTier({
                       : 'border border-white/15 bg-white/[0.04] text-white hover:bg-white/10',
                   )}
                   style={plan.featured ? { background: accentColor } : undefined}
-                >
-                  {plan.cta.label}
-                </a>
+                />
               </div>
             </motion.article>
           ))}

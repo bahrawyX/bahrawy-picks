@@ -38,6 +38,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -89,10 +90,15 @@ export function LiquidLetters({
   const reactId = React.useId().replace(/:/g, '')
   const filterId = `bahrawy-liquid-${reactId}`
 
+  const reduced = usePrefersReducedMotion()
+
   React.useEffect(() => {
     const container = containerRef.current
     const blob = blobRef.current
     if (!container || !blob) return
+
+    // Reduced motion: static gooey text only — no cursor blob, no RAF.
+    if (reduced) return
 
     // Start with the blob parked just below the canvas centre so the
     // first hover-in feels intentional.
@@ -138,7 +144,7 @@ export function LiquidLetters({
       container.removeEventListener('pointermove', onPointerMove)
       container.removeEventListener('pointerleave', onPointerLeave)
     }
-  }, [blobRadius, lerp])
+  }, [blobRadius, lerp, reduced])
 
   // Fontsize: number → "Npx", string → as-is, undefined → responsive clamp.
   const fs =
@@ -154,7 +160,11 @@ export function LiquidLetters({
         'select-none touch-none',
         className,
       )}
-      style={{ aspectRatio: aspect, background, cursor: 'none' }}
+      style={{
+        aspectRatio: aspect,
+        background,
+        cursor: reduced ? undefined : 'none',
+      }}
     >
       {/* Accessible plain-text version, off-screen but in the a11y tree. */}
       <span className="sr-only">{children}</span>

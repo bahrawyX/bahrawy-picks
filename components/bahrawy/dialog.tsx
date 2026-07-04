@@ -19,6 +19,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export interface DialogProps {
   open: boolean
@@ -43,10 +44,6 @@ export interface DialogProps {
 
 const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
 
-// Selectors for focus-trap candidates inside the dialog.
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-
 export function Dialog({
   open,
   onOpenChange,
@@ -62,49 +59,18 @@ export function Dialog({
   children,
 }: DialogProps) {
   const panelRef = React.useRef<HTMLDivElement>(null)
-  const previouslyFocused = React.useRef<HTMLElement | null>(null)
+  const id = React.useId()
 
-  // Focus trap + restore.
-  React.useEffect(() => {
-    if (!open) return
-    previouslyFocused.current = document.activeElement as HTMLElement | null
+  // Focus: initial move-in, Tab cycling, restore on close.
+  useFocusTrap(panelRef, open)
 
-    const t = window.setTimeout(() => {
-      const first =
-        panelRef.current?.querySelector<HTMLElement>(FOCUSABLE) ?? panelRef.current
-      first?.focus()
-    }, 30)
-
-    return () => {
-      window.clearTimeout(t)
-      previouslyFocused.current?.focus?.()
-    }
-  }, [open])
-
-  // ESC + Tab cycling.
+  // ESC to dismiss.
   React.useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && closeOnEsc) {
         e.preventDefault()
         onOpenChange(false)
-        return
-      }
-      if (e.key !== 'Tab') return
-      const panel = panelRef.current
-      if (!panel) return
-      const focusable = Array.from(
-        panel.querySelectorAll<HTMLElement>(FOCUSABLE),
-      ).filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null)
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
       }
     }
     window.addEventListener('keydown', onKey)
@@ -123,8 +89,8 @@ export function Dialog({
 
   if (typeof document === 'undefined') return null
 
-  const titleId = 'dialog-title'
-  const descId = 'dialog-desc'
+  const titleId = `${id}-dialog-title`
+  const descId = `${id}-dialog-desc`
 
   return createPortal(
     <AnimatePresence>

@@ -137,6 +137,10 @@ export function TickerRow({
   gap = 16,
   className,
 }: TickerRowProps) {
+  // The marquee is a CSS keyframe (not a framer transform) so that
+  // hover-pause can work — animation-play-state has no effect on
+  // JS-driven transforms.
+  const id = React.useId().replace(/[^a-zA-Z0-9_-]/g, '')
   // Duplicate the list so the loop has no visible seam.
   const doubled = [...items, ...items]
   return (
@@ -148,31 +152,31 @@ export function TickerRow({
         className,
       )}
     >
-      <motion.div
-        className="flex w-max items-center"
+      <div
+        className={cn(
+          `bahrawy-ticker-${id} flex w-max items-center`,
+          pauseOnHover && 'group-hover:[animation-play-state:paused]',
+        )}
         style={{ gap }}
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{
-          duration,
-          ease: 'linear',
-          repeat: Infinity,
-        }}
       >
-        <style>{`
-          .ticker-row-pause:hover [data-ticker-track] { animation-play-state: paused; }
-        `}</style>
         {doubled.map((item, i) => (
-          <Ticker
-            key={`${item.symbol}-${i}`}
-            {...item}
-            className={
-              pauseOnHover
-                ? 'group-hover:[animation-play-state:paused]'
-                : undefined
-            }
-          />
+          <Ticker key={`${item.symbol}-${i}`} {...item} />
         ))}
-      </motion.div>
+      </div>
+      {/* The animation lives in a class (not inline style) so the
+          group-hover play-state rule can actually override it. */}
+      <style>{`
+        .bahrawy-ticker-${id} {
+          animation: bahrawy-ticker-${id}-kf ${duration}s linear infinite;
+        }
+        @keyframes bahrawy-ticker-${id}-kf {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .bahrawy-ticker-${id} { animation: none !important; }
+        }
+      `}</style>
     </div>
   )
 }

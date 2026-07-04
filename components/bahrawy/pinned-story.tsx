@@ -25,6 +25,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Anton } from 'next/font/google'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // Register the plugin once per module load (safe in client components).
 if (typeof window !== 'undefined') {
@@ -76,6 +77,7 @@ export function PinnedStory({
   const tintRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const numberRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const progressRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -88,13 +90,21 @@ export function PinnedStory({
       // Initial state — all but the first step start invisible and slightly
       // offset. We use autoAlpha (= opacity 0 + visibility hidden) so the
       // hidden panels are also pulled out of the accessibility tree.
+      // With reduced motion the crossfades stay (they're scroll-scrubbed)
+      // but drop their translate/scale drift — pure opacity fades.
       stepRefs.current.forEach((el, i) => {
         if (!el) return
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 12 })
+        gsap.set(el, {
+          autoAlpha: i === 0 ? 1 : 0,
+          y: i === 0 || reduced ? 0 : 12,
+        })
       })
       imageRefs.current.forEach((el, i) => {
         if (!el) return
-        gsap.set(el, { autoAlpha: i === 0 ? 1 : 0, scale: i === 0 ? 1 : 1.04 })
+        gsap.set(el, {
+          autoAlpha: i === 0 ? 1 : 0,
+          scale: i === 0 || reduced ? 1 : 1.04,
+        })
       })
       tintRefs.current.forEach((el, i) => {
         if (!el) return
@@ -136,12 +146,22 @@ export function PinnedStory({
         // Outgoing — fades + drifts up across the entire segment.
         tl.to(
           stepRefs.current[i - 1],
-          { autoAlpha: 0, y: -12, duration: dur, ease: 'power2.inOut' },
+          {
+            autoAlpha: 0,
+            y: reduced ? 0 : -12,
+            duration: dur,
+            ease: 'power2.inOut',
+          },
           start,
         )
         tl.to(
           imageRefs.current[i - 1],
-          { autoAlpha: 0, scale: 0.98, duration: dur, ease: 'power2.inOut' },
+          {
+            autoAlpha: 0,
+            scale: reduced ? 1 : 0.98,
+            duration: dur,
+            ease: 'power2.inOut',
+          },
           start,
         )
         tl.to(
@@ -161,13 +181,13 @@ export function PinnedStory({
         // one is already gone.
         tl.fromTo(
           stepRefs.current[i],
-          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 0, y: reduced ? 0 : 12 },
           { autoAlpha: 1, y: 0, duration: dur, ease: 'power2.inOut' },
           start,
         )
         tl.fromTo(
           imageRefs.current[i],
-          { autoAlpha: 0, scale: 1.04 },
+          { autoAlpha: 0, scale: reduced ? 1 : 1.04 },
           { autoAlpha: 1, scale: 1, duration: dur, ease: 'power2.inOut' },
           start,
         )
@@ -194,7 +214,7 @@ export function PinnedStory({
         tl.to(progressRef.current, { scaleX: 1, ease: 'none' }, 0)
       }
     },
-    { dependencies: [steps, stepLength], scope: sectionRef },
+    { dependencies: [steps, stepLength, reduced], scope: sectionRef },
   )
 
   return (
@@ -337,7 +357,11 @@ export function PinnedStory({
               {/* Step counter inside the image card */}
               <div className="pointer-events-none absolute bottom-5 left-5 text-xs font-mono tabular-nums text-white/85">
                 <span className="text-white/55">Step</span>{' '}
-                <CounterDisplay total={steps.length} stepRefs={stepRefs} />
+                <CounterDisplay
+                  total={steps.length}
+                  stepRefs={stepRefs}
+                  reduced={reduced}
+                />
               </div>
             </div>
           </div>
@@ -355,15 +379,16 @@ export function PinnedStory({
 function CounterDisplay({
   total,
   stepRefs,
+  reduced,
 }: {
   total: number
   stepRefs: React.MutableRefObject<(HTMLDivElement | null)[]>
+  reduced: boolean
 }) {
   const [current, setCurrent] = React.useState(1)
 
   React.useEffect(() => {
-    let raf = 0
-    const tick = () => {
+    const compute = () => {
       let bestI = 0
       let bestO = -1
       for (let i = 0; i < stepRefs.current.length; i++) {
@@ -376,11 +401,24 @@ function CounterDisplay({
         }
       }
       setCurrent(bestI + 1)
+    }
+
+    // With reduced motion, skip the permanent RAF loop — recompute the
+    // readout from scroll events instead.
+    if (reduced) {
+      compute()
+      window.addEventListener('scroll', compute, { passive: true })
+      return () => window.removeEventListener('scroll', compute)
+    }
+
+    let raf = 0
+    const tick = () => {
+      compute()
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [stepRefs])
+  }, [stepRefs, reduced])
 
   return (
     <span>

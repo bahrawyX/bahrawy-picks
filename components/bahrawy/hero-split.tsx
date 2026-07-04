@@ -22,6 +22,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -88,6 +89,7 @@ export function HeroSplit({
   const rightColRef = React.useRef<HTMLDivElement>(null)
   const centerRef = React.useRef<HTMLDivElement>(null)
   const dimmerRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   useGSAP(
     () => {
@@ -101,8 +103,8 @@ export function HeroSplit({
       gsap.set(rightColRef.current, { yPercent: -50 })
       gsap.set(centerRef.current, {
         autoAlpha: 0,
-        scale: 0.94,
-        y: 14,
+        scale: reduced ? 1 : 0.94,
+        y: reduced ? 0 : 14,
       })
       if (dimmerRef.current) {
         gsap.set(dimmerRef.current, { autoAlpha: 0 })
@@ -124,18 +126,22 @@ export function HeroSplit({
       // Opposite-direction scroll — both run for the full pin.
       // The yPercent values are computed against each element's own height,
       // so a 200%-tall column moves 50% of itself = exactly one viewport.
-      tl.fromTo(
-        leftColRef.current,
-        { yPercent: 0 },
-        { yPercent: -50, duration: 1 },
-        0,
-      )
-      tl.fromTo(
-        rightColRef.current,
-        { yPercent: -50 },
-        { yPercent: 0, duration: 1 },
-        0,
-      )
+      // With reduced motion the columns stay put — only the dimmer +
+      // center card fade in below.
+      if (!reduced) {
+        tl.fromTo(
+          leftColRef.current,
+          { yPercent: 0 },
+          { yPercent: -50, duration: 1 },
+          0,
+        )
+        tl.fromTo(
+          rightColRef.current,
+          { yPercent: -50 },
+          { yPercent: 0, duration: 1 },
+          0,
+        )
+      }
 
       // Reveal — appears once enough scroll has happened to feel earned.
       if (dimmerRef.current) {
@@ -159,7 +165,7 @@ export function HeroSplit({
     },
     {
       scope: sectionRef,
-      dependencies: [scrollLength, reveal],
+      dependencies: [scrollLength, reveal, reduced],
     },
   )
 
@@ -260,7 +266,7 @@ export function HeroSplit({
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-6 z-30 mx-auto flex w-fit items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.28em] text-white/65 backdrop-blur"
         >
-          <span className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400" />
+          <span className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400 motion-reduce:animate-none" />
           Scroll
         </div>
       </div>

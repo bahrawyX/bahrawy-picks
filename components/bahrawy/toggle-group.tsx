@@ -12,6 +12,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 export interface ToggleGroupOption<V extends string = string> {
   value: V
@@ -74,6 +75,12 @@ export function ToggleGroup<V extends string = string>({
     onValueChange?.(next)
   }
 
+  // Focus-only roving: arrows move focus, Space/Enter still toggles.
+  const roving = useRovingTabindex({
+    count: options.length,
+    isDisabled: (index) => Boolean(options[index]?.disabled || disabled),
+  })
+
   if (variant === 'pills') {
     return (
       <div
@@ -84,7 +91,7 @@ export function ToggleGroup<V extends string = string>({
           className,
         )}
       >
-        {options.map((opt) => {
+        {options.map((opt, index) => {
           const selected = value.includes(opt.value)
           return (
             <motion.button
@@ -94,6 +101,7 @@ export function ToggleGroup<V extends string = string>({
               aria-checked={selected}
               disabled={opt.disabled || disabled}
               onClick={() => toggle(opt.value)}
+              {...roving.getItemProps(index)}
               whileTap={{ scale: 0.97 }}
               transition={SPRING}
               className={cn(
@@ -140,6 +148,7 @@ export function ToggleGroup<V extends string = string>({
               aria-checked={selected}
               disabled={opt.disabled || disabled}
               onClick={() => toggle(opt.value)}
+              {...roving.getItemProps(i)}
               whileTap={{ scale: 0.97 }}
               transition={SPRING}
               className={cn(

@@ -19,6 +19,7 @@ import * as React from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { springSnappy } from '@/lib/motion'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -51,6 +52,7 @@ export function MagneticCursor({
   className,
 }: MagneticCursorProps) {
   const ref = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -64,9 +66,15 @@ export function MagneticCursor({
   const springX = useSpring(x, springConfig)
   const springY = useSpring(y, springConfig)
 
-  const handleMouseMove = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (disabled || !ref.current) return
+  // The activation radius extends beyond the element's bounds, so the
+  // listener must live on the window — an element-scoped mousemove would
+  // only ever fire once the cursor is already on top of it.
+  React.useEffect(() => {
+    // Reduced motion: skip the listener entirely — the element stays static.
+    if (disabled || reduced) return
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!ref.current) return
 
       const rect = ref.current.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
@@ -79,15 +87,19 @@ export function MagneticCursor({
       if (distance < radius) {
         x.set(distX * strength)
         y.set(distY * strength)
+      } else {
+        x.set(0)
+        y.set(0)
       }
-    },
-    [disabled, radius, strength, x, y]
-  )
+    }
 
-  const handleMouseLeave = React.useCallback(() => {
-    x.set(0)
-    y.set(0)
-  }, [x, y])
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove)
+      x.set(0)
+      y.set(0)
+    }
+  }, [disabled, reduced, radius, strength, x, y])
 
   if (disabled) {
     return <div className={className}>{children}</div>
@@ -98,8 +110,6 @@ export function MagneticCursor({
       ref={ref}
       className={cn('inline-block', className)}
       style={{ x: springX, y: springY }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       {children}
     </motion.div>

@@ -11,6 +11,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface MagneticTextProps {
   children: string
@@ -38,8 +39,18 @@ export function MagneticText({
   const mouseRef = React.useRef({ x: -9999, y: -9999, active: false })
   const chars = React.useMemo(() => [...children], [children])
   const sign = mode === 'repel' ? -1 : 1
+  // Reduced motion: no magnetic displacement — never start the RAF loop.
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
+    if (reduced) {
+      // Clear any displacement left over from before the preference flipped.
+      for (const el of charRefs.current) {
+        if (el) el.style.transform = ''
+      }
+      return
+    }
+
     const container = containerRef.current
     if (!container) return
 
@@ -91,7 +102,7 @@ export function MagneticText({
       window.removeEventListener('pointermove', onMove)
       container.removeEventListener('pointerleave', onLeave)
     }
-  }, [chars.length, radius, strength, lerp, sign])
+  }, [reduced, chars.length, radius, strength, lerp, sign])
 
   return (
     <span

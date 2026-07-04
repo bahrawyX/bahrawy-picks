@@ -21,6 +21,7 @@ import { Anton } from 'next/font/google'
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Font — tall + condensed = the poster look
@@ -93,10 +94,13 @@ export function ImageSwapText({
 }: ImageSwapTextProps) {
   const [active, setActive] = React.useState<number | null>(null)
   const rowRef = React.useRef<HTMLDivElement>(null)
+  // Reduced motion: swaps become instant — no springs anywhere.
+  const reduced = usePrefersReducedMotion()
 
   // x-position of the tracker disc, in pixels relative to the row's left edge.
   const trackerX = useMotionValue(0)
   const trackerSpring = useSpring(trackerX, TRACKER_SPRING)
+  const trackerPos = reduced ? trackerX : trackerSpring
 
   const focusItem = React.useCallback(
     (i: number, target: HTMLElement) => {
@@ -140,7 +144,7 @@ export function ImageSwapText({
               scale: active === i ? 1.22 : 1,
               y: active === i ? -6 : 0,
             }}
-            transition={THUMB_SPRING}
+            transition={reduced ? { duration: 0 } : THUMB_SPRING}
             style={{ width: thumbSize, height: thumbSize }}
             className={cn(
               'relative shrink-0 overflow-hidden rounded-2xl border border-white/15',
@@ -161,13 +165,13 @@ export function ImageSwapText({
         {/* Tracker disc with the arrow */}
         <motion.div
           aria-hidden
-          style={{ x: trackerSpring }}
+          style={{ x: trackerPos }}
           animate={{
             opacity: isActive ? 1 : 0,
             scale: isActive ? 1 : 0.4,
             y: isActive ? thumbSize * 0.55 : thumbSize * 0.25,
           }}
-          transition={TRACKER_SPRING}
+          transition={reduced ? { duration: 0 } : TRACKER_SPRING}
           className="pointer-events-none absolute left-0 top-full -translate-x-1/2"
         >
           <span
@@ -194,6 +198,7 @@ export function ImageSwapText({
             key={displayText}
             text={displayText}
             color={headlineColor}
+            reduced={reduced}
           />
         </AnimatePresence>
       </div>
@@ -208,9 +213,10 @@ export function ImageSwapText({
 interface SwapHeadlineProps {
   text: string
   color: string
+  reduced: boolean
 }
 
-function SwapHeadline({ text, color }: SwapHeadlineProps) {
+function SwapHeadline({ text, color, reduced }: SwapHeadlineProps) {
   // Split into individual characters so each can animate on its own.
   const letters = React.useMemo(() => Array.from(text), [text])
   const center = (letters.length - 1) / 2
@@ -240,18 +246,26 @@ function SwapHeadline({ text, color }: SwapHeadlineProps) {
         return (
           <motion.span
             key={`${i}-${char}`}
-            initial={{ opacity: 0, scale: 0.25, y: 24 }}
+            initial={reduced ? false : { opacity: 0, scale: 0.25, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{
-              opacity: 0,
-              scale: 0.5,
-              x: exitX,
-              transition: LETTER_TWEEN_OUT,
-            }}
-            transition={{
-              ...LETTER_SPRING_IN,
-              delay: i * 0.018,
-            }}
+            exit={
+              reduced
+                ? { opacity: 0, transition: { duration: 0 } }
+                : {
+                    opacity: 0,
+                    scale: 0.5,
+                    x: exitX,
+                    transition: LETTER_TWEEN_OUT,
+                  }
+            }
+            transition={
+              reduced
+                ? { duration: 0 }
+                : {
+                    ...LETTER_SPRING_IN,
+                    delay: i * 0.018,
+                  }
+            }
             style={{
               display: 'inline-block',
               willChange: 'transform',

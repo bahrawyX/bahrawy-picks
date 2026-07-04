@@ -139,6 +139,50 @@ export function Slider(props: SliderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, lo, hi, min, max, step, isRange])
 
+  const stepTo = (which: 'a' | 'b', next: number) => {
+    const v = clamp(next, min, max)
+    if (!isRange) {
+      commit(v)
+      return
+    }
+    if (which === 'a') commit([Math.min(v, hi), hi] as [number, number])
+    else commit([lo, Math.max(v, lo)] as [number, number])
+  }
+
+  const onThumbKeyDown =
+    (which: 'a' | 'b') => (e: React.KeyboardEvent) => {
+      if (disabled) return
+      const cur = which === 'a' ? lo : hi
+      const big = Math.max(step, (max - min) / 10)
+      let next: number | null = null
+      switch (e.key) {
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          next = snap(cur - step, step, min)
+          break
+        case 'ArrowRight':
+        case 'ArrowUp':
+          next = snap(cur + step, step, min)
+          break
+        case 'PageDown':
+          next = snap(cur - big, step, min)
+          break
+        case 'PageUp':
+          next = snap(cur + big, step, min)
+          break
+        case 'Home':
+          next = min
+          break
+        case 'End':
+          next = max
+          break
+      }
+      if (next !== null) {
+        e.preventDefault()
+        stepTo(which, next)
+      }
+    }
+
   const tickCount = ticks ? Math.floor((max - min) / step) + 1 : 0
 
   return (
@@ -187,6 +231,13 @@ export function Slider(props: SliderProps) {
           onHoverEnd={() => setHovered(null)}
           showTooltip={showValueTooltip}
           tooltip={format(lo)}
+          ariaLabel={isRange ? `${label} minimum` : label}
+          min={min}
+          max={isRange ? hi : max}
+          value={lo}
+          valueText={format(lo)}
+          disabled={disabled}
+          onKeyDown={onThumbKeyDown('a')}
         />
         {/* Thumb B (range only) */}
         {isRange && (
@@ -199,6 +250,13 @@ export function Slider(props: SliderProps) {
             onHoverEnd={() => setHovered(null)}
             showTooltip={showValueTooltip}
             tooltip={format(hi)}
+            ariaLabel={`${label} maximum`}
+            min={lo}
+            max={max}
+            value={hi}
+            valueText={format(hi)}
+            disabled={disabled}
+            onKeyDown={onThumbKeyDown('b')}
           />
         )}
       </div>
@@ -215,6 +273,13 @@ function Thumb({
   onHoverEnd,
   showTooltip,
   tooltip,
+  ariaLabel,
+  min,
+  max,
+  value,
+  valueText,
+  disabled,
+  onKeyDown,
 }: {
   pct: number
   accent: string
@@ -224,13 +289,33 @@ function Thumb({
   onHoverEnd: () => void
   showTooltip: boolean
   tooltip: string
+  ariaLabel: string
+  min: number
+  max: number
+  value: number
+  valueText: string
+  disabled: boolean
+  onKeyDown: (e: React.KeyboardEvent) => void
 }) {
-  const scale = active ? 1.15 : hovered ? 1.08 : 1
+  const [focused, setFocused] = React.useState(false)
+  const scale = active ? 1.15 : hovered || focused ? 1.08 : 1
   return (
     <motion.div
+      role="slider"
+      tabIndex={disabled ? -1 : 0}
+      aria-label={ariaLabel}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={value}
+      aria-valuetext={valueText}
+      aria-disabled={disabled || undefined}
+      aria-orientation="horizontal"
+      onKeyDown={onKeyDown}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       onPointerEnter={onHoverStart}
       onPointerLeave={onHoverEnd}
-      className="absolute top-1/2 h-4 w-4 rounded-full bg-white"
+      className="absolute top-1/2 h-4 w-4 rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       style={{
         // Inset the X position so the disc stays fully on the track:
         // at pct=0 → left edge of handle on track's left; at pct=100 →
@@ -246,11 +331,10 @@ function Thumb({
       animate={{ scale }}
       transition={APPLE_SPRING}
     >
-      {showTooltip && (active || hovered) && (
+      {showTooltip && (active || hovered || focused) && (
         <motion.span
           initial={{ opacity: 0, y: 4, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 4, scale: 0.96 }}
           transition={APPLE_SPRING}
           className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 rounded-md px-1.5 py-0.5 font-mono text-[10.5px] font-semibold tabular-nums text-white"
           style={{ background: accent }}

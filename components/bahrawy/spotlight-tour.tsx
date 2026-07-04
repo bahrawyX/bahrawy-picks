@@ -25,6 +25,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export interface SpotlightTourStep {
   /** Element to highlight. Pass a ref OR a CSS selector string. */
@@ -99,6 +100,12 @@ export function SpotlightTour({
   const [internalStep, setInternalStep] = React.useState(0)
   const isControlledStep = controlledStep !== undefined
   const step = isControlledStep ? controlledStep : internalStep
+
+  const tooltipRef = React.useRef<HTMLDivElement>(null)
+
+  // Keyboard users land on the tour controls; focus returns to where it
+  // was once the tour closes.
+  useFocusTrap(tooltipRef, open, { restoreFocus: true })
 
   const [rect, setRect] = React.useState<Rect>(ZERO_RECT)
   const [tooltipPos, setTooltipPos] = React.useState<{ top: number; left: number; placement: 'top' | 'bottom' | 'left' | 'right' }>(
@@ -289,15 +296,17 @@ export function SpotlightTour({
 
           {/* Tooltip card */}
           <motion.div
+            ref={tooltipRef}
             role="dialog"
             aria-modal="true"
             aria-label={current.title}
+            tabIndex={-1}
             initial={{ opacity: 0, y: 6, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={SPRING}
             className={cn(
-              'pointer-events-auto absolute w-[320px] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-4 shadow-2xl shadow-black/60 backdrop-blur',
+              'pointer-events-auto absolute w-[320px] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-4 shadow-2xl shadow-black/60 outline-none backdrop-blur',
             )}
             style={{
               top: tooltipPos.top,

@@ -20,6 +20,7 @@
 import * as React from 'react'
 import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -123,10 +124,20 @@ export function TextReveal({
 }: TextRevealProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once, margin: '-60px' })
+  const reduced = usePrefersReducedMotion()
 
   const units = splitText(text, variant)
-  const containerVariants = getContainerVariants(stagger, delay)
-  const unitVariants = getUnitVariants(duration)
+  const containerVariants = getContainerVariants(
+    reduced ? 0 : stagger,
+    reduced ? 0 : delay,
+  )
+  // Reduced motion: collapse to the visible end state — no slide-up.
+  const unitVariants: Variants = reduced
+    ? {
+        hidden: { y: '0%' },
+        visible: { y: '0%', transition: { duration: 0 } },
+      }
+    : getUnitVariants(duration)
 
   const MotionTag = motionElements[as]
 

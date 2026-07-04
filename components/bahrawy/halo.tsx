@@ -26,6 +26,7 @@
 import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle } from 'ogl'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface HaloProps {
   /** Number of dots across the short axis. Default 28. */
@@ -187,10 +188,15 @@ export function Halo({
   className,
 }: HaloProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
+
+    // Static when paused or the user prefers reduced motion — render a
+    // single frame instead of running the RAF loop.
+    const frozen = paused || reduced
 
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio, 2),
@@ -268,6 +274,8 @@ export function Halo({
         gl.canvas.height,
         gl.canvas.width / Math.max(gl.canvas.height, 1),
       ]
+      // Resizing clears the buffer — repaint the static frame.
+      if (frozen) renderer.render({ scene: mesh })
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -312,7 +320,11 @@ export function Halo({
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (frozen) {
+      renderer.render({ scene: mesh })
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
@@ -336,6 +348,7 @@ export function Halo({
     color3,
     brightness,
     paused,
+    reduced,
   ])
 
   return (

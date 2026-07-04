@@ -23,6 +23,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -83,6 +84,7 @@ export function Carousel3D({
   const cardRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const counterRef = React.useRef<HTMLSpanElement>(null)
   const headingRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
 
   /** Apply per-card transforms based on a continuous activeIndex (e.g. 2.4). */
   const layout = React.useCallback(
@@ -91,6 +93,19 @@ export function Carousel3D({
         if (!card) return
         const offset = i - activeIndex
         const absOff = Math.abs(offset)
+        if (reduced) {
+          // Reduced motion: no 3D fly-around — cards sit stacked in place
+          // and simply crossfade as scroll advances the active index.
+          gsap.set(card, {
+            x: 0,
+            z: 0,
+            rotationY: 0,
+            opacity: Math.max(0, 1 - absOff),
+            scale: 1,
+            zIndex: 100 - Math.round(absOff * 10),
+          })
+          return
+        }
         gsap.set(card, {
           x: offset * spacing,
           z: -absOff * depth,
@@ -107,7 +122,7 @@ export function Carousel3D({
         counterRef.current.textContent = `${String(display + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`
       }
     },
-    [angle, cards.length, depth, spacing],
+    [angle, cards.length, depth, spacing, reduced],
   )
 
   useGSAP(
@@ -116,7 +131,7 @@ export function Carousel3D({
 
       // Initial layout — first card centered.
       layout(0)
-      gsap.set(headingRef.current, { autoAlpha: 0, y: 14 })
+      gsap.set(headingRef.current, { autoAlpha: 0, y: reduced ? 0 : 14 })
 
       const trigger = ScrollTrigger.create({
         trigger: sectionRef.current,
@@ -154,7 +169,15 @@ export function Carousel3D({
     },
     {
       scope: sectionRef,
-      dependencies: [cards.length, scrollLength, spacing, depth, angle, layout],
+      dependencies: [
+        cards.length,
+        scrollLength,
+        spacing,
+        depth,
+        angle,
+        layout,
+        reduced,
+      ],
     },
   )
 

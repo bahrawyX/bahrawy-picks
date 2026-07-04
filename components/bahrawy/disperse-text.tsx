@@ -11,6 +11,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface DisperseTextProps {
   children: string
@@ -45,6 +46,8 @@ export function DisperseText({
 }: DisperseTextProps) {
   const chars = React.useMemo(() => [...children], [children])
   const [hover, setHover] = React.useState(mode === 'always')
+  // Reduced motion: never disperse — letters stay at rest.
+  const reduced = usePrefersReducedMotion()
 
   const offsets = React.useMemo(() => {
     const rand = seededRandom(chars.length * 31 + 7)
@@ -60,7 +63,7 @@ export function DisperseText({
     else if (mode === 'hover') setHover(false)
   }, [mode])
 
-  const active = hover || mode === 'always'
+  const active = !reduced && (hover || mode === 'always')
 
   return (
     <span

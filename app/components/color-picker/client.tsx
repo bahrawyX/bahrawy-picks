@@ -33,6 +33,12 @@ const SWATCHES_SNIPPET = `<ColorPicker
   showHistory={false}
 />`
 
+const ALPHA_SNIPPET = `<ColorPicker
+  value={color}       // 8-digit hex when alpha < 100%, e.g. #3B82F680
+  onChange={setColor}
+  showAlpha
+/>`
+
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
@@ -42,6 +48,7 @@ export default function ColorPickerDocs() {
   const [rgb, setRgb] = useState('#EF4444')
   const [hsl, setHsl] = useState('#10B981')
   const [noHistory, setNoHistory] = useState('#8B5CF6')
+  const [alpha, setAlpha] = useState('#F59E0B')
 
   return (
     <DocsPage
@@ -82,6 +89,17 @@ export default function ColorPickerDocs() {
         </DemoCard>
       </DocsSection>
 
+      {/* ---- Alpha channel ---- */}
+      <DocsSection title="Alpha channel">
+        <DemoCard>
+          <div className="flex items-center gap-4">
+            <ColorPicker value={alpha} onChange={setAlpha} showAlpha />
+            <span className="font-mono text-sm text-white/40">{alpha}</span>
+          </div>
+        </DemoCard>
+        <CodeBlock code={ALPHA_SNIPPET} language="tsx" />
+      </DocsSection>
+
       {/* ---- Without history ---- */}
       <DocsSection title="Without history tab">
         <DemoCard>
@@ -108,7 +126,7 @@ export default function ColorPickerDocs() {
             { name: 'onChange', type: '(hex: string) => void', default: '—', description: 'Called when color changes' },
             { name: 'defaultValue', type: 'string', default: "'#3B82F6'", description: 'Initial color for uncontrolled mode' },
             { name: 'format', type: "'hex' | 'rgb' | 'hsl'", default: "'hex'", description: 'Default format for the input display' },
-            { name: 'showAlpha', type: 'boolean', default: 'false', description: 'Show alpha/opacity slider' },
+            { name: 'showAlpha', type: 'boolean', default: 'false', description: 'Show alpha slider — emits 8-digit hex when alpha < 100%' },
             { name: 'swatches', type: 'string[]', default: 'Material 500', description: 'Custom preset color swatches' },
             { name: 'showSwatches', type: 'boolean', default: 'true', description: 'Show the swatches tab' },
             { name: 'showHistory', type: 'boolean', default: 'true', description: 'Show the history tab' },

@@ -17,6 +17,7 @@
 import * as React from 'react'
 import { Renderer, Program, Mesh, Triangle, Color } from 'ogl'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface MeshGradientProps {
   /** Up to 5 hex colors blended across the canvas. Extras are ignored. */
@@ -115,6 +116,7 @@ export function MeshGradient({
   className,
 }: MeshGradientProps) {
   const mountRef = React.useRef<HTMLDivElement>(null)
+  const reduced = usePrefersReducedMotion()
   // Re-init only when these change.
   const colorKey = colors.slice(0, 5).join('|')
 
@@ -165,6 +167,8 @@ export function MeshGradient({
       if (w === 0 || h === 0) return
       renderer.setSize(w, h)
       program.uniforms.uResolution.value = [w, h]
+      // Resizing clears the buffer — repaint the static frame.
+      if (reduced) renderer.render({ scene: mesh })
     }
     resize()
     const ro = new ResizeObserver(resize)
@@ -177,7 +181,12 @@ export function MeshGradient({
       renderer.render({ scene: mesh })
       raf = requestAnimationFrame(animate)
     }
-    raf = requestAnimationFrame(animate)
+    if (reduced) {
+      // Reduced motion: draw a single static frame, skip the RAF loop.
+      renderer.render({ scene: mesh })
+    } else {
+      raf = requestAnimationFrame(animate)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
@@ -187,7 +196,7 @@ export function MeshGradient({
       ext?.loseContext()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorKey, background, speed, blobSize, intensity])
+  }, [colorKey, background, speed, blobSize, intensity, reduced])
 
   return (
     <div

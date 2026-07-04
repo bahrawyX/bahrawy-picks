@@ -935,4 +935,22 @@ export const componentRegistry: RegistryItem[] = [
     description:
       'iOS-style mobile bottom navigation. Floating vibrancy pill with 3-5 tabs, icon + label, active tab gets a soft white pill that glides between tabs via layoutId, optional badge per tab.',
   },
+  {
+    title: 'Hero Shader Background',
+    slug: 'hero-shader-bg',
+    description:
+      'Full-bleed animated GPU hero background. Four stacked shader layers: two-color Swirl base, cursor-reactive ChromaFlow accent bloom, FlutedGlass refraction ribs, FilmGrain finish. Light + dark presets, every knob overridable.',
+  },
+  {
+    title: 'Rolling Text',
+    slug: 'rolling-text',
+    description:
+      'Agency-style button label roll. Two stacked copies of the label slide up 50% on hover inside a one-line window. Includes RollingButton: pill with rolling label + arrow disc that un-rotates -45° to 0°.',
+  },
+  {
+    title: 'Expand Button',
+    slug: 'expand-button',
+    description:
+      'Round icon chip that expands sideways on hover to reveal its label. CSS grid 0fr→1fr animation (no width measurement), icon un-rotates from -45°, opens on self or parent-card hover.',
+  },
 ]

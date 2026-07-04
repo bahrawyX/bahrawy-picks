@@ -5,8 +5,8 @@
  *
  * Apple-style FAQ section. Heading on the left, single-column FAQ list on
  * the right. Each row: bold display question + chevron, expanding cleanly
- * to reveal the answer. Hairline dividers between items, faint hover tint,
- * no accent colors or glows.
+ * to reveal the answer. Hairline dividers between items, faint hover tint.
+ * An optional `accentColor` tints the open question and its chevron.
  */
 
 import * as React from 'react'
@@ -27,7 +27,7 @@ export interface FaqSectionProps {
   description?: React.ReactNode
   /** Open this id by default. */
   defaultOpen?: string
-  /** Accent color (kept for API compatibility — not used in the Apple-styled look). */
+  /** Accent color (hex) for the expanded question + chevron. Default white. */
   accentColor?: string
   className?: string
 }
@@ -40,6 +40,7 @@ export function FaqSection({
   heading = 'Frequently asked.',
   description,
   defaultOpen,
+  accentColor,
   className,
 }: FaqSectionProps) {
   const [openId, setOpenId] = React.useState<string | null>(
@@ -73,6 +74,7 @@ export function FaqSection({
                 key={item.id}
                 item={item}
                 open={open}
+                accentColor={accentColor}
                 onToggle={() => setOpenId(open ? null : item.id)}
               />
             )
@@ -86,10 +88,12 @@ export function FaqSection({
 function FaqRow({
   item,
   open,
+  accentColor,
   onToggle,
 }: {
   item: FaqItem
   open: boolean
+  accentColor?: string
   onToggle: () => void
 }) {
   const id = React.useId()
@@ -102,7 +106,10 @@ function FaqRow({
         aria-controls={id}
         className="flex w-full items-center gap-4 px-1 py-5 text-left"
       >
-        <span className="font-display min-w-0 flex-1 text-[17px] font-semibold leading-snug tracking-tight text-white sm:text-[18px]">
+        <span
+          className="font-display min-w-0 flex-1 text-[17px] font-semibold leading-snug tracking-tight text-white transition-colors sm:text-[18px]"
+          style={open && accentColor ? { color: accentColor } : undefined}
+        >
           {item.question}
         </span>
         <motion.span
@@ -110,6 +117,7 @@ function FaqRow({
           animate={{ rotate: open ? 180 : 0 }}
           transition={APPLE_SPRING}
           className="shrink-0 text-white/45"
+          style={open && accentColor ? { color: accentColor } : undefined}
         >
           <ChevronDown className="h-4 w-4" strokeWidth={2.25} />
         </motion.span>

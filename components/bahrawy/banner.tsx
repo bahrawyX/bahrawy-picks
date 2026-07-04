@@ -44,6 +44,28 @@ const INTENT_ICON: Record<BannerIntent, LucideIcon> = {
   promo: Sparkles,
 }
 
+/** Renders an `<a>` when the CTA has an href, otherwise a `<button>` with identical styling. */
+function CtaAction({
+  cta,
+  className,
+}: {
+  cta: { label: string; href?: string; onClick?: () => void }
+  className: string
+}) {
+  if (cta.href) {
+    return (
+      <a href={cta.href} onClick={cta.onClick} className={className}>
+        {cta.label}
+      </a>
+    )
+  }
+  return (
+    <button type="button" onClick={cta.onClick} className={className}>
+      {cta.label}
+    </button>
+  )
+}
+
 const INTENT_STYLES: Record<BannerIntent, string> = {
   info: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#0A84FF]',
   success: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#30D158]',
@@ -97,13 +119,10 @@ export function Banner({
           <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={2.25} />
           <span className="min-w-0 flex-1 truncate font-medium">{children}</span>
           {cta && (
-            <a
-              href={cta.href ?? '#'}
-              onClick={cta.onClick}
+            <CtaAction
+              cta={cta}
               className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 text-[11.5px] font-semibold tracking-tight text-white transition-colors hover:bg-white/[0.1]"
-            >
-              {cta.label}
-            </a>
+            />
           )}
           {dismissible && (
             <button

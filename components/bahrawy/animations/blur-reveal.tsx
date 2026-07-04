@@ -20,6 +20,7 @@
 import * as React from 'react'
 import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -118,10 +119,26 @@ export function BlurReveal({
 }: BlurRevealProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { once, margin: '-60px' })
+  const reduced = usePrefersReducedMotion()
 
   const offset = getDirectionOffset(direction)
-  const containerVariants = getContainerVariants(stagger, delay)
-  const itemVariants = getItemVariants(blur, offset, duration)
+  const containerVariants = getContainerVariants(
+    reduced ? 0 : stagger,
+    reduced ? 0 : delay,
+  )
+  // Reduced motion: collapse to the visible end state — no blur or offset.
+  const itemVariants: Variants = reduced
+    ? {
+        hidden: { opacity: 1, filter: 'blur(0px)', x: 0, y: 0 },
+        visible: {
+          opacity: 1,
+          filter: 'blur(0px)',
+          x: 0,
+          y: 0,
+          transition: { duration: 0 },
+        },
+      }
+    : getItemVariants(blur, offset, duration)
 
   const childArray = React.Children.toArray(children)
   const isSingle = childArray.length === 1

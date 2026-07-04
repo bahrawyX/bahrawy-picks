@@ -15,6 +15,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 export interface SegmentedControlOption<V extends string = string> {
   value: V
@@ -95,9 +96,8 @@ export function SegmentedControl<V extends string = string>({
   )
   const value = valueProp ?? internal
 
-  const idRef = React.useRef(
-    layoutId ?? `seg-${Math.random().toString(36).slice(2, 9)}`,
-  )
+  const id = React.useId()
+  const indicatorLayoutId = layoutId ?? `segmented-control-indicator-${id}`
 
   const sz = SIZE[size]
 
@@ -107,9 +107,21 @@ export function SegmentedControl<V extends string = string>({
     onValueChange?.(v)
   }
 
+  const selectedIndex = Math.max(0, options.findIndex((o) => o.value === value))
+
+  const roving = useRovingTabindex({
+    count: options.length,
+    isDisabled: (index) => Boolean(options[index]?.disabled || disabled),
+    focusIndex: selectedIndex,
+    onNavigate: (index) => {
+      const opt = options[index]
+      if (opt && !opt.disabled) select(opt.value)
+    },
+  })
+
   return (
     <div
-      role="tablist"
+      role="radiogroup"
       aria-disabled={disabled}
       className={cn(
         'relative inline-flex shrink-0 items-stretch',
@@ -128,17 +140,18 @@ export function SegmentedControl<V extends string = string>({
           'inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 0.5px rgba(255,255,255,0.04)',
       }}
     >
-      {options.map((opt) => {
+      {options.map((opt, index) => {
         const active = opt.value === value
         return (
           <button
             key={opt.value}
             type="button"
-            role="tab"
-            aria-selected={active}
+            role="radio"
+            aria-checked={active}
             aria-disabled={opt.disabled || disabled}
             disabled={opt.disabled || disabled}
             onClick={() => select(opt.value)}
+            {...roving.getItemProps(index)}
             className={cn(
               'group relative inline-flex items-center justify-center transition-colors',
               sz.px,
@@ -153,7 +166,7 @@ export function SegmentedControl<V extends string = string>({
           >
             {active && (
               <motion.span
-                layoutId={idRef.current}
+                layoutId={indicatorLayoutId}
                 className={cn('absolute inset-0', sz.radius)}
                 style={{
                   background:

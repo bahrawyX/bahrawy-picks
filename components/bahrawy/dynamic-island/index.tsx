@@ -1,6 +1,7 @@
 'use client'
 
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 import {
   Mic,
   PhoneCall,
@@ -103,9 +104,11 @@ const SHAPES: Record<DynamicIslandView, IslandShape> = {
 
 export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) {
   const shape = SHAPES[view]
+  // Reduced motion: morphs become instant and ambient loops are cut.
+  const reduced = usePrefersReducedMotion()
 
   return (
-    <MotionConfig transition={ISLAND_SPRING}>
+    <MotionConfig transition={reduced ? { duration: 0 } : ISLAND_SPRING}>
       <motion.div
         layout
         animate={{
@@ -135,14 +138,14 @@ export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) 
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={view}
-            initial={{ opacity: 0, scale: 0.85, filter: 'blur(6px)' }}
+            initial={reduced ? false : { opacity: 0, scale: 0.85, filter: 'blur(6px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 0.92, filter: 'blur(4px)' }}
-            transition={CONTENT_SPRING}
+            transition={reduced ? { duration: 0 } : CONTENT_SPRING}
             className="absolute inset-0 flex items-center"
             style={{ paddingLeft: shape.paddingX, paddingRight: shape.paddingX }}
           >
-            <ViewContent view={view} />
+            <ViewContent view={view} reduced={reduced} />
           </motion.div>
         </AnimatePresence>
       </motion.div>
@@ -154,7 +157,13 @@ export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) 
 /*  Per-view content                                                   */
 /* ------------------------------------------------------------------ */
 
-function ViewContent({ view }: { view: DynamicIslandView }) {
+function ViewContent({
+  view,
+  reduced,
+}: {
+  view: DynamicIslandView
+  reduced: boolean
+}) {
   switch (view) {
     case 'idle':
       return null
@@ -175,8 +184,12 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
         <div className="flex w-full items-center gap-3">
           <motion.span
             className="h-2.5 w-2.5 rounded-full bg-rose-500"
-            animate={{ opacity: [1, 0.4, 1] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+            animate={reduced ? { opacity: 1 } : { opacity: [1, 0.4, 1] }}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
+            }
           />
           <span className="flex-1 font-mono text-sm tabular-nums">00:42</span>
           <Mic className="h-4 w-4 text-rose-300" strokeWidth={2.2} />
@@ -210,8 +223,12 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
         <div className="flex w-full items-center gap-2.5">
           <motion.span
             className="flex h-4 w-4 items-center justify-center"
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            animate={reduced ? { scale: 1 } : { scale: [1, 1.15, 1] }}
+            transition={
+              reduced
+                ? { duration: 0 }
+                : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }
+            }
           >
             <ScreenShare className="h-4 w-4 text-rose-300" strokeWidth={2.2} />
           </motion.span>
@@ -226,11 +243,13 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
       return (
         <div className="flex w-full items-center gap-3">
           <span className="relative flex h-7 w-7 items-center justify-center">
-            <motion.span
-              className="absolute inset-0 rounded-full border-2 border-emerald-400/60"
-              animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-            />
+            {!reduced && (
+              <motion.span
+                className="absolute inset-0 rounded-full border-2 border-emerald-400/60"
+                animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+              />
+            )}
             <Search className="h-3.5 w-3.5 text-emerald-300" strokeWidth={2.4} />
           </span>
           <span className="flex-1 truncate text-sm font-medium">
@@ -337,7 +356,7 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
               Cosmic Lounge · 3:24
             </p>
           </div>
-          <Waveform />
+          <Waveform reduced={reduced} />
         </div>
       )
 
@@ -361,9 +380,15 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
           <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/10">
             <motion.div
               className="h-full rounded-full bg-blue-400"
-              initial={{ width: '0%' }}
-              animate={{ width: ['12%', '64%', '92%', '100%'] }}
-              transition={{ duration: 2.8, ease: 'easeOut' }}
+              initial={reduced ? false : { width: '0%' }}
+              animate={
+                reduced
+                  ? { width: '100%' }
+                  : { width: ['12%', '64%', '92%', '100%'] }
+              }
+              transition={
+                reduced ? { duration: 0 } : { duration: 2.8, ease: 'easeOut' }
+              }
             />
           </div>
         </div>
@@ -375,8 +400,24 @@ function ViewContent({ view }: { view: DynamicIslandView }) {
 /*  Tiny waveform indicator for the music view                         */
 /* ------------------------------------------------------------------ */
 
-function Waveform() {
+function Waveform({ reduced }: { reduced: boolean }) {
   const bars = [4, 9, 6, 12, 5, 10, 7]
+
+  // Reduced motion: a static waveform — bars sit at their peak heights.
+  if (reduced) {
+    return (
+      <div className="flex h-8 items-center gap-[3px]">
+        {bars.map((h, i) => (
+          <span
+            key={i}
+            className="block w-[3px] rounded-full bg-emerald-300"
+            style={{ height: h * 2 }}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-8 items-center gap-[3px]">
       {bars.map((h, i) => (

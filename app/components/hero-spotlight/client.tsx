@@ -28,8 +28,8 @@ export default function HeroSpotlightDocs() {
             eyebrow="New · v2.0"
             title="Ship beautiful interfaces, faster."
             description="Bahrawy is a copy-paste library of polished React components. Drag a piece into your project, tweak it, and ship."
-            primaryCta={{ label: 'Get started', href: '#' }}
-            secondaryCta={{ label: 'Browse components', href: '#' }}
+            primaryCta={{ label: 'Get started', onClick: () => {} }}
+            secondaryCta={{ label: 'Browse components', onClick: () => {} }}
             minHeight="600px"
           />
         </div>

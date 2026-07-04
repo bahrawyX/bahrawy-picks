@@ -31,6 +31,8 @@ export interface HeroMarqueeProps {
   primaryCta?: { label: string; href?: string }
   secondaryCta?: { label: string; href?: string }
   rows?: HeroMarqueeRow[]
+  /** Pause every row while the section is hovered. Default true. */
+  pauseOnHover?: boolean
   minHeight?: string
   className?: string
 }
@@ -63,6 +65,7 @@ export function HeroMarquee({
   primaryCta,
   secondaryCta,
   rows = DEFAULT_ROWS,
+  pauseOnHover = true,
   minHeight = '100vh',
   className,
 }: HeroMarqueeProps) {
@@ -70,14 +73,14 @@ export function HeroMarquee({
     <section
       style={{ minHeight }}
       className={cn(
-        'relative isolate flex w-full items-center justify-center overflow-hidden bg-black',
+        'group relative isolate flex w-full items-center justify-center overflow-hidden bg-black',
         className,
       )}
     >
       {/* Marquee rows — absolute, spread vertically through the section. */}
       <div aria-hidden className="absolute inset-0 flex flex-col justify-around py-12">
         {rows.map((row, i) => (
-          <MarqueeLine key={i} row={row} />
+          <MarqueeLine key={i} row={row} pauseOnHover={pauseOnHover} />
         ))}
       </div>
 
@@ -152,15 +155,20 @@ export function HeroMarquee({
 // Doubles its content so the loop is seamless.
 // ---------------------------------------------------------------------------
 
-function MarqueeLine({ row }: { row: HeroMarqueeRow }) {
+function MarqueeLine({ row, pauseOnHover }: { row: HeroMarqueeRow; pauseOnHover: boolean }) {
   const { words, duration = 24, direction = 'left', textClassName } = row
   const sign = direction === 'right' ? -1 : 1
   // The base `marquee` keyframe translates 0 → -100% (left). We flip it for
   // 'right' by using a positive starting offset and reverse animation-direction.
+  // The animation lives in a class (not an inline shorthand), so the
+  // group-hover play-state rule below can actually override it.
   return (
     <div className="overflow-hidden whitespace-nowrap">
       <div
-        className="inline-flex animate-marquee whitespace-nowrap will-change-transform"
+        className={cn(
+          'inline-flex animate-marquee whitespace-nowrap will-change-transform motion-reduce:animate-none',
+          pauseOnHover && 'group-hover:[animation-play-state:paused]',
+        )}
         style={{
           ['--duration' as string]: `${duration}s`,
           animationDirection: sign === -1 ? 'reverse' : 'normal',

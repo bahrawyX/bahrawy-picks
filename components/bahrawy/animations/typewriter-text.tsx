@@ -21,6 +21,7 @@
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -71,6 +72,7 @@ export function TypewriterText({
   onStringComplete,
   className,
 }: TypewriterTextProps) {
+  const reduced = usePrefersReducedMotion()
   const [displayedText, setDisplayedText] = React.useState('')
   const [stringIndex, setStringIndex] = React.useState(0)
   const [charIndex, setCharIndex] = React.useState(0)
@@ -84,6 +86,7 @@ export function TypewriterText({
 
   // Main typing loop
   React.useEffect(() => {
+    if (reduced) return
     if (phase === 'done') return
 
     const currentString = strings[stringIndex] ?? ''
@@ -144,9 +147,24 @@ export function TypewriterText({
     return () => {
       if (timeout) clearTimeout(timeout)
     }
-  }, [phase, charIndex, stringIndex, strings, speed, deleteSpeed, pauseDuration, loop])
+  }, [reduced, phase, charIndex, stringIndex, strings, speed, deleteSpeed, pauseDuration, loop])
 
-  const showBlinkingCursor = phase === 'paused' || phase === 'done'
+  const showBlinkingCursor = !reduced && (phase === 'paused' || phase === 'done')
+
+  // Reduced motion: render the full text immediately, no typing loop and
+  // no blinking cursor.
+  if (reduced) {
+    return (
+      <span className={cn(className)}>
+        {strings[strings.length - 1] ?? ''}
+        {cursor && (
+          <span className={cn(cursorClassName)} aria-hidden="true">
+            {cursorChar}
+          </span>
+        )}
+      </span>
+    )
+  }
 
   return (
     <span className={cn(className)}>
