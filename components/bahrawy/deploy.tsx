@@ -103,13 +103,18 @@ export function Deploy({
   const meta = STATUS_META[status]
   const [elapsed, setElapsed] = React.useState(duration ?? 0)
 
-  // Live tick when building.
+  // Live tick when building. Anchored to a start timestamp (rather than
+  // incrementing a counter) so the readout self-corrects instead of
+  // drifting — even when a throttled background tab delays the interval.
   React.useEffect(() => {
     if (!liveElapsed || status !== 'building') {
       setElapsed(duration ?? 0)
       return
     }
-    const t = setInterval(() => setElapsed((s) => s + 1), 1000)
+    const start = Date.now() - (duration ?? 0) * 1000
+    const tick = () => setElapsed(Math.floor((Date.now() - start) / 1000))
+    tick()
+    const t = setInterval(tick, 1000)
     return () => clearInterval(t)
   }, [liveElapsed, status, duration])
 

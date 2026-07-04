@@ -10,7 +10,9 @@
  *    references another column.
  *
  *  - Admin mode: pass `onTablesChange` to make the diagram editable.
- *    Drag any table by its header to reposition it. Rename tables +
+ *    Drag any table by its header to reposition it — or focus the
+ *    header and nudge with the arrow keys (16px, Shift for 64px).
+ *    Rename tables +
  *    columns inline (double-click). Add or remove tables / columns.
  *    Cycle column types. Toggle primary keys. Manage foreign keys
  *    through a popover on each column. The schema mutates through
@@ -470,6 +472,30 @@ function TableCard({
     y.set(table.y)
   }, [table.x, table.y, x, y])
 
+  // Keyboard alternative to pointer drag: with the header focused, the
+  // arrow keys nudge the table 16px (64px with Shift). Each press sets
+  // the motion values then commits through the same onMoveEnd path as
+  // drag-end, so FK lines re-route and the consumer's state persists.
+  const onHeaderKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (!admin) return
+    // Ignore keys bubbling out of the rename input / header buttons.
+    if (e.target !== e.currentTarget) return
+    const step = e.shiftKey ? 64 : 16
+    let dx = 0
+    let dy = 0
+    if (e.key === 'ArrowLeft') dx = -step
+    else if (e.key === 'ArrowRight') dx = step
+    else if (e.key === 'ArrowUp') dy = -step
+    else if (e.key === 'ArrowDown') dy = step
+    else return
+    e.preventDefault()
+    const nx = Math.round(x.get()) + dx
+    const ny = Math.round(y.get()) + dy
+    x.set(nx)
+    y.set(ny)
+    onMoveEnd(nx, ny)
+  }
+
   return (
     <motion.div
       drag={admin}
@@ -502,6 +528,10 @@ function TableCard({
       >
         {/* Header — drag handle in admin mode */}
         <header
+          tabIndex={admin ? 0 : undefined}
+          role={admin ? 'button' : undefined}
+          aria-label={admin ? `Move ${table.name} table — arrow keys` : undefined}
+          onKeyDown={onHeaderKeyDown}
           onPointerDown={(e) => {
             if (!admin) return
             // Don't initiate drag when starting on an interactive control.
@@ -511,7 +541,8 @@ function TableCard({
           }}
           className={cn(
             'group/header relative flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.015] px-3.5 py-2.5',
-            admin && 'cursor-grab active:cursor-grabbing',
+            admin &&
+              'cursor-grab focus-visible:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-white/30 active:cursor-grabbing',
           )}
         >
           {admin && (

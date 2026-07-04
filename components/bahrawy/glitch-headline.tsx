@@ -4,11 +4,15 @@
  * <GlitchHeadline />
  *
  * A type display that wears CRT-monitor damage as a feature. Three
- * layered copies of the same text are rendered on top of each other:
+ * layered copies of the same text are painted on top of each other:
  *
- *   – cyan channel, offset slightly left + up
- *   – magenta/red channel, offset slightly right + down
+ *   – cyan channel, offset slightly left + up (::before pseudo-element)
+ *   – magenta/red channel, offset slightly right + down (::after)
  *   – white base layer in the middle
+ *
+ * The two color channels live in `::before`/`::after` pseudo-elements
+ * fed by `content: attr(data-text)` on the wrapper, so only one real
+ * DOM copy of the text exists besides the base layer + slice band.
  *
  * The two color channels drift in a perpetual idle wobble. On hover
  * (or always, if `mode="always"`), the wobble amplifies and a
@@ -100,7 +104,7 @@ export function GlitchHeadline({
     <>
       <span
         className={cn(
-          'bahrawy-glitch relative inline-block select-none align-baseline',
+          `bahrawy-glitch bahrawy-glitch-${id} relative inline-block select-none align-baseline`,
           wrapperClass,
           className,
         )}
@@ -118,30 +122,9 @@ export function GlitchHeadline({
         }
         aria-label={children}
       >
-        {/* Base text — readable copy. */}
+        {/* Base text — readable copy. Channels A + B render as ::before /
+            ::after pseudo-elements from data-text (see scoped <style>). */}
         <span className="relative z-10">{children}</span>
-
-        {/* Channel A — cyan, offset left/up. */}
-        <span
-          aria-hidden
-          className={cn(
-            `bahrawy-glitch-${id}-a absolute inset-0 pointer-events-none`,
-          )}
-          style={{ color: channelA }}
-        >
-          {children}
-        </span>
-
-        {/* Channel B — magenta, offset right/down. */}
-        <span
-          aria-hidden
-          className={cn(
-            `bahrawy-glitch-${id}-b absolute inset-0 pointer-events-none`,
-          )}
-          style={{ color: channelB }}
-        >
-          {children}
-        </span>
 
         {/* Slice band — clipped horizontal band that slides through the
             text and shifts the copy inside it. Layered on top. */}
@@ -169,6 +152,8 @@ export function GlitchHeadline({
               backgroundImage:
                 'repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 3px)',
               mixBlendMode: 'overlay',
+              // Above the slice band + channel pseudos, below the z-10 base.
+              zIndex: 2,
             }}
           />
         )}
@@ -176,15 +161,21 @@ export function GlitchHeadline({
 
       {/* Scoped keyframes per instance. */}
       <style>{`
-        .bahrawy-glitch-${id}-a,
-        .bahrawy-glitch-${id}-b {
+        .bahrawy-glitch-${id}::before,
+        .bahrawy-glitch-${id}::after {
+          content: attr(data-text);
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
           will-change: transform, clip-path;
           mix-blend-mode: screen;
         }
-        .bahrawy-glitch-${id}-a {
+        .bahrawy-glitch-${id}::before {
+          color: var(--gh-a);
           animation: bahrawy-glitch-${id}-a-kf var(--gh-dur) steps(2, jump-end) infinite;
         }
-        .bahrawy-glitch-${id}-b {
+        .bahrawy-glitch-${id}::after {
+          color: var(--gh-b);
           animation: bahrawy-glitch-${id}-b-kf var(--gh-dur) steps(2, jump-end) infinite;
         }
         @keyframes bahrawy-glitch-${id}-a-kf {
@@ -202,8 +193,10 @@ export function GlitchHeadline({
           80%      { transform: translate(calc(var(--gh-half) * 0.25), -0.3px); }
         }
 
-        /* Slice band — clipped to a moving horizontal strip and shifted. */
+        /* Slice band — clipped to a moving horizontal strip and shifted.
+           z-index keeps it above the ::before/::after channel pseudos. */
         .bahrawy-glitch-${id}-slice {
+          z-index: 1;
           clip-path: inset(45% 0 50% 0);
           -webkit-clip-path: inset(45% 0 50% 0);
           transform: translate(0, 0);
@@ -225,20 +218,20 @@ export function GlitchHeadline({
         }
 
         /* Hover boost — bigger displacement on the color channels. */
-        .bahrawy-glitch.group:hover .bahrawy-glitch-${id}-a,
-        .bahrawy-glitch-${id}-active .bahrawy-glitch-${id}-a {
+        .bahrawy-glitch-${id}.group:hover::before,
+        .bahrawy-glitch-${id}-active::before {
           animation-duration: calc(var(--gh-dur) * 0.55);
           animation-timing-function: steps(3, jump-end);
         }
-        .bahrawy-glitch.group:hover .bahrawy-glitch-${id}-b,
-        .bahrawy-glitch-${id}-active .bahrawy-glitch-${id}-b {
+        .bahrawy-glitch-${id}.group:hover::after,
+        .bahrawy-glitch-${id}-active::after {
           animation-duration: calc(var(--gh-dur) * 0.55);
           animation-timing-function: steps(3, jump-end);
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .bahrawy-glitch-${id}-a,
-          .bahrawy-glitch-${id}-b,
+          .bahrawy-glitch-${id}::before,
+          .bahrawy-glitch-${id}::after,
           .bahrawy-glitch-${id}-slice {
             animation: none !important;
             transform: none !important;

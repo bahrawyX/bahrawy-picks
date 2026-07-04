@@ -86,6 +86,7 @@ export default function TerminalDocs() {
           {[
             ['steps', 'TerminalStep[] — { type: "command"|"output"|"pause", text?, prompt?, variant?, ms? }.'],
             ['title', 'Title-bar text. Default "bash".'],
+            ['prompt', 'Prompt prefix for command steps (overridable per step) and the idle trailing line. Default "$ ".'],
             ['showHeader', 'Show the mac-style window header. Default true.'],
             ['showControls', 'Show play/pause/replay buttons. Default true.'],
             ['loop', 'Restart the sequence after it finishes. Default true.'],

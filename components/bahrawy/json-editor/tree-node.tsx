@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronRight, Pencil, Plus, Trash2, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { springSnappy, tweenSmooth } from '@/lib/motion'
-import { TypeBadge, getJsonType } from './type-badge'
+import { TypeBadge, getJsonType, type JsonType } from './type-badge'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,12 +21,31 @@ interface TreeNodeProps {
   onDelete: (path: string[]) => void
   onAdd: (path: string[], key: string, value: unknown) => void
   readOnly: boolean
-  defaultExpanded: boolean
-  maxDepth: number
+  /** Expansion state is owned by the editor so the flat (virtualized) path shares it. */
+  getExpanded: (path: string[], depth: number) => boolean
+  onToggleExpanded: (path: string[], depth: number) => void
+}
+
+export interface TreeNodeRowProps {
+  keyName: string | number
+  value: unknown
+  path: string[]
+  depth: number
+  type: JsonType
+  isExpandable: boolean
+  expanded: boolean
+  childCount: number
+  onToggle: () => void
+  onUpdate: (path: string[], value: unknown) => void
+  onDelete: (path: string[]) => void
+  onAdd: (path: string[], key: string, value: unknown) => void
+  readOnly: boolean
+  /** Disabled for virtualized rows — animations fight windowing. */
+  animate: boolean
 }
 
 // ---------------------------------------------------------------------------
-// Component
+// Recursive node — animated, sub-threshold path
 // ---------------------------------------------------------------------------
 
 export function TreeNode({
@@ -39,17 +58,9 @@ export function TreeNode({
   onDelete,
   onAdd,
   readOnly,
-  defaultExpanded,
-  maxDepth,
+  getExpanded,
+  onToggleExpanded,
 }: TreeNodeProps) {
-  const [expanded, setExpanded] = useState(depth < (defaultExpanded ? maxDepth : 1))
-  const [editing, setEditing] = useState(false)
-  const [editValue, setEditValue] = useState('')
-  const [adding, setAdding] = useState(false)
-  const [newKey, setNewKey] = useState('')
-  const [newValue, setNewValue] = useState('')
-  const [hovered, setHovered] = useState(false)
-
   const type = getJsonType(value)
   const isExpandable = type === 'object' || type === 'array'
   const entries = isExpandable
@@ -57,7 +68,89 @@ export function TreeNode({
       ? (value as unknown[]).map((v, i) => [i, v] as const)
       : Object.entries(value as Record<string, unknown>)
     : []
-  const childCount = entries.length
+  const expanded = isExpandable && getExpanded(path, depth)
+  void isLast
+
+  return (
+    <div className="select-none">
+      <TreeNodeRow
+        keyName={keyName}
+        value={value}
+        path={path}
+        depth={depth}
+        type={type}
+        isExpandable={isExpandable}
+        expanded={expanded}
+        childCount={entries.length}
+        onToggle={() => onToggleExpanded(path, depth)}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        onAdd={onAdd}
+        readOnly={readOnly}
+        animate
+      />
+
+      {/* Children */}
+      <AnimatePresence initial={false}>
+        {isExpandable && expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={tweenSmooth}
+            className="overflow-hidden"
+          >
+            {entries.map(([k, v], i) => (
+              <TreeNode
+                key={`${k}-${i}`}
+                keyName={k}
+                value={v}
+                path={[...path, String(k)]}
+                depth={depth + 1}
+                isLast={i === entries.length - 1}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
+                onAdd={onAdd}
+                readOnly={readOnly}
+                getExpanded={getExpanded}
+                onToggleExpanded={onToggleExpanded}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// One node row — shared by the recursive and virtualized render paths.
+// Owns its transient edit / add / hover state; everything durable flows
+// through the path-based onUpdate / onDelete / onAdd callbacks.
+// ---------------------------------------------------------------------------
+
+export function TreeNodeRow({
+  keyName,
+  value,
+  path,
+  depth,
+  type,
+  isExpandable,
+  expanded,
+  childCount,
+  onToggle,
+  onUpdate,
+  onDelete,
+  onAdd,
+  readOnly,
+  animate,
+}: TreeNodeRowProps) {
+  const [editing, setEditing] = useState(false)
+  const [editValue, setEditValue] = useState('')
+  const [adding, setAdding] = useState(false)
+  const [newKey, setNewKey] = useState('')
+  const [newValue, setNewValue] = useState('')
+  const [hovered, setHovered] = useState(false)
 
   // ---- Editing ----
 
@@ -106,8 +199,8 @@ export function TreeNode({
     const key = type === 'array' ? String(childCount) : newKey
     onAdd(path, key, parsed)
     setAdding(false)
-    if (!expanded) setExpanded(true)
-  }, [newKey, newValue, type, childCount, path, onAdd, expanded])
+    if (!expanded) onToggle()
+  }, [newKey, newValue, type, childCount, path, onAdd, expanded, onToggle])
 
   // ---- Render value ----
 
@@ -182,15 +275,21 @@ export function TreeNode({
         {isExpandable ? (
           <button
             type="button"
-            onClick={() => setExpanded((e) => !e)}
+            onClick={onToggle}
             className="flex h-4 w-4 items-center justify-center rounded-sm text-white/30 transition-colors hover:text-white/60"
           >
-            <motion.div
-              animate={{ rotate: expanded ? 90 : 0 }}
-              transition={springSnappy}
-            >
-              <ChevronRight className="h-3 w-3" />
-            </motion.div>
+            {animate ? (
+              <motion.div
+                animate={{ rotate: expanded ? 90 : 0 }}
+                transition={springSnappy}
+              >
+                <ChevronRight className="h-3 w-3" />
+              </motion.div>
+            ) : (
+              <div className={cn(expanded && 'rotate-90')}>
+                <ChevronRight className="h-3 w-3" />
+              </div>
+            )}
           </button>
         ) : (
           <span className="h-4 w-4" />
@@ -247,75 +346,45 @@ export function TreeNode({
         )}
       </div>
 
-      {/* Children */}
-      <AnimatePresence initial={false}>
-        {isExpandable && expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={tweenSmooth}
-            className="overflow-hidden"
-          >
-            {entries.map(([k, v], i) => (
-              <TreeNode
-                key={`${k}-${i}`}
-                keyName={k}
-                value={v}
-                path={[...path, String(k)]}
-                depth={depth + 1}
-                isLast={i === entries.length - 1}
-                onUpdate={onUpdate}
-                onDelete={onDelete}
-                onAdd={onAdd}
-                readOnly={readOnly}
-                defaultExpanded={defaultExpanded}
-                maxDepth={maxDepth}
-              />
-            ))}
-
-            {/* Add new entry */}
-            {adding && (
-              <motion.div
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={springSnappy}
-                className="flex items-center gap-1.5 py-1"
-                style={{ paddingLeft: (depth + 1) * 16 + 4 }}
-              >
-                <span className="h-4 w-4" />
-                {type !== 'array' && (
-                  <input
-                    autoFocus
-                    placeholder="key"
-                    value={newKey}
-                    onChange={(e) => setNewKey(e.target.value)}
-                    className="w-20 rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
-                  />
-                )}
-                <span className="text-xs text-white/20">:</span>
-                <input
-                  autoFocus={type === 'array'}
-                  placeholder="value"
-                  value={newValue}
-                  onChange={(e) => setNewValue(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') commitAdd()
-                    if (e.key === 'Escape') setAdding(false)
-                  }}
-                  className="min-w-[80px] rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
-                />
-                <button type="button" onClick={commitAdd} className="rounded-md p-0.5 text-green-400 hover:bg-green-500/10">
-                  <Check className="h-3 w-3" />
-                </button>
-                <button type="button" onClick={() => setAdding(false)} className="rounded-md p-0.5 text-red-400 hover:bg-red-500/10">
-                  <X className="h-3 w-3" />
-                </button>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Add new entry — rendered directly under this node's row */}
+      {adding && (
+        <motion.div
+          initial={animate ? { opacity: 0, y: -4 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={springSnappy}
+          className="flex items-center gap-1.5 py-1"
+          style={{ paddingLeft: (depth + 1) * 16 + 4 }}
+        >
+          <span className="h-4 w-4" />
+          {type !== 'array' && (
+            <input
+              autoFocus
+              placeholder="key"
+              value={newKey}
+              onChange={(e) => setNewKey(e.target.value)}
+              className="w-20 rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
+            />
+          )}
+          <span className="text-xs text-white/20">:</span>
+          <input
+            autoFocus={type === 'array'}
+            placeholder="value"
+            value={newValue}
+            onChange={(e) => setNewValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitAdd()
+              if (e.key === 'Escape') setAdding(false)
+            }}
+            className="min-w-[80px] rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
+          />
+          <button type="button" onClick={commitAdd} className="rounded-md p-0.5 text-green-400 hover:bg-green-500/10">
+            <Check className="h-3 w-3" />
+          </button>
+          <button type="button" onClick={() => setAdding(false)} className="rounded-md p-0.5 text-red-400 hover:bg-red-500/10">
+            <X className="h-3 w-3" />
+          </button>
+        </motion.div>
+      )}
     </div>
   )
 }

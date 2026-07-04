@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils'
 
-type JsonType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array'
+export type JsonType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array'
 
 const typeColors: Record<JsonType, string> = {
   string: 'bg-green-500/15 text-green-400',

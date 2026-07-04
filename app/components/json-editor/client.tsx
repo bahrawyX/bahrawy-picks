@@ -115,6 +115,7 @@ export default function JsonEditorDocs() {
             { name: 'defaultMode', type: "'tree' | 'raw'", default: "'tree'", description: 'Default view mode' },
             { name: 'defaultExpanded', type: 'boolean', default: 'true', description: 'Expand all nodes by default' },
             { name: 'maxDepth', type: 'number', default: '10', description: 'Maximum tree depth to auto-expand' },
+            { name: 'virtualizeOver', type: 'number', default: '300', description: 'Virtualize the tree view once visible rows exceed this count' },
             { name: 'className', type: 'string', default: '—', description: 'Additional CSS classes' },
           ]}
         />

@@ -36,8 +36,10 @@ export interface TerminalStep {
 
 export interface TerminalProps {
   steps: TerminalStep[]
-  /** Optional title bar text. */
+  /** Optional title bar text. Default 'bash'. */
   title?: string
+  /** Prompt prefix for command steps without their own `prompt`, and for the idle trailing line. Default '$ '. */
+  prompt?: string
   /** Show the mac-style window header. Default true. */
   showHeader?: boolean
   /** Show play / pause / replay controls in the header. Default true. */
@@ -74,6 +76,7 @@ interface RenderedLine {
 export function Terminal({
   steps,
   title,
+  prompt = '$ ',
   showHeader = true,
   showControls = true,
   loop = true,
@@ -157,7 +160,7 @@ export function Terminal({
           ...prev,
           {
             key: lineKeyRef.current++,
-            prompt: step.type === 'command' ? (step.prompt ?? '$ ') : undefined,
+            prompt: step.type === 'command' ? (step.prompt ?? prompt) : undefined,
             text: '',
             variant: step.variant ?? 'default',
             isCommand: step.type === 'command',
@@ -198,7 +201,7 @@ export function Terminal({
       cancelled = true
       clearTimeout(timer)
     }
-  }, [steps, effectivelyPlaying, speed, loop, reset])
+  }, [steps, effectivelyPlaying, speed, loop, reset, prompt])
 
   // Auto-scroll to keep the cursor visible
   React.useEffect(() => {
@@ -273,7 +276,7 @@ export function Terminal({
         {/* When all lines complete (between steps), show a trailing cursor on a fresh prompt line */}
         {lines.length > 0 && lines[lines.length - 1].isComplete && (
           <div className="flex whitespace-pre">
-            <span className="select-none text-white/35">$ </span>
+            <span className="select-none text-white/35">{prompt}</span>
             <Cursor />
           </div>
         )}

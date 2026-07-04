@@ -127,28 +127,19 @@ function VirtualListInner<T>(
     return data.filter((item) => filterFn(item, searchQuery))
   }, [data, searchQuery, filterFn])
 
-  // Scroll tracking for scroll-to-top button
+  // Scroll tracking for scroll-to-top button. The active sub-component
+  // attaches `scrollRef` to its scroll container during the same commit,
+  // so the element is guaranteed to be populated by the time this effect
+  // runs — no polling needed. Deps cover every branch swap that remounts
+  // the container (loading/empty states and list-mode changes).
   useEffect(() => {
-    const check = () => {
-      const el = scrollRef.current
-      if (!el) return
-      setShowScrollToTop(el.scrollTop > 500)
-    }
-
-    // Poll briefly after mount to attach once scrollRef is populated by sub-component
-    const timer = setInterval(() => {
-      const el = scrollRef.current
-      if (el) {
-        el.addEventListener('scroll', check, { passive: true })
-        clearInterval(timer)
-      }
-    }, 50)
-
-    return () => {
-      clearInterval(timer)
-      scrollRef.current?.removeEventListener('scroll', check)
-    }
-  }, [filteredData.length, isLoading])
+    const el = scrollRef.current
+    if (!el) return
+    const check = () => setShowScrollToTop(el.scrollTop > 500)
+    check()
+    el.addEventListener('scroll', check, { passive: true })
+    return () => el.removeEventListener('scroll', check)
+  }, [filteredData.length, isLoading, variableHeight, tableMode, columns])
 
   // Imperative handle
   useImperativeHandle(ref, () => ({

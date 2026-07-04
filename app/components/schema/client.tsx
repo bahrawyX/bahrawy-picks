@@ -162,6 +162,7 @@ export default function SchemaDocs() {
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
             ['Drag table', 'Pointer-down on the header (with the grip icon) and drag. The FK lines re-render every frame so they stay attached.'],
+            ['Move with keyboard', 'Tab to a table header and nudge with the arrow keys — 16px per press, 64px with Shift. Commits through the same path as drag so FK lines re-route.'],
             ['Add table', 'Toolbar in the top-right of the canvas.'],
             ['Delete table', 'Trash icon that fades in on header hover. Any FK pointing at the table is cleaned up.'],
             ['Rename', 'Double-click the table name or any column name to edit inline. Enter to commit, Esc to cancel.'],

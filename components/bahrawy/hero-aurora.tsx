@@ -6,11 +6,17 @@
  * Centered hero with drifting blurred color blobs behind the text. Each blob
  * slowly orbits via Framer's keyframe array — different speeds and paths so
  * the bloom never repeats visually. Soft + brand-y, doesn't fight the type.
+ *
+ * The drift animates `x`/`y` transforms (compositor-only) rather than
+ * `left`/`top`, which would force layout every frame under the heavy blur.
+ * Percent paths are converted to px once the blob field is measured.
+ * Honors `prefers-reduced-motion` by rendering the blobs statically.
  */
 
 import * as React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface HeroAuroraBlob {
   /** Hex/RGB string. */
@@ -57,6 +63,26 @@ export function HeroAurora({
   minHeight = '100vh',
   className,
 }: HeroAuroraProps) {
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const fieldRef = React.useRef<HTMLDivElement>(null)
+  const [fieldSize, setFieldSize] = React.useState<{
+    width: number
+    height: number
+  } | null>(null)
+
+  // Measure the blob field once (and on resize) so the percent-based drift
+  // paths can run as pure px transforms instead of layout-forcing left/top.
+  React.useEffect(() => {
+    const el = fieldRef.current
+    if (!el) return
+    const measure = () =>
+      setFieldSize({ width: el.clientWidth, height: el.clientHeight })
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section
       style={{ minHeight }}
@@ -66,9 +92,19 @@ export function HeroAurora({
       )}
     >
       {/* Aurora blob field */}
-      <div aria-hidden className="absolute inset-0" style={{ filter: `blur(${blur})` }}>
+      <div
+        ref={fieldRef}
+        aria-hidden
+        className="absolute inset-0"
+        style={{ filter: `blur(${blur})` }}
+      >
         {blobs.map((b, i) => (
-          <AuroraBlob key={i} blob={b} />
+          <AuroraBlob
+            key={i}
+            blob={b}
+            fieldSize={fieldSize}
+            drift={!prefersReducedMotion}
+          />
         ))}
       </div>
 
@@ -142,7 +178,15 @@ export function HeroAurora({
 // A single drifting blob
 // ---------------------------------------------------------------------------
 
-function AuroraBlob({ blob }: { blob: HeroAuroraBlob }) {
+function AuroraBlob({
+  blob,
+  fieldSize,
+  drift,
+}: {
+  blob: HeroAuroraBlob
+  fieldSize: { width: number; height: number } | null
+  drift: boolean
+}) {
   const {
     color,
     size = 520,
@@ -152,23 +196,47 @@ function AuroraBlob({ blob }: { blob: HeroAuroraBlob }) {
     opacity = 0.55,
   } = blob
 
+  // Static blob when reduced motion is preferred, or until the field has
+  // been measured (SSR / first paint) — same start position, no drift.
+  if (!drift || !fieldSize) {
+    return (
+      <div
+        aria-hidden
+        style={{
+          left: `${startX}%`,
+          top: `${startY}%`,
+          width: size,
+          height: size,
+          background: color,
+          opacity,
+        }}
+        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+      />
+    )
+  }
+
   // Walk between a small set of percent offsets so the blob orbits without
-  // ever traveling in a straight line.
-  const xKeyframes = [startX, startX + 12, startX - 8, startX + 4, startX]
-  const yKeyframes = [startY, startY - 6, startY + 10, startY - 4, startY]
+  // ever traveling in a straight line. The percent path is converted to px
+  // transforms (centering baked in) so the loop never touches layout.
+  const toX = (pct: number) => (pct / 100) * fieldSize.width - size / 2
+  const toY = (pct: number) => (pct / 100) * fieldSize.height - size / 2
+  const xKeyframes = [startX, startX + 12, startX - 8, startX + 4, startX].map(toX)
+  const yKeyframes = [startY, startY - 6, startY + 10, startY - 4, startY].map(toY)
 
   return (
     <motion.div
       aria-hidden
-      animate={{ left: xKeyframes.map((x) => `${x}%`), top: yKeyframes.map((y) => `${y}%`) }}
+      animate={{ x: xKeyframes, y: yKeyframes }}
       transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
       style={{
+        x: xKeyframes[0],
+        y: yKeyframes[0],
         width: size,
         height: size,
         background: color,
         opacity,
       }}
-      className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+      className="absolute left-0 top-0 rounded-full"
     />
   )
 }

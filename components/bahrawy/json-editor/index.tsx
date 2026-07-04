@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { Braces, Code2, Copy, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { springSnappy } from '@/lib/motion'
-import { TreeNode } from './tree-node'
+import { TreeNode, TreeNodeRow } from './tree-node'
 import { RawEditor } from './raw-editor'
+import { getJsonType, type JsonType } from './type-badge'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,6 +22,8 @@ export interface JsonEditorProps {
   defaultMode?: JsonViewMode
   defaultExpanded?: boolean
   maxDepth?: number
+  /** Virtualize the tree view once visible (expanded) rows exceed this count. Default 300. */
+  virtualizeOver?: number
   className?: string
 }
 
@@ -103,6 +105,24 @@ function addNestedValue(
   return clone
 }
 
+// Path-keyed expansion state. The control-char separator keeps keys
+// unambiguous even when a JSON key itself contains dots or slashes.
+function pathKey(path: string[]): string {
+  return path.join('\u0001')
+}
+
+/** One visible (expanded-into-view) node of the tree, flattened. */
+interface FlatNode {
+  keyName: string | number
+  value: unknown
+  path: string[]
+  depth: number
+  type: JsonType
+  isExpandable: boolean
+  expanded: boolean
+  childCount: number
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -115,6 +135,7 @@ export function JsonEditor({
   defaultMode = 'tree',
   defaultExpanded = true,
   maxDepth = 10,
+  virtualizeOver = 300,
   className,
 }: JsonEditorProps) {
   const isControlled = controlledValue !== undefined
@@ -125,8 +146,39 @@ export function JsonEditor({
   const [rawString, setRawString] = useState('')
   const [parseError, setParseError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const currentValue = isControlled ? controlledValue : internalValue
+
+  // ---- Expansion state ----
+  // Hoisted out of the nodes so the flat (virtualized) path can share
+  // it with the recursive path. Only user toggles are stored; anything
+  // untouched falls back to the defaultExpanded / maxDepth rule the
+  // nodes used before.
+  const [expandedOverrides, setExpandedOverrides] = useState<ReadonlyMap<string, boolean>>(
+    () => new Map(),
+  )
+
+  const isExpanded = useCallback(
+    (path: string[], depth: number) =>
+      expandedOverrides.get(pathKey(path)) ??
+      depth < (defaultExpanded ? maxDepth : 1),
+    [expandedOverrides, defaultExpanded, maxDepth],
+  )
+
+  const toggleExpanded = useCallback(
+    (path: string[], depth: number) => {
+      setExpandedOverrides((prev) => {
+        const key = pathKey(path)
+        const current =
+          prev.get(key) ?? depth < (defaultExpanded ? maxDepth : 1)
+        const next = new Map(prev)
+        next.set(key, !current)
+        return next
+      })
+    },
+    [defaultExpanded, maxDepth],
+  )
 
   // Sync raw string when switching modes or value changes
   useEffect(() => {
@@ -205,6 +257,52 @@ export function JsonEditor({
     [currentValue],
   )
 
+  // Flatten the visible (expanded) nodes into a list — same approach as
+  // <Tree />. Drives the virtualized render path; also how we know how
+  // many rows are actually on screen.
+  const flatNodes = useMemo(() => {
+    const rows: FlatNode[] = []
+    const walk = (
+      entries: (readonly [string | number, unknown])[],
+      parentPath: string[],
+      depth: number,
+    ) => {
+      for (const [k, v] of entries) {
+        const path = [...parentPath, String(k)]
+        const type = getJsonType(v)
+        const isExpandable = type === 'object' || type === 'array'
+        const childEntries = isExpandable
+          ? type === 'array'
+            ? (v as unknown[]).map((cv, i) => [i, cv] as const)
+            : Object.entries(v as Record<string, unknown>)
+          : []
+        const expanded = isExpandable && isExpanded(path, depth)
+        rows.push({
+          keyName: k,
+          value: v,
+          path,
+          depth,
+          type,
+          isExpandable,
+          expanded,
+          childCount: childEntries.length,
+        })
+        if (expanded) walk(childEntries, path, depth + 1)
+      }
+    }
+    walk(rootEntries, [], 0)
+    return rows
+  }, [rootEntries, isExpanded])
+
+  const virtualized = mode === 'tree' && flatNodes.length > virtualizeOver
+
+  const virtualizer = useVirtualizer({
+    count: virtualized ? flatNodes.length : 0,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 24,
+    overscan: 12,
+  })
+
   return (
     <div
       className={cn(
@@ -258,31 +356,80 @@ export function JsonEditor({
         </button>
       </div>
 
-      {/* Content */}
-      {/* TODO: virtualize the tree view for very large documents. Rows are
-          rendered recursively with expand/collapse height animations, so
-          windowing would require flattening the expanded nodes first —
-          invasive enough that it's deferred for now. */}
-      <div className="max-h-[500px] overflow-auto bg-black/40 scrollbar-hide">
+      {/* Content — past `virtualizeOver` visible rows the expanded nodes
+          are flattened and windowed with @tanstack/react-virtual, and the
+          expand/collapse + chevron animations are dropped (they fight
+          virtualization). Below the threshold everything animates. */}
+      <div
+        ref={scrollRef}
+        className="max-h-[500px] overflow-auto bg-black/40 scrollbar-hide"
+        data-lenis-prevent={virtualized ? true : undefined}
+      >
         {mode === 'tree' ? (
-          <div className="py-2">
-            {rootEntries.map(([k, v], i) => (
-              <TreeNode
-                key={`${k}-${i}`}
-                keyName={k}
-                value={v}
-                path={[String(k)]}
-                depth={0}
-                isLast={i === rootEntries.length - 1}
-                onUpdate={handleUpdate}
-                onDelete={handleDelete}
-                onAdd={handleAdd}
-                readOnly={readOnly}
-                defaultExpanded={defaultExpanded}
-                maxDepth={maxDepth}
-              />
-            ))}
-          </div>
+          virtualized ? (
+            <div className="py-2">
+              <div
+                style={{
+                  height: virtualizer.getTotalSize(),
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {virtualizer.getVirtualItems().map((virtualItem) => {
+                  const row = flatNodes[virtualItem.index]
+                  return (
+                    <div
+                      key={pathKey(row.path)}
+                      data-index={virtualItem.index}
+                      ref={virtualizer.measureElement}
+                      style={{
+                        position: 'absolute',
+                        top: virtualItem.start,
+                        left: 0,
+                        width: '100%',
+                      }}
+                    >
+                      <TreeNodeRow
+                        keyName={row.keyName}
+                        value={row.value}
+                        path={row.path}
+                        depth={row.depth}
+                        type={row.type}
+                        isExpandable={row.isExpandable}
+                        expanded={row.expanded}
+                        childCount={row.childCount}
+                        onToggle={() => toggleExpanded(row.path, row.depth)}
+                        onUpdate={handleUpdate}
+                        onDelete={handleDelete}
+                        onAdd={handleAdd}
+                        readOnly={readOnly}
+                        animate={false}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="py-2">
+              {rootEntries.map(([k, v], i) => (
+                <TreeNode
+                  key={`${k}-${i}`}
+                  keyName={k}
+                  value={v}
+                  path={[String(k)]}
+                  depth={0}
+                  isLast={i === rootEntries.length - 1}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
+                  onAdd={handleAdd}
+                  readOnly={readOnly}
+                  getExpanded={isExpanded}
+                  onToggleExpanded={toggleExpanded}
+                />
+              ))}
+            </div>
+          )
         ) : (
           <RawEditor
             value={rawString}
