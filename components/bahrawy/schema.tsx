@@ -485,7 +485,9 @@ function TableCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={APPLE_SPRING}
-      whileHover={admin ? { y: 0 } : undefined}
+      // No whileHover here: x/y are the card's diagram position, so a
+      // hover target on the same transform channel would animate the
+      // card toward that absolute value (visibly yanking it upward).
       className="min-w-[220px] select-none overflow-visible"
     >
       <div
