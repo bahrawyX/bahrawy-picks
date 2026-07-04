@@ -55,7 +55,7 @@ export const registry: RegistryEntry[] = [
     category: 'background',
     hasOptions: true,
     dependencies: ['ogl'],
-    sourcePath: 'components/line-waves.jsx',
+    sourcePath: 'components/line-waves.tsx',
     Preview: LineWavesPreview,
     Thumbnail: LineWavesThumb,
     props: [

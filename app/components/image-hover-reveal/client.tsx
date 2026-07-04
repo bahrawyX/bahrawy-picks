@@ -140,6 +140,7 @@ export default function ImageHoverRevealDocs() {
             ['scale', 'Image zoom on hover. Default 1.06.'],
             ['height', 'Card height in px. Default 360.'],
             ['align', '"left" or "center". Default "left".'],
+            ['role', 'Optional ARIA role for the focusable card, per context.'],
             ['className', 'Extra classes on the outer card.'],
           ].map(([name, body]) => (
             <li

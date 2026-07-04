@@ -16,6 +16,7 @@ import * as React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Copy } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useRovingTabindex } from '@/lib/use-roving-tabindex'
 
 export interface SnippetTab {
   /** Tab label, e.g. 'npm'. */
@@ -62,6 +63,12 @@ export function Snippet({
     defaultTab ?? tabs[0]?.label,
   )
   const active = tabs.find((t) => t.label === activeLabel) ?? tabs[0]
+  const activeIndex = Math.max(
+    0,
+    tabs.findIndex((t) => t.label === active?.label),
+  )
+  // Links the tab row to the code panel (aria-controls / aria-labelledby).
+  const uid = React.useId()
   const [copied, setCopied] = React.useState(false)
   const copyTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null)
 
@@ -97,10 +104,18 @@ export function Snippet({
           tabs={tabs}
           activeLabel={active?.label}
           onChange={setActiveLabel}
+          uid={uid}
         />
       )}
 
-      <div className="relative flex items-center gap-2 overflow-hidden px-3 py-2.5">
+      <div
+        id={`${uid}-panel`}
+        role={tabs.length > 1 ? 'tabpanel' : undefined}
+        aria-labelledby={
+          tabs.length > 1 ? `${uid}-tab-${activeIndex}` : undefined
+        }
+        className="relative flex items-center gap-2 overflow-hidden px-3 py-2.5"
+      >
         <div className="min-w-0 flex-1 overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
             <motion.code
@@ -174,26 +189,42 @@ function TabBar({
   tabs,
   activeLabel,
   onChange,
+  uid,
 }: {
   tabs: SnippetTab[]
   activeLabel?: string
   onChange: (label: string) => void
+  uid: string
 }) {
-  // Scope the shared-layout pill per instance so multiple Snippets don't collide.
-  const id = React.useId()
+  const activeIndex = Math.max(
+    0,
+    tabs.findIndex((t) => t.label === activeLabel),
+  )
+  // Arrow-key navigation; selection follows focus (the common tabs pattern).
+  const roving = useRovingTabindex({
+    count: tabs.length,
+    focusIndex: activeIndex,
+    onNavigate: (i) => {
+      const tab = tabs[i]
+      if (tab) onChange(tab.label)
+    },
+  })
   return (
     <div
       role="tablist"
       className="flex items-center gap-0.5 border-b border-white/[0.05] bg-white/[0.015] px-1.5 py-1.5"
     >
-      {tabs.map((tab) => {
+      {tabs.map((tab, i) => {
         const isActive = tab.label === activeLabel
         return (
           <button
             key={tab.label}
+            {...roving.getItemProps(i)}
+            id={`${uid}-tab-${i}`}
             type="button"
             role="tab"
             aria-selected={isActive}
+            aria-controls={`${uid}-panel`}
             onClick={() => onChange(tab.label)}
             className={cn(
               'relative inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11.5px] font-medium tracking-tight transition-colors',
@@ -202,7 +233,8 @@ function TabBar({
           >
             {isActive && (
               <motion.span
-                layoutId={`snippet-tab-pill-${id}`}
+                // Scoped per instance so multiple Snippets don't collide.
+                layoutId={`snippet-tab-pill-${uid}`}
                 className="absolute inset-0 rounded-md bg-white/[0.08]"
                 transition={SPRING}
               />

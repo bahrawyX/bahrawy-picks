@@ -107,7 +107,8 @@ export default function FloatingDockDocs() {
           props={[
             { name: 'icon', type: 'ReactNode', description: 'Dock icon (SVG or Lucide icon).' },
             { name: 'label', type: 'string', description: 'Tooltip label shown on hover.' },
-            { name: 'href', type: 'string', description: 'If provided, renders as a link.' },
+            { name: 'href', type: 'string', description: 'If provided, renders as a link (otherwise a button).' },
+            { name: 'external', type: 'boolean', default: 'false', description: 'Open the link in a new tab (target="_blank" + rel).' },
             { name: 'onClick', type: '() => void', description: 'Click handler.' },
           ]}
         />

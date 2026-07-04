@@ -130,6 +130,30 @@ export function AudioPlayer({
     ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
   }
 
+  // Keyboard seeking on the waveform slider.
+  const seekTo = (time: number) => {
+    const el = audioRef.current
+    if (!el || !duration) return
+    el.currentTime = Math.max(0, Math.min(duration, time))
+    setCurrent(el.currentTime)
+  }
+  const onWaveKeyDown = (e: React.KeyboardEvent) => {
+    if (!duration) return
+    if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      seekTo(current + 5)
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      seekTo(current - 5)
+    } else if (e.key === 'Home') {
+      e.preventDefault()
+      seekTo(0)
+    } else if (e.key === 'End') {
+      e.preventDefault()
+      seekTo(duration)
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -195,12 +219,15 @@ export function AudioPlayer({
           onPointerMove={onWavePointerMove}
           onPointerUp={onWavePointerUp}
           onPointerCancel={onWavePointerUp}
-          className="mt-1.5 flex h-9 cursor-pointer items-end gap-[2px]"
+          onKeyDown={onWaveKeyDown}
+          tabIndex={0}
+          className="mt-1.5 flex h-9 cursor-pointer items-end gap-[2px] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white/30"
           role="slider"
           aria-label="Seek"
           aria-valuemin={0}
           aria-valuemax={Math.round(duration)}
           aria-valuenow={Math.round(current)}
+          aria-valuetext={`${formatTime(current)} of ${formatTime(duration)}`}
         >
           {data.map((amp, i) => {
             const isPlayed = i / data.length < progress

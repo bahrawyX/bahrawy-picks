@@ -27,6 +27,8 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
     const particlesRef = useRef<Particle[]>([])
     const animFrameRef = useRef<number>(0)
     const isRunning = useRef(false)
+    // Device-pixel-ratio the backing store is scaled by (capped at 2).
+    const dprRef = useRef(1)
     const reduced = usePrefersReducedMotion()
 
     const animate = useCallback(() => {
@@ -35,7 +37,10 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
       const ctx = canvas.getContext('2d')
       if (!ctx) return
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const dpr = dprRef.current
+      // Draw in CSS-pixel coordinates; the transform maps to device pixels.
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
 
       particlesRef.current = particlesRef.current.filter((p) => {
         const alive = updateParticle(p, defaultConfig.gravity, defaultConfig.drag)
@@ -58,7 +63,14 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
         if (!canvas) return
 
         const config = { ...defaultConfig, ...overrides }
+        // createParticles positions from the backing-store size (device
+        // pixels) — convert back to the CSS-pixel space we draw in.
+        const dpr = dprRef.current
         const newParticles = createParticles(canvas, config)
+        newParticles.forEach((p) => {
+          p.x /= dpr
+          p.y /= dpr
+        })
         particlesRef.current = [...particlesRef.current, ...newParticles]
 
         if (!isRunning.current) {
@@ -77,16 +89,25 @@ export const ConfettiCanvas = forwardRef<ConfettiCanvasRef, ConfettiCanvasProps>
       if (!canvas) return
 
       const resize = () => {
+        // Scale the backing store by devicePixelRatio (capped at 2) so
+        // particles render crisply on retina displays.
+        const dpr = Math.min(window.devicePixelRatio || 1, 2)
+        dprRef.current = dpr
+        let w = 0
+        let h = 0
         if (fullscreen) {
-          canvas.width = window.innerWidth
-          canvas.height = window.innerHeight
+          w = window.innerWidth
+          h = window.innerHeight
         } else {
           const parent = canvas.parentElement
-          if (parent) {
-            canvas.width = parent.clientWidth
-            canvas.height = parent.clientHeight
-          }
+          if (!parent) return
+          w = parent.clientWidth
+          h = parent.clientHeight
         }
+        canvas.width = w * dpr
+        canvas.height = h * dpr
+        canvas.style.width = `${w}px`
+        canvas.style.height = `${h}px`
       }
 
       resize()

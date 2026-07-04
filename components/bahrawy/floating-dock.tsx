@@ -17,6 +17,7 @@
 
 import * as React from 'react'
 import {
+  AnimatePresence,
   motion,
   useMotionValue,
   useSpring,
@@ -29,16 +30,30 @@ import { cn } from '@/lib/utils'
 // Types
 // ---------------------------------------------------------------------------
 
-export interface DockItem {
+interface DockItemBase {
   /** Dock icon (ReactNode — typically an SVG or Lucide icon). */
   icon: React.ReactNode
-  /** Tooltip label. */
+  /** Tooltip label — also the item's accessible name. */
   label: string
-  /** If provided, renders as a link. */
-  href?: string
+}
+
+/** Link item — renders as an anchor. */
+export interface DockLinkItem extends DockItemBase {
+  href: string
+  /** Open in a new tab (adds target="_blank" + rel). Default false. */
+  external?: boolean
+  onClick?: () => void
+}
+
+/** Action item — renders as a button. */
+export interface DockButtonItem extends DockItemBase {
+  href?: undefined
+  external?: undefined
   /** Click handler. */
   onClick?: () => void
 }
+
+export type DockItem = DockLinkItem | DockButtonItem
 
 export interface FloatingDockProps {
   items: DockItem[]
@@ -84,7 +99,7 @@ export function FloatingDock({
           mouseX={mouseX}
           magnification={magnification}
           distance={distance}
-          {...item}
+          item={item}
         />
       ))}
     </motion.div>
@@ -96,18 +111,17 @@ export function FloatingDock({
 // ---------------------------------------------------------------------------
 
 function DockIcon({
-  icon,
-  label,
-  href,
-  onClick,
+  item,
   mouseX,
   magnification,
   distance,
-}: DockItem & {
+}: {
+  item: DockItem
   mouseX: MotionValue<number>
   magnification: number
   distance: number
 }) {
+  const { icon, label } = item
   const ref = React.useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = React.useState(false)
 
@@ -126,29 +140,21 @@ function DockIcon({
   })
   const size = useSpring(sizeRaw, { stiffness: 350, damping: 25, mass: 0.5 })
 
-  const Wrapper = href ? 'a' : 'button'
-  const wrapperProps = href
-    ? { href, target: '_blank' as const, rel: 'noreferrer noopener' }
-    : { onClick, type: 'button' as const }
-
-  return (
-    <Wrapper
-      {...(wrapperProps as Record<string, unknown>)}
-      className="relative"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+  const content = (
+    <>
       {/* Tooltip */}
-      {hovered && (
-        <motion.span
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 4 }}
-          className="absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/80 px-2 py-1 text-[11px] font-medium text-white/80 backdrop-blur-sm"
-        >
-          {label}
-        </motion.span>
-      )}
+      <AnimatePresence>
+        {hovered && (
+          <motion.span
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            className="absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/80 px-2 py-1 text-[11px] font-medium text-white/80 backdrop-blur-sm"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
 
       <motion.div
         ref={ref}
@@ -157,6 +163,37 @@ function DockIcon({
       >
         {icon}
       </motion.div>
-    </Wrapper>
+    </>
+  )
+
+  const shared = {
+    'aria-label': label,
+    className: 'relative',
+    onMouseEnter: () => setHovered(true),
+    onMouseLeave: () => setHovered(false),
+    onFocus: () => setHovered(true),
+    onBlur: () => setHovered(false),
+  }
+
+  // Discriminate on `href`: link items render as anchors (new tab only when
+  // `external`), everything else as real buttons.
+  if (item.href) {
+    return (
+      <a
+        {...shared}
+        href={item.href}
+        target={item.external ? '_blank' : undefined}
+        rel={item.external ? 'noreferrer noopener' : undefined}
+        onClick={item.onClick}
+      >
+        {content}
+      </a>
+    )
+  }
+
+  return (
+    <button {...shared} type="button" onClick={item.onClick}>
+      {content}
+    </button>
   )
 }

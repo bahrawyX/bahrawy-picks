@@ -34,7 +34,7 @@ export default function HoverCardDocs() {
     <DocsPage
       title="Hover Card"
       slug="hover-card"
-      description="A preview popup that appears with a configurable delay on hover. Spring-positioned, fades + scales in, dismisses on mouse leave."
+      description="A preview popup that appears with a configurable delay on hover. Portal-mounted and spring-positioned, flips when out of room, dismisses on mouse leave or Escape."
       category="93 · overlay"
     >
       <DocsSection title="Live demo" description="Hover the underlined trigger to reveal the card.">

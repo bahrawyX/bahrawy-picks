@@ -13,6 +13,7 @@
  * @param trackColor  — Color of the empty track. Default rgba(255,255,255,0.1).
  * @param showLabel   — Show "%" in the center. Default true.
  * @param label       — Custom center content, overrides %.
+ * @param ariaLabel   — Accessible name for the progressbar. Default "Progress".
  * @param className   — Extra classes for the wrapper.
  */
 
@@ -28,6 +29,7 @@ export interface ProgressRingProps {
   trackColor?: string
   showLabel?: boolean
   label?: React.ReactNode
+  ariaLabel?: string
   className?: string
 }
 
@@ -39,6 +41,7 @@ export function ProgressRing({
   trackColor = 'rgba(255,255,255,0.10)',
   showLabel = true,
   label,
+  ariaLabel = 'Progress',
   className,
 }: ProgressRingProps) {
   const clamped = Math.max(0, Math.min(100, value))
@@ -58,6 +61,11 @@ export function ProgressRing({
 
   return (
     <div
+      role="progressbar"
+      aria-label={ariaLabel}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(clamped)}
       className={cn(
         'relative inline-flex items-center justify-center',
         className,

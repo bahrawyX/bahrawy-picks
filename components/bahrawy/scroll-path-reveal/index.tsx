@@ -62,6 +62,8 @@ export interface ScrollPathRevealProps {
   className?: string
   /** Three short lines revealed in sequence as scroll progresses. Pass an empty array to hide. */
   captions?: string[]
+  /** Classes on each caption line — override to restyle the text color/size. */
+  captionClassName?: string
 }
 
 export function ScrollPathReveal({
@@ -74,6 +76,7 @@ export function ScrollPathReveal({
   backgroundClassName = 'bg-black',
   className,
   captions = DEFAULT_CAPTIONS,
+  captionClassName,
 }: ScrollPathRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
@@ -99,6 +102,7 @@ export function ScrollPathReveal({
         {captions.length > 0 && (
           <Captions
             captions={captions}
+            captionClassName={captionClassName}
             scrollYProgress={scrollYProgress}
           />
         )}
@@ -128,7 +132,6 @@ function LinePath({
   strokeWidth,
   scrollYProgress,
 }: LinePathProps) {
-  const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1])
   const gradientId = useId()
 
   const resolvedStroke =
@@ -139,6 +142,7 @@ function LinePath({
 
   return (
     <svg
+      aria-hidden="true"
       viewBox={viewBox}
       fill="none"
       overflow="visible"
@@ -167,7 +171,7 @@ function LinePath({
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={{ pathLength }}
+        style={{ pathLength: scrollYProgress }}
       />
     </svg>
   )
@@ -179,10 +183,11 @@ function LinePath({
 
 interface CaptionsProps {
   captions: string[]
+  captionClassName?: string
   scrollYProgress: MotionValue<number>
 }
 
-function Captions({ captions, scrollYProgress }: CaptionsProps) {
+function Captions({ captions, captionClassName, scrollYProgress }: CaptionsProps) {
   return (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 md:px-10">
       <div className="flex max-w-2xl flex-col items-center gap-2 text-center sm:gap-3">
@@ -192,6 +197,7 @@ function Captions({ captions, scrollYProgress }: CaptionsProps) {
             line={line}
             index={i}
             total={captions.length}
+            captionClassName={captionClassName}
             scrollYProgress={scrollYProgress}
           />
         ))}
@@ -204,10 +210,17 @@ interface CaptionLineProps {
   line: string
   index: number
   total: number
+  captionClassName?: string
   scrollYProgress: MotionValue<number>
 }
 
-function CaptionLine({ line, index, total, scrollYProgress }: CaptionLineProps) {
+function CaptionLine({
+  line,
+  index,
+  total,
+  captionClassName,
+  scrollYProgress,
+}: CaptionLineProps) {
   // Stagger each line over the scroll range. Each line reveals over a 20% window
   // and then stays visible.
   // Line 0 reveals roughly 0.00 → 0.20, line 1: 0.25 → 0.45, line 2: 0.50 → 0.70.
@@ -224,7 +237,10 @@ function CaptionLine({ line, index, total, scrollYProgress }: CaptionLineProps) 
   return (
     <motion.h2
       style={{ opacity, y, filter }}
-      className="text-balance text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl"
+      className={cn(
+        'text-balance text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl',
+        captionClassName,
+      )}
     >
       {line}
     </motion.h2>

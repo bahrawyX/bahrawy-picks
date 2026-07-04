@@ -4,14 +4,19 @@
  * <TestimonialsSlider />
  *
  * A section that rotates between testimonials on a timer (or manually via
- * the indicator dots). Each slide is a quote + author block; the AnimatePresence
- * crossfades between them with a tiny lift.
+ * the indicator dots). Slides are grid-stacked in the same cell so the section
+ * is always as tall as the tallest slide — no clipping; the active one
+ * crossfades in with a tiny lift.
+ *
+ * Autoplay pauses on hover, while focus is inside the section, and when the
+ * user prefers reduced motion.
  */
 
 import * as React from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 const APPLE_SPRING = { type: 'spring' as const, stiffness: 420, damping: 32, mass: 0.6 }
 
@@ -44,16 +49,17 @@ export function TestimonialsSlider({
 }: TestimonialsSliderProps) {
   const [index, setIndex] = React.useState(0)
   const [paused, setPaused] = React.useState(false)
+  const [focusWithin, setFocusWithin] = React.useState(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   React.useEffect(() => {
-    if (interval <= 0 || paused) return
+    if (interval <= 0 || paused || focusWithin || reducedMotion) return
     const id = window.setInterval(() => {
       setIndex((i) => (i + 1) % items.length)
     }, interval)
     return () => window.clearInterval(id)
-  }, [interval, paused, items.length])
+  }, [interval, paused, focusWithin, reducedMotion, items.length])
 
-  const current = items[index]
   const go = (next: number) => {
     const n = ((next % items.length) + items.length) % items.length
     setIndex(n)
@@ -64,6 +70,12 @@ export function TestimonialsSlider({
       className={cn('relative w-full bg-black px-6 py-24 sm:py-32', className)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setFocusWithin(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          setFocusWithin(false)
+        }
+      }}
     >
       <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-10 text-center">
         {(eyebrow || heading) && (
@@ -83,39 +95,46 @@ export function TestimonialsSlider({
 
         <Quote className="h-8 w-8" style={{ color: accentColor }} strokeWidth={1.5} />
 
-        <div className="relative min-h-[180px] w-full">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.figure
-              key={index}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.4, ease: [0.2, 0, 0, 1] }}
-              className="absolute inset-0 flex flex-col items-center gap-6"
-            >
-              <blockquote className="text-pretty text-xl font-medium leading-snug text-white sm:text-2xl">
-                "{current.quote}"
-              </blockquote>
-              <figcaption className="flex flex-col items-center gap-2">
-                <Avatar item={current} />
-                <p className="text-sm font-medium text-white">{current.name}</p>
-                <p className="text-xs text-white/55">{current.role}</p>
-              </figcaption>
-            </motion.figure>
-          </AnimatePresence>
+        {/* Slides — grid-stacked in the same cell so the section height always
+            fits the tallest slide (no fixed min-h, no clipping). */}
+        <div className="grid w-full">
+          {items.map((item, i) => {
+            const active = i === index
+            return (
+              <motion.figure
+                key={i}
+                initial={false}
+                animate={{ opacity: active ? 1 : 0, y: active ? 0 : 16 }}
+                transition={{ duration: 0.4, ease: [0.2, 0, 0, 1] }}
+                aria-hidden={!active}
+                className={cn(
+                  'col-start-1 row-start-1 flex flex-col items-center justify-center gap-6',
+                  !active && 'pointer-events-none',
+                )}
+              >
+                <blockquote className="text-pretty text-xl font-medium leading-snug text-white sm:text-2xl">
+                  "{item.quote}"
+                </blockquote>
+                <figcaption className="flex flex-col items-center gap-2">
+                  <Avatar item={item} />
+                  <p className="text-sm font-medium text-white">{item.name}</p>
+                  <p className="text-xs text-white/55">{item.role}</p>
+                </figcaption>
+              </motion.figure>
+            )
+          })}
         </div>
 
         {/* Indicator dots */}
-        <div role="tablist" className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           {items.map((_, i) => {
             const active = i === index
             return (
               <button
                 key={i}
                 type="button"
-                role="tab"
-                aria-selected={active}
-                aria-label={`Show testimonial ${i + 1}`}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={active ? 'true' : undefined}
                 onClick={() => setIndex(i)}
                 className="group rounded-full p-1"
               >
@@ -188,6 +207,8 @@ function Avatar({ item }: { item: Testimonial }) {
       <img
         src={item.avatar}
         alt={item.name}
+        width={40}
+        height={40}
         className="h-10 w-10 rounded-full object-cover"
         draggable={false}
       />

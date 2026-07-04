@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useSyncExternalStore } from 'react'
 import { cn } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -22,6 +22,18 @@ function getIsMac(): boolean {
   if (typeof navigator === 'undefined') return false
   return /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') ||
     (navigator.userAgent?.includes('Mac') ?? false)
+}
+
+// The platform never changes, so subscribing is a no-op.
+const emptySubscribe = () => () => {}
+
+/**
+ * SSR-safe platform detection: the server (and the hydration render)
+ * always see `false`, then React swaps in the real value after mount —
+ * no hydration mismatch.
+ */
+function useIsMac(): boolean {
+  return useSyncExternalStore(emptySubscribe, getIsMac, () => false)
 }
 
 // ---------------------------------------------------------------------------
@@ -90,9 +102,13 @@ export function Kbd({
   size = 'md',
   className,
 }: KbdProps) {
-  const isMac = useMemo(getIsMac, [])
+  const isMac = useIsMac()
 
-  const keyArray = typeof keys === 'string' ? keys.split('+').map((k) => k.trim()) : keys
+  const keyArray = useMemo(
+    () =>
+      typeof keys === 'string' ? keys.split('+').map((k) => k.trim()) : keys,
+    [keys],
+  )
 
   const resolvedKeys = useMemo(
     () => keyArray.map((k) => resolveKey(k, isMac)),

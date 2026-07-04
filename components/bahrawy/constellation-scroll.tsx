@@ -114,6 +114,7 @@ export function ConstellationScroll({
   const sectionRef = React.useRef<HTMLDivElement>(null)
   const pinRef = React.useRef<HTMLDivElement>(null)
   const stageRef = React.useRef<HTMLDivElement>(null)
+  const boxRef = React.useRef<HTMLDivElement>(null)
   const nodeRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const labelRefs = React.useRef<(HTMLDivElement | null)[]>([])
   const linkRefs = React.useRef<(SVGLineElement | null)[]>([])
@@ -146,6 +147,22 @@ export function ConstellationScroll({
         const limit = Math.min(rect.width, rect.height) / 2 - nodeSize / 2 - 24
         dims.current.r = Math.max(0, limit * (radius / 0.62))
         dims.current.r = Math.min(dims.current.r, limit)
+        // Keep the SVG link endpoints glued to the actual node radius:
+        // convert the px radius into viewBox units (100 units per side
+        // of the square stage box) and rewrite the line endpoints.
+        const box = boxRef.current?.getBoundingClientRect()
+        if (box && box.width > 0) {
+          const unitR = (dims.current.r / box.width) * 100
+          linkRefs.current.forEach((el, i) => {
+            if (!el) return
+            const a1 = ringAngle(i, N)
+            const a2 = ringAngle((i + 1) % N, N)
+            el.setAttribute('x1', String(unitR * Math.cos(a1)))
+            el.setAttribute('y1', String(unitR * Math.sin(a1)))
+            el.setAttribute('x2', String(unitR * Math.cos(a2)))
+            el.setAttribute('y2', String(unitR * Math.sin(a2)))
+          })
+        }
       }
       measure()
       window.addEventListener('resize', measure)
@@ -412,20 +429,27 @@ export function ConstellationScroll({
           ref={stageRef}
           className="absolute inset-0 flex items-center justify-center"
         >
-          <div className="relative" style={{ width: '70vmin', height: '70vmin' }}>
+          <div
+            ref={boxRef}
+            className="relative"
+            style={{ width: '70vmin', height: '70vmin' }}
+          >
             {/* Connecting SVG lines */}
             {drawLinks && (
               <svg
                 aria-hidden
-                className="pointer-events-none absolute inset-0 h-full w-full"
+                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
                 viewBox="-50 -50 100 100"
                 preserveAspectRatio="none"
               >
                 {nodes.map((node, i) => {
                   const a1 = ringAngle(i, N)
                   const a2 = ringAngle((i + 1) % N, N)
-                  // Ring radius in viewBox units (~38 / 50 of the box).
-                  const R = 38
+                  // Pre-measure estimate of the ring radius in viewBox
+                  // units, scaled by the radius prop (38 ↔ the default
+                  // 0.62). `measure()` rewrites the endpoints from the
+                  // real px radius as soon as the stage is measured.
+                  const R = 38 * (radius / 0.62)
                   const x1 = R * Math.cos(a1)
                   const y1 = R * Math.sin(a1)
                   const x2 = R * Math.cos(a2)

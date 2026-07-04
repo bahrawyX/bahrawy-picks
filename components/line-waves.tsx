@@ -5,7 +5,36 @@ import { useEffect, useRef } from 'react'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 import { useOnScreen } from '@/lib/use-on-screen'
 
-function hexToVec3(hex) {
+export interface LineWavesProps {
+  /** Overall animation speed multiplier. Default 0.3. */
+  speed?: number
+  /** Number of lines in the inner (center) wave region. Default 32. */
+  innerLineCount?: number
+  /** Number of lines in the outer (edge) wave region. Default 36. */
+  outerLineCount?: number
+  /** Intensity of the wave distortion effect. Default 1.0. */
+  warpIntensity?: number
+  /** Rotation of the wave pattern in degrees. Default -45. */
+  rotation?: number
+  /** Width of the edge fade between inner and outer regions. Default 0.0. */
+  edgeFadeWidth?: number
+  /** Speed of color cycling animation. Default 1.0. */
+  colorCycleSpeed?: number
+  /** Overall brightness multiplier. Default 0.2. */
+  brightness?: number
+  /** First blend color (hex). Default '#ffffff'. */
+  color1?: string
+  /** Second blend color (hex). Default '#ffffff'. */
+  color2?: string
+  /** Third blend color (hex). Default '#ffffff'. */
+  color3?: string
+  /** Warp the field toward the cursor. Default true. */
+  enableMouseInteraction?: boolean
+  /** Strength of the cursor warp. Default 2.0. */
+  mouseInfluence?: number
+}
+
+function hexToVec3(hex: string): [number, number, number] {
   const h = hex.replace('#', '')
   return [
     parseInt(h.slice(0, 2), 16) / 255,
@@ -147,14 +176,14 @@ export default function LineWaves({
   color3 = '#ffffff',
   enableMouseInteraction = true,
   mouseInfluence = 2.0,
-}) {
-  const containerRef = useRef(null)
+}: LineWavesProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
   const reduced = usePrefersReducedMotion()
   const active = useOnScreen(containerRef)
   // Refs let the offscreen gate start/stop the loop without re-running
   // the setup effect (which would rebuild the GL context).
   const activeRef = useRef(active)
-  const loopRef = useRef(null)
+  const loopRef = useRef<{ start: () => void; stop: () => void } | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -163,11 +192,11 @@ export default function LineWaves({
     const gl = renderer.gl
     gl.clearColor(0, 0, 0, 0)
 
-    let program
+    let program: Program | undefined
     let currentMouse = [0.5, 0.5]
     let targetMouse = [0.5, 0.5]
 
-    function handleMouseMove(e) {
+    function handleMouseMove(e: MouseEvent) {
       const rect = gl.canvas.getBoundingClientRect()
       targetMouse = [
         (e.clientX - rect.left) / rect.width,
@@ -230,10 +259,11 @@ export default function LineWaves({
       gl.canvas.addEventListener('mouseleave', handleMouseLeave)
     }
 
-    let animationFrameId
+    let animationFrameId: number
 
-    function update(time) {
+    function update(time: number) {
       animationFrameId = requestAnimationFrame(update)
+      if (!program) return
       program.uniforms.uTime.value = time * 0.001
 
       if (enableMouseInteraction) {

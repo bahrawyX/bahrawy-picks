@@ -57,6 +57,30 @@ export function PricingCompare({
 }: PricingCompareProps) {
   const featuredIndex = plans.findIndex((p) => p.featured)
 
+  // Measure the featured column's real position/width so the accent
+  // highlight aligns with it at every breakpoint (table columns are
+  // auto-laid-out, so percentage math would drift).
+  const featuredThRef = React.useRef<HTMLTableCellElement>(null)
+  const [highlight, setHighlight] = React.useState<{
+    left: number
+    width: number
+  } | null>(null)
+
+  React.useEffect(() => {
+    const th = featuredThRef.current
+    if (!th) return
+    const update = () => {
+      // offsetLeft is relative to the positioned scroll container the
+      // overlay lives in, so the highlight tracks the column exactly.
+      setHighlight({ left: th.offsetLeft + 2, width: th.offsetWidth - 4 })
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(th)
+    if (th.offsetParent) ro.observe(th.offsetParent)
+    return () => ro.disconnect()
+  }, [featuredIndex, plans.length])
+
   return (
     <section className={cn('w-full bg-black px-6 py-24 sm:py-32', className)}>
       <div className="mx-auto flex max-w-5xl flex-col gap-12">
@@ -80,13 +104,13 @@ export function PricingCompare({
         {/* The table */}
         <div className="relative overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02]">
           {/* Accent column highlight (lives behind everything) */}
-          {featuredIndex >= 0 && (
+          {featuredIndex >= 0 && highlight && (
             <div
               aria-hidden
               className="pointer-events-none absolute inset-y-0"
               style={{
-                left: `calc(${(featuredIndex / plans.length) * 100}% + ${(100 / (plans.length + 1)) * 0.5}%)`,
-                width: `calc(${100 / (plans.length + 1)}% - 4px)`,
+                left: highlight.left,
+                width: highlight.width,
                 background: `linear-gradient(180deg, ${accentColor}1a, transparent 40%)`,
                 borderLeft: `1px solid ${accentColor}33`,
                 borderRight: `1px solid ${accentColor}33`,
@@ -101,8 +125,12 @@ export function PricingCompare({
                 <th className="w-1/3 p-5 text-left align-bottom text-xs font-medium uppercase tracking-[0.14em] text-white/40">
                   Features
                 </th>
-                {plans.map((plan) => (
-                  <th key={plan.id} className="p-5 text-center align-top">
+                {plans.map((plan, pi) => (
+                  <th
+                    key={plan.id}
+                    ref={pi === featuredIndex ? featuredThRef : undefined}
+                    className="p-5 text-center align-top"
+                  >
                     <div className="flex flex-col items-center">
                       <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/60">
                         {plan.name}

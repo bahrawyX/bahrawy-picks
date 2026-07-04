@@ -17,7 +17,12 @@
  * @param height           — Card height in px. Default 360.
  * @param align            — Text alignment. Default 'left'.
  * @param scale            — How much the image zooms on hover. Default 1.06.
+ * @param role             — ARIA role for the card, per usage context.
  * @param className        — Extra classes for the outer card.
+ *
+ * Accessibility: the card is focusable (tabIndex 0) and reveals its
+ * description on keyboard focus (:focus-visible); on touch, tapping
+ * toggles the reveal. Hover behavior is unchanged.
  */
 
 import * as React from 'react'
@@ -38,6 +43,8 @@ export interface ImageHoverRevealProps {
   height?: number
   align?: 'left' | 'center'
   scale?: number
+  /** ARIA role for the card — pick per context (e.g. 'listitem', 'article'). */
+  role?: React.AriaRole
   className?: string
 }
 
@@ -63,21 +70,43 @@ export function ImageHoverReveal({
   height = 360,
   align = 'left',
   scale = 1.06,
+  role,
   className,
 }: ImageHoverRevealProps) {
   // How far the title needs to lift to make room for the description block.
   // 0 if there's nothing to reveal — title stays put.
   const titleLift = description || cta ? 24 : 0
 
+  // Keyboard: reveal while focus (:focus-visible) is inside the card.
+  // Touch: tapping the card toggles the reveal (no hover on touchscreens).
+  const [focusRevealed, setFocusRevealed] = React.useState(false)
+  const [touchRevealed, setTouchRevealed] = React.useState(false)
+  const revealed = focusRevealed || touchRevealed
+
   return (
     <motion.div
+      role={role}
+      tabIndex={0}
       initial="rest"
-      animate="rest"
+      animate={revealed ? 'hover' : 'rest'}
       whileHover="hover"
-      whileFocus="hover"
+      onFocus={(e) => {
+        if (e.currentTarget.matches(':focus-visible') || e.target !== e.currentTarget) {
+          setFocusRevealed(true)
+        }
+      }}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          setFocusRevealed(false)
+        }
+      }}
+      onPointerUp={(e) => {
+        if (e.pointerType === 'touch') setTouchRevealed((v) => !v)
+      }}
       className={cn(
         'group relative isolate overflow-hidden rounded-2xl bg-zinc-950',
         'shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] ring-1 ring-white/10',
+        'outline-none focus-visible:ring-2 focus-visible:ring-white/60',
         align === 'center' ? 'text-center' : 'text-left',
         className,
       )}

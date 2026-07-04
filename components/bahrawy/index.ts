@@ -35,7 +35,7 @@ export { MarqueeRow } from './marquee-row'
 export type { MarqueeRowProps } from './marquee-row'
 
 export { FloatingDock } from './floating-dock'
-export type { FloatingDockProps, DockItem } from './floating-dock'
+export type { FloatingDockProps, DockItem, DockLinkItem, DockButtonItem } from './floating-dock'
 
 export { RevealOnScroll, RevealStagger, RevealItem } from './reveal-on-scroll'
 export type { RevealOnScrollProps, RevealStaggerProps, RevealItemProps, RevealDirection } from './reveal-on-scroll'

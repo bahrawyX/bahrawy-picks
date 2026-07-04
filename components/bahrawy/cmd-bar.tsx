@@ -83,6 +83,10 @@ export function CmdBar({
   const inputRef = React.useRef<HTMLInputElement>(null)
   const listRef = React.useRef<HTMLDivElement>(null)
   const panelRef = React.useRef<HTMLDivElement>(null)
+  // Unique per instance so option ids / aria-activedescendant don't collide.
+  const baseId = React.useId()
+  const listboxId = `${baseId}-listbox`
+  const optionId = (idx: number) => `${baseId}-option-${idx}`
 
   // Tab cycling + focus restore on close. The search input already
   // autofocuses itself on open, so the trap skips its own initial focus.
@@ -130,9 +134,9 @@ export function CmdBar({
 
   React.useEffect(() => {
     if (!open) return
-    const el = document.getElementById(`cmd-bar-item-${activeIdx}`)
+    const el = document.getElementById(`${baseId}-option-${activeIdx}`)
     el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [activeIdx, open])
+  }, [activeIdx, open, baseId])
 
   React.useEffect(() => {
     if (!open) return
@@ -231,6 +235,12 @@ export function CmdBar({
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={onInputKey}
                   placeholder={placeholder}
+                  role="combobox"
+                  aria-expanded="true"
+                  aria-controls={listboxId}
+                  aria-activedescendant={
+                    flat.length > 0 ? optionId(activeIdx) : undefined
+                  }
                   className="h-14 w-full bg-transparent text-[15px] tracking-tight text-white placeholder:text-white/40 focus:outline-none"
                 />
                 {query && (
@@ -250,6 +260,9 @@ export function CmdBar({
               {/* List */}
               <div
                 ref={listRef}
+                id={listboxId}
+                role="listbox"
+                aria-label="Commands"
                 className="flex-1 overflow-y-auto px-2 py-2"
                 data-lenis-prevent
               >
@@ -259,21 +272,23 @@ export function CmdBar({
                   </p>
                 ) : (
                   filtered.map((group, gi) => (
-                    <div key={gi} className="mb-2 last:mb-0">
+                    <div key={gi} role="presentation" className="mb-2 last:mb-0">
                       {group.label && (
                         <p className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
                           {group.label}
                         </p>
                       )}
-                      <ul>
+                      <ul role="presentation">
                         {group.items.map((item) => {
                           const idx = runningIdx++
                           const active = idx === activeIdx
                           return (
-                            <li key={item.id}>
+                            <li key={item.id} role="presentation">
                               <motion.button
-                                id={`cmd-bar-item-${idx}`}
+                                id={optionId(idx)}
                                 type="button"
+                                role="option"
+                                aria-selected={active}
                                 onMouseEnter={() => setActiveIdx(idx)}
                                 onClick={() => {
                                   item.onSelect?.()

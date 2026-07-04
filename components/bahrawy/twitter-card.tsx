@@ -119,7 +119,7 @@ function parseContent(text: string): React.ReactNode[] {
           href={value}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-400 hover:underline cursor-pointer"
+          className="relative z-[2] text-blue-400 hover:underline cursor-pointer"
           onClick={(e) => e.stopPropagation()}
         >
           {value.replace(/^https?:\/\//, '').slice(0, 30)}
@@ -303,7 +303,7 @@ export function TwitterCard({
 
   const platformLabel = platform === 'twitter' ? 'Twitter' : 'X'
 
-  const cardContent = (
+  return (
     <motion.div
       className={cn(
         'relative overflow-hidden rounded-xl border border-white/[0.08] bg-black p-4',
@@ -314,6 +314,18 @@ export function TwitterCard({
       transition={springGentle}
       whileHover={href ? { scale: 1.01, y: -2 } : undefined}
     >
+      {/* Stretched link — covers the card without nesting interactive
+          elements (show more, inline links) inside an <a>. Interactive
+          children sit above it via z-index. */}
+      {href && (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`View post by ${name} on ${platformLabel}`}
+          className="absolute inset-0 z-[1] rounded-xl"
+        />
+      )}
       {/* Header: avatar, name, handle, logo */}
       <div className="flex items-start gap-3">
         <Avatar src={avatar} name={name} />
@@ -351,7 +363,8 @@ export function TwitterCard({
       <AnimatePresence>
         {shouldShowMore && (
           <motion.button
-            className="mt-1 text-[15px] font-medium text-blue-400 hover:underline"
+            type="button"
+            className="relative z-[2] mt-1 text-[15px] font-medium text-blue-400 hover:underline"
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -444,14 +457,4 @@ export function TwitterCard({
       )}
     </motion.div>
   )
-
-  if (href) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="block">
-        {cardContent}
-      </a>
-    )
-  }
-
-  return cardContent
 }
