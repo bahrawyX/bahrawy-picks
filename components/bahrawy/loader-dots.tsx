@@ -16,7 +16,7 @@ import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 export interface LoaderDotsProps {
   /** Dot diameter in px. Default 8. */
   size?: number
-  /** Color (CSS). Default #FFFFFF. */
+  /** Color (CSS). Defaults to the `--picks-fg` token (#FFFFFF fallback). */
   color?: string
   /** Seconds for one full cycle. Lower = faster. Default 1.1. */
   duration?: number
@@ -27,7 +27,7 @@ export interface LoaderDotsProps {
 
 export function LoaderDots({
   size = 8,
-  color = '#FFFFFF',
+  color = 'var(--picks-fg, #FFFFFF)',
   duration = 1.1,
   label,
   className,
@@ -66,7 +66,11 @@ export function LoaderDots({
           />
         ))}
       </span>
-      {label && <span className="text-xs text-white/65">{label}</span>}
+      {label && (
+        <span className="text-xs text-[color:var(--picks-fg-muted,rgba(255,255,255,0.65))]">
+          {label}
+        </span>
+      )}
     </span>
   )
 }

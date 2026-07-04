@@ -11,7 +11,9 @@
 import * as React from 'react'
 import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
+import { Sparkline } from '@/components/bahrawy/sparkline'
 import { cn } from '@/lib/utils'
+import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 
 export interface StatCardProps {
   label: React.ReactNode
@@ -39,14 +41,22 @@ export function StatCard({
 }: StatCardProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.4 })
+  const reduced = usePrefersReducedMotion()
 
   const raw = useMotionValue(0)
   const sp = useSpring(raw, { stiffness: 80, damping: 26, mass: 0.9 })
   const text = useTransform(sp, (v) => Math.round(v).toLocaleString())
 
   React.useEffect(() => {
-    if (inView) raw.set(value)
-  }, [inView, value, raw])
+    if (!inView) return
+    // Reduced motion: jump straight to the final value — no spring.
+    if (reduced) {
+      raw.jump(value)
+      sp.jump(value)
+      return
+    }
+    raw.set(value)
+  }, [inView, value, raw, sp, reduced])
 
   const positive = (delta ?? 0) >= 0
 
@@ -89,58 +99,16 @@ export function StatCard({
       </div>
 
       {trend && trend.length > 1 && (
-        <Sparkline points={trend} color={accentColor} inView={inView} />
+        <Sparkline
+          points={trend}
+          color={accentColor}
+          width={120}
+          height={32}
+          showEndDot={false}
+          responsive
+          className="mt-1 h-8"
+        />
       )}
     </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Inline sparkline used by StatCard. The full Sparkline component (with more
-// options) ships separately as `<Sparkline />`.
-// ---------------------------------------------------------------------------
-
-function Sparkline({
-  points,
-  color,
-  inView,
-}: {
-  points: number[]
-  color: string
-  inView: boolean
-}) {
-  const w = 120
-  const h = 32
-  const min = Math.min(...points)
-  const max = Math.max(...points)
-  const range = max - min || 1
-  const step = w / (points.length - 1)
-  const path = points
-    .map((p, i) => {
-      const x = i * step
-      const y = h - ((p - min) / range) * h
-      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`
-    })
-    .join(' ')
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className="mt-1 h-8 w-full"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      <motion.path
-        d={path}
-        fill="none"
-        stroke={color}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: inView ? 1 : 0 }}
-        transition={{ duration: 0.9, ease: [0.2, 0, 0, 1], delay: 0.15 }}
-      />
-    </svg>
   )
 }

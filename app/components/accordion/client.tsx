@@ -126,7 +126,9 @@ const items = [
           {[
             ['items', 'AccordionItem[] — { id, title, content, icon? }'],
             ['type', '"single" | "multiple" — how many can be open. Default "single".'],
-            ['defaultOpen', 'string[] — ids that start expanded.'],
+            ['defaultOpen', 'string[] — ids that start expanded (uncontrolled).'],
+            ['value', 'string | string[] — controlled open state. A single id for "single", an id array for "multiple".'],
+            ['onValueChange', '(value) => void — fires with the next open state on every toggle. String for "single" ("" when closed), string[] for "multiple".'],
             ['chevron', 'Show the rotating chevron icon. Default true.'],
             ['bounciness', '0–1 — how springy the open/close is. Default 0.7.'],
             ['className', 'Extra classes on the outer wrapper.'],

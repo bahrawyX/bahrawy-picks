@@ -33,7 +33,8 @@ export interface AvatarStatusProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   /** Render the name + role to the right of the avatar. Default false. */
   showName?: boolean
-  /** Background color for the status-dot ring. Defaults to the page bg. */
+  /** Background color for the status-dot ring. Defaults to the page bg
+   *  via the `--picks-surface` token (dark fallback when unset). */
   ringColor?: string
   /** Outer subtle ring around the avatar itself. Default false. */
   outerRing?: boolean
@@ -86,7 +87,7 @@ export function AvatarStatus({
   status = 'none',
   size = 'md',
   showName = false,
-  ringColor = '#08070d',
+  ringColor = 'var(--picks-surface, #08070d)',
   outerRing = false,
   className,
 }: AvatarStatusProps) {

@@ -77,7 +77,10 @@ export default function TreeDocs() {
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
             ['data', 'Recursive TreeNode[]. Folders have children; files have type: "file".'],
-            ['defaultExpanded', 'Array of node ids (or "/"-joined paths) to start open.'],
+            ['defaultExpanded', 'Array of node ids (or "/"-joined paths) to start open (uncontrolled).'],
+            ['expandedIds', 'string[] — controlled expanded node ids. Omit for uncontrolled.'],
+            ['onExpandedChange', '(ids) => void — fires with the next expanded id list on every expand/collapse.'],
+            ['selectedId', 'string — controlled selected node id. Omit for uncontrolled.'],
             ['onSelect', '(node, path) => void — fires when a leaf is clicked.'],
             ['hideGuides', 'Hide the gutter guide lines. Default false.'],
             ['className', 'Extra classes on the outer container.'],

@@ -210,6 +210,8 @@ export default function LineChartDocs() {
             ['showDots', 'Always render a dot at every data point. Default false.'],
             ['format', '(value) => string for tooltip + Y-axis labels.'],
             ['valueSuffix', 'String appended to the tooltip value (e.g. " users").'],
+            ['title', 'Accessible SVG <title>. Default "Line chart".'],
+            ['description', 'Accessible SVG <desc>. Defaults to "label: value" pairs from the data.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

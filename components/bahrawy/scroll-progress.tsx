@@ -104,7 +104,7 @@ export function ScrollProgress({
           )}
           style={{ width: 40, height: 40 }}
         >
-          <span className="text-xs font-medium text-white">{percent}%</span>
+          <span className="text-xs font-medium text-[color:var(--picks-fg,#ffffff)]">{percent}%</span>
         </div>
       )}
     </>

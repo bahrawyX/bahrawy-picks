@@ -115,6 +115,8 @@ export default function ActivityRingsDocs() {
             ['gap', 'Gap (px) between rings. Default 3.'],
             ['centerLabel / centerSubLabel', 'Optional center text slots.'],
             ['showLegend', 'Show per-ring legend below. Default true.'],
+            ['title', 'Accessible SVG <title>. Default "Activity rings".'],
+            ['description', 'Accessible SVG <desc>. Defaults to "Label: value of goal" per ring.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

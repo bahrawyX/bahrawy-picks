@@ -42,6 +42,10 @@ export interface DonutChartProps {
   centerSubLabel?: React.ReactNode
   /** Format the displayed value (legend + tooltip). */
   format?: (value: number) => string
+  /** Accessible SVG <title>. Default "Donut chart". */
+  title?: string
+  /** Accessible SVG <desc>. Defaults to "label: value, N%" per slice. */
+  description?: string
   className?: string
 }
 
@@ -74,9 +78,18 @@ export function DonutChart({
   centerLabel,
   centerSubLabel,
   format = defaultFmt,
+  title,
+  description,
   className,
 }: DonutChartProps) {
+  const reactId = React.useId().replace(/[^a-zA-Z0-9]/g, '')
+  const titleId = `dc-title-${reactId}`
+  const descId = `dc-desc-${reactId}`
   const [hover, setHover] = React.useState<number | null>(null)
+  // Whether the current hover came from the pointer (vs keyboard focus).
+  // Pointer hover re-sorts the slices so the fattened one paints on top;
+  // keyboard focus must NOT reorder the DOM or tab order would break.
+  const [hoverViaPointer, setHoverViaPointer] = React.useState(false)
 
   const total = data.reduce((s, d) => s + Math.max(0, d.value), 0) || 1
   const cx = size / 2
@@ -106,6 +119,14 @@ export function DonutChart({
   const liftPx = 5
   const hoverDatum = hover != null ? slices[hover] : null
 
+  // Accessible name + text alternative for the data.
+  const a11yTitle = title ?? 'Donut chart'
+  const a11yDescription =
+    description ??
+    slices
+      .map((s) => `${s.label}: ${format(s.value)}, ${s.percent.toFixed(1)}%`)
+      .join(', ')
+
   return (
     <div className={cn('inline-flex flex-col items-center gap-5', className)}>
       <div
@@ -113,14 +134,25 @@ export function DonutChart({
         style={{ width: size, height: size }}
         onPointerLeave={() => setHover(null)}
       >
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          role="img"
+          aria-labelledby={`${titleId} ${descId}`}
+        >
+          <title id={titleId}>{a11yTitle}</title>
+          <desc id={descId}>{a11yDescription}</desc>
           {/* Slices are rendered into a single rotated group. We sort
               so the hovered slice paints LAST → it sits on top of its
-              neighbours when we fatten the stroke. */}
+              neighbours when we fatten the stroke. (Pointer hover only —
+              keyboard focus keeps DOM order stable, see hoverViaPointer.) */}
           <g transform={`rotate(-90 ${cx} ${cy})`}>
             {slices
               .map((s, i) => ({ s, i }))
-              .sort((a, b) => (hover === a.i ? 1 : hover === b.i ? -1 : 0))
+              .sort((a, b) =>
+                hoverViaPointer ? (hover === a.i ? 1 : hover === b.i ? -1 : 0) : 0,
+              )
               .map(({ s, i }) => {
                 const lifted = hover === i
                 const dx = lifted ? Math.cos(s.angle) * liftPx : 0
@@ -151,7 +183,19 @@ export function DonutChart({
                       x: { type: 'spring', stiffness: 420, damping: 32 },
                       y: { type: 'spring', stiffness: 420, damping: 32 },
                     }}
-                    onPointerEnter={() => showTooltip && setHover(i)}
+                    tabIndex={0}
+                    role="img"
+                    aria-label={`${s.label}: ${format(s.value)}, ${s.percent.toFixed(1)}%`}
+                    onPointerEnter={() => {
+                      if (!showTooltip) return
+                      setHover(i)
+                      setHoverViaPointer(true)
+                    }}
+                    onFocus={() => {
+                      setHover(i)
+                      setHoverViaPointer(false)
+                    }}
+                    onBlur={() => setHover(null)}
                     style={{ cursor: showTooltip ? 'pointer' : 'default' }}
                   />
                 )
@@ -219,7 +263,10 @@ export function DonutChart({
           {slices.map((s, i) => (
             <li
               key={i}
-              onPointerEnter={() => setHover(i)}
+              onPointerEnter={() => {
+                setHover(i)
+                setHoverViaPointer(true)
+              }}
               onPointerLeave={() => setHover(null)}
               className={cn(
                 'flex cursor-default items-center justify-between gap-3 rounded-[8px] px-2 py-1.5 transition-colors',

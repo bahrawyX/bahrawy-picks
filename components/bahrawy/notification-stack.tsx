@@ -7,7 +7,9 @@
  * the top card is fully visible, with the next 1–2 peeking out behind
  * it at a slight scale-down. Hover (or focus) fans them all out into
  * a vertical list with spring physics; leave the area and they
- * re-stack. Click the X on any card to dismiss it with a slide-out.
+ * re-stack. Keyboard users can Tab to the stack and press Enter to
+ * toggle the fan-out. Click the X on any card to dismiss it with a
+ * slide-out.
  *
  * Optional `clearAll` button appears once expanded.
  */
@@ -51,24 +53,37 @@ const SPRING = {
 }
 
 export function NotificationStack({
-  notifications: initial,
+  notifications,
   peek = 2,
   onDismiss,
   onClearAll,
   accent = '#A78BFA',
   className,
 }: NotificationStackProps) {
-  const [items, setItems] = React.useState(initial)
-  React.useEffect(() => setItems(initial), [initial])
+  // The visible list is derived from the prop — internal state only tracks
+  // which ids were dismissed locally.
+  const [dismissedIds, setDismissedIds] = React.useState<Set<string>>(
+    () => new Set(),
+  )
   const [expanded, setExpanded] = React.useState(false)
 
+  // Prune dismissed ids that left the incoming list, so a notification
+  // re-added by the parent (same id) shows again.
+  const propIds = new Set(notifications.map((n) => n.id))
+  const pruned = Array.from(dismissedIds).filter((id) => propIds.has(id))
+  if (pruned.length !== dismissedIds.size) {
+    setDismissedIds(new Set(pruned))
+  }
+
+  const items = notifications.filter((n) => !dismissedIds.has(n.id))
+
   const dismiss = (id: string) => {
-    setItems((prev) => prev.filter((n) => n.id !== id))
+    setDismissedIds((prev) => new Set(prev).add(id))
     onDismiss?.(id)
   }
 
   const clearAll = () => {
-    setItems([])
+    setDismissedIds(new Set(notifications.map((n) => n.id)))
     onClearAll?.()
   }
 
@@ -77,12 +92,27 @@ export function NotificationStack({
 
   return (
     <div className={cn('w-full max-w-sm', className)}>
+      {/* Live region — announces stack changes to screen readers */}
+      <div aria-live="polite" className="sr-only">
+        {items.length === 0
+          ? 'No notifications'
+          : `${items.length} notification${items.length === 1 ? '' : 's'}`}
+      </div>
+
       <div
         className="relative"
+        role="group"
+        aria-label="Notifications"
         onMouseEnter={() => setExpanded(true)}
         onMouseLeave={() => setExpanded(false)}
         onFocus={() => setExpanded(true)}
         onBlur={() => setExpanded(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && e.target === e.currentTarget) {
+            e.preventDefault()
+            setExpanded((v) => !v)
+          }
+        }}
         tabIndex={0}
       >
         {/* Stack area */}

@@ -48,6 +48,10 @@ export interface ActivityRingsProps {
   centerLabel?: React.ReactNode
   /** Optional second line under the center label. */
   centerSubLabel?: React.ReactNode
+  /** Accessible SVG <title>. Default "Activity rings". */
+  title?: string
+  /** Accessible SVG <desc>. Defaults to "Label: value of goal" per ring. */
+  description?: string
   className?: string
 }
 
@@ -61,19 +65,42 @@ export function ActivityRings({
   showLegend = true,
   centerLabel,
   centerSubLabel,
+  title,
+  description,
   className,
 }: ActivityRingsProps) {
   const reactId = React.useId().replace(/[^a-zA-Z0-9]/g, '')
+  const titleId = `ar-title-${reactId}`
+  const descId = `ar-desc-${reactId}`
   const cx = size / 2
   const cy = size / 2
 
   // Outer ring's stroke center is at (size/2 - thickness/2)
   const baseRadius = size / 2 - thickness / 2
 
+  // Accessible name + per-ring summary ("Move: 412 of 600 cal").
+  const a11yTitle = title ?? 'Activity rings'
+  const a11yDescription =
+    description ??
+    rings
+      .map(
+        (r) =>
+          `${r.label}: ${r.value.toLocaleString()} of ${r.goal.toLocaleString()}${r.unit ?? ''}`,
+      )
+      .join(', ')
+
   return (
     <div className={cn('inline-flex flex-col items-center gap-5', className)}>
       <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          role="img"
+          aria-labelledby={`${titleId} ${descId}`}
+        >
+          <title id={titleId}>{a11yTitle}</title>
+          <desc id={descId}>{a11yDescription}</desc>
           <defs>
             {rings.map((r, i) => (
               <linearGradient
@@ -196,12 +223,14 @@ export function ActivityRings({
                   <span className="font-mono text-[12px] font-medium tabular-nums text-white/90">
                     {r.value.toLocaleString()}
                     <span className="text-white/45">
-                      /{r.goal.toLocaleString()}
+                      <span aria-hidden>/</span>
+                      <span className="sr-only"> of </span>
+                      {r.goal.toLocaleString()}
                       {r.unit ?? ''}
                     </span>
                   </span>
                   <span className="font-mono text-[10.5px] tabular-nums text-white/55">
-                    {pct}%
+                    {pct}%<span className="sr-only"> complete</span>
                   </span>
                 </div>
               </li>

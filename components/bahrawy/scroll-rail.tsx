@@ -21,6 +21,9 @@
  * @param stiffness/damping   — Spring smoothing of the rail movement.
  * @param showProgress        — Render a thin horizontal progress bar. Default true.
  * @param backgroundClassName — Tailwind bg class for the section. Default bg-zinc-950.
+ * @param maskColor           — CSS color for the edge fade masks. Defaults to the
+ *                              `--picks-surface` token (zinc-950 fallback) — pass a
+ *                              matching color when using a custom backgroundClassName.
  * @param className           — Extra classes for the outer section.
  */
 
@@ -42,6 +45,7 @@ export interface ScrollRailProps {
   damping?: number
   showProgress?: boolean
   backgroundClassName?: string
+  maskColor?: string
   className?: string
 }
 
@@ -59,6 +63,7 @@ export function ScrollRail({
   damping = 38,
   showProgress = true,
   backgroundClassName = 'bg-zinc-950',
+  maskColor = 'var(--picks-surface, rgb(9 9 11))',
   className,
 }: ScrollRailProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
@@ -123,12 +128,12 @@ export function ScrollRail({
         <div
           aria-hidden
           className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[inherit] to-transparent"
-          style={{ background: 'linear-gradient(to right, rgb(9 9 11), transparent)' }}
+          style={{ background: `linear-gradient(to right, ${maskColor}, transparent)` }}
         />
         <div
           aria-hidden
           className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[inherit] to-transparent"
-          style={{ background: 'linear-gradient(to left, rgb(9 9 11), transparent)' }}
+          style={{ background: `linear-gradient(to left, ${maskColor}, transparent)` }}
         />
 
         <motion.div

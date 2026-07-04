@@ -89,15 +89,13 @@ function QueueGroupBlock({
   onToggle?: QueueProps['onToggle']
 }) {
   const [open, setOpen] = React.useState(group.defaultOpen ?? true)
-  const [localChecked, setLocalChecked] = React.useState<Record<string, boolean>>(
-    () =>
-      Object.fromEntries(
-        group.items.map((i) => [i.id, i.checked ?? false]),
-      ),
-  )
+  // Checked state is derived from the items prop plus an overrides map for
+  // uncontrolled items — no snapshot of the prop, so item changes never go
+  // stale.
+  const [overrides, setOverrides] = React.useState<Record<string, boolean>>({})
 
   const isItemChecked = (i: QueueItem) =>
-    i.checked !== undefined ? i.checked : !!localChecked[i.id]
+    i.checked !== undefined ? i.checked : !!overrides[i.id]
 
   const unchecked = group.items.filter((i) => !isItemChecked(i)).length
 
@@ -139,7 +137,7 @@ function QueueGroupBlock({
                   checked={isItemChecked(item)}
                   onToggle={(next) => {
                     if (item.checked === undefined) {
-                      setLocalChecked((s) => ({ ...s, [item.id]: next }))
+                      setOverrides((s) => ({ ...s, [item.id]: next }))
                     }
                     onToggle?.(group.id, item.id, next)
                   }}
@@ -170,6 +168,8 @@ function QueueRow({
     <li>
       <button
         type="button"
+        role="checkbox"
+        aria-checked={checked}
         disabled={item.disabled}
         onClick={() => onToggle(!checked)}
         className={cn(

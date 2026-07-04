@@ -11,6 +11,9 @@
  *
  * Set `expandOn="group"` and place it inside a `group` element (e.g.
  * an image card) to open when the whole card is hovered.
+ *
+ * Keyboard focus expands it too — focus-visible on the button itself
+ * (or focus-within on the parent `group`) mirrors the hover reveal.
  */
 
 import * as React from 'react'
@@ -48,52 +51,51 @@ export interface ExpandButtonProps
   className?: string
 }
 
-export function ExpandButton({
-  label,
-  icon,
-  tone = 'light',
-  expandOn = 'self',
-  className,
-  ...rest
-}: ExpandButtonProps) {
-  const groupTrigger = expandOn === 'group'
-  return (
-    <button
-      className={cn(
-        'flex h-9 min-w-9 items-center justify-center rounded-full px-[11px]',
-        tone === 'light' ? 'bg-white text-neutral-900' : 'bg-neutral-900 text-white',
-        !groupTrigger && 'group/eb',
-        className,
-      )}
-      {...rest}
-    >
-      <span
+export const ExpandButton = React.forwardRef<HTMLButtonElement, ExpandButtonProps>(
+  ({ label, icon, tone = 'light', expandOn = 'self', className, ...rest }, ref) => {
+    const groupTrigger = expandOn === 'group'
+    return (
+      <button
+        ref={ref}
         className={cn(
-          'grid grid-cols-[0fr] transition-[grid-template-columns] duration-300 ease-in-out',
-          groupTrigger
-            ? 'group-hover:grid-cols-[1fr]'
-            : 'group-hover/eb:grid-cols-[1fr]',
+          'flex h-9 min-w-9 items-center justify-center rounded-full px-[11px]',
+          tone === 'light' ? 'bg-white text-neutral-900' : 'bg-neutral-900 text-white',
+          !groupTrigger && 'group/eb',
+          className,
         )}
+        {...rest}
       >
         <span
           className={cn(
-            'min-w-0 overflow-hidden whitespace-nowrap text-[13px] font-medium opacity-0 transition-opacity duration-300',
+            'grid grid-cols-[0fr] transition-[grid-template-columns] duration-300 ease-in-out',
             groupTrigger
-              ? 'group-hover:opacity-100 group-hover:delay-100'
-              : 'group-hover/eb:opacity-100 group-hover/eb:delay-100',
+              ? 'group-hover:grid-cols-[1fr] group-focus-within:grid-cols-[1fr]'
+              : 'group-hover/eb:grid-cols-[1fr] group-focus-visible/eb:grid-cols-[1fr]',
           )}
         >
-          <span className="pr-1.5">{label}</span>
+          <span
+            className={cn(
+              'min-w-0 overflow-hidden whitespace-nowrap text-[13px] font-medium opacity-0 transition-opacity duration-300',
+              groupTrigger
+                ? 'group-hover:opacity-100 group-hover:delay-100 group-focus-within:opacity-100 group-focus-within:delay-100'
+                : 'group-hover/eb:opacity-100 group-hover/eb:delay-100 group-focus-visible/eb:opacity-100 group-focus-visible/eb:delay-100',
+            )}
+          >
+            <span className="pr-1.5">{label}</span>
+          </span>
         </span>
-      </span>
-      <span
-        className={cn(
-          'shrink-0 -rotate-45 transition-transform duration-300 ease-in-out',
-          groupTrigger ? 'group-hover:rotate-0' : 'group-hover/eb:rotate-0',
-        )}
-      >
-        {icon ?? <LinkIcon />}
-      </span>
-    </button>
-  )
-}
+        <span
+          className={cn(
+            'shrink-0 -rotate-45 transition-transform duration-300 ease-in-out',
+            groupTrigger
+              ? 'group-hover:rotate-0 group-focus-within:rotate-0'
+              : 'group-hover/eb:rotate-0 group-focus-visible/eb:rotate-0',
+          )}
+        >
+          {icon ?? <LinkIcon />}
+        </span>
+      </button>
+    )
+  }
+)
+ExpandButton.displayName = 'ExpandButton'

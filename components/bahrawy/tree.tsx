@@ -17,6 +17,10 @@
  * folder (or moves to its first child), Left collapses (or jumps to
  * the parent), Enter/Space activate the row.
  *
+ * Expansion and selection are controllable: pass `expandedIds` +
+ * `onExpandedChange` and/or `selectedId` to own the state from outside;
+ * omit them and the component manages both internally.
+ *
  * Past `virtualizeOver` visible rows (default 200) the expanded nodes
  * are flattened and windowed with @tanstack/react-virtual inside a
  * fixed-height scroller, and the expand/collapse + chevron spring
@@ -52,8 +56,14 @@ export interface TreeNode {
 
 export interface TreeProps {
   data: TreeNode[]
-  /** Node ids that start expanded. */
+  /** Node ids that start expanded (uncontrolled). */
   defaultExpanded?: string[]
+  /** Controlled expanded node ids. Omit for uncontrolled behavior. */
+  expandedIds?: string[]
+  /** Fires with the next expanded id list on every expand/collapse. */
+  onExpandedChange?: (ids: string[]) => void
+  /** Controlled selected node id. Omit for uncontrolled behavior. */
+  selectedId?: string
   /** Fired when a leaf node is clicked. */
   onSelect?: (node: TreeNode, path: string[]) => void
   /** Hide the gutter guide lines. Default false. */
@@ -100,27 +110,44 @@ interface TreeCtx {
 export function Tree({
   data,
   defaultExpanded = [],
+  expandedIds,
+  onExpandedChange,
+  selectedId: selectedIdProp,
   onSelect,
   hideGuides = false,
   virtualizeOver = 200,
   className,
 }: TreeProps) {
-  const [expanded, setExpanded] = React.useState<Set<string>>(
+  const [internalExpanded, setInternalExpanded] = React.useState<Set<string>>(
     () => new Set(defaultExpanded),
   )
-  const [selectedId, setSelectedId] = React.useState<string | null>(null)
+  const [internalSelected, setInternalSelected] = React.useState<string | null>(
+    null,
+  )
   const [focusedId, setFocusedId] = React.useState<string | null>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const rowRefs = React.useRef(new Map<string, HTMLButtonElement>())
   const pendingFocusRef = React.useRef<string | null>(null)
 
+  // Controlled when the matching prop is passed; internal state otherwise.
+  const expandedControlled = expandedIds !== undefined
+  const expanded = React.useMemo(
+    () => (expandedControlled ? new Set(expandedIds) : internalExpanded),
+    [expandedControlled, expandedIds, internalExpanded],
+  )
+  const selectedControlled = selectedIdProp !== undefined
+  const selectedId = selectedControlled ? selectedIdProp : internalSelected
+
   const toggle = (id: string) => {
-    setExpanded((s) => {
-      const next = new Set(s)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+    const next = new Set(expanded)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    if (!expandedControlled) setInternalExpanded(next)
+    onExpandedChange?.(Array.from(next))
+  }
+
+  const setSelectedId = (id: string | null) => {
+    if (!selectedControlled) setInternalSelected(id)
   }
 
   // Flatten the visible (expanded) nodes into a list. Drives keyboard

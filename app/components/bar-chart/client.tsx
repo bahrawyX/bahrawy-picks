@@ -105,6 +105,8 @@ export default function BarChartDocs() {
             ['showValues', 'Print the value on top of each bar. Default false.'],
             ['formatValue', 'Custom value formatter (tooltip + labels).'],
             ['max', 'Override the Y-axis max. Otherwise derived + nice-ceiled.'],
+            ['title', 'Accessible chart name. Default "Bar chart".'],
+            ['description', 'Accessible data summary. Defaults to "label: value" pairs from the data.'],
             ['className', 'Extra classes on the outer container.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

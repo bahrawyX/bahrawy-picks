@@ -52,77 +52,72 @@ function colorFor(name: string) {
   return PALETTE[Math.abs(h) % PALETTE.length]
 }
 
-export function AvatarGroup({
-  avatars,
-  max = 4,
-  size = 36,
-  overlap = 12,
-  spread = 4,
-  className,
-}: AvatarGroupProps) {
-  const [hovered, setHovered] = React.useState(false)
-  const visible = avatars.slice(0, max)
-  const hidden = Math.max(0, avatars.length - max)
+export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
+  ({ avatars, max = 4, size = 36, overlap = 12, spread = 4, className }, ref) => {
+    const [hovered, setHovered] = React.useState(false)
+    const visible = avatars.slice(0, max)
+    const hidden = Math.max(0, avatars.length - max)
 
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-      className={cn('flex items-center', className)}
-    >
-      {visible.map((a, i) => (
-        <motion.div
-          key={`${a.name}-${i}`}
-          animate={{ x: hovered ? i * spread : 0 }}
-          transition={SPRING}
-          style={{
-            width: size,
-            height: size,
-            marginLeft: i === 0 ? 0 : -overlap,
-            zIndex: visible.length - i,
-          }}
-          className="relative shrink-0 overflow-hidden rounded-full ring-2 ring-zinc-950"
-          title={a.name}
-        >
-          {a.src ? (
-            <img
-              src={a.src}
-              alt={a.name}
-              className="h-full w-full object-cover"
-              draggable={false}
-            />
-          ) : (
-            <div
-              className={cn(
-                'flex h-full w-full items-center justify-center text-xs font-semibold text-white',
-                colorFor(a.name),
-              )}
-            >
-              {a.fallback ?? a.name.slice(0, 1).toUpperCase()}
+    return (
+      <div
+        ref={ref}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className={cn('flex items-center', className)}
+      >
+        {visible.map((a, i) => (
+          <motion.div
+            key={`${a.name}-${i}`}
+            animate={{ x: hovered ? i * spread : 0 }}
+            transition={SPRING}
+            style={{
+              width: size,
+              height: size,
+              marginLeft: i === 0 ? 0 : -overlap,
+              zIndex: visible.length - i,
+            }}
+            className="relative shrink-0 overflow-hidden rounded-full ring-2 ring-[color:var(--picks-surface,#09090b)]"
+            title={a.name}
+          >
+            {a.src ? (
+              <img
+                src={a.src}
+                alt={a.name}
+                className="h-full w-full object-cover"
+                draggable={false}
+              />
+            ) : (
+              <div
+                className={cn(
+                  'flex h-full w-full items-center justify-center text-xs font-semibold text-white',
+                  colorFor(a.name),
+                )}
+              >
+                {a.fallback ?? a.name.slice(0, 1).toUpperCase()}
+              </div>
+            )}
+          </motion.div>
+        ))}
+
+        {hidden > 0 && (
+          <motion.div
+            animate={{ x: hovered ? visible.length * spread : 0 }}
+            transition={SPRING}
+            style={{
+              width: size,
+              height: size,
+              marginLeft: -overlap,
+              zIndex: 0,
+            }}
+            className="relative shrink-0 rounded-full ring-2 ring-[color:var(--picks-surface,#09090b)]"
+          >
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold tabular-nums text-white/80">
+              +{hidden}
             </div>
-          )}
-        </motion.div>
-      ))}
-
-      {hidden > 0 && (
-        <motion.div
-          animate={{ x: hovered ? visible.length * spread : 0 }}
-          transition={SPRING}
-          style={{
-            width: size,
-            height: size,
-            marginLeft: -overlap,
-            zIndex: 0,
-          }}
-          className="relative shrink-0 rounded-full ring-2 ring-zinc-950"
-        >
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold tabular-nums text-white/80">
-            +{hidden}
-          </div>
-        </motion.div>
-      )}
-    </div>
-  )
-}
+          </motion.div>
+        )}
+      </div>
+    )
+  }
+)
+AvatarGroup.displayName = 'AvatarGroup'

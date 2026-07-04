@@ -47,6 +47,10 @@ export interface LineChartProps {
   format?: (value: number) => string
   /** Tooltip suffix appended to the formatted value (e.g. " users"). */
   valueSuffix?: string
+  /** Accessible SVG <title>. Default "Line chart". */
+  title?: string
+  /** Accessible SVG <desc>. Defaults to "label: value" pairs from the data. */
+  description?: string
   /** className applied to the outer wrapper. */
   className?: string
 }
@@ -119,11 +123,21 @@ export function LineChart({
   fill = true,
   format = defaultFmt,
   valueSuffix = '',
+  title,
+  description,
   className,
 }: LineChartProps) {
   const reactId = React.useId().replace(/[^a-zA-Z0-9]/g, '')
   const fillId = `lc-fill-${reactId}`
   const glowId = `lc-glow-${reactId}`
+  const titleId = `lc-title-${reactId}`
+  const descId = `lc-desc-${reactId}`
+
+  // Accessible name + text alternative for the data.
+  const a11yTitle = title ?? 'Line chart'
+  const a11yDescription =
+    description ??
+    data.map((d) => `${d.label}: ${format(d.value)}${valueSuffix}`).join(', ')
 
   // Layout: padding for axis labels
   const padL = showAxis ? 44 : 8
@@ -165,8 +179,12 @@ export function LineChart({
   // Hover
   const wrapRef = React.useRef<HTMLDivElement>(null)
   const [hoverIdx, setHoverIdx] = React.useState<number | null>(null)
+  // True while the crosshair is being driven by arrow keys — gates the
+  // aria-live announcement so mouse hovering doesn't spam screen readers.
+  const [keyboardActive, setKeyboardActive] = React.useState(false)
 
   const onMove = (e: React.PointerEvent) => {
+    setKeyboardActive(false)
     const rect = wrapRef.current?.getBoundingClientRect()
     if (!rect) return
     // Map client x → SVG viewBox x → plot x
@@ -191,6 +209,20 @@ export function LineChart({
   }
   const onLeave = () => setHoverIdx(null)
 
+  // Keyboard: left/right arrows step the crosshair through data points
+  // while the (single tabbable) svg is focused.
+  const onKeyDown = (e: React.KeyboardEvent<SVGSVGElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    e.preventDefault()
+    setKeyboardActive(true)
+    const delta = e.key === 'ArrowRight' ? 1 : -1
+    setHoverIdx((prev) => {
+      if (prev == null) return delta === 1 ? 0 : data.length - 1
+      return Math.max(0, Math.min(data.length - 1, prev + delta))
+    })
+  }
+  const onBlur = () => setHoverIdx(null)
+
   const hover = hoverIdx != null ? points[hoverIdx] : null
   const hoverDatum = hoverIdx != null ? data[hoverIdx] : null
 
@@ -208,8 +240,15 @@ export function LineChart({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="block w-full"
+        className="block w-full rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+        role="img"
+        aria-labelledby={`${titleId} ${descId}`}
+        tabIndex={0}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
       >
+        <title id={titleId}>{a11yTitle}</title>
+        <desc id={descId}>{a11yDescription}</desc>
         <defs>
           <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={accent} stopOpacity={0.32} />
@@ -397,6 +436,13 @@ export function LineChart({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Announce the keyboard-selected data point to screen readers */}
+      <div aria-live="polite" className="sr-only">
+        {keyboardActive && hoverDatum
+          ? `${hoverDatum.label}: ${format(hoverDatum.value)}${valueSuffix}`
+          : ''}
+      </div>
     </div>
   )
 }

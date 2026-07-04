@@ -64,6 +64,27 @@ export default function SparklineDocs() {
       <DocsSection title="Usage">
         <CodeBlock code={`<Sparkline points={[12, 15, 13, 17, 22]} color="${COLORS[color]}" fillArea />`} language="tsx" />
       </DocsSection>
+      <DocsSection title="Props">
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[
+            ['points', 'number[] — y values, evenly spaced on the x-axis.'],
+            ['width / height', 'SVG size in px. Default 160 × 40.'],
+            ['color', 'Stroke color. Default #FFFFFF.'],
+            ['strokeWidth', 'Stroke width. Default 1.5.'],
+            ['fillArea', 'Soft gradient fill under the line. Default false.'],
+            ['showEndDot', 'Dot at the last point. Default true.'],
+            ['duration', 'Draw duration in seconds. Default 0.9.'],
+            ['responsive', 'Fill the container width (100%), scaling via the viewBox. Default false.'],
+            ['label', 'Accessible label — switches the SVG from aria-hidden (decorative) to role="img".'],
+            ['className', 'Extra classes on the SVG.'],
+          ].map(([n, b]) => (
+            <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+              <code className="font-mono text-xs text-white">{n}</code>
+              <p className="mt-1 text-xs text-white/60">{b}</p>
+            </li>
+          ))}
+        </ul>
+      </DocsSection>
     </DocsPage>
   )
 }

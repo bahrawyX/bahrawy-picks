@@ -25,6 +25,31 @@ Project-specific instructions for Claude Code.
 - Every component must be exported from `components/bahrawy/index.ts` (component + types)
 - Every component needs entries in BOTH `lib/registry.ts` AND `components/showcase/registry.tsx`
 
+## Theming
+
+Surface tokens live in `app/globals.css` under `:root` (prefix `--picks-`). Components reference them as `var(--picks-*, <dark-fallback>)`, so with no overrides set everything renders the current dark look — the fallbacks ARE the old hardcoded values.
+
+| Token | Default | Used for |
+| --- | --- | --- |
+| `--picks-surface` | `#09090b` | Page-ish background — status-dot "punch-out" rings (AvatarStatus, ProfileCard, AvatarGroup), ScrollRail edge masks |
+| `--picks-surface-raised` | `#1c1c1e` | Raised panels / image placeholders |
+| `--picks-fg` | `#ffffff` | Primary text / default loader & indicator color |
+| `--picks-fg-muted` | `rgba(255, 255, 255, 0.65)` | Secondary / muted text (e.g. LoaderDots label) |
+| `--picks-border` | `rgba(255, 255, 255, 0.08)` | Hairline borders |
+
+Consumers override by redefining tokens on `:root` (or any ancestor — the vars cascade, so a scoped wrapper works too):
+
+```css
+.my-light-section {
+  --picks-surface: #fafafa;
+  --picks-fg: #111111;
+}
+```
+
+- Full light mode is NOT supported yet — this is a foundation pass; many components still hardcode dark values.
+- When adding new components, prefer `var(--picks-*, <dark-value>)` over raw hex for surface/fg/border colors.
+- Per-instance prop overrides beat the tokens: `ringColor` (AvatarStatus), `maskColor` (ScrollRail), `color` (LoaderDots/ScrollProgress).
+
 ## Demo Page Pattern
 
 Each component gets its own page at `app/components/{slug}/page.tsx`:

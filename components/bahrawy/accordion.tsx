@@ -10,7 +10,12 @@
  *
  * @param items         — Array of `{ id, title, content }` rows.
  * @param type          — 'single' (only one open at a time) or 'multiple'.
- * @param defaultOpen   — IDs to start open with.
+ * @param defaultOpen   — IDs to start open with (uncontrolled).
+ * @param value         — Controlled open state — a single id for
+ *                        type="single", an id array for type="multiple".
+ * @param onValueChange — Fires with the next open state on every toggle.
+ *                        Receives a string ('' when closed) for "single",
+ *                        a string[] for "multiple".
  * @param chevron       — Show the rotating chevron icon. Default true.
  * @param bounciness    — 0–1. How springy the open/close motion is. Default 0.7.
  * @param className     — Extra classes for the outer wrapper.
@@ -37,6 +42,16 @@ export interface AccordionProps {
   items: AccordionItem[]
   type?: 'single' | 'multiple'
   defaultOpen?: string[]
+  /**
+   * Controlled open state. Pass a single id (or '') for type="single",
+   * an id array for type="multiple". Omit for uncontrolled behavior.
+   */
+  value?: string | string[]
+  /**
+   * Fires with the next open state on every toggle — a string ('' when
+   * everything is closed) for "single", a string[] for "multiple".
+   */
+  onValueChange?: (value: string | string[]) => void
   chevron?: boolean
   bounciness?: number
   className?: string
@@ -62,43 +77,68 @@ function springFor(bounciness: number) {
 // Component
 // ---------------------------------------------------------------------------
 
-export function Accordion({
-  items,
-  type = 'single',
-  defaultOpen = [],
-  chevron = true,
-  bounciness = 0.7,
-  className,
-}: AccordionProps) {
-  const [openIds, setOpenIds] = React.useState<string[]>(defaultOpen)
-  const spring = React.useMemo(() => springFor(bounciness), [bounciness])
-
-  const toggle = React.useCallback(
-    (id: string) => {
-      setOpenIds((prev) => {
-        const isOpen = prev.includes(id)
-        if (type === 'single') return isOpen ? [] : [id]
-        return isOpen ? prev.filter((x) => x !== id) : [...prev, id]
-      })
+export const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
+  (
+    {
+      items,
+      type = 'single',
+      defaultOpen = [],
+      value,
+      onValueChange,
+      chevron = true,
+      bounciness = 0.7,
+      className,
     },
-    [type],
-  )
+    ref,
+  ) => {
+    const [internalOpenIds, setInternalOpenIds] =
+      React.useState<string[]>(defaultOpen)
+    const spring = React.useMemo(() => springFor(bounciness), [bounciness])
 
-  return (
-    <div className={cn('flex w-full flex-col gap-2', className)}>
-      {items.map((item) => (
-        <AccordionRow
-          key={item.id}
-          item={item}
-          open={openIds.includes(item.id)}
-          chevron={chevron}
-          spring={spring}
-          onToggle={() => toggle(item.id)}
-        />
-      ))}
-    </div>
-  )
-}
+    // Controlled when `value` is passed — normalize it to an id array.
+    const isControlled = value !== undefined
+    const openIds = isControlled
+      ? Array.isArray(value)
+        ? value
+        : value
+          ? [value]
+          : []
+      : internalOpenIds
+
+    const toggle = React.useCallback(
+      (id: string) => {
+        const isOpen = openIds.includes(id)
+        const next =
+          type === 'single'
+            ? isOpen
+              ? []
+              : [id]
+            : isOpen
+              ? openIds.filter((x) => x !== id)
+              : [...openIds, id]
+        if (!isControlled) setInternalOpenIds(next)
+        onValueChange?.(type === 'single' ? (next[0] ?? '') : next)
+      },
+      [type, openIds, isControlled, onValueChange],
+    )
+
+    return (
+      <div ref={ref} className={cn('flex w-full flex-col gap-2', className)}>
+        {items.map((item) => (
+          <AccordionRow
+            key={item.id}
+            item={item}
+            open={openIds.includes(item.id)}
+            chevron={chevron}
+            spring={spring}
+            onToggle={() => toggle(item.id)}
+          />
+        ))}
+      </div>
+    )
+  }
+)
+Accordion.displayName = 'Accordion'
 
 // ---------------------------------------------------------------------------
 // Single row
@@ -113,7 +153,9 @@ interface AccordionRowProps {
 }
 
 function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowProps) {
-  const contentId = React.useId()
+  const baseId = React.useId()
+  const headerId = `${baseId}-header`
+  const contentId = `${baseId}-content`
 
   return (
     <motion.div
@@ -127,6 +169,7 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
     >
       <button
         type="button"
+        id={headerId}
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={contentId}
@@ -159,6 +202,7 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
         {open && (
           <motion.section
             id={contentId}
+            aria-labelledby={headerId}
             key="content"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}

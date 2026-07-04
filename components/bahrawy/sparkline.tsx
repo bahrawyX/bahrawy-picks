@@ -29,6 +29,16 @@ export interface SparklineProps {
   showEndDot?: boolean
   /** Draw duration in seconds. Default 0.9. */
   duration?: number
+  /**
+   * Fill the container width (100%) and scale via the viewBox instead of
+   * rendering at fixed pixel size. Default false.
+   */
+  responsive?: boolean
+  /**
+   * Accessible label. By default the sparkline is decorative (aria-hidden);
+   * passing a label switches it to role="img" + aria-label.
+   */
+  label?: string
   className?: string
 }
 
@@ -41,6 +51,8 @@ export function Sparkline({
   fillArea = false,
   showEndDot = true,
   duration = 0.9,
+  responsive = false,
+  label,
   className,
 }: SparklineProps) {
   const ref = React.useRef<SVGSVGElement>(null)
@@ -74,10 +86,11 @@ export function Sparkline({
       ref={ref}
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
-      className={cn('block', className)}
-      width={width}
-      height={height}
-      aria-hidden
+      className={cn('block', responsive && 'w-full', className)}
+      {...(responsive ? {} : { width, height })}
+      {...(label
+        ? { role: 'img', 'aria-label': label }
+        : { 'aria-hidden': true })}
     >
       <defs>
         <linearGradient id={`spark-${gradId}`} x1="0" x2="0" y1="0" y2="1">

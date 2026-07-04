@@ -27,6 +27,17 @@
   --input: 240 5% 18%;
   --ring: 249 66% 64%;
   --radius: 0.5rem;
+
+  /* bahrawy surface tokens — theming foundation.
+     Components in components/bahrawy/ reference these via
+     var(--picks-*, <dark-fallback>) so they keep the current dark look
+     with zero setup and adapt when a host overrides the tokens.
+     Defaults mirror the values previously hardcoded in components. */
+  --picks-surface: #09090b; /* page-ish bg — "punch-out" rings + edge masks (zinc-950) */
+  --picks-surface-raised: #1c1c1e; /* raised panels / image placeholders */
+  --picks-fg: #ffffff; /* primary text */
+  --picks-fg-muted: rgba(255, 255, 255, 0.65); /* secondary / muted text */
+  --picks-border: rgba(255, 255, 255, 0.08); /* hairline borders */
 }
 
 /* Make .dark variants resolve to the same tokens (bahrawy is dark-only,

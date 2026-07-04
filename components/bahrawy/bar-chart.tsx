@@ -39,6 +39,10 @@ export interface BarChartProps {
   formatValue?: (v: number) => string
   /** Optional Y-axis max — if omitted, derived from the data. */
   max?: number
+  /** Accessible chart title. Default "Bar chart". */
+  title?: string
+  /** Accessible data summary. Defaults to "label: value" pairs from the data. */
+  description?: string
   className?: string
 }
 
@@ -53,6 +57,8 @@ export function BarChart({
   showValues = false,
   formatValue = (v) => v.toLocaleString(),
   max,
+  title,
+  description,
   className,
 }: BarChartProps) {
   const computedMax = max ?? Math.max(...data.map((d) => d.value), 0)
@@ -60,14 +66,23 @@ export function BarChart({
   const gridLines = [1, 0.75, 0.5, 0.25, 0] // top → bottom (so labels read big → small)
   const [hover, setHover] = React.useState<number | null>(null)
 
+  // Accessible name + text alternative for the data.
+  const a11yTitle = title ?? 'Bar chart'
+  const a11yDescription =
+    description ??
+    data.map((d) => `${d.label}: ${formatValue(d.value)}`).join(', ')
+
   if (orientation === 'horizontal') {
     return (
       <div
+        role="group"
+        aria-label={a11yTitle}
         className={cn(
           'w-full rounded-xl border border-white/[0.08] bg-white/[0.02] p-4',
           className,
         )}
       >
+        <p className="sr-only">{a11yDescription}</p>
         <div className="space-y-2.5">
           {data.map((d, i) => {
             const pct = d.value / niceMax
@@ -76,9 +91,14 @@ export function BarChart({
             return (
               <div
                 key={i}
-                className="grid grid-cols-[88px_1fr_auto] items-center gap-3"
+                tabIndex={0}
+                role="img"
+                aria-label={`${d.label}: ${formatValue(d.value)}`}
+                className="grid grid-cols-[88px_1fr_auto] items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
+                onFocus={() => setHover(i)}
+                onBlur={() => setHover(null)}
               >
                 <span className="truncate text-[11.5px] font-medium text-white/65">
                   {d.label}
@@ -109,11 +129,14 @@ export function BarChart({
   // Vertical
   return (
     <div
+      role="group"
+      aria-label={a11yTitle}
       className={cn(
         'w-full overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] p-4',
         className,
       )}
     >
+      <p className="sr-only">{a11yDescription}</p>
       <div
         className={cn(
           'relative flex w-full items-stretch',
@@ -148,9 +171,14 @@ export function BarChart({
             return (
               <div
                 key={i}
+                tabIndex={0}
+                role="img"
+                aria-label={`${d.label}: ${formatValue(d.value)}`}
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
-                className="group relative flex h-full flex-1 cursor-pointer flex-col items-center justify-end"
+                onFocus={() => setHover(i)}
+                onBlur={() => setHover(null)}
+                className="group relative flex h-full flex-1 cursor-pointer flex-col items-center justify-end rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               >
                 {/* Value-on-top label */}
                 {showValues && (
