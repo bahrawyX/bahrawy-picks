@@ -143,6 +143,25 @@ export default function DynamicIslandDocs() {
         </ul>
       </DocsSection>
 
+      <DocsSection title="Props">
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[
+            ['view', "DynamicIslandView — which scene the island shows. Default 'idle'."],
+            ['content', 'DynamicIslandContent — per-scene display data (caller name/avatar, track title/artist/artwork, timer values, maps directions…). Omitted fields fall back to the built-in demo copy.'],
+            ['onAction', "(action: string) => void — fired by the interactive buttons: 'accept-call' / 'decline-call' (ring), 'toggle-mute' / 'end-call' (phone)."],
+            ['className', 'Extra classes on the island container.'],
+          ].map(([n, b]) => (
+            <li
+              key={n}
+              className="rounded-lg border border-white/10 bg-white/[0.02] p-3"
+            >
+              <code className="font-mono text-xs text-white">{n}</code>
+              <p className="mt-1 text-xs text-white/60">{b}</p>
+            </li>
+          ))}
+        </ul>
+      </DocsSection>
+
       <DocsSection title="Dependencies">
         <div className="flex flex-wrap gap-2">
           {['framer-motion', 'lucide-react'].map((d) => (

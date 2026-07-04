@@ -823,7 +823,7 @@ export const registry: RegistryEntry[] = [
     slug: 'kanban',
     name: 'Kanban',
     description:
-      'Self-managing task board with drag-and-drop columns, subtasks, priority/difficulty pills, due dates, filters, list view, and localStorage persistence.',
+      'Full-featured task board with drag-and-drop columns, subtasks, priority/difficulty pills, due dates, filters, and list view. Controlled (columns/onChange) or uncontrolled, with opt-in localStorage persistence via storageKey.',
     category: 'data',
     dependencies: [
       '@dnd-kit/core',

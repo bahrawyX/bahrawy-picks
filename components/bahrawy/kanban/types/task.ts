@@ -69,3 +69,47 @@ export interface Task {
   parentTaskId?: string | null;
   depth?: number;
 }
+
+// ── Public (nested) data API ─────────────────────────────────────────────────
+// The store keeps a flat task list internally; consumers exchange data with the
+// component through this nested column → card → subtask shape instead.
+
+/** A subtask nested under a card. Up to two levels of nesting are supported. */
+export interface KanbanSubtask {
+  id: string;
+  title: string;
+  done?: boolean;
+  priority?: TaskPriority;
+  difficulty?: TaskDifficulty;
+  subtasks?: KanbanSubtask[];
+}
+
+/** A card (task) in the public data API. */
+export interface KanbanCard {
+  id: string;
+  title: string;
+  description?: string;
+  priority?: TaskPriority;
+  difficulty?: TaskDifficulty;
+  dueDate?: string | null;
+  durationMinutes?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  subtasks?: KanbanSubtask[];
+}
+
+/** A column with its cards in the public data API. */
+export interface KanbanColumn {
+  id: string;
+  label: string;
+  accent?: ColumnAccent;
+  cards: KanbanCard[];
+}
+
+/** Emitted when a card is dropped in a new position (same or other column). */
+export interface KanbanCardMoveEvent {
+  cardId: string;
+  fromColumnId: string;
+  toColumnId: string;
+  toIndex: number;
+}

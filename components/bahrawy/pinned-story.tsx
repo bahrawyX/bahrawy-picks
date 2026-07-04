@@ -23,7 +23,6 @@ import * as React from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Anton } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 import { useOnScreen } from '@/lib/use-on-screen'
@@ -32,8 +31,6 @@ import { useOnScreen } from '@/lib/use-on-screen'
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
-
-const displayFont = Anton({ subsets: ['latin'], weight: '400', display: 'swap' })
 
 // ---------------------------------------------------------------------------
 // Types
@@ -57,6 +54,12 @@ export interface PinnedStoryProps {
   showBigNumber?: boolean
   /** Color used by the progress bar + side dot + default tint. */
   accentColor?: string
+  /**
+   * Class applied to the giant background number — pass a display-font
+   * class (e.g. from `next/font`) for the poster look. Defaults to the
+   * inherited font.
+   */
+  fontClassName?: string
   className?: string
 }
 
@@ -69,6 +72,7 @@ export function PinnedStory({
   stepLength = 1.2,
   showBigNumber = true,
   accentColor = '#A78BFA',
+  fontClassName = '',
   className,
 }: PinnedStoryProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
@@ -250,7 +254,7 @@ export function PinnedStory({
                 }}
                 className={cn(
                   'absolute select-none leading-none tracking-tighter',
-                  displayFont.className,
+                  fontClassName,
                 )}
                 style={{
                   fontSize: 'clamp(280px, 60vw, 720px)',

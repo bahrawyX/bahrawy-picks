@@ -1,11 +1,18 @@
 'use client'
 
+import { Anton } from 'next/font/google'
 import {
   PhraseSlots,
   type PhraseSlotConfig,
 } from '@/components/bahrawy/phrase-slots'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection } from '@/components/showcase/docs-page'
+
+const displayFont = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+})
 
 const SLOTS: PhraseSlotConfig[] = [
   {
@@ -71,6 +78,7 @@ export default function PhraseSlotsDocs() {
         description="…you've just assembled the line we live by, one word at a time."
         cta={{ label: 'Get started' }}
         accentColor="#A78BFA"
+        fontClassName={displayFont.className}
       />
 
       <div className="h-24" aria-hidden />
@@ -109,6 +117,7 @@ export default function PhraseSlotsDocs() {
             ['scrollLength', 'Pin duration in viewport heights. Default 3.5.'],
             ['accentColor', 'Underline + eyebrow dot color. Default #A78BFA.'],
             ['slotHeight', 'Slot window height in px (also drives font-size). Default 96.'],
+            ['fontClassName', 'Class for the slot words — pass a display-font class (e.g. next/font). Defaults to the inherited font.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

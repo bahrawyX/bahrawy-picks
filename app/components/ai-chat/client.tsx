@@ -129,6 +129,9 @@ export default function AIChatDocs() {
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
             ['messages', 'ChatMessage[] — { id, role: "user"|"assistant", content, streaming? }.'],
+            ['title', 'Header title. Default "Assistant".'],
+            ['status', 'Header status label (right side). Default "online".'],
+            ['avatar', 'Header icon node before the title. Default violet sparkle.'],
             ['thinking', 'Show pulsing 3-dot indicator at the bottom. Default false.'],
             ['speed', 'Chars/sec for streaming messages. Default 70.'],
             ['assistantAvatar', 'Custom avatar node for assistant rows. Default violet sparkle.'],

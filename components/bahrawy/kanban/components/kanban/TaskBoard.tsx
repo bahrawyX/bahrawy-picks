@@ -17,7 +17,16 @@ import {
 import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTaskBoardStore } from '../../store/useTaskBoardStore';
-import type { Task, TaskPriority, TaskStatus, TaskDifficulty, ColumnAccent } from '../../types/task';
+import type {
+  Task,
+  TaskPriority,
+  TaskStatus,
+  TaskDifficulty,
+  ColumnAccent,
+  KanbanCard as KanbanCardData,
+  KanbanCardMoveEvent,
+} from '../../types/task';
+import { taskToKanbanCard } from '../../utils/taskBoard';
 import { Button } from '../ui/button';
 import { ThemeToggle } from '../ThemeToggle';
 import { useIsMobile } from '../../hooks/useIsMobile';
@@ -64,7 +73,14 @@ function findContainerForId(
   return task ? task.status : null;
 }
 
-export const TaskBoard: React.FC = () => {
+export interface TaskBoardProps {
+  /** Fired when a card is dropped in a new position (same or other column). */
+  onCardMove?: (event: KanbanCardMoveEvent) => void;
+  /** Fired when a card is opened (click / edit). */
+  onCardClick?: (card: KanbanCardData) => void;
+}
+
+export const TaskBoard: React.FC<TaskBoardProps> = ({ onCardMove, onCardClick }) => {
   const hydrate = useTaskBoardStore((s) => s.hydrate);
   const tasks = useTaskBoardStore((s) => s.tasks);
   const columns = useTaskBoardStore((s) => s.columns);
@@ -163,11 +179,19 @@ export const TaskBoard: React.FC = () => {
     [columns, columnIdSet],
   );
 
-  const openEditDialog = useCallback((task: Task) => {
-    setEditingTask(task);
-    setDefaultStatus(task.status);
-    setDialogOpen(true);
-  }, []);
+  // Keep the latest tasks in a ref so openEditDialog stays referentially stable.
+  const tasksRef = useRef(tasks);
+  tasksRef.current = tasks;
+
+  const openEditDialog = useCallback(
+    (task: Task) => {
+      onCardClick?.(taskToKanbanCard(task, tasksRef.current));
+      setEditingTask(task);
+      setDefaultStatus(task.status);
+      setDialogOpen(true);
+    },
+    [onCardClick],
+  );
 
   const closeDialog = useCallback(() => {
     setDialogOpen(false);
@@ -315,16 +339,30 @@ export const TaskBoard: React.FC = () => {
         if (oldIdx !== newIdx && newIdx !== -1) {
           const reordered: string[] = arrayMove(currentIds, oldIdx, newIdx);
           reorderColumn(activeContainer, reordered);
+          onCardMove?.({
+            cardId: String(active.id),
+            fromColumnId: activeContainer,
+            toColumnId: activeContainer,
+            toIndex: newIdx,
+          });
         }
       } else {
         const destIds = optimisticRef.current.get(overContainer) ?? [];
         const insertIdx = destIds.indexOf(String(active.id));
+        const toIndex =
+          insertIdx === -1 ? (columnTasks[overContainer] ?? []).length : insertIdx;
         moveTask(String(active.id), overContainer, insertIdx === -1 ? undefined : insertIdx);
+        onCardMove?.({
+          cardId: String(active.id),
+          fromColumnId: activeContainer,
+          toColumnId: overContainer,
+          toIndex,
+        });
       }
 
       optimisticRef.current.clear();
     },
-    [tasks, columnTasks, columnIdSet, reorderColumn, moveTask],
+    [tasks, columnTasks, columnIdSet, reorderColumn, moveTask, onCardMove],
   );
 
   const handleDragCancel = useCallback(() => {

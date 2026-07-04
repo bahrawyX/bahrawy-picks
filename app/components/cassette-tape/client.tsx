@@ -38,6 +38,7 @@ export default function CassetteTapeDocs() {
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
             ['sideA / sideB', 'CassetteSide — { title, artist?, runtime? }. Two halves of the tape.'],
+            ['brand', "Brand line printed at the top of the label. Default 'Bahrawy · Music Co.'."],
             ['shellColor', 'Cassette body colour. Default warm purple-black plastic.'],
             ['labelColor', 'Label background. Default vintage cream.'],
             ['defaultPlaying', 'Initial play state. Default false.'],

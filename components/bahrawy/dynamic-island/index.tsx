@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 import {
@@ -35,9 +36,46 @@ export type DynamicIslandView =
   | 'findmy'
   | 'screenRecord'
 
+/**
+ * Per-scene display content. Every field is optional — anything omitted
+ * falls back to the built-in demo copy, so `<DynamicIsland view="music" />`
+ * keeps working unchanged.
+ */
+export interface DynamicIslandContent {
+  /** `timer` scene — countdown readout + trailing label. */
+  timer?: { time?: string; label?: string }
+  /** `record` scene — elapsed recording time. */
+  record?: { time?: string }
+  /** `airdropMini` scene — item count + trailing label. */
+  airdropMini?: { count?: string; label?: string }
+  /** `lowBattery` scene — battery level + trailing label. */
+  lowBattery?: { level?: string; label?: string }
+  /** `screenRecord` scene — elapsed time + trailing label. */
+  screenRecord?: { time?: string; label?: string }
+  /** `findmy` scene — the device / item label. */
+  findmy?: { label?: string }
+  /** `maps` scene — instruction line, street sub-line, ETA. */
+  maps?: { instruction?: string; street?: string; eta?: string }
+  /** `ring` scene — caller name, status line, optional avatar node. */
+  ring?: { name?: string; status?: string; avatar?: ReactNode }
+  /** `phone` scene — callee name + status/duration line. */
+  phone?: { name?: string; status?: string }
+  /** `music` scene — track title, artist line, optional artwork node. */
+  music?: { title?: string; artist?: string; artwork?: ReactNode }
+  /** `airdrop` scene — transfer title + sub-line. */
+  airdrop?: { title?: string; subtitle?: string }
+}
+
 export interface DynamicIslandProps {
   /** Which scene the island is showing. Defaults to 'idle'. */
   view?: DynamicIslandView
+  /** Display data per scene. Omitted fields use the built-in demo copy. */
+  content?: DynamicIslandContent
+  /**
+   * Fired when an interactive button inside a scene is pressed:
+   * 'accept-call' | 'decline-call' (ring), 'toggle-mute' | 'end-call' (phone).
+   */
+  onAction?: (action: string) => void
   className?: string
 }
 
@@ -102,7 +140,12 @@ const SHAPES: Record<DynamicIslandView, IslandShape> = {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) {
+export function DynamicIsland({
+  view = 'idle',
+  content,
+  onAction,
+  className,
+}: DynamicIslandProps) {
   const shape = SHAPES[view]
   // Reduced motion: morphs become instant and ambient loops are cut.
   const reduced = usePrefersReducedMotion()
@@ -145,7 +188,12 @@ export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) 
             className="absolute inset-0 flex items-center"
             style={{ paddingLeft: shape.paddingX, paddingRight: shape.paddingX }}
           >
-            <ViewContent view={view} reduced={reduced} />
+            <ViewContent
+              view={view}
+              reduced={reduced}
+              content={content}
+              onAction={onAction}
+            />
           </motion.div>
         </AnimatePresence>
       </motion.div>
@@ -160,9 +208,13 @@ export function DynamicIsland({ view = 'idle', className }: DynamicIslandProps) 
 function ViewContent({
   view,
   reduced,
+  content,
+  onAction,
 }: {
   view: DynamicIslandView
   reduced: boolean
+  content?: DynamicIslandContent
+  onAction?: (action: string) => void
 }) {
   switch (view) {
     case 'idle':
@@ -172,9 +224,11 @@ function ViewContent({
       return (
         <div className="flex w-full items-center gap-3">
           <TimerIcon className="h-4 w-4 text-amber-300" strokeWidth={2.2} />
-          <span className="flex-1 font-mono text-sm tabular-nums">12:34</span>
+          <span className="flex-1 font-mono text-sm tabular-nums">
+            {content?.timer?.time ?? '12:34'}
+          </span>
           <span className="text-[10px] uppercase tracking-widest text-white/50">
-            Timer
+            {content?.timer?.label ?? 'Timer'}
           </span>
         </div>
       )
@@ -191,7 +245,9 @@ function ViewContent({
                 : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
             }
           />
-          <span className="flex-1 font-mono text-sm tabular-nums">00:42</span>
+          <span className="flex-1 font-mono text-sm tabular-nums">
+            {content?.record?.time ?? '00:42'}
+          </span>
           <Mic className="h-4 w-4 text-rose-300" strokeWidth={2.2} />
         </div>
       )
@@ -200,9 +256,11 @@ function ViewContent({
       return (
         <div className="flex w-full items-center justify-center gap-2">
           <Send className="h-3.5 w-3.5 text-blue-300" strokeWidth={2.4} />
-          <span className="font-mono text-xs tabular-nums text-white/90">1</span>
+          <span className="font-mono text-xs tabular-nums text-white/90">
+            {content?.airdropMini?.count ?? '1'}
+          </span>
           <span className="text-[10px] uppercase tracking-widest text-white/50">
-            AirDrop
+            {content?.airdropMini?.label ?? 'AirDrop'}
           </span>
         </div>
       )
@@ -211,9 +269,11 @@ function ViewContent({
       return (
         <div className="flex w-full items-center gap-2.5">
           <BatteryLow className="h-4 w-4 text-amber-400" strokeWidth={2.2} />
-          <span className="flex-1 font-mono text-sm tabular-nums">20%</span>
+          <span className="flex-1 font-mono text-sm tabular-nums">
+            {content?.lowBattery?.level ?? '20%'}
+          </span>
           <span className="text-[10px] uppercase tracking-widest text-amber-300/80">
-            Low
+            {content?.lowBattery?.label ?? 'Low'}
           </span>
         </div>
       )
@@ -232,9 +292,11 @@ function ViewContent({
           >
             <ScreenShare className="h-4 w-4 text-rose-300" strokeWidth={2.2} />
           </motion.span>
-          <span className="flex-1 font-mono text-sm tabular-nums">02:17</span>
+          <span className="flex-1 font-mono text-sm tabular-nums">
+            {content?.screenRecord?.time ?? '02:17'}
+          </span>
           <span className="text-[10px] uppercase tracking-widest text-rose-300/80">
-            Screen
+            {content?.screenRecord?.label ?? 'Screen'}
           </span>
         </div>
       )
@@ -253,7 +315,7 @@ function ViewContent({
             <Search className="h-3.5 w-3.5 text-emerald-300" strokeWidth={2.4} />
           </span>
           <span className="flex-1 truncate text-sm font-medium">
-            Find My — iPhone gxuri
+            {content?.findmy?.label ?? 'Find My — iPhone gxuri'}
           </span>
         </div>
       )
@@ -266,35 +328,39 @@ function ViewContent({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[13px] font-medium leading-tight">
-              Turn left in 500 m
+              {content?.maps?.instruction ?? 'Turn left in 500 m'}
             </p>
             <p className="truncate text-[10px] leading-tight text-white/50">
-              El-Tahrir St.
+              {content?.maps?.street ?? 'El-Tahrir St.'}
             </p>
           </div>
           <span className="font-mono text-sm tabular-nums text-white/90">
-            8 min
+            {content?.maps?.eta ?? '8 min'}
           </span>
         </div>
       )
 
-    case 'ring':
+    case 'ring': {
+      const name = content?.ring?.name ?? 'Mohamed Bahrawy'
       return (
         <div className="flex w-full items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/[0.06] ring-1 ring-white/10">
-            <span className="text-base font-medium">M</span>
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/[0.06] ring-1 ring-white/10">
+            {content?.ring?.avatar ?? (
+              <span className="text-base font-medium">{name.charAt(0)}</span>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium leading-tight">
-              Mohamed Bahrawy
+              {name}
             </p>
             <p className="text-[11px] leading-tight text-white/50">
-              incoming call…
+              {content?.ring?.status ?? 'incoming call…'}
             </p>
           </div>
           <button
             type="button"
             aria-label="Decline call"
+            onClick={() => onAction?.('decline-call')}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white shadow-[0_4px_12px_-2px_rgba(244,63,94,0.5)] transition-transform hover:scale-105 active:scale-95"
           >
             <PhoneOff className="h-4 w-4" strokeWidth={2.4} />
@@ -302,12 +368,14 @@ function ViewContent({
           <button
             type="button"
             aria-label="Accept call"
+            onClick={() => onAction?.('accept-call')}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-[0_4px_12px_-2px_rgba(16,185,129,0.5)] transition-transform hover:scale-105 active:scale-95"
           >
             <PhoneCall className="h-4 w-4" strokeWidth={2.4} />
           </button>
         </div>
       )
+    }
 
     case 'phone':
       return (
@@ -317,15 +385,16 @@ function ViewContent({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium leading-tight">
-              Sara
+              {content?.phone?.name ?? 'Sara'}
             </p>
             <p className="font-mono text-[11px] leading-tight tabular-nums text-emerald-300/80">
-              02:14 · on call
+              {content?.phone?.status ?? '02:14 · on call'}
             </p>
           </div>
           <button
             type="button"
             aria-label="Toggle mute"
+            onClick={() => onAction?.('toggle-mute')}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-white/70 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
           >
             <Mic2 className="h-3.5 w-3.5" strokeWidth={2.2} />
@@ -333,6 +402,7 @@ function ViewContent({
           <button
             type="button"
             aria-label="End call"
+            onClick={() => onAction?.('end-call')}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white shadow-[0_4px_12px_-2px_rgba(244,63,94,0.5)] transition-transform hover:scale-105 active:scale-95"
           >
             <PhoneOff className="h-3.5 w-3.5" strokeWidth={2.4} />
@@ -344,16 +414,18 @@ function ViewContent({
       return (
         <div className="flex w-full items-center gap-3">
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[10px] bg-gradient-to-br from-fuchsia-500 via-purple-500 to-indigo-500">
-            <span className="absolute inset-0 flex items-center justify-center">
-              <Music2 className="h-5 w-5 text-white/90" strokeWidth={2.2} />
-            </span>
+            {content?.music?.artwork ?? (
+              <span className="absolute inset-0 flex items-center justify-center">
+                <Music2 className="h-5 w-5 text-white/90" strokeWidth={2.2} />
+              </span>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium leading-tight">
-              Midnight Drive
+              {content?.music?.title ?? 'Midnight Drive'}
             </p>
             <p className="truncate text-[11px] leading-tight text-white/50">
-              Cosmic Lounge · 3:24
+              {content?.music?.artist ?? 'Cosmic Lounge · 3:24'}
             </p>
           </div>
           <Waveform reduced={reduced} />
@@ -369,10 +441,10 @@ function ViewContent({
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[13px] font-medium leading-tight">
-                Receiving photo
+                {content?.airdrop?.title ?? 'Receiving photo'}
               </p>
               <p className="truncate text-[10px] leading-tight text-white/50">
-                iPhone of Sara · 2.4 MB
+                {content?.airdrop?.subtitle ?? 'iPhone of Sara · 2.4 MB'}
               </p>
             </div>
             <Volume2 className="h-3.5 w-3.5 text-white/40" strokeWidth={2} />

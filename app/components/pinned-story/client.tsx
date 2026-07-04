@@ -1,11 +1,14 @@
 'use client'
 
+import { Anton } from 'next/font/google'
 import {
   PinnedStory,
   type PinnedStoryStep,
 } from '@/components/bahrawy/pinned-story'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection } from '@/components/showcase/docs-page'
+
+const displayFont = Anton({ subsets: ['latin'], weight: '400', display: 'swap' })
 
 const STEPS: PinnedStoryStep[] = [
   {
@@ -82,7 +85,12 @@ export default function PinnedStoryDocs() {
       </DocsSection>
 
       {/* The section itself — full-bleed inside the docs column */}
-      <PinnedStory steps={STEPS} stepLength={1.2} accentColor="#A78BFA" />
+      <PinnedStory
+        steps={STEPS}
+        stepLength={1.2}
+        accentColor="#A78BFA"
+        fontClassName={displayFont.className}
+      />
 
       <div className="h-24" aria-hidden />
 
@@ -97,6 +105,7 @@ export default function PinnedStoryDocs() {
             ['stepLength', 'Pin length per step in viewport heights. Higher = slower per step. Default 1.2.'],
             ['showBigNumber', 'Render the giant 00/01/02… number behind everything. Default true.'],
             ['accentColor', 'Progress bar + side dot + default tint color. Default #A78BFA.'],
+            ['fontClassName', 'Class for the giant background number — pass a display-font class (e.g. next/font). Defaults to the inherited font.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([n, b]) => (
             <li

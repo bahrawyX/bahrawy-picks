@@ -29,10 +29,11 @@ export default function HabitHeatmapDocs() {
       description="A GitHub-style contribution grid. 7 rows (one per weekday) × N columns (one per week). Each cell's fill scales with the value through a 5-step accent ramp. Hover for a date + count tooltip; click a cell to handle the event."
       category="155 · data"
     >
-      <DocsSection title="Live demo · default" description="No data provided — a stable demo grid is generated for the last 26 weeks.">
+      <DocsSection title="Live demo · demo mode" description="The demo flag generates a stable pseudo-random grid for the last 26 weeks.">
         <DemoCard>
           <div className="w-full max-w-[760px] p-2">
             <HabitHeatmap
+              demo
               title="Contributions"
               meta="last 26 weeks"
               accentColor="#34D399"
@@ -45,6 +46,7 @@ export default function HabitHeatmapDocs() {
         <DemoCard>
           <div className="w-full max-w-[760px] p-2">
             <HabitHeatmap
+              demo
               title="Sessions"
               meta="last year"
               weeks={52}
@@ -59,8 +61,9 @@ export default function HabitHeatmapDocs() {
       <DocsSection title="Props">
         <ul className="grid gap-2 sm:grid-cols-2">
           {[
-            ['data', 'HeatmapCell[] — { date: "YYYY-MM-DD", value: number }. Omit to render a stable demo dataset.'],
-            ['weeks', 'Weeks rendered when no data is supplied. Default 26.'],
+            ['data', 'HeatmapCell[] — { date: "YYYY-MM-DD", value: number }. Omit (without demo) to render an empty state.'],
+            ['demo', 'Generate a stable demo dataset when no data is supplied. Default false.'],
+            ['weeks', 'Weeks rendered in demo mode. Default 26.'],
             ['showMonths', 'Show the month axis above the grid. Default true.'],
             ['showWeekdays', 'Show the weekday axis to the left. Default true.'],
             ['showLegend', 'Show the "Less → More" legend. Default true.'],

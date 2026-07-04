@@ -11,14 +11,7 @@
 
 import * as React from 'react'
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
-import { Anton } from 'next/font/google'
 import { cn } from '@/lib/utils'
-
-const displayFont = Anton({
-  subsets: ['latin'],
-  weight: '400',
-  display: 'swap',
-})
 
 export interface FooterBrandLink {
   label: string
@@ -41,6 +34,12 @@ export interface FooterBrandMarkProps {
   bottomRight?: React.ReactNode
   /** Color of the brandmark text. Default white. */
   markColor?: string
+  /**
+   * Class applied to the brandmark text — pass a display-font class
+   * (e.g. from `next/font`) for the poster look. Defaults to the
+   * inherited font.
+   */
+  fontClassName?: string
   className?: string
 }
 
@@ -51,6 +50,7 @@ export function FooterBrandMark({
   copyright,
   bottomRight,
   markColor = '#FFFFFF',
+  fontClassName = '',
   className,
 }: FooterBrandMarkProps) {
   const sectionRef = React.useRef<HTMLElement>(null)
@@ -151,7 +151,7 @@ export function FooterBrandMark({
             textAnchor="middle"
             fontSize="220"
             letterSpacing="-3"
-            className={displayFont.className}
+            className={fontClassName}
             fill={markColor}
             // Force the text to span the full viewBox width so long brand
             // names compress and short ones still feel huge.

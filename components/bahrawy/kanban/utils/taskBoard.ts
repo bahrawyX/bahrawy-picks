@@ -7,10 +7,27 @@ import {
   startOfDay,
 } from 'date-fns';
 
-import type { Task, TaskPriority, TaskStatus } from '../types/task';
-import { DEFAULT_COLUMN_TODO, DEFAULT_COLUMN_DONE } from '../types/task';
+import type {
+  Column,
+  ColumnAccent,
+  KanbanCard,
+  KanbanColumn,
+  KanbanSubtask,
+  Task,
+  TaskDifficulty,
+  TaskPriority,
+  TaskStatus,
+} from '../types/task';
+import {
+  COLUMN_ACCENTS,
+  DEFAULT_COLUMNS,
+  DEFAULT_COLUMN_TODO,
+  DEFAULT_COLUMN_DONE,
+} from '../types/task';
+import { uid } from '../lib/uid';
 
 const VALID_PRIORITIES = new Set<TaskPriority>(['low', 'medium', 'high']);
+const VALID_DIFFICULTIES = new Set<TaskDifficulty>(['easy', 'medium', 'hard']);
 const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 type PersistedTaskRecord = Record<string, unknown>;
@@ -168,6 +185,199 @@ function normalizePersistedTask(rawTask: PersistedTaskRecord, index: number): Ta
         ? Math.max(0, Math.min(2, rawTask.depth))
         : 0,
   };
+}
+
+export function isColumnAccent(value: unknown): value is ColumnAccent {
+  return typeof value === 'string' && (COLUMN_ACCENTS as readonly string[]).includes(value);
+}
+
+// ── Public (nested) data API ↔ internal (flat) state conversion ─────────────
+
+/** Convert the public nested column/card/subtask shape to the flat store state. */
+export function kanbanColumnsToState(input: KanbanColumn[]): {
+  tasks: Task[];
+  columns: Column[];
+} {
+  const columns: Column[] = [];
+  const tasks: Task[] = [];
+  const now = new Date().toISOString();
+  const seenColumnIds = new Set<string>();
+  const seenTaskIds = new Set<string>();
+
+  const taskId = (candidate: unknown): string => {
+    const id =
+      typeof candidate === 'string' && candidate.trim() && !seenTaskIds.has(candidate)
+        ? candidate
+        : uid();
+    seenTaskIds.add(id);
+    return id;
+  };
+
+  const pushSubtasks = (
+    subtasks: KanbanSubtask[] | undefined,
+    parentTaskId: string,
+    depth: number,
+  ): void => {
+    if (!Array.isArray(subtasks) || depth > 2) return;
+    let order = 0;
+    for (const sub of subtasks) {
+      if (!sub || typeof sub.title !== 'string' || !sub.title.trim()) continue;
+      const id = taskId(sub.id);
+      tasks.push({
+        id,
+        title: sub.title.trim(),
+        status: sub.done ? DEFAULT_COLUMN_DONE : DEFAULT_COLUMN_TODO,
+        priority: isTaskPriority(sub.priority) ? sub.priority : 'medium',
+        difficulty: VALID_DIFFICULTIES.has(sub.difficulty as TaskDifficulty)
+          ? (sub.difficulty as TaskDifficulty)
+          : 'medium',
+        order: order++,
+        createdAt: now,
+        updatedAt: now,
+        dueDate: null,
+        durationMinutes: 30,
+        parentTaskId,
+        depth,
+      });
+      pushSubtasks(sub.subtasks, id, depth + 1);
+    }
+  };
+
+  for (const col of Array.isArray(input) ? input : []) {
+    if (
+      !col ||
+      typeof col.id !== 'string' ||
+      !col.id.trim() ||
+      typeof col.label !== 'string' ||
+      !col.label.trim() ||
+      seenColumnIds.has(col.id)
+    ) {
+      continue;
+    }
+    seenColumnIds.add(col.id);
+    columns.push({
+      id: col.id,
+      label: col.label.trim(),
+      accent: isColumnAccent(col.accent) ? col.accent : 'neutral',
+    });
+
+    let order = 0;
+    for (const card of Array.isArray(col.cards) ? col.cards : []) {
+      if (!card || typeof card.title !== 'string' || !card.title.trim()) continue;
+      const id = taskId(card.id);
+      const createdAt =
+        typeof card.createdAt === 'string' && !Number.isNaN(Date.parse(card.createdAt))
+          ? card.createdAt
+          : now;
+      tasks.push({
+        id,
+        title: card.title.trim(),
+        description:
+          typeof card.description === 'string' && card.description.trim()
+            ? card.description.trim()
+            : undefined,
+        status: col.id,
+        priority: isTaskPriority(card.priority) ? card.priority : 'medium',
+        difficulty: VALID_DIFFICULTIES.has(card.difficulty as TaskDifficulty)
+          ? (card.difficulty as TaskDifficulty)
+          : 'medium',
+        order: order++,
+        createdAt,
+        updatedAt:
+          typeof card.updatedAt === 'string' && !Number.isNaN(Date.parse(card.updatedAt))
+            ? card.updatedAt
+            : createdAt,
+        dueDate: normalizeDueDateString(card.dueDate),
+        durationMinutes:
+          typeof card.durationMinutes === 'number' && card.durationMinutes > 0
+            ? card.durationMinutes
+            : 30,
+        parentTaskId: null,
+        depth: 0,
+      });
+      pushSubtasks(card.subtasks, id, 1);
+    }
+  }
+
+  return { tasks, columns: columns.length > 0 ? columns : [...DEFAULT_COLUMNS] };
+}
+
+function buildChildrenMap(tasks: Task[]): Map<string, Task[]> {
+  const childrenOf = new Map<string, Task[]>();
+  for (const task of tasks) {
+    if (!task.parentTaskId) continue;
+    const list = childrenOf.get(task.parentTaskId) ?? [];
+    list.push(task);
+    childrenOf.set(task.parentTaskId, list);
+  }
+  for (const list of childrenOf.values()) list.sort((a, b) => a.order - b.order);
+  return childrenOf;
+}
+
+function toKanbanSubtask(task: Task, childrenOf: Map<string, Task[]>): KanbanSubtask {
+  const children = childrenOf.get(task.id);
+  const subtask: KanbanSubtask = {
+    id: task.id,
+    title: task.title,
+    done: task.status === DEFAULT_COLUMN_DONE,
+    priority: task.priority,
+    difficulty: task.difficulty,
+  };
+  if (children && children.length > 0) {
+    subtask.subtasks = children.map((child) => toKanbanSubtask(child, childrenOf));
+  }
+  return subtask;
+}
+
+function toKanbanCard(task: Task, childrenOf: Map<string, Task[]>): KanbanCard {
+  const children = childrenOf.get(task.id);
+  const card: KanbanCard = {
+    id: task.id,
+    title: task.title,
+    priority: task.priority,
+    difficulty: task.difficulty,
+    dueDate: task.dueDate ?? null,
+    durationMinutes: task.durationMinutes,
+    createdAt: task.createdAt,
+    updatedAt: task.updatedAt,
+  };
+  if (task.description !== undefined) card.description = task.description;
+  if (children && children.length > 0) {
+    card.subtasks = children.map((child) => toKanbanSubtask(child, childrenOf));
+  }
+  return card;
+}
+
+/** Convert the flat store state to the public nested column/card shape. */
+export function stateToKanbanColumns(tasks: Task[], columns: Column[]): KanbanColumn[] {
+  const childrenOf = buildChildrenMap(tasks);
+  const columnIds = new Set(columns.map((c) => c.id));
+  const fallbackId = columns[0]?.id;
+
+  const rootsByColumn = new Map<string, Task[]>();
+  for (const task of tasks) {
+    if (task.parentTaskId) continue;
+    // Tasks whose status doesn't match a known column render in the first
+    // column, so export them there as well.
+    const columnId = columnIds.has(task.status) ? task.status : fallbackId;
+    if (columnId === undefined) continue;
+    const list = rootsByColumn.get(columnId) ?? [];
+    list.push(task);
+    rootsByColumn.set(columnId, list);
+  }
+  for (const list of rootsByColumn.values()) list.sort((a, b) => a.order - b.order);
+
+  return columns.map((col) => ({
+    id: col.id,
+    label: col.label,
+    accent: col.accent,
+    cards: (rootsByColumn.get(col.id) ?? []).map((task) => toKanbanCard(task, childrenOf)),
+  }));
+}
+
+/** Convert a single flat task (plus its subtasks) to the public card shape. */
+export function taskToKanbanCard(task: Task, allTasks: Task[]): KanbanCard {
+  return toKanbanCard(task, buildChildrenMap(allTasks));
 }
 
 export function normalizePersistedTasks(raw: unknown): Task[] {

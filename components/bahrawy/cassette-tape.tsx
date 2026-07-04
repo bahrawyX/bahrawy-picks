@@ -37,6 +37,8 @@ export interface CassetteTapeProps {
   sideA: CassetteSide
   /** B-side metadata. */
   sideB: CassetteSide
+  /** Brand line printed at the top of the label. Default 'Bahrawy · Music Co.'. */
+  brand?: string
   /** Cassette body colour. Default a warm plastic ivory. */
   shellColor?: string
   /** Label background colour. Default a vintage cream. */
@@ -55,6 +57,7 @@ export interface CassetteTapeProps {
 export function CassetteTape({
   sideA,
   sideB,
+  brand = 'Bahrawy · Music Co.',
   shellColor = '#1f1d2a',
   labelColor = '#f3e9c8',
   defaultPlaying = false,
@@ -86,6 +89,7 @@ export function CassetteTape({
         <CassetteFace
           face="A"
           info={sideA}
+          brand={brand}
           shellColor={shellColor}
           labelColor={labelColor}
           playing={playing}
@@ -106,6 +110,7 @@ export function CassetteTape({
           <CassetteFace
             face="B"
             info={sideB}
+            brand={brand}
             shellColor={shellColor}
             labelColor={labelColor}
             playing={playing}
@@ -140,6 +145,7 @@ export function CassetteTape({
 function CassetteFace({
   face,
   info,
+  brand,
   shellColor,
   labelColor,
   playing,
@@ -149,6 +155,7 @@ function CassetteFace({
 }: {
   face: 'A' | 'B'
   info: CassetteSide
+  brand: string
   shellColor: string
   labelColor: string
   playing: boolean
@@ -217,7 +224,7 @@ function CassetteFace({
         }}
       >
         <p className="text-[9px] font-medium uppercase tracking-[0.32em] opacity-65">
-          Bahrawy · Music Co.
+          {brand}
         </p>
         <h3 className="mt-1 text-sm font-bold uppercase tracking-[0.08em] sm:text-base">
           {info.title}

@@ -23,7 +23,6 @@ import * as React from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Anton } from 'next/font/google'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
@@ -31,12 +30,6 @@ import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
-
-const displayFont = Anton({
-  subsets: ['latin'],
-  weight: '400',
-  display: 'swap',
-})
 
 // Each slot's column shows the option list this many times stacked, so the
 // column can "spin" past every word a few times before stopping. Higher =
@@ -77,6 +70,12 @@ export interface PhraseSlotsProps {
   accentColor?: string
   /** Slot height in px (also drives the font-size). Default 96. */
   slotHeight?: number
+  /**
+   * Class applied to the slot words — pass a display-font class
+   * (e.g. from `next/font`) for the poster look. Defaults to the
+   * inherited font.
+   */
+  fontClassName?: string
   className?: string
 }
 
@@ -93,6 +92,7 @@ export function PhraseSlots({
   scrollLength = 3.5,
   accentColor = '#A78BFA',
   slotHeight = 96,
+  fontClassName = '',
   className,
 }: PhraseSlotsProps) {
   const sectionRef = React.useRef<HTMLDivElement>(null)
@@ -374,7 +374,7 @@ export function PhraseSlots({
                       }}
                       className={cn(
                         'flex flex-col items-center uppercase tracking-tight text-white',
-                        displayFont.className,
+                        fontClassName,
                       )}
                       style={{
                         fontSize: `${slotHeight}px`,

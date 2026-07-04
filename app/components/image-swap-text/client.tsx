@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Anton } from 'next/font/google'
 import {
   ImageSwapText,
   type ImageSwapItem,
@@ -15,6 +16,13 @@ import {
 /* ------------------------------------------------------------------ */
 /*  Demo content                                                       */
 /* ------------------------------------------------------------------ */
+
+// Tall + condensed = the poster look.
+const displayFont = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+})
 
 const ITEMS: ImageSwapItem[] = [
   {
@@ -90,6 +98,7 @@ const items = [
             defaultLabel="Bahrawy"
             accentColor="#EF2B2D"
             thumbSize={thumbSize}
+            fontClassName={displayFont.className}
           />
         </DemoCard>
 
@@ -117,7 +126,7 @@ const items = [
             ['defaultLabel', 'The headline displayed when no avatar is hovered.'],
             ['accentColor', 'Color used for the active word + tracker disc. Default `#EF2B2D` (red).'],
             ['thumbSize', 'Avatar size in px. Default 56.'],
-            ['fontFamily', 'Optional CSS font-family override for the headline.'],
+            ['fontClassName', 'Class for the headline — pass a display-font class (e.g. next/font). Defaults to the inherited font.'],
             ['className', 'Extra classes on the outer wrapper.'],
           ].map(([name, body]) => (
             <li

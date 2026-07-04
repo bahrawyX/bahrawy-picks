@@ -35,6 +35,12 @@ export interface ChatMessage {
 
 export interface AIChatProps {
   messages: ChatMessage[]
+  /** Header title. Default 'Assistant'. */
+  title?: React.ReactNode
+  /** Header status label (right side). Default 'online'. */
+  status?: React.ReactNode
+  /** Header icon shown before the title. Default a violet sparkle. */
+  avatar?: React.ReactNode
   /** Show a "Thinking…" 3-dot indicator at the bottom. */
   thinking?: boolean
   /** Type speed in chars/sec for streaming messages. Default 70. */
@@ -54,6 +60,9 @@ export interface AIChatProps {
 
 export function AIChat({
   messages,
+  title = 'Assistant',
+  status = 'online',
+  avatar,
   thinking = false,
   speed = 70,
   assistantAvatar,
@@ -92,13 +101,15 @@ export function AIChat({
       )}
     >
       <header className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
-        <Sparkles className="h-3.5 w-3.5 text-violet-300" strokeWidth={2.5} />
+        {avatar ?? (
+          <Sparkles className="h-3.5 w-3.5 text-violet-300" strokeWidth={2.5} />
+        )}
         <span className="font-display text-[11.5px] font-semibold tracking-tight text-white/85">
-          Assistant
+          {title}
         </span>
         <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/35">
           <span aria-hidden className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400" />
-          online
+          {status}
         </span>
       </header>
 

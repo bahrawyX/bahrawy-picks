@@ -12,8 +12,10 @@
  * Two ways to feed data:
  *  1. `data: HeatmapCell[]` — array of { date, value }. The component
  *     bins them into the grid by week / weekday.
- *  2. `weeks: number` (default 26) — if no data is supplied, a stable
- *     pseudo-random demo grid is rendered (same on every render).
+ *  2. `demo: true` — a stable pseudo-random demo grid is rendered for
+ *     the last `weeks` weeks (default 26; same on every render).
+ *
+ * With no `data` and no `demo` flag, an empty state is rendered.
  *
  * Footer row: weekday axis on the left, month markers along the top
  * (rendered automatically from the date range), and a "Less → More"
@@ -35,9 +37,11 @@ export interface HeatmapCell {
 }
 
 export interface HabitHeatmapProps {
-  /** Data points. If omitted, a stable demo grid is generated. */
+  /** Data points. Omit (with `demo` unset) to render an empty state. */
   data?: HeatmapCell[]
-  /** Number of weeks to render when no data is supplied. Default 26. */
+  /** Render a stable generated demo grid when no data is supplied. Default false. */
+  demo?: boolean
+  /** Number of weeks to render in demo mode. Default 26. */
   weeks?: number
   /** Show the month axis above the grid. Default true. */
   showMonths?: boolean
@@ -165,6 +169,7 @@ function intensityFor(value: number, max: number): number {
 
 export function HabitHeatmap({
   data,
+  demo = false,
   weeks = 26,
   showMonths = true,
   showWeekdays = true,
@@ -175,10 +180,10 @@ export function HabitHeatmap({
   onCellClick,
   className,
 }: HabitHeatmapProps) {
-  // Resolve data (use demo set if none provided).
+  // Resolve data (generate the demo set only when explicitly asked).
   const cells = React.useMemo(
-    () => data ?? generateDemoData(weeks),
-    [data, weeks],
+    () => data ?? (demo ? generateDemoData(weeks) : []),
+    [data, demo, weeks],
   )
   const { grid, firstDate } = React.useMemo(() => buildGrid(cells), [cells])
   const max = React.useMemo(
@@ -214,6 +219,35 @@ export function HabitHeatmap({
     if (level === 0) return 'rgba(255,255,255,0.05)'
     const stops = ['', '33', '66', 'aa', 'ee']
     return `${accentColor}${stops[level]}`
+  }
+
+  // Empty state — no data supplied and demo mode not requested.
+  if (cells.length === 0) {
+    return (
+      <div className={cn('w-full', className)}>
+        {(title || meta) && (
+          <div className="mb-4 flex flex-wrap items-baseline gap-3">
+            {title && (
+              <h3 className="text-sm font-semibold tracking-tight text-white">
+                {title}
+              </h3>
+            )}
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">
+              no activity
+              {meta && (
+                <>
+                  <span className="mx-1.5 text-white/20">·</span>
+                  {meta}
+                </>
+              )}
+            </p>
+          </div>
+        )}
+        <div className="flex h-28 items-center justify-center rounded-lg border border-dashed border-white/10 text-xs text-white/40">
+          No activity data
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -311,6 +345,11 @@ export function HabitHeatmap({
                       cell
                         ? `${cell.date} — ${cell.value} contribution${cell.value === 1 ? '' : 's'}`
                         : ''
+                    }
+                    aria-label={
+                      cell
+                        ? `${cell.date} — ${cell.value} contribution${cell.value === 1 ? '' : 's'}`
+                        : 'No data'
                     }
                     className={cn(
                       'aspect-square rounded-[3px] outline-none transition-colors',

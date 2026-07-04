@@ -254,6 +254,7 @@ export const TaskCard = React.memo<TaskCardProps>(
     const searchQuery = useTaskBoardStore((s) => s.searchQuery);
     const recentlyDuplicatedId = useTaskBoardStore((s) => s.recentlyDuplicatedId);
     const clearRecentlyDuplicated = useTaskBoardStore((s) => s.clearRecentlyDuplicated);
+    const duplicateTask = useTaskBoardStore((s) => s.duplicateTask);
     const justDuplicated = recentlyDuplicatedId === task.id;
 
     React.useEffect(() => {
@@ -345,7 +346,7 @@ export const TaskCard = React.memo<TaskCardProps>(
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
-                        useTaskBoardStore.getState().duplicateTask(task.id);
+                        duplicateTask(task.id);
                         toast.success('Task duplicated', { duration: 2500 });
                       }}
                     >

@@ -13,25 +13,16 @@
  * @param defaultLabel  — Headline shown when nothing is hovered.
  * @param accentColor   — Color used for the active word + tracker disc.
  * @param thumbSize     — Avatar size in px. Default 56.
+ * @param fontClassName — Class for the headline — pass a display-font class
+ *                        (e.g. from `next/font`) for the poster look.
  * @param className     — Extra classes for the outer wrapper.
  */
 
 import * as React from 'react'
-import { Anton } from 'next/font/google'
 import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePrefersReducedMotion } from '@/lib/use-prefers-reduced-motion'
-
-// ---------------------------------------------------------------------------
-// Font — tall + condensed = the poster look
-// ---------------------------------------------------------------------------
-
-const displayFont = Anton({
-  subsets: ['latin'],
-  weight: '400',
-  display: 'swap',
-})
 
 // ---------------------------------------------------------------------------
 // Types
@@ -48,6 +39,12 @@ export interface ImageSwapTextProps {
   defaultLabel: string
   accentColor?: string
   thumbSize?: number
+  /**
+   * Class applied to the headline — pass a display-font class
+   * (e.g. from `next/font`) for the poster look. Defaults to the
+   * inherited font.
+   */
+  fontClassName?: string
   className?: string
 }
 
@@ -90,6 +87,7 @@ export function ImageSwapText({
   defaultLabel,
   accentColor = '#EF2B2D',
   thumbSize = 56,
+  fontClassName = '',
   className,
 }: ImageSwapTextProps) {
   const [active, setActive] = React.useState<number | null>(null)
@@ -198,6 +196,7 @@ export function ImageSwapText({
             key={displayText}
             text={displayText}
             color={headlineColor}
+            fontClassName={fontClassName}
             reduced={reduced}
           />
         </AnimatePresence>
@@ -213,10 +212,11 @@ export function ImageSwapText({
 interface SwapHeadlineProps {
   text: string
   color: string
+  fontClassName: string
   reduced: boolean
 }
 
-function SwapHeadline({ text, color, reduced }: SwapHeadlineProps) {
+function SwapHeadline({ text, color, fontClassName, reduced }: SwapHeadlineProps) {
   // Split into individual characters so each can animate on its own.
   const letters = React.useMemo(() => Array.from(text), [text])
   const center = (letters.length - 1) / 2
@@ -228,7 +228,7 @@ function SwapHeadline({ text, color, reduced }: SwapHeadlineProps) {
       // -0.04em letter-spacing keeps the condensed look airtight.
       className={cn(
         'absolute inset-0 flex select-none items-center justify-center whitespace-nowrap text-center uppercase leading-[0.9]',
-        displayFont.className,
+        fontClassName,
       )}
       style={{
         color,

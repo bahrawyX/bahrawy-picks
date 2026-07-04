@@ -1,5 +1,6 @@
 'use client'
 
+import { Anton } from 'next/font/google'
 import { Github, Twitter } from 'lucide-react'
 import {
   FooterBrandMark,
@@ -7,6 +8,12 @@ import {
 } from '@/components/bahrawy/footer-brand-mark'
 import { CodeBlock } from '@/components/showcase/code-block'
 import { DocsPage, DocsSection } from '@/components/showcase/docs-page'
+
+const displayFont = Anton({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+})
 
 const COLUMNS: FooterBrandColumn[] = [
   {
@@ -62,6 +69,7 @@ export default function FooterBrandMarkDocs() {
           <FooterBrandMark
             brandMark="Bahrawy"
             markColor="#A78BFA"
+            fontClassName={displayFont.className}
             tagline="Beautifully crafted React components. Copy, paste, ship. 75 components and counting."
             columns={COLUMNS}
             copyright="© 2026 Bahrawy. MIT licensed."
@@ -92,6 +100,7 @@ export default function FooterBrandMarkDocs() {
             ['copyright', 'Bottom-row copyright text.'],
             ['bottomRight', 'Right-aligned bottom-row items.'],
             ['markColor', 'Color of the brand-mark text. Default #FFFFFF.'],
+            ['fontClassName', 'Class for the brand-mark text — pass a display-font class (e.g. next/font). Defaults to the inherited font.'],
             ['className', 'Extra classes on the footer.'],
           ].map(([n, b]) => (
             <li key={n} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">

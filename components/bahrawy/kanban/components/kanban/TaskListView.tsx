@@ -288,6 +288,7 @@ const TaskListRow: React.FC<{
   const hasSubtasks = subtasks.length > 0 && !isSubtask;
   const isDone = task.status === 'done';
   const recentlyDuplicatedId = useTaskBoardStore((s) => s.recentlyDuplicatedId);
+  const duplicateTask = useTaskBoardStore((s) => s.duplicateTask);
   const justDuplicated = recentlyDuplicatedId === task.id;
   const dueDate = useMemo(() => getDueDatePresentation(task.dueDate, task.status), [task.dueDate, task.status]);
 
@@ -410,7 +411,7 @@ const TaskListRow: React.FC<{
               <DropdownMenuItem onClick={() => onEdit(task)}>Edit</DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  useTaskBoardStore.getState().duplicateTask(task.id);
+                  duplicateTask(task.id);
                   toast.success('Task duplicated', { duration: 2500 });
                 }}
               >

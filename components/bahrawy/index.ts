@@ -114,11 +114,15 @@ export type { ShiningBorderProps } from './shining-border'
 
 export { Kanban } from './kanban'
 export type {
+  KanbanProps,
+  KanbanColumn,
+  KanbanCard,
+  KanbanSubtask,
+  KanbanCardMoveEvent,
   Task as KanbanTask,
   TaskStatus as KanbanTaskStatus,
   TaskPriority as KanbanTaskPriority,
   TaskDifficulty as KanbanTaskDifficulty,
-  Column as KanbanColumn,
   ColumnAccent as KanbanColumnAccent,
 } from './kanban'
 
