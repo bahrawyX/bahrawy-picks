@@ -17,6 +17,13 @@ export interface NominatimResult {
   }
 }
 
+/**
+ * Shape of a suggestion returned by an address search implementation.
+ * Alias of `NominatimResult` — custom `searchAddresses` implementations
+ * should map their provider's response to this shape.
+ */
+export type AddressSuggestion = NominatimResult
+
 export interface AddressData {
   street: string
   city: string
@@ -29,7 +36,15 @@ export interface AddressData {
 }
 
 /**
- * Search for addresses using Nominatim (OpenStreetMap)
+ * Search for addresses using Nominatim (OpenStreetMap).
+ *
+ * USAGE-POLICY RISK: this hits the public `nominatim.openstreetmap.org`
+ * instance, whose usage policy (https://operations.osmfoundation.org/policies/nominatim/)
+ * caps traffic at 1 request/second, requires an identifying User-Agent /
+ * Referer, and explicitly prohibits systematic autocomplete-style queries.
+ * It is fine for demos and low-volume internal tools, but for production
+ * autocomplete you should self-host Nominatim or plug in a commercial
+ * geocoder via the `searchAddresses` prop on `<AddressInput />`.
  */
 export async function searchAddress(
   query: string,

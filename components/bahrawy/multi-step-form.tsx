@@ -10,9 +10,14 @@
  * with directional animations (forward = slideLeft, backward = slideRight),
  * and persists all field values when navigating back (`shouldUnregister: false`).
  *
+ * Steps render inside a real `<form>`, so pressing Enter in a field advances
+ * to the next step (or submits on the last step) through the same validation
+ * path as the Next button.
+ *
  * @param steps - Ordered array of step definitions. Each step has a `title`,
- *   optional `description`, a `schema` (Zod) for per-step validation, and a
- *   `component` that renders form fields via `useFormContext()`.
+ *   optional `description`, a `schema` (Zod) for per-step validation, a
+ *   `component` that renders form fields via `useFormContext()`, and an
+ *   optional explicit `fields` list naming the fields the step owns.
  * @param onComplete - Async callback receiving the merged, fully-validated
  *   form data when the user submits the final step.
  * @param onStepChange - Optional callback fired with the new zero-based step
@@ -58,6 +63,12 @@ export interface MultiStepFormStep {
   description?: string
   schema: z.ZodType
   component: React.ComponentType
+  /**
+   * Explicit list of field names this step owns. Used to clear stale
+   * validation errors before re-validating the step. When omitted, only
+   * errors previously set by this component are cleared.
+   */
+  fields?: string[]
 }
 
 export interface MultiStepFormProps<T extends FieldValues> {
@@ -67,62 +78,6 @@ export interface MultiStepFormProps<T extends FieldValues> {
   submitLabel?: string
   defaultValues?: DefaultValues<T>
   className?: string
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                   */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Recursively extracts top-level field names from a Zod schema.
- *
- * Handles `ZodObject` directly, and unwraps `ZodEffects` (from `.refine()` /
- * `.transform()`), `ZodOptional`, `ZodNullable`, and `ZodDefault` wrappers
- * to reach the underlying object shape.
- *
- * Returns an empty array for non-object root schemas — the caller falls back
- * to full-schema validation in that case.
- */
-function getFieldsFromSchema(schema: z.ZodType): string[] {
-  const visited = new WeakSet<object>()
-
-  function walk(s: unknown): string[] {
-    if (!s || typeof s !== 'object' || visited.has(s)) return []
-    visited.add(s)
-
-    const node = s as {
-      shape?: Record<string, unknown> | (() => Record<string, unknown>)
-      _def?: {
-        shape?: Record<string, unknown> | (() => Record<string, unknown>)
-        schema?: unknown
-        innerType?: unknown
-        type?: unknown
-      }
-      def?: {
-        shape?: Record<string, unknown> | (() => Record<string, unknown>)
-        schema?: unknown
-        innerType?: unknown
-        type?: unknown
-      }
-    }
-
-    const def = node._def ?? node.def
-    const shape = node.shape ?? def?.shape
-
-    if (shape) {
-      const resolved = typeof shape === 'function' ? shape() : shape
-      return Object.keys(resolved)
-    }
-
-    // Unwrap wrappers: ZodEffects (.schema), ZodOptional/Nullable/Default
-    // (.innerType), and some v4 wrappers that expose via (.type).
-    const inner = def?.schema ?? def?.innerType ?? def?.type
-    if (inner) return walk(inner)
-
-    return []
-  }
-
-  return walk(schema)
 }
 
 /* -------------------------------------------------------------------------- */
@@ -148,6 +103,10 @@ export function MultiStepForm<T extends FieldValues>({
 
   const shakeControls = useAnimation()
 
+  // Error paths set by validateStep, per step index — tracked so they can be
+  // cleared on re-validation without introspecting Zod internals.
+  const setErrorPathsRef = React.useRef<Record<number, string[]>>({})
+
   const methods = useForm<T>({
     defaultValues,
     mode: 'onSubmit',
@@ -169,23 +128,32 @@ export function MultiStepForm<T extends FieldValues>({
       const values = methods.getValues()
       const result = steps[idx].schema.safeParse(values)
 
-      // Clear prior errors on this step's known fields.
-      const fields = getFieldsFromSchema(steps[idx].schema)
-      fields.forEach((f) => methods.clearErrors(f as Path<T>))
+      // Clear prior errors on this step: the explicit field list when
+      // provided, plus any paths set by a previous validation pass.
+      const known = new Set([
+        ...(steps[idx].fields ?? []),
+        ...(setErrorPathsRef.current[idx] ?? []),
+      ])
+      known.forEach((f) => methods.clearErrors(f as Path<T>))
 
       if (!result.success) {
+        const setPaths: string[] = []
         result.error.issues.forEach((issue) => {
           const path = issue.path.join('.')
           if (path) {
+            setPaths.push(path)
             methods.setError(path as Path<T>, {
               type: 'zod',
               message: issue.message,
             })
           }
         })
+        setErrorPathsRef.current[idx] = setPaths
         setStepErrors((prev) => ({ ...prev, [idx]: true }))
         return false
       }
+
+      setErrorPathsRef.current[idx] = []
 
       setStepErrors((prev) => {
         if (!prev[idx]) return prev
@@ -227,6 +195,17 @@ export function MultiStepForm<T extends FieldValues>({
     goTo(step - 1)
   }, [goTo, step])
 
+  // Native form submission (Enter in a field, or the submit button) advances
+  // through the same validation path as the Next button.
+  const handleFormSubmit = React.useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (submitting) return
+      void handleNext()
+    },
+    [handleNext, submitting]
+  )
+
   // Build stepper steps with error status overlay.
   const stepperSteps = React.useMemo(
     () =>
@@ -248,7 +227,11 @@ export function MultiStepForm<T extends FieldValues>({
 
   return (
     <FormProvider {...methods}>
-      <div className={cn('flex flex-col gap-8', className)}>
+      <form
+        noValidate
+        onSubmit={handleFormSubmit}
+        className={cn('flex flex-col gap-8', className)}
+      >
         {/* Progress stepper */}
         <Stepper
           steps={stepperSteps}
@@ -301,12 +284,7 @@ export function MultiStepForm<T extends FieldValues>({
             layout
           >
             <motion.div layout transition={springGentle}>
-              <Button
-                type="button"
-                onClick={handleNext}
-                disabled={submitting}
-                className="gap-2"
-              >
+              <Button type="submit" disabled={submitting} className="gap-2">
                 {submitting ? (
                   <>
                     <motion.span
@@ -333,7 +311,7 @@ export function MultiStepForm<T extends FieldValues>({
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </form>
     </FormProvider>
   )
 }

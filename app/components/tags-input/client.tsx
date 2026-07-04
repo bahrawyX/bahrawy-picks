@@ -174,6 +174,7 @@ export default function TagsInputDocs() {
             { name: 'validate', type: '(tag: string) => boolean | string', default: '—', description: 'Validation function — return true or error string' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the input' },
             { name: 'error', type: 'string', default: '—', description: 'Error message shown below' },
+            { name: 'name', type: 'string', default: '—', description: 'Hidden inputs for native forms — one per tag (pass e.g. "tags[]")' },
             { name: 'className', type: 'string', default: '—', description: 'Additional CSS classes' },
           ]}
         />

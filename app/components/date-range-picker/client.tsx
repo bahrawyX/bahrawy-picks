@@ -47,8 +47,18 @@ const [range, setRange] = useState<DateRange | undefined>()
   maxDate={new Date('2026-12-31')}
 />`
 
+const LABEL_SNIPPET = `<DateRangePicker
+  value={range}
+  onChange={setRange}
+  label="Billing period"
+  error={range?.from ? undefined : 'Select a billing period'}
+/>`
+
 export default function DateRangePickerDocs() {
   const [range, setRange] = useState<DateRange | undefined>(undefined)
+  const [labeledRange, setLabeledRange] = useState<DateRange | undefined>(
+    undefined,
+  )
   const [withCustomPresets, setWithCustomPresets] = useState(false)
   const [withBounds, setWithBounds] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -126,6 +136,22 @@ export default function DateRangePickerDocs() {
         </ControlsRow>
       </DocsSection>
 
+      <DocsSection title="With label & error">
+        <DemoCard className="min-h-[180px]">
+          <div className="w-full max-w-sm">
+            <DateRangePicker
+              value={labeledRange}
+              onChange={setLabeledRange}
+              label="Billing period"
+              error={
+                labeledRange?.from ? undefined : 'Select a billing period'
+              }
+            />
+          </div>
+        </DemoCard>
+        <CodeBlock code={LABEL_SNIPPET} language="tsx" />
+      </DocsSection>
+
       <DocsSection title="Usage">
         <CodeBlock code={SNIPPET} language="tsx" />
       </DocsSection>
@@ -142,6 +168,9 @@ export default function DateRangePickerDocs() {
             { name: 'placeholder', type: 'string', default: '"Select date range"', description: 'Trigger text when nothing is selected.' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the trigger.' },
             { name: 'align', type: '"start" | "center" | "end"', default: '"start"', description: 'Popover alignment.' },
+            { name: 'label', type: 'string', description: 'Label above the trigger, linked via htmlFor.' },
+            { name: 'error', type: 'string', description: 'Error message below the trigger (aria-describedby / aria-invalid).' },
+            { name: 'id', type: 'string', description: 'Trigger button id (auto-generated when omitted).' },
           ]}
         />
       </DocsSection>

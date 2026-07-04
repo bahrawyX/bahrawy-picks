@@ -139,6 +139,38 @@ function SaturationCanvas({
     dragging.current = false
   }, [])
 
+  // Arrow keys move the cursor by 1 (10 with Shift): left/right adjust
+  // saturation, up/down adjust brightness.
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const step = e.shiftKey ? 10 : 1
+      let ds = 0
+      let dv = 0
+      switch (e.key) {
+        case 'ArrowLeft':
+          ds = -step
+          break
+        case 'ArrowRight':
+          ds = step
+          break
+        case 'ArrowUp':
+          dv = step
+          break
+        case 'ArrowDown':
+          dv = -step
+          break
+        default:
+          return
+      }
+      e.preventDefault()
+      onChangeSV(
+        Math.max(0, Math.min(100, saturation + ds)),
+        Math.max(0, Math.min(100, brightness + dv)),
+      )
+    },
+    [saturation, brightness, onChangeSV],
+  )
+
   const hueColor = `hsl(${hue}, 100%, 50%)`
   const handleX = `${saturation}%`
   const handleY = `${100 - brightness}%`
@@ -146,13 +178,21 @@ function SaturationCanvas({
   return (
     <div
       ref={canvasRef}
-      className="relative h-40 w-full cursor-crosshair rounded-lg"
+      role="slider"
+      tabIndex={0}
+      aria-label="Saturation and brightness"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={saturation}
+      aria-valuetext={`Saturation ${saturation}%, brightness ${brightness}%`}
+      className="relative h-40 w-full cursor-crosshair rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-white/60"
       style={{
         background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ${hueColor})`,
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onKeyDown={handleKeyDown}
     >
       {/* Handle */}
       <motion.div
@@ -178,6 +218,8 @@ function HueSlider({ hue, onChange }: { hue: number; onChange: (h: number) => vo
         max={360}
         value={hue}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label="Hue"
+        aria-valuetext={`${Math.round(hue)} degrees`}
         className="color-slider w-full"
         style={{
           background: 'linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)',
@@ -208,6 +250,8 @@ function AlphaSlider({
         max={100}
         value={alpha}
         onChange={(e) => onChange(Number(e.target.value))}
+        aria-label="Alpha"
+        aria-valuetext={`${alpha}% opacity, ${color}`}
         className="color-slider w-full"
         style={{
           // Transparent → color ramp over a checkerboard.

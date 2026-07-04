@@ -126,18 +126,62 @@ export function DragToConfirm({
     window.setTimeout(() => setFlash(false), 320)
   }, [])
 
+  const confirm = React.useCallback(() => {
+    animate(x, maxX, SPRING_CONFIRM)
+    if (!isControlled) setConfirmed(true)
+    fireConfirmFlash()
+    onConfirm?.()
+  }, [x, maxX, isControlled, fireConfirmFlash, onConfirm])
+
   const handleEnd = () => {
     if (disabled || isConfirmed) return
     const pos = x.get()
     const reached = maxX > 0 && pos / maxX >= threshold
     if (reached) {
-      animate(x, maxX, SPRING_CONFIRM)
-      if (!isControlled) setConfirmed(true)
-      fireConfirmFlash()
-      onConfirm?.()
+      confirm()
     } else {
       animate(x, 0, SPRING_BACK)
       onCancel?.()
+    }
+  }
+
+  // Keyboard support — the knob is a focusable button: Enter / Space (or
+  // End) confirm immediately; ArrowRight walks the handle and confirms
+  // once it crosses the threshold; ArrowLeft / Home walk / snap it back.
+  const handleKnobKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled || isConfirmed || maxX <= 0) return
+    const step = Math.max(8, maxX / 10)
+    switch (e.key) {
+      case 'Enter':
+      case ' ':
+      case 'End':
+        e.preventDefault()
+        confirm()
+        break
+      case 'ArrowRight':
+      case 'ArrowUp': {
+        e.preventDefault()
+        const next = Math.min(maxX, x.get() + step)
+        if (next / maxX >= threshold) confirm()
+        else animate(x, next, APPLE_SPRING)
+        break
+      }
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        e.preventDefault()
+        animate(x, Math.max(0, x.get() - step), APPLE_SPRING)
+        break
+      case 'Home':
+        e.preventDefault()
+        animate(x, 0, SPRING_BACK)
+        break
+    }
+  }
+
+  // If focus leaves a partially-walked knob without confirming, spring home.
+  const handleKnobBlur = () => {
+    if (!disabled && !isConfirmed && x.get() > 0) {
+      animate(x, 0, SPRING_BACK)
     }
   }
 
@@ -200,8 +244,19 @@ export function DragToConfirm({
         </motion.span>
       )}
 
+      {/* Confirmation announcement for screen readers. */}
+      <span aria-live="polite" className="sr-only">
+        {isConfirmed ? confirmedLabel : ''}
+      </span>
+
       {/* Knob */}
       <motion.div
+        role="button"
+        tabIndex={disabled || isConfirmed ? -1 : 0}
+        aria-label={label}
+        aria-disabled={disabled || undefined}
+        onKeyDown={handleKnobKeyDown}
+        onBlur={handleKnobBlur}
         drag={!disabled && !isConfirmed && maxX > 0 ? 'x' : false}
         dragConstraints={{ left: 0, right: maxX }}
         dragElastic={{ left: 0, right: 0.04 }}
@@ -211,7 +266,7 @@ export function DragToConfirm({
         whileTap={{ scale: 0.96 }}
         transition={APPLE_SPRING}
         className={cn(
-          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-white',
+          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
           !disabled && !isConfirmed && 'cursor-grab active:cursor-grabbing',
           disabled && 'cursor-not-allowed',
         )}

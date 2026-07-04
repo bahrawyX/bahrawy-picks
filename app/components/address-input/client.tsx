@@ -114,9 +114,10 @@ export default function AddressInputDocs() {
       <DocsSection title="Props">
         <PropsTable
           props={[
-            { name: 'value', type: 'AddressData', default: '—', description: 'Controlled address data' },
+            { name: 'value', type: 'AddressData', default: '—', description: 'Controlled address data (populates the search box)' },
             { name: 'onChange', type: '(data: AddressData) => void', default: '—', description: 'Called on address change' },
             { name: 'defaultValue', type: 'AddressData', default: '—', description: 'Default address data' },
+            { name: 'searchAddresses', type: '(query, signal?) => Promise<AddressSuggestion[]>', default: 'Nominatim', description: 'Custom geocoding function; defaults to public OSM Nominatim (rate-limited)' },
             { name: 'mode', type: "'full' | 'split'", default: "'full'", description: 'Full search bar or split individual fields' },
             { name: 'showMap', type: 'boolean', default: 'false', description: 'Show OpenStreetMap preview after selection' },
             { name: 'enableGeolocation', type: 'boolean', default: 'true', description: 'Show geolocation button' },

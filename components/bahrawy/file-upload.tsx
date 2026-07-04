@@ -12,7 +12,11 @@
  * @param maxSize    — Maximum file size in bytes
  * @param maxFiles   — Maximum number of files allowed
  * @param multiple   — Allow multiple file selection
- * @param onUpload   — Async handler called per file; progress tracked automatically
+ * @param onUpload   — Async handler called per file. Call the provided
+ *                     `report(pct)` callback to drive the progress bar with
+ *                     real numbers (e.g. from XHR/fetch progress events);
+ *                     until the first report the bar is indeterminate.
+ *                     A rejected promise marks the file as failed.
  * @param onChange    — Called whenever the file list changes (for RHF integration)
  * @param onRemove   — Called when a file card is dismissed
  * @param disabled   — Disables all interaction
@@ -51,7 +55,8 @@ type FileStatus = 'uploading' | 'done' | 'error'
 interface TrackedFile {
   id: string
   file: File
-  progress: number
+  /** 0–100, or `null` while progress is unknown (indeterminate bar). */
+  progress: number | null
   status: FileStatus
   error?: string
 }
@@ -61,7 +66,7 @@ export interface FileUploadProps {
   maxSize?: number
   maxFiles?: number
   multiple?: boolean
-  onUpload?: (file: File) => Promise<void>
+  onUpload?: (file: File, report: (pct: number) => void) => Promise<void>
   onChange?: (files: File[]) => void
   onRemove?: (file: File) => void
   disabled?: boolean
@@ -140,7 +145,7 @@ export function FileUpload({
     async (incoming: File[]) => {
       if (disabled) return
 
-      // Validate MIME types
+      // Validate MIME types — reject only the invalid files, keep the rest
       const invalid = incoming.filter((f) => !matchesAccept(f, accept))
       if (invalid.length > 0) {
         setZoneError(true)
@@ -149,30 +154,40 @@ export function FileUpload({
           transition: { duration: 0.35 },
         })
         setTimeout(() => setZoneError(false), 1200)
-        return
       }
+      const valid = incoming.filter((f) => matchesAccept(f, accept))
+      if (valid.length === 0) return
 
       // Determine how many files we can accept
-      let toAdd = incoming
+      let toAdd = valid
       if (!multiple) {
-        toAdd = [incoming[0]]
+        toAdd = [valid[0]]
       } else if (maxFiles) {
         const remaining = maxFiles - files.length
-        toAdd = incoming.slice(0, Math.max(0, remaining))
+        toAdd = valid.slice(0, Math.max(0, remaining))
       }
       if (toAdd.length === 0) return
 
-      // Build tracked entries
+      // Build tracked entries. With an onUpload handler, progress starts
+      // indeterminate (null) until the handler reports a real number.
+      // Without one there is nothing to upload to — complete instantly
+      // rather than animating a fake progress bar.
       const entries: TrackedFile[] = toAdd.map((file) => {
         const overSize = maxSize !== undefined && file.size > maxSize
+        if (overSize) {
+          return {
+            id: uid(),
+            file,
+            progress: 100,
+            status: 'error' as const,
+            error: `File exceeds ${formatSize(maxSize)} limit`,
+          }
+        }
         return {
           id: uid(),
           file,
-          progress: overSize ? 100 : 0,
-          status: overSize ? ('error' as const) : ('uploading' as const),
-          error: overSize
-            ? `File exceeds ${formatSize(maxSize)} limit`
-            : undefined,
+          progress: onUpload ? null : 100,
+          status: onUpload ? ('uploading' as const) : ('done' as const),
         }
       })
 
@@ -180,62 +195,49 @@ export function FileUpload({
       setFiles(next)
       notifyChange(next)
 
+      if (!onUpload) return
+
       // Kick off uploads for valid files
       for (const entry of entries) {
-        if (entry.status === 'error') continue
+        if (entry.status !== 'uploading') continue
 
-        if (onUpload) {
-          try {
-            // Simulate progress ticks while upload runs
-            const interval = setInterval(() => {
-              setFiles((prev) =>
-                prev.map((f) =>
-                  f.id === entry.id && f.progress < 90
-                    ? { ...f, progress: f.progress + 10 }
-                    : f,
-                ),
-              )
-            }, 120)
+        // Real progress — driven by the handler's report() calls
+        const report = (pct: number) => {
+          const clamped = Math.max(0, Math.min(100, pct))
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === entry.id && f.status === 'uploading'
+                ? { ...f, progress: clamped }
+                : f,
+            ),
+          )
+        }
 
-            await onUpload(entry.file)
-            clearInterval(interval)
-
-            setFiles((prev) =>
-              prev.map((f) =>
-                f.id === entry.id
-                  ? { ...f, progress: 100, status: 'done' }
-                  : f,
-              ),
-            )
-          } catch {
-            setFiles((prev) =>
-              prev.map((f) =>
-                f.id === entry.id
-                  ? { ...f, progress: 100, status: 'error', error: 'Upload failed' }
-                  : f,
-              ),
-            )
-          }
-        } else {
-          // No upload handler — simulate instant completion
-          const simulate = async () => {
-            for (let p = 0; p <= 100; p += 20) {
-              await new Promise((r) => setTimeout(r, 60))
-              setFiles((prev) =>
-                prev.map((f) =>
-                  f.id === entry.id ? { ...f, progress: p } : f,
-                ),
-              )
-            }
-            setFiles((prev) =>
-              prev.map((f) =>
-                f.id === entry.id
-                  ? { ...f, progress: 100, status: 'done' }
-                  : f,
-              ),
-            )
-          }
-          simulate()
+        try {
+          await onUpload(entry.file, report)
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === entry.id
+                ? { ...f, progress: 100, status: 'done' }
+                : f,
+            ),
+          )
+        } catch (err) {
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === entry.id
+                ? {
+                    ...f,
+                    progress: 100,
+                    status: 'error',
+                    error:
+                      err instanceof Error && err.message
+                        ? err.message
+                        : 'Upload failed',
+                  }
+                : f,
+            ),
+          )
         }
       }
     },
@@ -488,12 +490,26 @@ function FileCard({
         {/* Progress bar (only while uploading) */}
         {tracked.status === 'uploading' && (
           <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
-            <motion.div
-              className="h-full rounded-full bg-emerald-500"
-              initial={{ width: '0%' }}
-              animate={{ width: `${tracked.progress}%` }}
-              transition={springGentle}
-            />
+            {tracked.progress === null ? (
+              /* Indeterminate — no real progress reported (yet) */
+              <motion.div
+                className="h-full w-1/3 rounded-full bg-emerald-500"
+                initial={{ x: '-100%' }}
+                animate={{ x: '300%' }}
+                transition={{
+                  duration: 1.2,
+                  ease: 'easeInOut',
+                  repeat: Infinity,
+                }}
+              />
+            ) : (
+              <motion.div
+                className="h-full rounded-full bg-emerald-500"
+                initial={{ width: '0%' }}
+                animate={{ width: `${tracked.progress}%` }}
+                transition={springGentle}
+              />
+            )}
           </div>
         )}
       </div>

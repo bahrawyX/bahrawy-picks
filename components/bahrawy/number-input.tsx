@@ -20,9 +20,12 @@
  * | suffix      | string                            | —       | Trailing symbol rendered inside the input (e.g. "kg").      |
  * | locale      | string                            | 'en-US' | `Intl.NumberFormat` locale used for blur formatting.        |
  * | disabled    | boolean                           | false   | Disables all interaction.                                   |
- * | error       | boolean                           | false   | Renders error styling and triggers a shake animation.       |
+ * | error       | boolean \| string                  | false   | Error styling + shake. A string is also rendered below.     |
  * | placeholder | string                            | —       | Placeholder text shown when value is null.                  |
+ * | name        | string                            | —       | Forwarded to the underlying `<input>` for form posts.       |
  * | id          | string                            | —       | Forwarded to the underlying `<input>` for label `htmlFor`.  |
+ * | label       | string                            | —       | Renders a `<label>` wired to the input.                     |
+ * | autoComplete | string                           | —       | Forwarded to the underlying `<input>`.                      |
  * | className   | string                            | —       | Additional class names for the outer wrapper.               |
  */
 
@@ -47,9 +50,12 @@ export interface NumberInputProps {
   suffix?: string
   locale?: string
   disabled?: boolean
-  error?: boolean
+  error?: boolean | string
   placeholder?: string
+  name?: string
   id?: string
+  label?: string
+  autoComplete?: string
   className?: string
 }
 
@@ -86,12 +92,20 @@ export function NumberInput({
   disabled = false,
   error = false,
   placeholder,
+  name,
   id,
+  label,
+  autoComplete,
   className,
 }: NumberInputProps) {
   const [raw, setRaw] = React.useState<string>(() =>
     value === null ? '' : String(value)
   )
+  const generatedId = React.useId()
+  const inputId = id ?? generatedId
+  const errorId = `${inputId}-error`
+  const hasError = !!error
+  const errorMessage = typeof error === 'string' ? error : null
   const [focused, setFocused] = React.useState(false)
   const longPressTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
   const longPressInterval = React.useRef<ReturnType<typeof setInterval> | null>(null)
@@ -224,9 +238,19 @@ export function NumberInput({
   /* ------------------------------- JSX -------------------------------- */
 
   return (
+    <>
+    {label && (
+      <label
+        htmlFor={inputId}
+        className="mb-1.5 block text-sm font-medium text-zinc-300"
+      >
+        {label}
+      </label>
+    )}
+
     <motion.div
       animate={
-        error
+        hasError
           ? { x: [0, -4, 4, -4, 4, 0] }
           : { x: 0 }
       }
@@ -234,7 +258,7 @@ export function NumberInput({
       className={cn(
         'group relative inline-flex h-10 w-full items-stretch rounded-lg border border-zinc-800 bg-transparent text-sm text-white transition-colors',
         'focus-within:ring-1 focus-within:ring-zinc-600',
-        error && 'border-rose-500/60 ring-1 ring-rose-500/30',
+        hasError && 'border-rose-500/60 ring-1 ring-rose-500/30',
         disabled && 'cursor-not-allowed opacity-50',
         className
       )}
@@ -277,8 +301,16 @@ export function NumberInput({
 
         <div className="relative flex-1">
           <Input
-            id={id}
+            id={inputId}
+            name={name}
+            autoComplete={autoComplete}
             inputMode="decimal"
+            role="spinbutton"
+            aria-valuemin={Number.isFinite(min) ? min : undefined}
+            aria-valuemax={Number.isFinite(max) ? max : undefined}
+            aria-valuenow={value ?? undefined}
+            aria-invalid={hasError || undefined}
+            aria-describedby={errorMessage ? errorId : undefined}
             value={raw}
             placeholder={placeholder}
             disabled={disabled}
@@ -354,5 +386,12 @@ export function NumberInput({
         <Plus className="h-3.5 w-3.5" />
       </MotionButton>
     </motion.div>
+
+    {errorMessage && (
+      <p id={errorId} className="mt-1.5 text-sm text-rose-400">
+        {errorMessage}
+      </p>
+    )}
+    </>
   )
 }

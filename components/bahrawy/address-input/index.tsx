@@ -4,6 +4,7 @@ import {
   type KeyboardEvent,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react'
@@ -13,6 +14,7 @@ import { cn } from '@/lib/utils'
 import { springSnappy, tweenSmooth } from '@/lib/motion'
 import {
   type AddressData,
+  type AddressSuggestion,
   type NominatimResult,
   searchAddress,
   reverseGeocode,
@@ -21,6 +23,8 @@ import {
 import { AddressDropdown } from './address-dropdown'
 import { SplitFields } from './split-fields'
 import { MapPreview } from './map-preview'
+
+export type { AddressData, AddressSuggestion, NominatimResult } from './nominatim-utils'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -32,6 +36,16 @@ export interface AddressInputProps {
   value?: AddressData
   onChange?: (data: AddressData) => void
   defaultValue?: AddressData
+  /**
+   * Custom geocoding function for the autocomplete. Defaults to the public
+   * OpenStreetMap Nominatim endpoint — see the `searchAddress` docstring in
+   * `nominatim-utils.ts` for its usage-policy limits before shipping the
+   * default to production.
+   */
+  searchAddresses?: (
+    query: string,
+    signal?: AbortSignal,
+  ) => Promise<AddressSuggestion[]>
   mode?: AddressMode
   showMap?: boolean
   enableGeolocation?: boolean
@@ -49,6 +63,17 @@ const EMPTY_ADDRESS: AddressData = {
   country: '',
 }
 
+/** Human-readable single-line representation of an address value. */
+function formatAddress(data: AddressData | undefined | null): string {
+  if (!data) return ''
+  return (
+    data.formatted ??
+    [data.street, data.city, data.state, data.zip, data.country]
+      .filter(Boolean)
+      .join(', ')
+  )
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -57,6 +82,7 @@ export function AddressInput({
   value: controlledValue,
   onChange,
   defaultValue,
+  searchAddresses,
   mode = 'full',
   showMap = false,
   enableGeolocation = true,
@@ -71,7 +97,9 @@ export function AddressInput({
   )
   const addressData = isControlled ? controlledValue : internalValue
 
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() =>
+    formatAddress(controlledValue ?? defaultValue),
+  )
   const [results, setResults] = useState<NominatimResult[]>([])
   const [loading, setLoading] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -83,39 +111,60 @@ export function AddressInput({
   const containerRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const composingRef = useRef(false)
+  // Last value emitted from inside this component — lets us tell external
+  // controlled-value changes (which should populate the search box) apart
+  // from our own onChange round-trips (which should not clobber typing).
+  const lastEmittedRef = useRef<AddressData | null>(null)
+
+  const baseId = useId()
+  const listboxId = `${baseId}-listbox`
+  const optionId = (index: number) => `${baseId}-option-${index}`
 
   // ---- Value management ----
 
   const updateValue = useCallback(
     (newVal: AddressData) => {
+      lastEmittedRef.current = newVal
       if (!isControlled) setInternalValue(newVal)
       onChange?.(newVal)
     },
     [isControlled, onChange],
   )
 
+  // Populate the search box when the controlled value changes externally.
+  useEffect(() => {
+    if (!isControlled) return
+    if (controlledValue === lastEmittedRef.current) return
+    setSearchQuery(formatAddress(controlledValue))
+  }, [isControlled, controlledValue])
+
   // ---- Search ----
 
-  const doSearch = useCallback(async (query: string) => {
-    // Cancel previous
-    abortRef.current?.abort()
-    const controller = new AbortController()
-    abortRef.current = controller
+  const doSearch = useCallback(
+    async (query: string) => {
+      // Cancel previous
+      abortRef.current?.abort()
+      const controller = new AbortController()
+      abortRef.current = controller
 
-    setLoading(true)
-    try {
-      const results = await searchAddress(query, controller.signal)
-      setResults(results)
-      setSelectedIndex(0)
-      setShowDropdown(true)
-    } catch (e) {
-      if (!(e instanceof DOMException && e.name === 'AbortError')) {
-        setResults([])
+      setLoading(true)
+      try {
+        const search = searchAddresses ?? searchAddress
+        const results = await search(query, controller.signal)
+        setResults(results)
+        setSelectedIndex(0)
+        setShowDropdown(true)
+      } catch (e) {
+        if (!(e instanceof DOMException && e.name === 'AbortError')) {
+          setResults([])
+        }
+      } finally {
+        setLoading(false)
       }
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    },
+    [searchAddresses],
+  )
 
   const handleSearchChange = useCallback(
     (val: string) => {
@@ -176,6 +225,9 @@ export function AddressInput({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
+      // Ignore keys while an IME composition session is active — Enter there
+      // confirms the composition, not a suggestion selection.
+      if (composingRef.current || e.nativeEvent.isComposing) return
       if (!showDropdown || results.length === 0) return
 
       if (e.key === 'ArrowDown') {
@@ -246,10 +298,26 @@ export function AddressInput({
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            onCompositionStart={() => {
+              composingRef.current = true
+            }}
+            onCompositionEnd={() => {
+              composingRef.current = false
+            }}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             disabled={disabled}
             placeholder={placeholder}
+            role="combobox"
+            aria-expanded={showDropdown && results.length > 0}
+            aria-controls={listboxId}
+            aria-autocomplete="list"
+            aria-activedescendant={
+              showDropdown && results.length > 0
+                ? optionId(selectedIndex)
+                : undefined
+            }
+            autoComplete="off"
             className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/25"
           />
 
@@ -274,6 +342,8 @@ export function AddressInput({
         <AnimatePresence>
           {showDropdown && (results.length > 0 || loading) && (
             <AddressDropdown
+              id={listboxId}
+              getOptionId={optionId}
               results={results}
               loading={loading}
               selectedIndex={selectedIndex}

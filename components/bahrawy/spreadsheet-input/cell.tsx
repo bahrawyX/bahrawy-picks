@@ -16,6 +16,11 @@ interface CellProps {
   isEditing: boolean
   isError: boolean
   displayValue: string
+  /**
+   * Initial editor content when entering edit mode (used by type-to-edit to
+   * seed the typed character). Null seeds from the cell's current value.
+   */
+  editSeed?: string | null
   onSelect: (e: React.MouseEvent) => void
   onDoubleClick: () => void
   onValueChange: (value: unknown) => void
@@ -33,6 +38,7 @@ export function Cell({
   isEditing,
   isError,
   displayValue,
+  editSeed = null,
   onSelect,
   onDoubleClick,
   onValueChange,
@@ -45,10 +51,10 @@ export function Cell({
 
   useEffect(() => {
     if (isEditing) {
-      setEditValue(value == null ? '' : String(value))
+      setEditValue(editSeed ?? (value == null ? '' : String(value)))
       setTimeout(() => inputRef.current?.focus(), 0)
     }
-  }, [isEditing, value])
+  }, [isEditing, value, editSeed])
 
   const handleEditKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -81,6 +87,7 @@ export function Cell({
         style={{ width, height: rowHeight }}
         onClick={onSelect}
         role="gridcell"
+        aria-selected={isSelected}
       >
         <Checkbox
           checked={!!value}
@@ -101,6 +108,7 @@ export function Cell({
         )}
         style={{ width, height: rowHeight }}
         role="gridcell"
+        aria-selected={isSelected}
       >
         <motion.select
           initial={{ scale: 1.02 }}
@@ -136,6 +144,7 @@ export function Cell({
         className="flex flex-shrink-0 items-center border-b border-r border-blue-500/30 bg-blue-500/5"
         style={{ width, height: rowHeight }}
         role="gridcell"
+        aria-selected={isSelected}
       >
         <motion.input
           ref={inputRef}
@@ -179,6 +188,7 @@ export function Cell({
       onClick={onSelect}
       onDoubleClick={onDoubleClick}
       role="gridcell"
+      aria-selected={isSelected}
     >
       <span className="truncate">{displayValue}</span>
     </div>

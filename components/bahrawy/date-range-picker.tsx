@@ -17,6 +17,10 @@
  * @param placeholder - Trigger text when nothing is selected. Defaults to "Select date range".
  * @param disabled - Disables the trigger button.
  * @param align - Popover alignment relative to trigger (`'start' | 'center' | 'end'`).
+ * @param label - Visible label rendered above the trigger, linked via htmlFor.
+ * @param error - Error message rendered below the trigger and wired to it
+ *   via aria-describedby / aria-invalid.
+ * @param id - HTML id for the trigger button (auto-generated when omitted).
  * @param className - Additional class names applied to the trigger button.
  */
 
@@ -69,6 +73,12 @@ export interface DateRangePickerProps {
   placeholder?: string
   disabled?: boolean
   align?: 'start' | 'center' | 'end'
+  /** Visible label rendered above the trigger button, linked via htmlFor. */
+  label?: string
+  /** Error message rendered below the trigger (aria-describedby/aria-invalid). */
+  error?: string
+  /** HTML id for the trigger button (auto-generated when omitted). */
+  id?: string
   className?: string
 }
 
@@ -128,9 +138,16 @@ export function DateRangePicker({
   placeholder = 'Select date range',
   disabled = false,
   align = 'start',
+  label,
+  error,
+  id,
   className,
 }: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
+
+  const autoId = React.useId()
+  const triggerId = id ?? `date-range-picker-${autoId}`
+  const errorId = error ? `${triggerId}-error` : undefined
 
   // `mounted` keeps SSR and the first client render aligned (both render the
   // desktop Popover). After hydration we read the media query and may swap to
@@ -169,10 +186,14 @@ export function DateRangePicker({
   const TriggerButton = (
     <Button
       variant="outline"
+      id={triggerId}
       disabled={disabled}
+      aria-invalid={error ? true : undefined}
+      aria-describedby={errorId}
       className={cn(
         'w-full max-w-sm justify-start gap-2 text-left font-normal',
         !hasSelection && 'text-zinc-400',
+        error && 'border-rose-500/60',
         className
       )}
     >
@@ -220,10 +241,10 @@ export function DateRangePicker({
     </div>
   )
 
-  /* ---- Mobile: Drawer -------------------------------------------- */
+  /* ---- Picker (Drawer on mobile, Popover on desktop) --------------- */
 
-  if (mounted && isMobile) {
-    return (
+  const Picker =
+    mounted && isMobile ? (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>{TriggerButton}</DrawerTrigger>
         <DrawerContent>
@@ -233,17 +254,34 @@ export function DateRangePicker({
           <div className="px-4 pb-6">{Body}</div>
         </DrawerContent>
       </Drawer>
+    ) : (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>{TriggerButton}</PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align={align}>
+          {Body}
+        </PopoverContent>
+      </Popover>
     )
-  }
 
-  /* ---- Desktop: Popover ------------------------------------------ */
+  // Without label/error the picker renders bare, exactly as before.
+  if (!label && !error) return Picker
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>{TriggerButton}</PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align={align}>
-        {Body}
-      </PopoverContent>
-    </Popover>
+    <div className="w-full">
+      {label && (
+        <label
+          htmlFor={triggerId}
+          className="mb-1.5 block text-sm font-medium text-white/70"
+        >
+          {label}
+        </label>
+      )}
+      {Picker}
+      {error && (
+        <p id={errorId} className="mt-1.5 text-sm text-rose-400">
+          {error}
+        </p>
+      )}
+    </div>
   )
 }

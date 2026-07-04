@@ -6,6 +6,7 @@ import {
   type ClipboardEvent,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react'
@@ -20,6 +21,10 @@ import { springSnappy, tweenSmooth } from '@/lib/motion'
 
 export interface PinInputProps {
   length?: number
+  /** Form field name — forwarded to the real (invisible) input so it posts in native forms. */
+  name?: string
+  /** Forwarded to the real input for `<label htmlFor>` wiring. */
+  id?: string
   value?: string
   onChange?: (value: string) => void
   onComplete?: (value: string) => void
@@ -50,6 +55,8 @@ const sizeMap = {
 
 export function PinInput({
   length = 4,
+  name,
+  id,
   value: controlledValue,
   onChange,
   onComplete,
@@ -74,6 +81,8 @@ export function PinInput({
 
   const sizeStyle = sizeMap[size]
   const hasError = !!error
+  const errorId = useId()
+  const hasErrorMessage = typeof error === 'string' && !!error
 
   // Build fixed-length digits array for rendering
   const digits: string[] = []
@@ -169,6 +178,8 @@ export function PinInput({
           <input
             ref={inputRef}
             type="text"
+            name={name}
+            id={id}
             inputMode="numeric"
             autoComplete="one-time-code"
             pattern="[0-9]*"
@@ -182,6 +193,8 @@ export function PinInput({
             disabled={disabled}
             className="absolute inset-0 z-10 cursor-pointer bg-transparent text-transparent caret-transparent outline-none selection:bg-transparent"
             aria-label="PIN input"
+            aria-invalid={hasError || undefined}
+            aria-describedby={hasErrorMessage ? errorId : undefined}
           />
           {digits.map((digit, i) => {
             const isFocused = focused && i === activeIndex
@@ -245,6 +258,7 @@ export function PinInput({
       <AnimatePresence>
         {typeof error === 'string' && error && (
           <motion.p
+            id={errorId}
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}

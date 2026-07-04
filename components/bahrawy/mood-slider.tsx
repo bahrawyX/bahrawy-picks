@@ -106,9 +106,16 @@ export function MoodSlider({
     setValue((clientX - r.left) / r.width)
   }
 
+  // Latest-handler ref so the drag listeners (bound once per drag) never
+  // call a stale closure — `onChange` / `steps` may change mid-drag.
+  const setFromPointerRef = React.useRef(setFromPointer)
+  React.useEffect(() => {
+    setFromPointerRef.current = setFromPointer
+  })
+
   React.useEffect(() => {
     if (!dragging) return
-    const onMove = (e: PointerEvent) => setFromPointer(e.clientX)
+    const onMove = (e: PointerEvent) => setFromPointerRef.current(e.clientX)
     const onUp = () => setDragging(false)
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
@@ -118,7 +125,6 @@ export function MoodSlider({
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging])
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -209,6 +215,7 @@ export function MoodSlider({
           aria-valuemin={0}
           aria-valuemax={1}
           aria-valuenow={value}
+          aria-valuetext={`${Math.round(value * 100)}% — ${moodWord}`}
           className="relative flex h-5 w-full cursor-grab items-center outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           onKeyDown={(e) => {
             const segs = Math.max(2, steps) - 1

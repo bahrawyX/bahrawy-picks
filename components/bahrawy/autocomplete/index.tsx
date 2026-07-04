@@ -144,12 +144,21 @@ export function Autocomplete({
   const instanceId = useId()
   const triggerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  // IME guard — Enter during a composition session confirms the
+  // composition, not a selection (same pattern as mention-input).
+  const composingRef = useRef(false)
 
   // ---- State ----
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [asyncResults, setAsyncResults] = useState<Option[]>([])
+  // cmdk's highlighted option value (controlled so we can expose it as
+  // aria-activedescendant).
+  const [highlighted, setHighlighted] = useState('')
+  const [activeDescendant, setActiveDescendant] = useState<string>()
+  const [listboxId, setListboxId] = useState<string>()
   const [internalValue, setInternalValue] = useState<string[]>(
     normalise(defaultValue)
   )
@@ -286,9 +295,31 @@ export function Autocomplete({
     [selected, setSelected]
   )
 
-  // ---- Backspace removes last chip ----
+  // ---- ARIA plumbing ----
+  // cmdk generates its own ids for the listbox and the highlighted
+  // option, so read them from the DOM after each highlight change.
+  useEffect(() => {
+    if (!open) {
+      setActiveDescendant(undefined)
+      setListboxId(undefined)
+      return
+    }
+    const list = listRef.current
+    setListboxId(list?.id || `${instanceId}-list`)
+    const active = list?.querySelector('[cmdk-item][aria-selected="true"]')
+    setActiveDescendant(active?.id || undefined)
+  }, [open, highlighted, displayOptions, showCreate, instanceId])
+
+  // ---- Input keydown ----
+  // ArrowUp / ArrowDown / Enter bubble up to the cmdk root (the whole
+  // widget is wrapped in <Command>), which moves the highlight and
+  // selects the highlighted option — including the inline multi input.
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (composingRef.current || e.nativeEvent.isComposing) {
+        e.stopPropagation()
+        return
+      }
       if (
         e.key === 'Backspace' &&
         !search &&
@@ -298,10 +329,22 @@ export function Autocomplete({
         setSelected(selected.slice(0, -1))
       }
       if (e.key === 'Escape') {
+        e.preventDefault()
         setOpen(false)
+        return
+      }
+      if (!open && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter')) {
+        e.preventDefault()
+        e.stopPropagation()
+        setOpen(true)
+        return
+      }
+      // Keep Home / End editing the text instead of jumping the list.
+      if ((e.key === 'Home' || e.key === 'End') && search) {
+        e.stopPropagation()
       }
     },
-    [search, multiple, selected, setSelected]
+    [search, multiple, selected, setSelected, open]
   )
 
   // ---- Popover open/close ----
@@ -316,6 +359,24 @@ export function Autocomplete({
       }
     },
     [multiple]
+  )
+
+  // ---- Trigger keydown (single-select trigger is a div, not a button) ----
+  const handleTriggerKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget || open) return
+      if (
+        e.key === 'Enter' ||
+        e.key === ' ' ||
+        e.key === 'ArrowDown' ||
+        e.key === 'ArrowUp'
+      ) {
+        e.preventDefault()
+        e.stopPropagation()
+        handleOpenChange(true)
+      }
+    },
+    [open, handleOpenChange]
   )
 
   // ---- Resolve selected labels ----
@@ -344,14 +405,25 @@ export function Autocomplete({
 
   return (
     <div className={cn('relative', className)}>
+      {/* The cmdk root wraps the whole widget so keydown events from the
+          inline multi-select input also reach cmdk's list navigation. */}
+      <Command
+        shouldFilter={!onSearch}
+        value={highlighted}
+        onValueChange={setHighlighted}
+        className="overflow-visible bg-transparent"
+      >
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild disabled={disabled}>
           <div
             ref={triggerRef}
-            role="combobox"
-            tabIndex={0}
-            aria-expanded={open}
-            aria-controls={`${instanceId}-list`}
+            role={multiple ? undefined : 'combobox'}
+            tabIndex={multiple ? -1 : 0}
+            aria-expanded={multiple ? undefined : open}
+            aria-controls={multiple ? undefined : (listboxId ?? `${instanceId}-list`)}
+            aria-haspopup={multiple ? undefined : 'listbox'}
+            aria-activedescendant={multiple ? undefined : activeDescendant}
+            onKeyDown={multiple ? undefined : handleTriggerKeyDown}
             className={cn(
               'flex w-full min-h-[40px] cursor-pointer items-center rounded-lg border bg-white/[0.03] px-3 text-sm text-white/80 outline-none transition-colors',
               'hover:bg-white/[0.05] focus:border-white/20 focus:bg-white/[0.05]',
@@ -381,9 +453,24 @@ export function Autocomplete({
             {multiple ? (
               <input
                 ref={inputRef}
+                role="combobox"
+                aria-expanded={open}
+                aria-controls={listboxId ?? `${instanceId}-list`}
+                aria-haspopup="listbox"
+                aria-activedescendant={activeDescendant}
+                aria-autocomplete="list"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  if (!open) setOpen(true)
+                }}
                 onKeyDown={handleKeyDown}
+                onCompositionStart={() => {
+                  composingRef.current = true
+                }}
+                onCompositionEnd={() => {
+                  composingRef.current = false
+                }}
                 placeholder={hasSelection ? '' : placeholder}
                 disabled={disabled}
                 className="min-w-[60px] flex-1 bg-transparent text-sm text-white/80 outline-none placeholder:text-white/25"
@@ -439,22 +526,33 @@ export function Autocomplete({
             inputRef.current?.focus()
           }}
         >
-          <Command shouldFilter={!onSearch}>
-            {/* Search input — single select shows it in popover, multi shows inline */}
-            {!multiple && (
-              <div className="flex items-center border-b border-white/[0.06] px-3">
-                <input
-                  ref={inputRef}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={searchPlaceholder ?? 'Search...'}
-                  className="flex h-10 w-full bg-transparent py-3 text-sm text-white/80 outline-none placeholder:text-white/25"
-                />
-              </div>
-            )}
+          {/* Search input — single select shows it in popover, multi shows inline */}
+          {!multiple && (
+            <div className="flex items-center border-b border-white/[0.06] px-3">
+              <input
+                ref={inputRef}
+                role="combobox"
+                aria-expanded={open}
+                aria-controls={listboxId ?? `${instanceId}-list`}
+                aria-haspopup="listbox"
+                aria-activedescendant={activeDescendant}
+                aria-autocomplete="list"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onCompositionStart={() => {
+                  composingRef.current = true
+                }}
+                onCompositionEnd={() => {
+                  composingRef.current = false
+                }}
+                placeholder={searchPlaceholder ?? 'Search...'}
+                className="flex h-10 w-full bg-transparent py-3 text-sm text-white/80 outline-none placeholder:text-white/25"
+              />
+            </div>
+          )}
 
-            <CommandList>
+          <CommandList ref={listRef}>
               {/* Max items message */}
               {atLimit && (
                 <div className="py-3 text-center text-xs text-white/35">
@@ -519,9 +617,9 @@ export function Autocomplete({
                 </>
               )}
             </CommandList>
-          </Command>
         </PopoverContent>
       </Popover>
+      </Command>
 
       {/* Hidden input for forms */}
       {name && (

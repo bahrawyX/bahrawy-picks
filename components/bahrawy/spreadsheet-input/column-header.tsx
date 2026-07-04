@@ -70,6 +70,10 @@ export function ColumnHeader({
       style={{ width }}
       onClick={onSelect}
       onContextMenu={onContextMenu}
+      role="columnheader"
+      aria-sort={
+        sortDir ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined
+      }
     >
       <span className="truncate">{column.header}</span>
       {sortDir && (

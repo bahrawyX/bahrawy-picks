@@ -10,6 +10,7 @@
  * @param defaultChecked — Initial state for uncontrolled mode.
  * @param onChange       — Called with the new checked value.
  * @param label          — Optional label rendered to the right of the switch.
+ * @param name           — Form field name. Posts "on" via a hidden checkbox when checked.
  * @param size           — 'sm' | 'md' | 'lg'. Default 'md'.
  * @param accentColor    — Background color when on. Default #FFFFFF.
  * @param disabled       — Disable interaction.
@@ -24,6 +25,8 @@ export interface SwitchProps {
   checked?: boolean
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
+  /** Form field name — posts via a hidden checkbox so it works in native forms. */
+  name?: string
   label?: React.ReactNode
   size?: 'sm' | 'md' | 'lg'
   accentColor?: string
@@ -43,6 +46,7 @@ export function Switch({
   checked,
   defaultChecked = false,
   onChange,
+  name,
   label,
   size = 'md',
   accentColor = '#FFFFFF',
@@ -97,6 +101,19 @@ export function Switch({
           className="absolute rounded-full shadow-md"
         />
       </button>
+      {/* Hidden checkbox so the switch posts in native forms */}
+      {name && (
+        <input
+          type="checkbox"
+          name={name}
+          checked={isOn}
+          onChange={() => {}}
+          disabled={disabled}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="sr-only"
+        />
+      )}
       {label && <span className="text-sm text-white/80">{label}</span>}
     </label>
   )

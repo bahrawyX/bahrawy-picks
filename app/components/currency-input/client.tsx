@@ -30,7 +30,7 @@ const LIMITED_SNIPPET = `<CurrencyInput
 />`
 
 export default function CurrencyInputDocs() {
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState<number | null>(null)
   const [currency, setCurrency] = useState('USD')
 
   return (
@@ -49,7 +49,7 @@ export default function CurrencyInputDocs() {
               onChange={(v, c) => { setValue(v); setCurrency(c) }}
               onCurrencyChange={setCurrency}
             />
-            {value > 0 && (
+            {value !== null && value > 0 && (
               <p className="mt-2 text-xs text-white/30">
                 Value: {value} {currency}
               </p>
@@ -122,8 +122,8 @@ export default function CurrencyInputDocs() {
       <DocsSection title="Props">
         <PropsTable
           props={[
-            { name: 'value', type: 'number', default: '—', description: 'Controlled numeric value' },
-            { name: 'onChange', type: '(value: number, currency: string) => void', default: '—', description: 'Called on value or currency change' },
+            { name: 'value', type: 'number | null', default: '—', description: 'Controlled numeric value (null = empty input)' },
+            { name: 'onChange', type: '(value: number | null, currency: string) => void', default: '—', description: 'Called on value or currency change' },
             { name: 'defaultValue', type: 'number', default: '—', description: 'Default numeric value' },
             { name: 'currency', type: 'string', default: '—', description: 'Controlled currency code (e.g. "USD")' },
             { name: 'defaultCurrency', type: 'string', default: "'USD'", description: 'Default currency code' },
@@ -136,6 +136,9 @@ export default function CurrencyInputDocs() {
             { name: 'placeholder', type: 'string', default: "'0.00'", description: 'Input placeholder text' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the input' },
             { name: 'error', type: 'string', default: '—', description: 'Error message' },
+            { name: 'name', type: 'string', default: '—', description: 'Form field name for the underlying input' },
+            { name: 'id', type: 'string', default: '—', description: 'Id for the underlying input' },
+            { name: 'label', type: 'string', default: '—', description: 'Label rendered above the input' },
             { name: 'className', type: 'string', default: '—', description: 'Additional CSS classes' },
           ]}
         />

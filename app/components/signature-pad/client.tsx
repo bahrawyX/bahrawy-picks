@@ -104,6 +104,9 @@ export default function SignaturePadDocs() {
         <PropsTable
           props={[
             { name: 'onSignature', type: '(result: SignatureResult) => void', default: '—', description: 'Called with blob, base64, and optional SVG on export' },
+            { name: 'value', type: 'string', default: '—', description: 'Controlled data URL carried by the hidden form input' },
+            { name: 'onChange', type: '(dataUrl: string | null) => void', default: '—', description: 'Called with the data URL on stroke end / typed-name change, null on clear' },
+            { name: 'name', type: 'string', default: '—', description: 'Form field name; renders a hidden input carrying the data URL' },
             { name: 'mode', type: "'draw' | 'type'", default: "'draw'", description: 'Default input mode' },
             { name: 'strokeColor', type: 'string', default: "'#ffffff'", description: 'Stroke/text color' },
             { name: 'strokeWidth', type: 'number', default: '3', description: 'Maximum stroke width in pixels' },

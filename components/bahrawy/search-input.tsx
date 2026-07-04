@@ -16,6 +16,8 @@ import { cn } from '@/lib/utils'
 export interface SearchInputProps {
   value?: string
   defaultValue?: string
+  /** Form field name — forwarded to the underlying `<input>`. */
+  name?: string
   onChange?: (value: string) => void
   /** Fired after `debounceMs` of no typing with the current value. */
   onSearch?: (value: string) => void
@@ -40,6 +42,7 @@ const SIZE_CLASSES = {
 export function SearchInput({
   value,
   defaultValue = '',
+  name,
   onChange,
   onSearch,
   debounceMs = 200,
@@ -59,8 +62,12 @@ export function SearchInput({
     onChange?.(next)
   }
 
-  // Debounced onSearch
+  // Debounced onSearch — skipped until the value actually changes so it
+  // doesn't fire with the initial value on mount.
+  const lastSearchScheduledFor = React.useRef(v)
   React.useEffect(() => {
+    if (v === lastSearchScheduledFor.current) return
+    lastSearchScheduledFor.current = v
     if (!onSearch) return
     const id = window.setTimeout(() => onSearch(v), debounceMs)
     return () => window.clearTimeout(id)
@@ -91,6 +98,7 @@ export function SearchInput({
       <input
         ref={inputRef}
         type="search"
+        name={name}
         value={v}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}

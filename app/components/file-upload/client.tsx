@@ -28,6 +28,37 @@ const SNIPPET = `import { FileUpload } from '@/components/bahrawy'
   onChange={(files) => console.log('Files:', files)}
 />`
 
+const PROGRESS_SNIPPET = `// Call report(0–100) to drive the progress bar with real numbers.
+// Until the first report the bar renders as indeterminate.
+<FileUpload
+  onUpload={(file, report) =>
+    new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) report((e.loaded / e.total) * 100)
+      }
+      xhr.onload = () =>
+        xhr.status < 400 ? resolve() : reject(new Error('Upload failed'))
+      xhr.onerror = () => reject(new Error('Network error'))
+      const form = new FormData()
+      form.append('file', file)
+      xhr.open('POST', '/api/upload')
+      xhr.send(form)
+    })
+  }
+/>`
+
+/** Demo stand-in for a real transfer: reports progress in timed chunks. */
+async function fakeUploadWithProgress(
+  _file: File,
+  report: (pct: number) => void,
+) {
+  for (let pct = 0; pct <= 100; pct += 8) {
+    await new Promise((r) => setTimeout(r, 120))
+    report(pct)
+  }
+}
+
 export default function FileUploadDocs() {
   const [disabled, setDisabled] = useState(false)
 
@@ -62,6 +93,16 @@ export default function FileUploadDocs() {
             Disabled
           </Button>
         </ControlsRow>
+      </DocsSection>
+
+      {/* ---- Real progress ---- */}
+      <DocsSection title="Real upload progress">
+        <DemoCard>
+          <div className="w-full max-w-lg">
+            <FileUpload multiple onUpload={fakeUploadWithProgress} />
+          </div>
+        </DemoCard>
+        <CodeBlock code={PROGRESS_SNIPPET} language="tsx" />
       </DocsSection>
 
       {/* ---- Single file ---- */}
@@ -118,7 +159,7 @@ export default function FileUploadDocs() {
             { name: 'maxSize', type: 'number', description: 'Maximum file size in bytes.' },
             { name: 'maxFiles', type: 'number', description: 'Maximum number of files.' },
             { name: 'multiple', type: 'boolean', default: 'true', description: 'Allow multiple file selection.' },
-            { name: 'onUpload', type: '(file: File) => Promise<void>', description: 'Async upload handler per file. Progress is tracked automatically.' },
+            { name: 'onUpload', type: '(file: File, report: (pct: number) => void) => Promise<void>', description: 'Async upload handler per file. Call report(0–100) to drive the progress bar; the bar is indeterminate until the first report. A rejected promise marks the file failed. Without onUpload, files complete instantly.' },
             { name: 'onChange', type: '(files: File[]) => void', description: 'Called when file list changes (React Hook Form integration).' },
             { name: 'onRemove', type: '(file: File) => void', description: 'Called when a file is removed.' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable all interaction.' },

@@ -6,6 +6,7 @@ import {
   type ClipboardEvent,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react'
@@ -21,6 +22,8 @@ import { springSnappy, tweenSmooth } from '@/lib/motion'
 export interface OTPInputProps {
   length?: number
   inputType?: 'numeric' | 'alphanumeric'
+  /** Form field name — the joined code is posted via a hidden input. */
+  name?: string
   value?: string
   onChange?: (value: string) => void
   onComplete?: (value: string) => void
@@ -40,6 +43,7 @@ export interface OTPInputProps {
 export function OTPInput({
   length = 6,
   inputType = 'numeric',
+  name,
   value: controlledValue,
   onChange,
   onComplete,
@@ -58,6 +62,8 @@ export function OTPInput({
   const inputsRef = useRef<(HTMLInputElement | null)[]>([])
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null)
   const [shaking, setShaking] = useState(false)
+  const errorId = useId()
+  const hasErrorMessage = status === 'error' && !!errorMessage
 
   // Auto-focus first box
   useEffect(() => {
@@ -95,8 +101,30 @@ export function OTPInput({
 
   // ---- Handlers ----
 
+  const distributeChars = useCallback(
+    (raw: string) => {
+      const validChars = raw.split('').filter(isValidChar).slice(0, length)
+      if (validChars.length === 0) return
+
+      const next = Array.from({ length }, (_, i) => validChars[i] ?? '')
+      updateValue(next)
+
+      const focusTarget = validChars.length < length ? validChars.length : length - 1
+      setTimeout(() => inputsRef.current[focusTarget]?.focus(), 0)
+    },
+    [isValidChar, length, updateValue],
+  )
+
   const handleChange = (index: number, rawValue: string) => {
     if (disabled) return
+
+    // Multi-char input (e.g. SMS autofill dumps the whole code into one box) —
+    // distribute the characters across the boxes, same as the paste path.
+    if (rawValue.length > 1) {
+      distributeChars(rawValue)
+      return
+    }
+
     const ch = rawValue.slice(-1)
     if (!ch || !isValidChar(ch)) return
 
@@ -138,15 +166,7 @@ export function OTPInput({
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     if (disabled) return
     e.preventDefault()
-    const pasted = e.clipboardData.getData('text').trim()
-    const validChars = pasted.split('').filter(isValidChar).slice(0, length)
-    if (validChars.length === 0) return
-
-    const next = Array.from({ length }, (_, i) => validChars[i] ?? '')
-    updateValue(next)
-
-    const focusTarget = validChars.length < length ? validChars.length : length - 1
-    setTimeout(() => inputsRef.current[focusTarget]?.focus(), 0)
+    distributeChars(e.clipboardData.getData('text').trim())
   }
 
   const handleFocus = (index: number) => {
@@ -174,6 +194,15 @@ export function OTPInput({
 
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
+      {/* Hidden input so the joined code posts in native forms */}
+      {name && (
+        <input
+          type="hidden"
+          name={name}
+          value={isControlled ? controlledValue : internalValue}
+        />
+      )}
+
       {/* Boxes row — CSS entrance, Framer Motion only for shake */}
       <motion.div
         className="flex items-center gap-2"
@@ -218,6 +247,8 @@ export function OTPInput({
                   disabled={disabled}
                   autoComplete="one-time-code"
                   aria-label={`OTP digit ${index + 1}`}
+                  aria-invalid={status === 'error' || undefined}
+                  aria-describedby={hasErrorMessage ? errorId : undefined}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
@@ -283,6 +314,7 @@ export function OTPInput({
       <AnimatePresence>
         {status === 'error' && errorMessage && (
           <motion.p
+            id={errorId}
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}

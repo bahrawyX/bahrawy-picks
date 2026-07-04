@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eraser, Pen, Redo2, Type, Undo2, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,19 @@ export interface SignatureResult {
 
 export interface SignaturePadProps {
   onSignature?: (result: SignatureResult) => void
+  /**
+   * Controlled data URL for the signature. When provided it takes precedence
+   * over the internally tracked value in the hidden form input.
+   */
+  value?: string
+  /**
+   * Fired with the current signature as a data URL whenever it changes —
+   * on stroke end and undo in draw mode, on typed-name change in type mode —
+   * and with `null` when the pad is cleared.
+   */
+  onChange?: (dataUrl: string | null) => void
+  /** Form field name. Renders a hidden input carrying the data URL. */
+  name?: string
   mode?: SignatureMode
   strokeColor?: string
   strokeWidth?: number
@@ -38,11 +51,32 @@ export interface SignaturePadProps {
 }
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Unicode-safe base64 encoding. `btoa` throws on characters outside Latin-1
+ * (e.g. non-Latin typed names embedded in an SVG), so encode to UTF-8 bytes
+ * first via TextEncoder.
+ */
+function toBase64(str: string): string {
+  const bytes = new TextEncoder().encode(str)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export function SignaturePad({
   onSignature,
+  value,
+  onChange,
+  name,
   mode: defaultMode = 'draw',
   strokeColor = '#ffffff',
   strokeWidth = 3,
@@ -56,9 +90,58 @@ export function SignaturePad({
 }: SignaturePadProps) {
   const [activeMode, setActiveMode] = useState<SignatureMode>(defaultMode)
   const [isEmpty, setIsEmpty] = useState(true)
+  const [dataUrl, setDataUrl] = useState<string | null>(null)
+  // Bumped whenever the typed name changes so we can recompute the data URL
+  // after TypeCanvas has committed its state.
+  const [typeVersion, setTypeVersion] = useState(0)
+  const lastTypeVersionRef = useRef(0)
 
   const drawRef = useRef<DrawCanvasHandle>(null)
   const typeRef = useRef<TypeCanvasHandle>(null)
+
+  // ---- Change emission ----
+
+  const buildSVG = useCallback((): string | null => {
+    const ref = drawRef.current
+    if (!ref || ref.isEmpty()) return null
+    const strokes = ref.getStrokes()
+    const canvas = ref.getCanvas()
+    const w = canvas?.getBoundingClientRect().width ?? 600
+    const h = canvas?.getBoundingClientRect().height ?? 200
+    const pathData = pointsToSVGPath(strokes)
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><path d="${pathData}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  }, [strokeColor, strokeWidth])
+
+  const computeDataUrl = useCallback((): string | null => {
+    if (activeMode === 'draw') {
+      const ref = drawRef.current
+      if (!ref || ref.isEmpty()) return null
+      if (exportFormat === 'svg') {
+        const svg = buildSVG()
+        return svg ? `data:image/svg+xml;base64,${toBase64(svg)}` : null
+      }
+      return ref.toDataURL(exportFormat, exportQuality) || null
+    }
+    const ref = typeRef.current
+    if (!ref || ref.isEmpty()) return null
+    return (
+      ref.toDataURL(exportFormat === 'svg' ? 'png' : exportFormat, exportQuality) ||
+      null
+    )
+  }, [activeMode, exportFormat, exportQuality, buildSVG])
+
+  const emitChange = useCallback(() => {
+    const url = computeDataUrl()
+    setDataUrl(url)
+    onChange?.(url)
+  }, [computeDataUrl, onChange])
+
+  // Recompute the typed signature after TypeCanvas commits a text change.
+  useEffect(() => {
+    if (typeVersion === lastTypeVersionRef.current) return
+    lastTypeVersionRef.current = typeVersion
+    emitChange()
+  }, [typeVersion, emitChange])
 
   // ---- Handlers ----
 
@@ -69,14 +152,17 @@ export function SignaturePad({
       typeRef.current?.clear()
     }
     setIsEmpty(true)
-  }, [activeMode])
+    setDataUrl(null)
+    onChange?.(null)
+  }, [activeMode, onChange])
 
   const handleUndo = useCallback(() => {
     if (activeMode === 'draw') {
       drawRef.current?.undo()
       setIsEmpty(drawRef.current?.isEmpty() ?? true)
+      emitChange()
     }
-  }, [activeMode])
+  }, [activeMode, emitChange])
 
   const handleExport = useCallback(async () => {
     let blob: Blob | null = null
@@ -88,14 +174,10 @@ export function SignaturePad({
       if (!ref || ref.isEmpty()) return
 
       if (exportFormat === 'svg') {
-        const strokes = ref.getStrokes()
-        const canvas = ref.getCanvas()
-        const w = canvas?.getBoundingClientRect().width ?? 600
-        const h = canvas?.getBoundingClientRect().height ?? 200
-        const pathData = pointsToSVGPath(strokes)
-        svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><path d="${pathData}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        svg = buildSVG() ?? undefined
+        if (!svg) return
         blob = new Blob([svg], { type: 'image/svg+xml' })
-        base64 = `data:image/svg+xml;base64,${btoa(svg)}`
+        base64 = `data:image/svg+xml;base64,${toBase64(svg)}`
       } else {
         blob = await ref.toBlob(exportFormat, exportQuality)
         base64 = ref.toDataURL(exportFormat, exportQuality)
@@ -108,7 +190,7 @@ export function SignaturePad({
     }
 
     onSignature?.({ blob, base64, svg, isEmpty: false })
-  }, [activeMode, exportFormat, exportQuality, strokeColor, strokeWidth, onSignature])
+  }, [activeMode, exportFormat, exportQuality, buildSVG, onSignature])
 
   return (
     <div
@@ -222,6 +304,7 @@ export function SignaturePad({
             strokeColor={strokeColor}
             strokeWidth={strokeWidth}
             smoothing={smoothing}
+            onStrokeEnd={emitChange}
             onChange={(empty) => setIsEmpty(empty)}
           />
         </div>
@@ -233,10 +316,16 @@ export function SignaturePad({
             font="'Dancing Script', cursive"
             fontSize={40}
             color={strokeColor}
-            onChange={(empty) => setIsEmpty(empty)}
+            onChange={(empty) => {
+              setIsEmpty(empty)
+              setTypeVersion((v) => v + 1)
+            }}
           />
         </div>
       </div>
+
+      {/* Hidden input carrying the data URL for native form submission */}
+      {name && <input type="hidden" name={name} value={value ?? dataUrl ?? ''} />}
     </div>
   )
 }

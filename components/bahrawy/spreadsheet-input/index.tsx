@@ -55,6 +55,8 @@ export interface SpreadsheetInputProps {
   readOnly?: boolean
   onExport?: () => void
   onImport?: (data: SpreadsheetRow[]) => void
+  /** Accessible label for the grid container. Defaults to 'Spreadsheet'. */
+  ariaLabel?: string
   className?: string
 }
 
@@ -92,6 +94,7 @@ export function SpreadsheetInput({
   readOnly = false,
   onExport,
   onImport,
+  ariaLabel = 'Spreadsheet',
   className,
 }: SpreadsheetInputProps) {
   const isControlled = controlledData !== undefined
@@ -113,6 +116,9 @@ export function SpreadsheetInput({
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null)
   const [selectionEnd, setSelectionEnd] = useState<{ row: number; col: number } | null>(null)
   const [editingCell, setEditingCell] = useState<{ row: number; col: number } | null>(null)
+  // Initial editor content for type-to-edit (the typed character); null means
+  // seed from the cell's current value.
+  const [editSeed, setEditSeed] = useState<string | null>(null)
 
   // Sort
   const [sortState, setSortState] = useState<{ colKey: string; dir: 'asc' | 'desc' } | null>(null)
@@ -152,16 +158,16 @@ export function SpreadsheetInput({
       if (!isControlled) setInternalData(newData)
       onChange?.(newData)
 
-      // Push to history
-      setHistory((prev) => {
-        const truncated = prev.slice(0, historyIndex + 1)
-        const next = [...truncated, { data: newData }]
-        if (next.length > MAX_HISTORY) next.shift()
-        return next
-      })
-      setHistoryIndex((prev) => Math.min(prev + 1, MAX_HISTORY - 1))
+      // Push to history. Compute the next buffer synchronously so the index
+      // always stays in lockstep with the array — deriving the index with a
+      // separate functional update let it drift once the buffer shifted at
+      // MAX_HISTORY.
+      const next = [...history.slice(0, historyIndex + 1), { data: newData }]
+      if (next.length > MAX_HISTORY) next.shift()
+      setHistory(next)
+      setHistoryIndex(next.length - 1)
     },
-    [isControlled, onChange, historyIndex],
+    [isControlled, onChange, history, historyIndex],
   )
 
   const setCellValue = useCallback(
@@ -388,6 +394,7 @@ export function SpreadsheetInput({
             // Enter edit mode
             const column = columns[col]
             if (column && column.type !== 'readonly' && column.type !== 'checkbox' && column.editable !== false && !readOnly) {
+              setEditSeed(null)
               setEditingCell({ row, col })
             }
           }
@@ -406,16 +413,19 @@ export function SpreadsheetInput({
           {
             const column = columns[col]
             if (column && column.type !== 'readonly' && column.type !== 'checkbox' && column.editable !== false && !readOnly) {
+              setEditSeed(null)
               setEditingCell({ row, col })
             }
           }
           break
         default:
-          // Start typing to enter edit mode
+          // Start typing to enter edit mode. Seed the editor with the typed
+          // character instead of writing an empty value into the data, which
+          // pushed a junk entry onto the undo history.
           if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !readOnly) {
             const column = columns[col]
             if (column && column.type !== 'readonly' && column.type !== 'checkbox' && column.editable !== false) {
-              setCellValue(row, column.key, '')
+              setEditSeed(e.key)
               setEditingCell({ row, col })
             }
           }
@@ -648,6 +658,7 @@ export function SpreadsheetInput({
         tabIndex={0}
         onKeyDown={handleGridKeyDown}
         role="grid"
+        aria-label={ariaLabel}
         style={{ maxHeight: 500 }}
       >
         {/* Inner for total scroll area */}
@@ -658,6 +669,8 @@ export function SpreadsheetInput({
             <div
               className="flex h-8 flex-shrink-0 items-center justify-center border-b border-r border-white/[0.06] bg-neutral-950 text-xs text-white/30"
               style={{ width: ROW_NUM_WIDTH }}
+              role="columnheader"
+              aria-label="Row number"
             >
               #
             </div>
@@ -760,6 +773,7 @@ export function SpreadsheetInput({
                           isEditing={isEdit}
                           isError={isError}
                           displayValue={display}
+                          editSeed={isEdit ? editSeed : null}
                           onSelect={(e) => {
                             if (e.shiftKey && selectedCell) {
                               setSelectionEnd({ row: rowIdx, col: colIdx })
@@ -771,6 +785,7 @@ export function SpreadsheetInput({
                           }}
                           onDoubleClick={() => {
                             if (readOnly || col.type === 'readonly' || col.editable === false) return
+                            setEditSeed(null)
                             setEditingCell({ row: rowIdx, col: colIdx })
                           }}
                           onValueChange={(val) => setCellValue(rowIdx, col.key, val)}

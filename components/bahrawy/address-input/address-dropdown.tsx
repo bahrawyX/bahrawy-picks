@@ -7,6 +7,10 @@ import { springSnappy } from '@/lib/motion'
 import type { NominatimResult } from './nominatim-utils'
 
 interface AddressDropdownProps {
+  /** DOM id for the listbox, referenced by the combobox's aria-controls. */
+  id: string
+  /** Builds the DOM id for the option at a given index. */
+  getOptionId: (index: number) => string
   results: NominatimResult[]
   loading: boolean
   selectedIndex: number
@@ -14,6 +18,8 @@ interface AddressDropdownProps {
 }
 
 export function AddressDropdown({
+  id,
+  getOptionId,
   results,
   loading,
   selectedIndex,
@@ -27,7 +33,12 @@ export function AddressDropdown({
       transition={springSnappy}
       className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-900/95 shadow-xl backdrop-blur-md"
     >
-      <div className="max-h-60 overflow-y-auto p-1 scrollbar-hide">
+      <div
+        id={id}
+        role="listbox"
+        aria-label="Address suggestions"
+        className="max-h-60 overflow-y-auto p-1 scrollbar-hide"
+      >
         {loading && results.length === 0 ? (
           <div className="flex items-center justify-center px-3 py-4">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
@@ -40,6 +51,9 @@ export function AddressDropdown({
           results.map((result, i) => (
             <button
               key={result.place_id}
+              id={getOptionId(i)}
+              role="option"
+              aria-selected={i === selectedIndex}
               type="button"
               onMouseDown={(e) => {
                 e.preventDefault()

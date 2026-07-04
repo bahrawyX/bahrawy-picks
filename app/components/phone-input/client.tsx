@@ -44,6 +44,17 @@ const { control } = useForm<{ phone: string }>()
   )}
 />`
 
+const UNCONTROLLED_SNIPPET = `// Uncontrolled — no state needed. The hidden input named "phone"
+// submits the E.164 value with the surrounding <form>.
+<form action="/api/contact" method="post">
+  <PhoneInput
+    name="phone"
+    defaultValue="+12025551234"
+    label="Phone number"
+    error={submitted && !valid ? 'Enter a valid phone number' : undefined}
+  />
+</form>`
+
 export default function PhoneInputDocs() {
   const [value, setValue] = useState<string | undefined>()
   const [country, setCountry] = useState<CountryCode>('US')
@@ -107,6 +118,19 @@ export default function PhoneInputDocs() {
         </ControlsRow>
       </DocsSection>
 
+      <DocsSection title="Uncontrolled with label & form name">
+        <DemoCard>
+          <div className="w-full max-w-sm">
+            <PhoneInput
+              name="phone"
+              defaultValue="+12025551234"
+              label="Phone number"
+            />
+          </div>
+        </DemoCard>
+        <CodeBlock code={UNCONTROLLED_SNIPPET} language="tsx" />
+      </DocsSection>
+
       <DocsSection title="React Hook Form">
         <CodeBlock code={SNIPPET} language="tsx" />
       </DocsSection>
@@ -114,12 +138,15 @@ export default function PhoneInputDocs() {
       <DocsSection title="Props">
         <PropsTable
           props={[
-            { name: 'value', type: 'string | undefined', description: 'E.164-formatted phone number.' },
+            { name: 'value', type: 'string | undefined', description: 'E.164-formatted phone number (controlled).' },
             { name: 'onChange', type: '(value) => void', description: 'Fires when the parsed value changes.' },
+            { name: 'defaultValue', type: 'string', description: 'Initial E.164 value (uncontrolled).' },
             { name: 'defaultCountry', type: 'CountryCode', default: '"US"', description: 'Initial country (ISO-3166 alpha-2).' },
             { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable input and country select.' },
-            { name: 'error', type: 'boolean', default: 'false', description: 'Apply error styling.' },
+            { name: 'label', type: 'string', description: 'Label above the field, linked via htmlFor.' },
+            { name: 'error', type: 'boolean | string', default: 'false', description: 'Error styling; a string also renders the message (aria-describedby / aria-invalid).' },
             { name: 'placeholder', type: 'string', description: 'Number input placeholder.' },
+            { name: 'name', type: 'string', description: 'Hidden input submits the E.164 value under this name.' },
           ]}
         />
       </DocsSection>

@@ -5,6 +5,7 @@ import {
   type MouseEvent,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -31,6 +32,11 @@ export interface TagsInputProps {
   validate?: (tag: string) => boolean | string
   disabled?: boolean
   error?: string
+  /**
+   * When set, renders one hidden input per tag under this name (pass e.g.
+   * "tags[]" for PHP/Rails-style array submission) for native forms.
+   */
+  name?: string
   className?: string
 }
 
@@ -50,6 +56,7 @@ export function TagsInput({
   validate,
   disabled = false,
   error,
+  name,
   className,
 }: TagsInputProps) {
   const isControlled = controlledValue !== undefined
@@ -66,6 +73,10 @@ export function TagsInput({
 
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const composingRef = useRef(false)
+
+  const listboxId = useId()
+  const optionId = (index: number) => `${listboxId}-option-${index}`
 
   const delimiters = useMemo(
     () => (Array.isArray(delimiter) ? delimiter : [delimiter]),
@@ -136,6 +147,10 @@ export function TagsInput({
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return
+
+    // Ignore keys while an IME composition session is active — Enter
+    // there confirms the composition, not a new tag.
+    if (composingRef.current || e.nativeEvent.isComposing) return
 
     // Check delimiter keys
     if (delimiters.includes(e.key)) {
@@ -307,10 +322,25 @@ export function TagsInput({
               value={inputValue}
               onChange={(e) => handleInputChange(e.target.value)}
               onKeyDown={handleKeyDown}
+              onCompositionStart={() => {
+                composingRef.current = true
+              }}
+              onCompositionEnd={() => {
+                composingRef.current = false
+              }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               disabled={disabled}
               placeholder={tags.length === 0 ? placeholder : ''}
+              role="combobox"
+              aria-expanded={showSuggestions && filteredSuggestions.length > 0}
+              aria-controls={listboxId}
+              aria-autocomplete="list"
+              aria-activedescendant={
+                showSuggestions && filteredSuggestions.length > 0
+                  ? optionId(selectedSuggestion)
+                  : undefined
+              }
               className="min-w-[140px] flex-1 border-none bg-transparent py-1 text-sm text-white outline-none placeholder:text-white/25"
             />
           )}
@@ -330,12 +360,18 @@ export function TagsInput({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -4 }}
               transition={springSnappy}
+              id={listboxId}
+              role="listbox"
+              aria-label="Tag suggestions"
               className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-900/95 p-1 shadow-xl backdrop-blur-md"
             >
               {filteredSuggestions.map((suggestion, i) => (
                 <button
                   key={suggestion}
                   type="button"
+                  id={optionId(i)}
+                  role="option"
+                  aria-selected={i === selectedSuggestion}
                   onMouseDown={(e) => {
                     e.preventDefault()
                     addTag(suggestion)
@@ -356,6 +392,17 @@ export function TagsInput({
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Hidden form values — one input per tag */}
+      {name &&
+        tags.map((tag, index) => (
+          <input
+            key={`${tag}-${index}`}
+            type="hidden"
+            name={name}
+            value={tag}
+          />
+        ))}
 
       {/* Error message */}
       <AnimatePresence>

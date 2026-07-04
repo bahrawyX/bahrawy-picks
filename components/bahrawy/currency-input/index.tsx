@@ -5,6 +5,7 @@ import {
   type FocusEvent,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -21,8 +22,9 @@ import { CurrencySelector } from './currency-selector'
 // ---------------------------------------------------------------------------
 
 export interface CurrencyInputProps {
-  value?: number
-  onChange?: (value: number, currency: string) => void
+  /** Controlled value. `null` represents an empty input (distinct from 0). */
+  value?: number | null
+  onChange?: (value: number | null, currency: string) => void
   defaultValue?: number
   currency?: string
   defaultCurrency?: string
@@ -35,6 +37,12 @@ export interface CurrencyInputProps {
   placeholder?: string
   disabled?: boolean
   error?: string
+  /** Form field name — forwarded to the underlying `<input>`. */
+  name?: string
+  /** Forwarded to the underlying `<input>` for label `htmlFor` wiring. */
+  id?: string
+  /** Renders a `<label>` above the input, wired via htmlFor. */
+  label?: string
   className?: string
 }
 
@@ -57,12 +65,17 @@ export function CurrencyInput({
   placeholder = '0.00',
   disabled = false,
   error,
+  name,
+  id,
+  label,
   className,
 }: CurrencyInputProps) {
   const isControlled = controlledValue !== undefined
   const isCurrencyControlled = controlledCurrency !== undefined
 
-  const [internalValue, setInternalValue] = useState<number>(defaultValue ?? 0)
+  const [internalValue, setInternalValue] = useState<number | null>(
+    defaultValue ?? null,
+  )
   const [internalCurrency, setInternalCurrency] = useState(defaultCurrency)
   const [focused, setFocused] = useState(false)
   const [displayValue, setDisplayValue] = useState('')
@@ -74,47 +87,40 @@ export function CurrencyInput({
 
   const currencyInfo = useMemo(() => getCurrency(currencyCode), [currencyCode])
 
+  const generatedId = useId()
+  const inputId = id ?? generatedId
+  const errorId = `${inputId}-error`
+
   // Sync display from value when not focused
   useEffect(() => {
     if (!focused) {
-      if (numValue === 0 && !displayValue) {
+      if (numValue === null || numValue === undefined) {
         setDisplayValue('')
-      } else if (numValue !== 0) {
+      } else {
         setDisplayValue(formatDisplayValue(String(numValue), currencyCode, locale))
       }
     }
-  }, [numValue, currencyCode, locale, focused, displayValue])
+  }, [numValue, currencyCode, locale, focused])
 
   // ---- Handlers ----
 
   const updateValue = useCallback(
-    (newVal: number) => {
-      // Clamp
-      let clamped = newVal
-      if (min !== undefined && clamped < min) {
-        clamped = min
-        setShaking(true)
-        setTimeout(() => setShaking(false), 500)
-      }
-      if (max !== undefined && clamped > max) {
-        clamped = max
-        setShaking(true)
-        setTimeout(() => setShaking(false), 500)
-      }
-      if (!isControlled) setInternalValue(clamped)
-      onChange?.(clamped, currencyCode)
+    (newVal: number | null) => {
+      // No clamping mid-typing — the value is clamped on blur instead
+      if (!isControlled) setInternalValue(newVal)
+      onChange?.(newVal, currencyCode)
     },
-    [isControlled, onChange, currencyCode, min, max],
+    [isControlled, onChange, currencyCode],
   )
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value
 
-      // Allow empty input
+      // Allow empty input — empty is null, not 0
       if (!raw) {
         setDisplayValue('')
-        updateValue(0)
+        updateValue(null)
         return
       }
 
@@ -147,13 +153,22 @@ export function CurrencyInput({
 
   const handleBlur = useCallback(() => {
     setFocused(false)
-    // Format on blur
-    if (numValue !== 0) {
-      setDisplayValue(formatDisplayValue(String(numValue), currencyCode, locale))
-    } else {
+    if (numValue === null) {
       setDisplayValue('')
+      return
     }
-  }, [numValue, currencyCode, locale])
+    // Clamp on blur (not per keystroke) and shake if out of range
+    let clamped = numValue
+    if (min !== undefined && clamped < min) clamped = min
+    if (max !== undefined && clamped > max) clamped = max
+    if (clamped !== numValue) {
+      setShaking(true)
+      setTimeout(() => setShaking(false), 500)
+      updateValue(clamped)
+    }
+    // Format on blur
+    setDisplayValue(formatDisplayValue(String(clamped), currencyCode, locale))
+  }, [numValue, min, max, updateValue, currencyCode, locale])
 
   const handleCurrencyChange = useCallback(
     (code: string) => {
@@ -166,6 +181,15 @@ export function CurrencyInput({
 
   return (
     <div className={cn('w-full', className)}>
+      {label && (
+        <label
+          htmlFor={inputId}
+          className="mb-1.5 block text-sm font-medium text-white/70"
+        >
+          {label}
+        </label>
+      )}
+
       <motion.div
         animate={shaking ? { x: [0, -5, 5, -5, 5, 0] } : { x: 0 }}
         transition={
@@ -201,7 +225,11 @@ export function CurrencyInput({
         <input
           ref={inputRef}
           type="text"
+          name={name}
+          id={inputId}
           inputMode="decimal"
+          aria-invalid={!!error || undefined}
+          aria-describedby={error ? errorId : undefined}
           value={displayValue}
           onChange={handleChange}
           onFocus={handleFocus}
@@ -216,6 +244,7 @@ export function CurrencyInput({
       <AnimatePresence>
         {error && (
           <motion.p
+            id={errorId}
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}

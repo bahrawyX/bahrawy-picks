@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback, forwardRef } from 'react'
+import { useState, useMemo, useCallback, useId, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -22,6 +22,12 @@ export interface PasswordInputProps {
   showStrength?: boolean
   requirements?: PasswordRequirement[]
   disabled?: boolean
+  /** Form field name — forwarded to the underlying `<input>`. */
+  name?: string
+  /** Forwarded to the underlying `<input>`. Default "current-password". */
+  autoComplete?: string
+  /** Error message rendered below, wired via aria-describedby. */
+  error?: string
   className?: string
 }
 
@@ -73,6 +79,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       showStrength = true,
       requirements = defaultRequirements,
       disabled = false,
+      name,
+      autoComplete = 'current-password',
+      error,
       className,
     },
     ref,
@@ -81,6 +90,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const [internalValue, setInternalValue] = useState('')
     const password = isControlled ? controlledValue : internalValue
     const [visible, setVisible] = useState(false)
+    const errorId = useId()
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,16 +105,20 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const config = strength !== 'empty' ? strengthConfig[strength] : null
 
     return (
-      <div className={cn('flex w-full max-w-sm flex-col gap-2', className)}>
+      <div className={cn('flex w-full flex-col gap-2', className)}>
         {/* Input row */}
         <div className="relative">
           <input
             ref={ref}
             type={visible ? 'text' : 'password'}
+            name={name}
+            autoComplete={autoComplete}
             value={password}
             onChange={handleChange}
             placeholder={placeholder}
             disabled={disabled}
+            aria-invalid={!!error || undefined}
+            aria-describedby={error ? errorId : undefined}
             className={cn(
               'h-10 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 pr-10 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/30',
               disabled && 'cursor-not-allowed opacity-50',
@@ -125,9 +139,30 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           </button>
         </div>
 
+        {/* Error message */}
+        <AnimatePresence>
+          {error && (
+            <motion.p
+              id={errorId}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={tweenSmooth}
+              className="text-sm text-red-400"
+            >
+              {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+
         {/* Strength meter */}
         {showStrength && password.length > 0 && config && (
-          <div className="flex flex-col gap-1.5">
+          <div
+            className="flex flex-col gap-1.5"
+            role="status"
+            aria-live="polite"
+            aria-label="Password strength"
+          >
             <div className="flex items-center justify-between">
               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
                 <motion.div
