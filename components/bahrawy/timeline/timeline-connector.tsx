@@ -29,7 +29,7 @@ export function TimelineConnector({
       <div
         className={cn(
           'h-full w-full',
-          color ?? 'bg-white/[0.06]',
+          color ?? 'bg-picks-fg/[0.06]',
           isVertical ? 'origin-top animate-tl-grow-y' : 'origin-left animate-tl-grow-y'
         )}
         style={{ animationDelay: `${Math.round(delay * 1000)}ms` }}

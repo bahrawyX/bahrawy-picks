@@ -114,16 +114,16 @@ export function Drawer({
             transition={SPRING}
             style={sizeStyle}
             className={cn(
-              'z-50 flex max-h-screen max-w-full flex-col border-white/10 bg-zinc-950 shadow-2xl outline-none',
+              'z-50 flex max-h-screen max-w-full flex-col border-picks-fg/10 bg-picks-surface shadow-2xl outline-none',
               positionClass,
               isHorizontal ? 'border-l border-r' : 'border-t border-b',
               className,
             )}
           >
             {(title || !hideClose) && (
-              <header className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+              <header className="flex items-center justify-between gap-3 border-b border-picks-fg/10 px-5 py-4">
                 {title ? (
-                  <h2 className="text-sm font-semibold text-white">{title}</h2>
+                  <h2 className="text-sm font-semibold text-picks-fg">{title}</h2>
                 ) : (
                   <span />
                 )}
@@ -132,14 +132,14 @@ export function Drawer({
                     type="button"
                     onClick={onClose}
                     aria-label="Close drawer"
-                    className="rounded-md p-1 text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+                    className="rounded-md p-1 text-picks-fg/50 transition-colors hover:bg-picks-fg/10 hover:text-picks-fg"
                   >
                     <X className="h-4 w-4" />
                   </button>
                 )}
               </header>
             )}
-            <div className="flex-1 overflow-y-auto p-5 text-sm text-white/85">
+            <div className="flex-1 overflow-y-auto p-5 text-sm text-picks-fg/85">
               {children}
             </div>
           </motion.aside>

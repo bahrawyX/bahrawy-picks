@@ -92,7 +92,7 @@ export function SidebarNav({
   return (
     <nav
       className={cn(
-        'flex h-full flex-col overflow-hidden rounded-[20px] border border-white/[0.06]',
+        'flex h-full flex-col overflow-hidden rounded-[20px] border border-picks-fg/[0.06]',
         className,
       )}
       style={{
@@ -109,7 +109,7 @@ export function SidebarNav({
       }}
     >
       {brand && (
-        <div className="border-b border-white/[0.06] px-4 py-3.5">{brand}</div>
+        <div className="border-b border-picks-fg/[0.06] px-4 py-3.5">{brand}</div>
       )}
 
       {/* Scrollable body */}
@@ -126,7 +126,7 @@ export function SidebarNav({
                       onClick={() =>
                         setCollapsed((c) => ({ ...c, [section.id]: !isCollapsed }))
                       }
-                      className="group inline-flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/40 transition-colors hover:text-white/70"
+                      className="group inline-flex items-center gap-1 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-picks-fg/40 transition-colors hover:text-picks-fg/70"
                     >
                       <motion.span
                         animate={{ rotate: isCollapsed ? -90 : 0 }}
@@ -138,7 +138,7 @@ export function SidebarNav({
                       {section.label}
                     </button>
                   ) : (
-                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/40">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-picks-fg/40">
                       {section.label}
                     </p>
                   )}
@@ -169,8 +169,8 @@ export function SidebarNav({
                               className={cn(
                                 'group relative flex w-full items-center gap-2.5 rounded-[10px] px-3 py-1.5 text-left text-[13px] tracking-tight transition-colors',
                                 isActive
-                                  ? 'text-white'
-                                  : 'text-white/65 hover:text-white',
+                                  ? 'text-picks-fg'
+                                  : 'text-picks-fg/65 hover:text-picks-fg',
                               )}
                             >
                               {isActive && (
@@ -202,8 +202,8 @@ export function SidebarNav({
                                   className={cn(
                                     'relative inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full border px-1.5 font-mono text-[10px] font-semibold tabular-nums',
                                     isActive
-                                      ? 'border-white/15 bg-white/[0.1] text-white'
-                                      : 'border-white/[0.08] bg-white/[0.04] text-white/70',
+                                      ? 'border-picks-fg/15 bg-picks-fg/[0.1] text-picks-fg'
+                                      : 'border-picks-fg/[0.08] bg-picks-fg/[0.04] text-picks-fg/70',
                                   )}
                                 >
                                   {item.badge}
@@ -223,7 +223,7 @@ export function SidebarNav({
       </div>
 
       {footer && (
-        <div className="border-t border-white/[0.06] px-3 py-3">{footer}</div>
+        <div className="border-t border-picks-fg/[0.06] px-3 py-3">{footer}</div>
       )}
     </nav>
   )

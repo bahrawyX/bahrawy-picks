@@ -192,7 +192,7 @@ export function DepthCards({
     <div
       ref={containerRef}
       className={cn(
-        'relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#06070a]',
+        'relative w-full overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-surface',
         className,
       )}
       style={{
@@ -255,7 +255,7 @@ export function DepthCards({
                 }}
               />
               <div
-                className="relative overflow-hidden rounded-2xl border bg-zinc-950/85 p-5 shadow-2xl backdrop-blur-md sm:p-6"
+                className="relative overflow-hidden rounded-2xl border bg-picks-surface/85 p-5 shadow-2xl backdrop-blur-md sm:p-6"
                 style={{
                   borderColor: `${accent}38`,
                   boxShadow: `0 40px 80px -28px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04), 0 0 30px ${accent}26`,
@@ -304,7 +304,7 @@ export function DepthCards({
                 )}
                 <div className="relative">
                   {item.eyebrow && (
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.22em] text-white/80">
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.22em] text-picks-fg/80">
                       <span
                         aria-hidden
                         className="block h-1.5 w-1.5 rounded-full"
@@ -316,11 +316,11 @@ export function DepthCards({
                       {item.eyebrow}
                     </div>
                   )}
-                  <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-white sm:text-2xl">
+                  <h3 className="text-balance text-xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-2xl">
                     {item.title}
                   </h3>
                   {item.body && (
-                    <p className="mt-2 text-pretty text-xs leading-relaxed text-white/65 sm:text-sm">
+                    <p className="mt-2 text-pretty text-xs leading-relaxed text-picks-fg/65 sm:text-sm">
                       {item.body}
                     </p>
                   )}
@@ -334,9 +334,9 @@ export function DepthCards({
       {/* Hint */}
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55"
+        className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55"
       >
-        <span className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-white/85" />
+        <span className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-picks-fg/85" />
         Move your cursor
       </div>
     </div>

@@ -177,7 +177,7 @@ export function HoverCard({
                 onMouseEnter={show}
                 onMouseLeave={hide}
                 className={cn(
-                  'w-max max-w-sm rounded-xl border border-white/10 bg-zinc-900 p-4 shadow-2xl shadow-black/40',
+                  'w-max max-w-sm rounded-xl border border-picks-fg/10 bg-picks-panel p-4 shadow-2xl shadow-black/40',
                   className,
                 )}
               >

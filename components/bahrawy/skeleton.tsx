@@ -40,7 +40,7 @@ export function Skeleton({
       className={cn(
         // Base + shimmer overlay. The shimmer is a faint white sweep that
         // glides left→right on the `shimmer` keyframe (defined in tailwind.config).
-        'block bg-white/[0.06] [background-image:linear-gradient(110deg,transparent_40%,rgba(255,255,255,0.08)_50%,transparent_60%)] [background-size:200%_100%] animate-shimmer',
+        'block bg-picks-fg/[0.06] [background-image:linear-gradient(110deg,transparent_40%,rgba(255,255,255,0.08)_50%,transparent_60%)] [background-size:200%_100%] animate-shimmer',
         className,
       )}
     />

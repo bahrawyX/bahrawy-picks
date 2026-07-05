@@ -166,7 +166,7 @@ export function DataTable<TData, TValue = unknown>({
                 e.stopPropagation()
                 row.toggleExpanded()
               }}
-              className="flex h-6 w-6 items-center justify-center rounded text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70"
+              className="flex h-6 w-6 items-center justify-center rounded text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70"
             >
               {row.getIsExpanded() ? (
                 <ChevronDown className="h-4 w-4" />
@@ -281,8 +281,8 @@ export function DataTable<TData, TValue = unknown>({
           onTouchStart={header.getResizeHandler() as React.TouchEventHandler}
           whileHover={{ scaleX: 1.5 }}
           className={cn(
-            'absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none bg-white/0 transition-colors hover:bg-white/15',
-            header.column.getIsResizing() && 'bg-white/25'
+            'absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none bg-picks-fg/0 transition-colors hover:bg-picks-fg/15',
+            header.column.getIsResizing() && 'bg-picks-fg/25'
           )}
         />
       )
@@ -303,17 +303,17 @@ export function DataTable<TData, TValue = unknown>({
       />
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-white/[0.08]">
+      <div className="overflow-hidden rounded-xl border border-picks-fg/[0.08]">
         {virtualize && hasRows && !isLoading ? (
           <div className="dt-scroll-container max-h-[600px] overflow-auto">
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-black/80 backdrop-blur-sm">
+              <TableHeader className="sticky top-0 z-10 bg-picks-surface/80 backdrop-blur-sm">
                 {table.getHeaderGroups().map((hg) => (
-                  <TableRow key={hg.id} className="border-white/[0.08] hover:bg-transparent">
+                  <TableRow key={hg.id} className="border-picks-fg/[0.08] hover:bg-transparent">
                     {hg.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={cn('relative text-[13px] font-medium text-white/40', densityPadding[density])}
+                        className={cn('relative text-[13px] font-medium text-picks-fg/40', densityPadding[density])}
                         style={{ width: header.getSize() }}
                       >
                         {header.isPlaceholder
@@ -330,13 +330,13 @@ export function DataTable<TData, TValue = unknown>({
           </div>
         ) : (
           <Table>
-            <TableHeader className="bg-white/[0.02]">
+            <TableHeader className="bg-picks-fg/[0.02]">
               {table.getHeaderGroups().map((hg) => (
-                <TableRow key={hg.id} className="border-white/[0.08] hover:bg-transparent">
+                <TableRow key={hg.id} className="border-picks-fg/[0.08] hover:bg-transparent">
                   {hg.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className={cn('relative text-[13px] font-medium text-white/40', densityPadding[density])}
+                      className={cn('relative text-[13px] font-medium text-picks-fg/40', densityPadding[density])}
                       style={{ width: header.getSize() }}
                     >
                       {header.isPlaceholder
@@ -366,15 +366,15 @@ export function DataTable<TData, TValue = unknown>({
                     <TableRow
                       data-state={row.getIsSelected() ? 'selected' : undefined}
                       className={cn(
-                        'border-white/[0.06] transition-colors hover:bg-white/[0.02]',
-                        row.getIsSelected() && 'bg-white/[0.04]'
+                        'border-picks-fg/[0.06] transition-colors hover:bg-picks-fg/[0.02]',
+                        row.getIsSelected() && 'bg-picks-fg/[0.04]'
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
                           className={cn(
-                            'text-sm text-white/70',
+                            'text-sm text-picks-fg/70',
                             densityPadding[density]
                           )}
                           style={{ width: cell.column.getSize() }}
@@ -399,7 +399,7 @@ export function DataTable<TData, TValue = unknown>({
                               transition={springGentle}
                               className="overflow-hidden"
                             >
-                              <div className="border-t border-white/[0.06] bg-white/[0.015] px-5 py-4">
+                              <div className="border-t border-picks-fg/[0.06] bg-picks-fg/[0.015] px-5 py-4">
                                 {renderSubComponent(row)}
                               </div>
                             </motion.div>

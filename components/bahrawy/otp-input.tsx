@@ -187,9 +187,9 @@ export function OTPInput({
   const borderColor = (index: number) => {
     if (status === 'error') return 'border-red-500/70'
     if (status === 'success') return 'border-emerald-500/70'
-    if (focusedIndex === index) return 'border-white/50'
-    if (chars[index]) return 'border-white/20'
-    return 'border-white/[0.08]'
+    if (focusedIndex === index) return 'border-picks-fg/50'
+    if (chars[index]) return 'border-picks-fg/20'
+    return 'border-picks-fg/[0.08]'
   }
 
   return (
@@ -222,7 +222,7 @@ export function OTPInput({
             <div key={index} className="flex items-center gap-2">
               {/* Separator */}
               {needsSeparator(index) && (
-                <span className="mx-1 select-none text-lg text-white/20">
+                <span className="mx-1 select-none text-lg text-picks-fg/20">
                   {separator === true ? '–' : separator}
                 </span>
               )}
@@ -255,8 +255,8 @@ export function OTPInput({
                   onFocus={() => handleFocus(index)}
                   onBlur={handleBlur}
                   className={cn(
-                    'h-14 w-12 rounded-xl border-2 bg-white/[0.03] text-center text-xl font-semibold text-white/0 caret-transparent outline-none transition-colors',
-                    'focus:bg-white/[0.06]',
+                    'h-14 w-12 rounded-xl border-2 bg-picks-fg/[0.03] text-center text-xl font-semibold text-picks-fg/0 caret-transparent outline-none transition-colors',
+                    'focus:bg-picks-fg/[0.06]',
                     borderColor(index),
                     disabled && 'cursor-not-allowed opacity-40',
                   )}
@@ -272,7 +272,7 @@ export function OTPInput({
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.85 }}
                         transition={springSnappy}
-                        className="text-xl font-semibold text-white"
+                        className="text-xl font-semibold text-picks-fg"
                       >
                         {char}
                       </motion.span>
@@ -298,7 +298,7 @@ export function OTPInput({
                 {showCaret && (
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                     <motion.div
-                      className="h-6 w-0.5 rounded-full bg-white"
+                      className="h-6 w-0.5 rounded-full bg-picks-fg"
                       animate={{ opacity: [1, 0, 1] }}
                       transition={{ ...tweenSmooth, duration: 1, repeat: Infinity }}
                     />

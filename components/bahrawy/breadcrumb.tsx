@@ -48,7 +48,7 @@ export function Breadcrumb({
 
   return (
     <nav aria-label="Breadcrumb" className={cn('flex w-full', className)}>
-      <ol className="flex min-w-0 items-center gap-1.5 text-sm text-white/70">
+      <ol className="flex min-w-0 items-center gap-1.5 text-sm text-picks-fg/70">
         {shown.map((entry, i) => {
           const isLast = i === shown.length - 1
           return (
@@ -59,7 +59,7 @@ export function Breadcrumb({
                     type="button"
                     onClick={() => setExpanded(true)}
                     aria-label="Show full path"
-                    className="rounded-md px-1.5 py-1 text-white/50 transition-colors hover:bg-white/5 hover:text-white"
+                    className="rounded-md px-1.5 py-1 text-picks-fg/50 transition-colors hover:bg-picks-fg/5 hover:text-picks-fg"
                   >
                     <MoreHorizontal className="h-3.5 w-3.5" />
                   </button>
@@ -68,7 +68,7 @@ export function Breadcrumb({
                 )}
               </li>
               {!isLast && (
-                <li aria-hidden className="shrink-0 text-white/30">
+                <li aria-hidden className="shrink-0 text-picks-fg/30">
                   {separator}
                 </li>
               )}
@@ -83,7 +83,7 @@ export function Breadcrumb({
 function BreadcrumbCrumb({ item, isLast }: { item: BreadcrumbItem; isLast: boolean }) {
   const className = cn(
     'inline-block truncate transition-colors',
-    isLast ? 'font-medium text-white' : 'text-white/65 hover:text-white',
+    isLast ? 'font-medium text-picks-fg' : 'text-picks-fg/65 hover:text-picks-fg',
   )
   return (
     <AnimatePresence mode="popLayout" initial={false}>

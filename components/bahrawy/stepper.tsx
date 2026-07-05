@@ -184,7 +184,7 @@ function StepCircle({ step, index, status, clickable, onClick }: StepCircleProps
           key="check"
           {...scaleIn}
           transition={springSnappy}
-          className="inline-flex items-center justify-center text-white"
+          className="inline-flex items-center justify-center text-picks-fg"
         >
           <Check className="h-4 w-4" strokeWidth={2.5} />
         </motion.span>
@@ -281,8 +281,8 @@ function StepLabel({
       <p
         className={cn(
           'truncate text-sm font-medium',
-          status === 'completed' && 'text-white',
-          status === 'current' && 'text-white',
+          status === 'completed' && 'text-picks-fg',
+          status === 'current' && 'text-picks-fg',
           status === 'upcoming' && 'text-zinc-500',
           status === 'error' && 'text-rose-400',
         )}

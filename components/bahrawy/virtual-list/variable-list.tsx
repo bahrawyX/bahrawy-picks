@@ -129,7 +129,7 @@ export function VariableList<T>({
 
       {isLoadingMore && (
         <div className="flex items-center justify-center py-4">
-          <Loader2 className="h-5 w-5 animate-spin text-white/40" />
+          <Loader2 className="h-5 w-5 animate-spin text-picks-fg/40" />
         </div>
       )}
     </div>

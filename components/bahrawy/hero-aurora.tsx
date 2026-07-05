@@ -87,7 +87,7 @@ export function HeroAurora({
     <section
       style={{ minHeight }}
       className={cn(
-        'relative isolate flex w-full items-center justify-center overflow-hidden bg-black',
+        'relative isolate flex w-full items-center justify-center overflow-hidden bg-picks-surface',
         className,
       )}
     >
@@ -121,7 +121,7 @@ export function HeroAurora({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
-            className="rounded-full border border-white/15 bg-black/30 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/85 backdrop-blur"
+            className="rounded-full border border-picks-fg/15 bg-black/30 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/85 backdrop-blur"
           >
             {eyebrow}
           </motion.span>
@@ -130,7 +130,7 @@ export function HeroAurora({
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.05, ease: [0.2, 0, 0, 1] }}
-          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl"
+          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-picks-fg sm:text-6xl md:text-7xl"
         >
           {title}
         </motion.h1>
@@ -139,7 +139,7 @@ export function HeroAurora({
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.12, ease: [0.2, 0, 0, 1] }}
-            className="max-w-xl text-pretty text-base leading-relaxed text-white/75 sm:text-lg"
+            className="max-w-xl text-pretty text-base leading-relaxed text-picks-fg/75 sm:text-lg"
           >
             {description}
           </motion.p>
@@ -154,7 +154,7 @@ export function HeroAurora({
             {primaryCta && (
               <a
                 href={primaryCta.href ?? '#'}
-                className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+                className="inline-flex items-center justify-center rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/85"
               >
                 {primaryCta.label}
               </a>
@@ -162,7 +162,7 @@ export function HeroAurora({
             {secondaryCta && (
               <a
                 href={secondaryCta.href ?? '#'}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-full border border-picks-fg/20 bg-black/40 px-5 py-2.5 text-sm font-medium text-picks-fg/90 backdrop-blur transition-colors hover:bg-picks-fg/10"
               >
                 {secondaryCta.label}
               </a>

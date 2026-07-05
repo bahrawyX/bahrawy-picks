@@ -95,7 +95,7 @@ export function Snippet({
   return (
     <div
       className={cn(
-        'inline-flex w-full max-w-full flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]',
+        'inline-flex w-full max-w-full flex-col overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-fg/[0.02]',
         className,
       )}
     >
@@ -125,14 +125,14 @@ export function Snippet({
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
               className={cn(
-                'block font-mono text-[12.5px] tracking-tight text-white/85',
+                'block font-mono text-[12.5px] tracking-tight text-picks-fg/85',
                 multiline
                   ? 'whitespace-pre-wrap break-words'
                   : 'truncate whitespace-pre',
               )}
             >
               {prefix && (
-                <span className="select-none text-white/35">{prefix}</span>
+                <span className="select-none text-picks-fg/35">{prefix}</span>
               )}
               {active?.code}
             </motion.code>
@@ -145,9 +145,9 @@ export function Snippet({
             onClick={handleCopy}
             aria-label="Copy snippet"
             className={cn(
-              'relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/40 transition-colors',
-              'hover:bg-white/[0.06] hover:text-white/85',
-              'outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+              'relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-picks-fg/40 transition-colors',
+              'hover:bg-picks-fg/[0.06] hover:text-picks-fg/85',
+              'outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30',
             )}
           >
             <AnimatePresence mode="wait" initial={false}>
@@ -212,7 +212,7 @@ function TabBar({
   return (
     <div
       role="tablist"
-      className="flex items-center gap-0.5 border-b border-white/[0.05] bg-white/[0.015] px-1.5 py-1.5"
+      className="flex items-center gap-0.5 border-b border-picks-fg/[0.05] bg-picks-fg/[0.015] px-1.5 py-1.5"
     >
       {tabs.map((tab, i) => {
         const isActive = tab.label === activeLabel
@@ -228,14 +228,14 @@ function TabBar({
             onClick={() => onChange(tab.label)}
             className={cn(
               'relative inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11.5px] font-medium tracking-tight transition-colors',
-              isActive ? 'text-white' : 'text-white/55 hover:text-white/80',
+              isActive ? 'text-picks-fg' : 'text-picks-fg/55 hover:text-picks-fg/80',
             )}
           >
             {isActive && (
               <motion.span
                 // Scoped per instance so multiple Snippets don't collide.
                 layoutId={`snippet-tab-pill-${uid}`}
-                className="absolute inset-0 rounded-md bg-white/[0.08]"
+                className="absolute inset-0 rounded-md bg-picks-fg/[0.08]"
                 transition={SPRING}
               />
             )}

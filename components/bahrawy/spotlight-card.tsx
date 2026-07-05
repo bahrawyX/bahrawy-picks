@@ -72,7 +72,7 @@ export const SpotlightCard = React.forwardRef<HTMLDivElement, SpotlightCardProps
           else if (ref) ref.current = el
         }}
         className={cn(
-          'relative overflow-hidden border border-white/10 bg-black/40',
+          'relative overflow-hidden border border-picks-fg/10 bg-picks-surface/40',
           className
         )}
         style={{ borderRadius }}

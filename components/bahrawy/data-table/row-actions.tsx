@@ -29,7 +29,7 @@ export function RowActions<TData>({ row, actions }: RowActionsProps<TData>) {
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 text-white/40 hover:bg-white/[0.06] hover:text-white/80"
+          className="h-8 w-8 p-0 text-picks-fg/40 hover:bg-picks-fg/[0.06] hover:text-picks-fg/80"
         >
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Open actions</span>
@@ -37,7 +37,7 @@ export function RowActions<TData>({ row, actions }: RowActionsProps<TData>) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="border-white/10 bg-black/90 backdrop-blur-xl"
+        className="border-picks-fg/10 bg-picks-surface/90 backdrop-blur-xl"
       >
         {actions.map((action) => (
           <DropdownMenuItem
@@ -46,7 +46,7 @@ export function RowActions<TData>({ row, actions }: RowActionsProps<TData>) {
             className={
               action.variant === 'destructive'
                 ? 'gap-2 text-red-400 hover:text-red-300 focus:bg-red-500/10'
-                : 'gap-2 text-white/70 hover:text-white focus:bg-white/[0.06]'
+                : 'gap-2 text-picks-fg/70 hover:text-picks-fg focus:bg-picks-fg/[0.06]'
             }
           >
             {action.icon && (

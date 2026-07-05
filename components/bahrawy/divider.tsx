@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 export interface DividerProps {
   label?: React.ReactNode
   style?: 'solid' | 'dashed' | 'gradient'
-  /** Line color (used for solid + dashed). Default rgba(255,255,255,0.12). */
+  /** Line color (used for solid + dashed). Default rgb(var(--picks-fg-rgb) / 0.12). */
   color?: string
   /** Animate from 0 → full width on scroll into view. Default true. */
   animateIn?: boolean
@@ -25,7 +25,7 @@ export interface DividerProps {
 export function Divider({
   label,
   style = 'solid',
-  color = 'rgba(255,255,255,0.12)',
+  color = 'rgb(var(--picks-fg-rgb) / 0.12)',
   animateIn = true,
   className,
 }: DividerProps) {
@@ -61,7 +61,7 @@ export function Divider({
         className="block flex-1"
       />
       {label && (
-        <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.18em] text-white/45">
+        <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/45">
           {label}
         </span>
       )}

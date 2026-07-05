@@ -54,8 +54,8 @@ function ActivityItem({
 
   const statusBorder: Record<string, string> = {
     completed: 'border-l-emerald-500/40',
-    current: 'border-l-white/40',
-    upcoming: 'border-l-white/10',
+    current: 'border-l-picks-fg/40',
+    upcoming: 'border-l-picks-fg/10',
     error: 'border-l-red-500/40',
     warning: 'border-l-amber-500/40',
   }
@@ -69,7 +69,7 @@ function ActivityItem({
         transition={springSnappy}
         onClick={() => onEventClick?.(event)}
         className={cn(
-          'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-white/[0.02]',
+          'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-picks-fg/[0.02]',
           statusBorder[event.status ?? 'completed'],
           onEventClick && 'cursor-pointer'
         )}
@@ -83,7 +83,7 @@ function ActivityItem({
     <div
       onClick={() => onEventClick?.(event)}
       className={cn(
-        'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-white/[0.02] animate-tl-fade-up',
+        'flex items-start gap-3 border-l-2 py-3 pl-4 pr-2 transition-colors hover:bg-picks-fg/[0.02] animate-tl-fade-up',
         statusBorder[event.status ?? 'completed'],
         onEventClick && 'cursor-pointer'
       )}
@@ -107,7 +107,7 @@ function renderContent(
         {event.avatar ? (
           <Avatar className="h-7 w-7">
             {event.avatar.src && <AvatarImage src={event.avatar.src} />}
-            <AvatarFallback className="bg-white/[0.08] text-[10px] font-medium text-white/60">
+            <AvatarFallback className="bg-picks-fg/[0.08] text-[10px] font-medium text-picks-fg/60">
               {event.avatar.fallback}
             </AvatarFallback>
           </Avatar>
@@ -115,20 +115,20 @@ function renderContent(
           <div
             className={cn(
               'flex h-7 w-7 items-center justify-center rounded-full [&_svg]:h-3.5 [&_svg]:w-3.5',
-              event.iconBackground ?? event.color ?? 'bg-white/[0.06] text-white/50'
+              event.iconBackground ?? event.color ?? 'bg-picks-fg/[0.06] text-picks-fg/50'
             )}
           >
             {event.icon}
           </div>
         ) : (
-          <div className="h-7 w-7 rounded-full bg-white/[0.06]" />
+          <div className="h-7 w-7 rounded-full bg-picks-fg/[0.06]" />
         )}
       </div>
 
       {/* Content */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium text-white/80">
+          <span className="truncate text-sm font-medium text-picks-fg/80">
             {event.title}
           </span>
           {event.badge && (
@@ -141,7 +141,7 @@ function renderContent(
           )}
         </div>
         {event.description && (
-          <p className="mt-0.5 text-xs text-white/35 line-clamp-2">
+          <p className="mt-0.5 text-xs text-picks-fg/35 line-clamp-2">
             {typeof event.description === 'string'
               ? event.description
               : null}
@@ -152,7 +152,7 @@ function renderContent(
       {/* Timestamp */}
       {showTimestamps !== false && (
         <span
-          className="shrink-0 pt-0.5 text-[11px] tabular-nums text-white/20"
+          className="shrink-0 pt-0.5 text-[11px] tabular-nums text-picks-fg/20"
           title={absoluteTime}
           suppressHydrationWarning
         >
@@ -263,7 +263,7 @@ export function ActivityFeed({
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="mt-2 self-start border-l-2 border-l-white/[0.06] py-2 pl-4 text-xs font-medium text-white/30 transition-colors hover:text-white/60 animate-tl-fade-up"
+          className="mt-2 self-start border-l-2 border-l-picks-fg/[0.06] py-2 pl-4 text-xs font-medium text-picks-fg/30 transition-colors hover:text-picks-fg/60 animate-tl-fade-up"
         >
           Show {hiddenCount} more
         </button>

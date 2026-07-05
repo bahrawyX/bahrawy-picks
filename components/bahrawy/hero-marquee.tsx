@@ -42,19 +42,19 @@ const DEFAULT_ROWS: HeroMarqueeRow[] = [
     words: ['Components', 'Motion', 'React', 'Next.js', 'Tailwind', 'Open source'],
     duration: 28,
     direction: 'left',
-    textClassName: 'text-white/10',
+    textClassName: 'text-picks-fg/10',
   },
   {
     words: ['Type-safe', 'Accessible', 'Themeable', 'Composable', 'Copy & paste'],
     duration: 38,
     direction: 'right',
-    textClassName: 'text-white/[0.07]',
+    textClassName: 'text-picks-fg/[0.07]',
   },
   {
     words: ['Bahrawy', 'Ship faster', 'Look great', 'No bloat', 'Yours to own'],
     duration: 32,
     direction: 'left',
-    textClassName: 'text-white/[0.05]',
+    textClassName: 'text-picks-fg/[0.05]',
   },
 ]
 
@@ -73,7 +73,7 @@ export function HeroMarquee({
     <section
       style={{ minHeight }}
       className={cn(
-        'group relative isolate flex w-full items-center justify-center overflow-hidden bg-black',
+        'group relative isolate flex w-full items-center justify-center overflow-hidden bg-picks-surface',
         className,
       )}
     >
@@ -97,7 +97,7 @@ export function HeroMarquee({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
-            className="rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80 backdrop-blur"
+            className="rounded-full border border-picks-fg/15 bg-black/40 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80 backdrop-blur"
           >
             {eyebrow}
           </motion.span>
@@ -106,7 +106,7 @@ export function HeroMarquee({
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.75, delay: 0.05, ease: [0.2, 0, 0, 1] }}
-          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl"
+          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-picks-fg sm:text-6xl md:text-7xl"
         >
           {title}
         </motion.h1>
@@ -115,7 +115,7 @@ export function HeroMarquee({
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.2, 0, 0, 1] }}
-            className="max-w-xl text-pretty text-base leading-relaxed text-white/70 sm:text-lg"
+            className="max-w-xl text-pretty text-base leading-relaxed text-picks-fg/70 sm:text-lg"
           >
             {description}
           </motion.p>
@@ -130,7 +130,7 @@ export function HeroMarquee({
             {primaryCta && (
               <a
                 href={primaryCta.href ?? '#'}
-                className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+                className="inline-flex items-center justify-center rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/85"
               >
                 {primaryCta.label}
               </a>
@@ -138,7 +138,7 @@ export function HeroMarquee({
             {secondaryCta && (
               <a
                 href={secondaryCta.href ?? '#'}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-full border border-picks-fg/20 bg-black/40 px-5 py-2.5 text-sm font-medium text-picks-fg/90 backdrop-blur transition-colors hover:bg-picks-fg/10"
               >
                 {secondaryCta.label}
               </a>
@@ -180,13 +180,13 @@ function MarqueeLine({ row, pauseOnHover }: { row: HeroMarqueeRow; pauseOnHover:
             aria-hidden={dup === 1}
             className={cn(
               'inline-flex shrink-0 items-center gap-12 pr-12 text-7xl font-black uppercase tracking-tight sm:text-8xl',
-              textClassName ?? 'text-white/10',
+              textClassName ?? 'text-picks-fg/10',
             )}
           >
             {words.map((w, i) => (
               <span key={i} className="inline-flex items-center gap-12">
                 {w}
-                <span aria-hidden className="text-white/10">·</span>
+                <span aria-hidden className="text-picks-fg/10">·</span>
               </span>
             ))}
           </span>

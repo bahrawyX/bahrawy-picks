@@ -84,7 +84,7 @@ export function LiveCursor({
             exit={{ opacity: 0, y: -4, scale: 0.92 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              'absolute origin-top-left whitespace-nowrap rounded-2xl rounded-tl-md bg-white px-3 py-1.5 shadow-lg shadow-black/40',
+              'absolute origin-top-left whitespace-nowrap rounded-2xl rounded-tl-md bg-picks-fg px-3 py-1.5 shadow-lg shadow-black/40',
               'text-[12px] font-medium tracking-tight',
             )}
             style={{

@@ -9,6 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Theme-adaptive surface tokens (see globals.css :root /
+        // [data-picks-theme='light']). Alpha modifiers compose:
+        // text-picks-fg/60 === text-white/60 under dark defaults.
+        'picks-fg': 'rgb(var(--picks-fg-rgb) / <alpha-value>)',
+        'picks-surface': 'rgb(var(--picks-surface-rgb) / <alpha-value>)',
+        'picks-panel': 'rgb(var(--picks-panel-rgb) / <alpha-value>)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

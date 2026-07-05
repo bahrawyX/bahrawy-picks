@@ -71,7 +71,7 @@ export function Ticker({
   return (
     <div
       className={cn(
-        'relative inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] py-1.5 pl-1.5 pr-3',
+        'relative inline-flex items-center gap-2 rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.02] py-1.5 pl-1.5 pr-3',
         className,
       )}
     >
@@ -84,16 +84,16 @@ export function Ticker({
       />
 
       {logo && (
-        <span className="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/[0.04]">
+        <span className="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-picks-fg/[0.04]">
           {logo}
         </span>
       )}
 
-      <span className="relative font-display text-[12px] font-semibold tracking-tight text-white/90">
+      <span className="relative font-display text-[12px] font-semibold tracking-tight text-picks-fg/90">
         {symbol}
       </span>
 
-      <span className="relative font-mono text-[12px] tabular-nums text-white/85">
+      <span className="relative font-mono text-[12px] tabular-nums text-picks-fg/85">
         {currency}
         {price.toFixed(precision)}
       </span>
@@ -146,7 +146,7 @@ export function TickerRow({
   return (
     <div
       className={cn(
-        'relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] py-3',
+        'relative w-full overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.015] py-3',
         '[mask-image:linear-gradient(to_right,transparent,black_60px,black_calc(100%-60px),transparent)]',
         pauseOnHover && 'group',
         className,

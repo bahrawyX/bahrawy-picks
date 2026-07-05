@@ -39,7 +39,7 @@ export function LogoCloud({
     <section className={cn('w-full bg-black px-6 py-16', className)}>
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8">
         {eyebrow && (
-          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-white/45">
+          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/45">
             {eyebrow}
           </p>
         )}
@@ -84,7 +84,7 @@ function LogoItem({ item }: { item: LogoCloudItem }) {
       draggable={false}
     />
   ) : (
-    <span className="text-lg font-semibold tracking-tight text-white/45 transition-colors duration-300 hover:text-white sm:text-xl">
+    <span className="text-lg font-semibold tracking-tight text-picks-fg/45 transition-colors duration-300 hover:text-picks-fg sm:text-xl">
       {item.name}
     </span>
   )

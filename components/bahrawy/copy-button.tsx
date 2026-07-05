@@ -102,11 +102,11 @@ export function CopyButton({
               'inline-flex items-center justify-center gap-1.5 rounded-lg transition-colors',
               sizeMap[size],
               variant === 'default' &&
-                'border border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:bg-white/[0.06] hover:text-white',
+                'border border-picks-fg/[0.08] bg-picks-fg/[0.03] text-picks-fg/60 hover:border-picks-fg/20 hover:bg-picks-fg/[0.06] hover:text-picks-fg',
               variant === 'outline' &&
-                'border border-white/[0.12] bg-transparent text-white/60 hover:border-white/25 hover:text-white',
+                'border border-picks-fg/[0.12] bg-transparent text-picks-fg/60 hover:border-picks-fg/25 hover:text-picks-fg',
               variant === 'ghost' &&
-                'bg-transparent text-white/50 hover:bg-white/[0.06] hover:text-white',
+                'bg-transparent text-picks-fg/50 hover:bg-picks-fg/[0.06] hover:text-picks-fg',
               state === 'copied' && 'border-green-500/30 text-green-400',
               state === 'error' && 'border-red-500/30 text-red-400',
               label && 'w-auto px-2.5',

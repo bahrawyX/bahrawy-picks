@@ -274,7 +274,7 @@ export function Tree({
       role="tree"
       ref={scrollRef}
       className={cn(
-        'w-full rounded-2xl border border-white/[0.08] bg-white/[0.015] p-2 font-mono text-[12px]',
+        'w-full rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.015] p-2 font-mono text-[12px]',
         virtualized ? 'overflow-y-auto' : 'overflow-hidden',
         className,
       )}
@@ -461,9 +461,9 @@ function TreeRowButton({
       onKeyDown={(e) => ctx.onRowKeyDown(e, id)}
       className={cn(
         'group relative flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left transition-colors',
-        'hover:bg-white/[0.04] focus-visible:bg-white/[0.04] focus-visible:outline-none',
-        isSelected && 'bg-white/[0.06] text-white',
-        !isSelected && 'text-white/75',
+        'hover:bg-picks-fg/[0.04] focus-visible:bg-picks-fg/[0.04] focus-visible:outline-none',
+        isSelected && 'bg-picks-fg/[0.06] text-picks-fg',
+        !isSelected && 'text-picks-fg/75',
       )}
       style={{ paddingLeft: 6 + depth * 14 }}
     >
@@ -473,13 +473,13 @@ function TreeRowButton({
           <span
             key={i}
             aria-hidden
-            className="pointer-events-none absolute top-0 h-full w-px bg-white/[0.05]"
+            className="pointer-events-none absolute top-0 h-full w-px bg-picks-fg/[0.05]"
             style={{ left: 6 + i * 14 + 7 }}
           />
         ))}
 
       {/* Chevron (folders) or spacer (files) */}
-      <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-white/40">
+      <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-picks-fg/40">
         {isFolder ? (
           animate ? (
             <motion.span
@@ -515,7 +515,7 @@ function TreeRowButton({
           )
         ) : (
           <FileIcon
-            className="h-3.5 w-3.5 text-white/35"
+            className="h-3.5 w-3.5 text-picks-fg/35"
             strokeWidth={2}
           />
         )}

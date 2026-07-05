@@ -253,7 +253,7 @@ export function ReceiptUnroll({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#0a0a0d]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -270,7 +270,7 @@ export function ReceiptUnroll({
         {eyebrow && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-center px-6 pt-14 sm:pt-16">
             <div ref={eyebrowRef} className="pointer-events-auto">
-              <div className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+              <div className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur">
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
@@ -289,7 +289,7 @@ export function ReceiptUnroll({
             {/* Printer slot — sits just above the receipt */}
             <div className="pointer-events-none relative z-30 mx-auto w-full">
               <div
-                className="h-8 w-full rounded-t-md rounded-b-xl border border-white/10"
+                className="h-8 w-full rounded-t-md rounded-b-xl border border-picks-fg/10"
                 style={{
                   background:
                     'linear-gradient(180deg, #14151c 0%, #07080b 90%)',
@@ -444,7 +444,7 @@ export function ReceiptUnroll({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                 style={{
                   boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
                 }}
@@ -458,7 +458,7 @@ export function ReceiptUnroll({
 
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll to print
         </div>

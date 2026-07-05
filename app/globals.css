@@ -38,6 +38,29 @@
   --picks-fg: #ffffff; /* primary text */
   --picks-fg-muted: rgba(255, 255, 255, 0.65); /* secondary / muted text */
   --picks-border: rgba(255, 255, 255, 0.08); /* hairline borders */
+
+  /* Channel triples — consumed by the tailwind `picks-*` colors so
+     opacity modifiers compose (text-picks-fg/60 etc.). Dark defaults
+     are byte-identical to the classes they replace:
+       picks-fg      = white        (text-white, border-white, bg-white)
+       picks-surface = zinc-950     (#09090b component surfaces)
+       picks-panel   = zinc-900     (#18181b raised panels)          */
+  --picks-fg-rgb: 255 255 255;
+  --picks-surface-rgb: 9 9 11;
+  --picks-panel-rgb: 24 24 27;
+}
+
+/* Light theme — set data-picks-theme="light" on any wrapper (or html)
+   and every token-driven component inside adapts. */
+[data-picks-theme='light'] {
+  --picks-fg-rgb: 24 24 27; /* zinc-900 */
+  --picks-surface-rgb: 250 250 250; /* zinc-50 */
+  --picks-panel-rgb: 255 255 255;
+  --picks-surface: #fafafa;
+  --picks-surface-raised: #e4e4e7; /* zinc-200 */
+  --picks-fg: #18181b;
+  --picks-fg-muted: rgba(24, 24, 27, 0.62);
+  --picks-border: rgba(24, 24, 27, 0.12);
 }
 
 /* Make .dark variants resolve to the same tokens (bahrawy is dark-only,

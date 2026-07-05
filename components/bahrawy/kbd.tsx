@@ -118,7 +118,7 @@ export function Kbd({
   return (
     <kbd
       className={cn(
-        'inline-flex items-center gap-0.5 font-sans font-medium text-white/60',
+        'inline-flex items-center gap-0.5 font-sans font-medium text-picks-fg/60',
         className,
       )}
       aria-label={keyArray.join(' + ')}
@@ -127,14 +127,14 @@ export function Kbd({
         <span key={`${key}-${i}`}>
           <span
             className={cn(
-              'inline-flex items-center justify-center border border-white/[0.1] bg-white/[0.04] font-mono leading-none text-white/60',
+              'inline-flex items-center justify-center border border-picks-fg/[0.1] bg-picks-fg/[0.04] font-mono leading-none text-picks-fg/60',
               sizeStyles[size],
             )}
           >
             {key}
           </span>
           {i < resolvedKeys.length - 1 && (
-            <span className="mx-0.5 text-white/20">{separator}</span>
+            <span className="mx-0.5 text-picks-fg/20">{separator}</span>
           )}
         </span>
       ))}

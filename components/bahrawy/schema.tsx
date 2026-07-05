@@ -281,7 +281,7 @@ export function Schema({
     <div
       ref={canvasRef}
       className={cn(
-        'relative overflow-hidden rounded-[20px] border border-white/[0.08]',
+        'relative overflow-hidden rounded-[20px] border border-picks-fg/[0.08]',
         className,
       )}
       style={{
@@ -311,7 +311,7 @@ export function Schema({
       {/* Admin toolbar — vibrancy pill */}
       {admin && (
         <div
-          className="absolute right-4 top-4 z-30 flex items-center gap-1 rounded-full border border-white/[0.08] p-1 backdrop-blur-xl"
+          className="absolute right-4 top-4 z-30 flex items-center gap-1 rounded-full border border-picks-fg/[0.08] p-1 backdrop-blur-xl"
           style={{
             background:
               'linear-gradient(180deg, rgba(40,40,46,0.7) 0%, rgba(24,24,28,0.8) 100%)',
@@ -322,17 +322,17 @@ export function Schema({
           <button
             type="button"
             onClick={addTable}
-            className="inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-display text-[12px] font-semibold tracking-tight text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
+            className="inline-flex h-7 items-center gap-1.5 rounded-full px-3 font-display text-[12px] font-semibold tracking-tight text-picks-fg/85 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
             Add table
           </button>
-          <span aria-hidden className="h-3.5 w-px bg-white/[0.08]" />
+          <span aria-hidden className="h-3.5 w-px bg-picks-fg/[0.08]" />
           <button
             type="button"
             onClick={exportJson}
             aria-label="Export schema as JSON"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/[0.08] hover:text-white"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-picks-fg/65 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg"
             title="Export schema as JSON"
           >
             <Download className="h-3.5 w-3.5" strokeWidth={2.25} />
@@ -363,7 +363,7 @@ export function Schema({
               <motion.path
                 d={d}
                 fill="none"
-                stroke={involved ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.18)'}
+                stroke={involved ? 'rgb(var(--picks-fg-rgb) / 0.65)' : 'rgb(var(--picks-fg-rgb) / 0.18)'}
                 strokeWidth={involved ? 1.5 : 1}
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
@@ -373,13 +373,13 @@ export function Schema({
                 cx={x1}
                 cy={y1}
                 r={involved ? 3 : 2}
-                fill={involved ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)'}
+                fill={involved ? 'rgb(var(--picks-fg-rgb) / 0.85)' : 'rgb(var(--picks-fg-rgb) / 0.3)'}
               />
               <circle
                 cx={x2}
                 cy={y2}
                 r={involved ? 3 : 2}
-                fill={involved ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.3)'}
+                fill={involved ? 'rgb(var(--picks-fg-rgb) / 0.85)' : 'rgb(var(--picks-fg-rgb) / 0.3)'}
               />
             </g>
           )
@@ -411,8 +411,8 @@ export function Schema({
       {/* Empty state in admin mode */}
       {admin && tables.length === 0 && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <p className="font-display text-[14px] tracking-tight text-white/45">
-            Click <span className="text-white/75">+ Add table</span> to start.
+          <p className="font-display text-[14px] tracking-tight text-picks-fg/45">
+            Click <span className="text-picks-fg/75">+ Add table</span> to start.
           </p>
         </div>
       )}
@@ -457,7 +457,7 @@ function TableCard({
   onDragMove: () => void
   fkCandidates: { table: string; column: string; primary?: boolean }[]
 }) {
-  const accent = table.accent ?? 'rgba(255,255,255,0.55)'
+  const accent = table.accent ?? 'rgb(var(--picks-fg-rgb) / 0.55)'
   const [editingName, setEditingName] = React.useState(false)
   // Motion values mirror the committed (table.x / .y) position. Drag
   // updates the values, drag-end commits them up through onMoveEnd, and
@@ -518,7 +518,7 @@ function TableCard({
     >
       <div
         className={cn(
-          'overflow-hidden rounded-[14px] border border-white/[0.08] backdrop-blur-xl',
+          'overflow-hidden rounded-[14px] border border-picks-fg/[0.08] backdrop-blur-xl',
           'bg-[linear-gradient(180deg,rgba(32,32,36,0.94)_0%,rgba(20,20,22,0.97)_100%)]',
         )}
         style={{
@@ -540,13 +540,13 @@ function TableCard({
             dragControls.start(e)
           }}
           className={cn(
-            'group/header relative flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.015] px-3.5 py-2.5',
+            'group/header relative flex items-center gap-2 border-b border-picks-fg/[0.06] bg-picks-fg/[0.015] px-3.5 py-2.5',
             admin &&
-              'cursor-grab focus-visible:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-white/30 active:cursor-grabbing',
+              'cursor-grab focus-visible:bg-picks-fg/[0.05] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-picks-fg/30 active:cursor-grabbing',
           )}
         >
           {admin && (
-            <GripVertical className="h-3 w-3 shrink-0 text-white/30" strokeWidth={2} />
+            <GripVertical className="h-3 w-3 shrink-0 text-picks-fg/30" strokeWidth={2} />
           )}
           {!admin && (
             <TableIcon className="h-3.5 w-3.5 shrink-0" strokeWidth={2} style={{ color: accent }} />
@@ -567,18 +567,18 @@ function TableCard({
                 }
                 if (e.key === 'Escape') setEditingName(false)
               }}
-              className="min-w-0 flex-1 bg-transparent font-mono text-[12px] font-semibold tracking-tight text-white outline-none"
+              className="min-w-0 flex-1 bg-transparent font-mono text-[12px] font-semibold tracking-tight text-picks-fg outline-none"
             />
           ) : (
             <span
               onDoubleClick={() => admin && setEditingName(true)}
-              className="font-display text-[13px] font-semibold tracking-tight text-white"
+              className="font-display text-[13px] font-semibold tracking-tight text-picks-fg"
               title={admin ? 'Double-click to rename' : undefined}
             >
               {table.name}
             </span>
           )}
-          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-medium tabular-nums text-white/35">
+          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] font-medium tabular-nums text-picks-fg/35">
             {table.columns.length}
             <span aria-hidden>·</span>
             <span aria-hidden>cols</span>
@@ -591,7 +591,7 @@ function TableCard({
                 onDelete()
               }}
               aria-label="Delete table"
-              className="ml-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white/35 opacity-0 transition-all hover:bg-white/[0.08] hover:text-white group-hover/header:opacity-100"
+              className="ml-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-picks-fg/35 opacity-0 transition-all hover:bg-picks-fg/[0.08] hover:text-picks-fg group-hover/header:opacity-100"
             >
               <Trash2 className="h-3 w-3" strokeWidth={2.25} />
             </button>
@@ -599,7 +599,7 @@ function TableCard({
         </header>
 
         {/* Columns */}
-        <ul className="divide-y divide-white/[0.04]">
+        <ul className="divide-y divide-picks-fg/[0.04]">
           {table.columns.map((col, cIdx) => (
             <ColumnRow
               key={col.name + '-' + cIdx}
@@ -623,7 +623,7 @@ function TableCard({
           <button
             type="button"
             onClick={onAddColumn}
-            className="flex w-full items-center justify-center gap-1.5 border-t border-white/[0.04] bg-white/[0.015] py-2 text-[11px] font-medium tracking-tight text-white/45 transition-colors hover:bg-white/[0.05] hover:text-white/85"
+            className="flex w-full items-center justify-center gap-1.5 border-t border-picks-fg/[0.04] bg-picks-fg/[0.015] py-2 text-[11px] font-medium tracking-tight text-picks-fg/45 transition-colors hover:bg-picks-fg/[0.05] hover:text-picks-fg/85"
           >
             <Plus className="h-3 w-3" strokeWidth={2.25} />
             Add column
@@ -687,7 +687,7 @@ function ColumnRow({
       onMouseLeave={() => setHovered(null)}
       className={cn(
         'group/col relative flex items-center gap-2 px-3.5 py-2 transition-colors',
-        isHovered ? 'bg-white/[0.05]' : 'bg-transparent hover:bg-white/[0.03]',
+        isHovered ? 'bg-picks-fg/[0.05]' : 'bg-transparent hover:bg-picks-fg/[0.03]',
       )}
     >
       {/* Primary-key toggle / FK dot / plain bullet */}
@@ -698,7 +698,7 @@ function ColumnRow({
         aria-label={col.primary ? 'Remove primary key' : 'Set as primary key'}
         className={cn(
           'flex h-4 w-4 shrink-0 items-center justify-center rounded-sm',
-          admin && 'cursor-pointer hover:bg-white/[0.06]',
+          admin && 'cursor-pointer hover:bg-picks-fg/[0.06]',
           !admin && 'cursor-default',
         )}
       >
@@ -707,10 +707,10 @@ function ColumnRow({
         ) : col.references ? (
           <span
             aria-hidden
-            className="block h-1.5 w-1.5 rounded-full bg-white/55"
+            className="block h-1.5 w-1.5 rounded-full bg-picks-fg/55"
           />
         ) : (
-          <span aria-hidden className="block h-1 w-1 rounded-full bg-white/20" />
+          <span aria-hidden className="block h-1 w-1 rounded-full bg-picks-fg/20" />
         )}
       </button>
 
@@ -732,12 +732,12 @@ function ColumnRow({
             }
             if (e.key === 'Escape') setEditingName(false)
           }}
-          className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] font-medium text-white outline-none"
+          className="min-w-0 flex-1 bg-transparent font-mono text-[11.5px] font-medium text-picks-fg outline-none"
         />
       ) : (
         <span
           onDoubleClick={() => admin && setEditingName(true)}
-          className="font-mono text-[11.5px] font-medium text-white/85"
+          className="font-mono text-[11.5px] font-medium text-picks-fg/85"
           title={admin ? 'Double-click to rename' : undefined}
         >
           {col.name}
@@ -756,10 +756,10 @@ function ColumnRow({
                 setEditingType(false)
               }}
               onBlur={() => setEditingType(false)}
-              className="bg-transparent font-mono text-[10.5px] text-white outline-none"
+              className="bg-transparent font-mono text-[10.5px] text-picks-fg outline-none"
             >
               {COMMON_TYPES.map((t) => (
-                <option key={t} value={t} className="bg-zinc-900">
+                <option key={t} value={t} className="bg-picks-panel">
                   {t}
                 </option>
               ))}
@@ -769,8 +769,8 @@ function ColumnRow({
               type="button"
               onClick={() => admin && setEditingType(true)}
               className={cn(
-                'font-mono text-[10.5px] tracking-tight text-white/40',
-                admin && 'rounded px-1 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+                'font-mono text-[10.5px] tracking-tight text-picks-fg/40',
+                admin && 'rounded px-1 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
               )}
               title={admin ? 'Click to change type' : undefined}
             >
@@ -792,7 +792,7 @@ function ColumnRow({
             }}
             aria-label={col.references ? 'Edit foreign key' : 'Add foreign key'}
             className={cn(
-              'inline-flex h-5 w-5 items-center justify-center rounded text-white/45 transition-colors hover:bg-white/[0.08] hover:text-white',
+              'inline-flex h-5 w-5 items-center justify-center rounded text-picks-fg/45 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg',
               col.references && 'text-[#9CDCFE]',
             )}
             title={
@@ -814,7 +814,7 @@ function ColumnRow({
               onRemove()
             }}
             aria-label="Delete column"
-            className="inline-flex h-5 w-5 items-center justify-center rounded text-white/45 transition-colors hover:bg-white/[0.08] hover:text-white"
+            className="inline-flex h-5 w-5 items-center justify-center rounded text-picks-fg/45 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg"
           >
             <X className="h-3 w-3" strokeWidth={2.25} />
           </button>
@@ -829,15 +829,15 @@ function ColumnRow({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={APPLE_SPRING}
-            className="absolute right-0 top-full z-20 mt-1 w-[200px] overflow-hidden rounded-[10px] border border-white/[0.08] backdrop-blur-xl"
+            className="absolute right-0 top-full z-20 mt-1 w-[200px] overflow-hidden rounded-[10px] border border-picks-fg/[0.08] backdrop-blur-xl"
             style={{
               background:
                 'linear-gradient(180deg, rgba(40,40,46,0.95), rgba(24,24,28,0.97))',
               boxShadow: '0 12px 28px -8px rgba(0,0,0,0.6)',
             }}
           >
-            <div className="border-b border-white/[0.06] px-2.5 py-1.5">
-              <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-white/40">
+            <div className="border-b border-picks-fg/[0.06] px-2.5 py-1.5">
+              <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-picks-fg/40">
                 Foreign key
               </p>
             </div>
@@ -846,7 +846,7 @@ function ColumnRow({
               className="max-h-[160px] overflow-y-auto p-1"
               style={{
                 scrollbarWidth: 'thin',
-                scrollbarColor: 'rgba(255,255,255,0.18) transparent',
+                scrollbarColor: 'rgb(var(--picks-fg-rgb) / 0.18) transparent',
               }}
             >
               {col.references && (
@@ -856,14 +856,14 @@ function ColumnRow({
                     onUpdate({ references: undefined })
                     setFkOpen(false)
                   }}
-                  className="flex w-full items-center gap-1.5 rounded-[6px] px-2 py-1 text-left text-[11px] text-rose-300 transition-colors hover:bg-white/[0.06]"
+                  className="flex w-full items-center gap-1.5 rounded-[6px] px-2 py-1 text-left text-[11px] text-rose-300 transition-colors hover:bg-picks-fg/[0.06]"
                 >
                   <Link2Off className="h-3 w-3" strokeWidth={2.25} />
                   Remove FK
                 </button>
               )}
               {fkOptions.length === 0 ? (
-                <p className="px-2 py-1.5 text-[10.5px] text-white/35">
+                <p className="px-2 py-1.5 text-[10.5px] text-picks-fg/35">
                   No other columns to link.
                 </p>
               ) : (
@@ -882,13 +882,13 @@ function ColumnRow({
                       className={cn(
                         'flex w-full items-center justify-between gap-2 rounded-[6px] px-2 py-1 text-left text-[11px] transition-colors',
                         isCurrent
-                          ? 'bg-white/[0.08] text-white'
-                          : 'text-white/75 hover:bg-white/[0.05] hover:text-white',
+                          ? 'bg-picks-fg/[0.08] text-picks-fg'
+                          : 'text-picks-fg/75 hover:bg-picks-fg/[0.05] hover:text-picks-fg',
                       )}
                     >
                       <span className="font-mono">
                         {opt.table}
-                        <span className="text-white/40">.{opt.column}</span>
+                        <span className="text-picks-fg/40">.{opt.column}</span>
                       </span>
                       {opt.primary && (
                         <Key className="h-2.5 w-2.5 shrink-0 text-amber-300" strokeWidth={2.5} />

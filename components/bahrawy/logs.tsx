@@ -76,8 +76,8 @@ const LEVEL_META: Record<
   },
   debug: {
     label: 'DBG ',
-    pill: 'bg-white/[0.06] text-white/55',
-    dot: 'bg-white/40',
+    pill: 'bg-picks-fg/[0.06] text-picks-fg/55',
+    dot: 'bg-picks-fg/40',
   },
 }
 
@@ -158,12 +158,12 @@ export function Logs({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-xl border border-white/[0.08] bg-[#08080b]',
+        'w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-[#08080b]',
         className,
       )}
     >
       {showFilters && (
-        <div className="flex items-center gap-1.5 border-b border-white/[0.05] bg-white/[0.015] px-2.5 py-2">
+        <div className="flex items-center gap-1.5 border-b border-picks-fg/[0.05] bg-picks-fg/[0.015] px-2.5 py-2">
           {ALL_LEVELS.map((lvl) => {
             const meta = LEVEL_META[lvl]
             const on = active.has(lvl)
@@ -176,8 +176,8 @@ export function Logs({
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[10px] tracking-tight transition-colors',
                   on
-                    ? 'border-white/15 bg-white/[0.04] text-white/85'
-                    : 'border-transparent bg-transparent text-white/30 hover:text-white/55',
+                    ? 'border-picks-fg/15 bg-picks-fg/[0.04] text-picks-fg/85'
+                    : 'border-transparent bg-transparent text-picks-fg/30 hover:text-picks-fg/55',
                 )}
               >
                 <span
@@ -190,7 +190,7 @@ export function Logs({
             )
           })}
           {live && (
-            <div className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
+            <div className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-picks-fg/30">
               <span
                 aria-hidden
                 className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400"
@@ -246,7 +246,7 @@ export function Logs({
           </AnimatePresence>
         )}
         {filtered.length === 0 && (
-          <p className="px-4 py-8 text-center font-mono text-[11px] text-white/35">
+          <p className="px-4 py-8 text-center font-mono text-[11px] text-picks-fg/35">
             No entries match the active filters.
           </p>
         )}
@@ -258,7 +258,7 @@ export function Logs({
 // ---------------------------------------------------------------------------
 
 const ROW_CLASS =
-  'flex items-baseline gap-2.5 border-b border-white/[0.03] px-3 py-1.5 font-mono text-[12px] leading-snug last:border-b-0'
+  'flex items-baseline gap-2.5 border-b border-picks-fg/[0.03] px-3 py-1.5 font-mono text-[12px] leading-snug last:border-b-0'
 
 function LogRow({ entry }: { entry: LogEntry }) {
   return (
@@ -285,7 +285,7 @@ function LogRowBody({ entry }: { entry: LogEntry }) {
   return (
     <>
       {ts && (
-        <span className="shrink-0 text-[10.5px] tabular-nums text-white/30">
+        <span className="shrink-0 text-[10.5px] tabular-nums text-picks-fg/30">
           {ts}
         </span>
       )}
@@ -302,7 +302,7 @@ function LogRowBody({ entry }: { entry: LogEntry }) {
           [{entry.source}]
         </span>
       )}
-      <span className="min-w-0 flex-1 text-white/85">{entry.message}</span>
+      <span className="min-w-0 flex-1 text-picks-fg/85">{entry.message}</span>
     </>
   )
 }

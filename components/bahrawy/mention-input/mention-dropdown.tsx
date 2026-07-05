@@ -38,7 +38,7 @@ export function MentionDropdown({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -4 }}
       transition={springSnappy}
-      className="fixed z-[100] overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-900/95 shadow-xl backdrop-blur-md"
+      className="fixed z-[100] overflow-hidden rounded-lg border border-picks-fg/[0.08] bg-picks-panel/95 shadow-xl backdrop-blur-md"
       style={{
         top: position.top,
         left: position.left,
@@ -49,10 +49,10 @@ export function MentionDropdown({
       <div ref={listRef} className="max-h-48 overflow-y-auto p-1 scrollbar-hide">
         {loading && suggestions.length === 0 ? (
           <div className="flex items-center justify-center px-3 py-4">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white/60" />
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-picks-fg/20 border-t-picks-fg/60" />
           </div>
         ) : suggestions.length === 0 ? (
-          <p className="px-3 py-3 text-center text-xs text-white/30">
+          <p className="px-3 py-3 text-center text-xs text-picks-fg/30">
             No results
           </p>
         ) : (
@@ -67,8 +67,8 @@ export function MentionDropdown({
               className={cn(
                 'flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-sm transition-colors',
                 i === selectedIndex
-                  ? 'bg-white/[0.08] text-white'
-                  : 'text-white/70 hover:bg-white/[0.04]',
+                  ? 'bg-picks-fg/[0.08] text-picks-fg'
+                  : 'text-picks-fg/70 hover:bg-picks-fg/[0.04]',
               )}
             >
               {s.avatar && (
@@ -81,7 +81,7 @@ export function MentionDropdown({
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{s.name}</p>
                 {s.description && (
-                  <p className="truncate text-xs text-white/40">{s.description}</p>
+                  <p className="truncate text-xs text-picks-fg/40">{s.description}</p>
                 )}
               </div>
             </button>

@@ -120,7 +120,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             aria-invalid={!!error || undefined}
             aria-describedby={error ? errorId : undefined}
             className={cn(
-              'h-10 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 pr-10 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/30',
+              'h-10 w-full rounded-lg border border-picks-fg/[0.08] bg-picks-fg/[0.03] px-3 pr-10 text-sm text-picks-fg outline-none transition-colors placeholder:text-picks-fg/25 focus:border-picks-fg/30',
               disabled && 'cursor-not-allowed opacity-50',
             )}
             aria-label="Password"
@@ -130,7 +130,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             onClick={() => setVisible((v) => !v)}
             disabled={disabled}
             className={cn(
-              'absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-white/40 transition-colors hover:text-white/70',
+              'absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-picks-fg/40 transition-colors hover:text-picks-fg/70',
               disabled && 'cursor-not-allowed opacity-50',
             )}
             aria-label={visible ? 'Hide password' : 'Show password'}
@@ -164,7 +164,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             aria-label="Password strength"
           >
             <div className="flex items-center justify-between">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-picks-fg/[0.06]">
                 <motion.div
                   className={cn('h-full rounded-full', config.color)}
                   initial={{ width: '0%' }}
@@ -212,11 +212,11 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
                       {passed ? (
                         <Check className="h-3.5 w-3.5 text-green-400" />
                       ) : (
-                        <X className="h-3.5 w-3.5 text-white/25" />
+                        <X className="h-3.5 w-3.5 text-picks-fg/25" />
                       )}
                     </motion.span>
                   </AnimatePresence>
-                  <span className={cn(passed ? 'text-white/60' : 'text-white/30')}>
+                  <span className={cn(passed ? 'text-picks-fg/60' : 'text-picks-fg/30')}>
                     {req.label}
                   </span>
                 </motion.li>

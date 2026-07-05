@@ -52,7 +52,7 @@ export function PricingCompare({
   eyebrow,
   heading = 'Compare every feature.',
   description,
-  accentColor = '#FFFFFF',
+  accentColor = 'var(--picks-fg)',
   className,
 }: PricingCompareProps) {
   const featuredIndex = plans.findIndex((p) => p.featured)
@@ -82,27 +82,27 @@ export function PricingCompare({
   }, [featuredIndex, plans.length])
 
   return (
-    <section className={cn('w-full bg-black px-6 py-24 sm:py-32', className)}>
+    <section className={cn('w-full bg-picks-surface px-6 py-24 sm:py-32', className)}>
       <div className="mx-auto flex max-w-5xl flex-col gap-12">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 text-center">
           {eyebrow && (
-            <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80">
+            <span className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80">
               {eyebrow}
             </span>
           )}
-          <h2 className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+          <h2 className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl">
             {heading}
           </h2>
           {description && (
-            <p className="max-w-xl text-pretty text-sm leading-relaxed text-white/60 sm:text-base">
+            <p className="max-w-xl text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base">
               {description}
             </p>
           )}
         </div>
 
         {/* The table */}
-        <div className="relative overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div className="relative overflow-x-auto rounded-2xl border border-picks-fg/10 bg-picks-fg/[0.02]">
           {/* Accent column highlight (lives behind everything) */}
           {featuredIndex >= 0 && highlight && (
             <div
@@ -121,8 +121,8 @@ export function PricingCompare({
           <table className="relative w-full min-w-[640px] border-collapse text-left">
             {/* Plan headers — meta row, everything centered */}
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="w-1/3 p-5 text-left align-bottom text-xs font-medium uppercase tracking-[0.14em] text-white/40">
+              <tr className="border-b border-picks-fg/10">
+                <th className="w-1/3 p-5 text-left align-bottom text-xs font-medium uppercase tracking-[0.14em] text-picks-fg/40">
                   Features
                 </th>
                 {plans.map((plan, pi) => (
@@ -132,13 +132,13 @@ export function PricingCompare({
                     className="p-5 text-center align-top"
                   >
                     <div className="flex flex-col items-center">
-                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/60">
+                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-picks-fg/60">
                         {plan.name}
                       </p>
                       <div className="mt-2 flex items-baseline justify-center gap-1">
-                        <span className="text-2xl font-semibold text-white">{plan.price}</span>
+                        <span className="text-2xl font-semibold text-picks-fg">{plan.price}</span>
                         {plan.priceSuffix && (
-                          <span className="text-xs text-white/50">{plan.priceSuffix}</span>
+                          <span className="text-xs text-picks-fg/50">{plan.priceSuffix}</span>
                         )}
                       </div>
                       <a
@@ -146,8 +146,8 @@ export function PricingCompare({
                         className={cn(
                           'mt-3 inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold transition-colors',
                           plan.featured
-                            ? 'text-black'
-                            : 'border border-white/15 bg-white/[0.04] text-white hover:bg-white/10',
+                            ? 'text-picks-surface'
+                            : 'border border-picks-fg/15 bg-picks-fg/[0.04] text-picks-fg hover:bg-picks-fg/10',
                         )}
                         style={plan.featured ? { background: accentColor } : undefined}
                       >
@@ -168,7 +168,7 @@ export function PricingCompare({
                     <tr>
                       <th
                         colSpan={plans.length + 1}
-                        className="border-t border-white/10 bg-white/[0.015] p-4 text-left text-xs font-medium uppercase tracking-[0.16em] text-white/45"
+                        className="border-t border-picks-fg/10 bg-picks-fg/[0.015] p-4 text-left text-xs font-medium uppercase tracking-[0.16em] text-picks-fg/45"
                       >
                         {group.label}
                       </th>
@@ -225,25 +225,25 @@ function CompareRow({
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.4, delay: stagger, ease: [0.2, 0, 0, 1] }}
       className={cn(
-        'border-t border-white/[0.06]',
-        isGroupBoundary && 'border-b border-b-white/[0.08]',
+        'border-t border-picks-fg/[0.06]',
+        isGroupBoundary && 'border-b border-b-picks-fg/[0.08]',
       )}
     >
-      <td className="p-4 text-sm text-white/80">{feature.label}</td>
+      <td className="p-4 text-sm text-picks-fg/80">{feature.label}</td>
       {plans.map((plan, i) => {
         const v = feature.values[i]
         return (
-          <td key={plan.id} className="p-4 text-center text-sm text-white/70">
+          <td key={plan.id} className="p-4 text-center text-sm text-picks-fg/70">
             {typeof v === 'boolean' ? (
               <span className="inline-flex items-center justify-center">
                 {v ? (
                   <Check
                     className="h-4 w-4"
-                    style={{ color: plan.featured ? accentColor : 'rgba(255,255,255,0.85)' }}
+                    style={{ color: plan.featured ? accentColor : 'rgb(var(--picks-fg-rgb) / 0.85)' }}
                     strokeWidth={2.5}
                   />
                 ) : (
-                  <Minus className="h-4 w-4 text-white/25" />
+                  <Minus className="h-4 w-4 text-picks-fg/25" />
                 )}
               </span>
             ) : (

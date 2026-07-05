@@ -61,7 +61,7 @@ export function CtaSection({
     <section
       ref={ref}
       className={cn(
-        'relative isolate w-full overflow-hidden bg-black px-6 py-24 sm:py-32',
+        'relative isolate w-full overflow-hidden bg-picks-surface px-6 py-24 sm:py-32',
         className,
       )}
     >
@@ -80,7 +80,7 @@ export function CtaSection({
             initial={{ opacity: 0, y: 8 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
-            className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80 backdrop-blur"
+            className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80 backdrop-blur"
           >
             {eyebrow}
           </motion.span>
@@ -89,7 +89,7 @@ export function CtaSection({
           initial={{ opacity: 0, y: 18 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
-          className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl"
+          className="text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl md:text-6xl"
         >
           {title}
         </motion.h2>
@@ -98,7 +98,7 @@ export function CtaSection({
             initial={{ opacity: 0, y: 14 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.06, ease: [0.2, 0, 0, 1] }}
-            className="max-w-xl text-pretty text-base leading-relaxed text-white/65 sm:text-lg"
+            className="max-w-xl text-pretty text-base leading-relaxed text-picks-fg/65 sm:text-lg"
           >
             {description}
           </motion.p>
@@ -113,13 +113,13 @@ export function CtaSection({
             {primaryCta && (
               <CtaAction
                 cta={primaryCta}
-                className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+                className="inline-flex items-center justify-center rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/85"
               />
             )}
             {secondaryCta && (
               <CtaAction
                 cta={secondaryCta}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-full border border-picks-fg/20 px-5 py-2.5 text-sm font-medium text-picks-fg/90 transition-colors hover:bg-picks-fg/10"
               />
             )}
           </motion.div>

@@ -78,7 +78,7 @@ export function BarChart({
         role="group"
         aria-label={a11yTitle}
         className={cn(
-          'w-full rounded-xl border border-white/[0.08] bg-white/[0.02] p-4',
+          'w-full rounded-xl border border-picks-fg/[0.08] bg-picks-fg/[0.02] p-4',
           className,
         )}
       >
@@ -94,16 +94,16 @@ export function BarChart({
                 tabIndex={0}
                 role="img"
                 aria-label={`${d.label}: ${formatValue(d.value)}`}
-                className="grid grid-cols-[88px_1fr_auto] items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                className="grid grid-cols-[88px_1fr_auto] items-center gap-3 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/40"
                 onMouseEnter={() => setHover(i)}
                 onMouseLeave={() => setHover(null)}
                 onFocus={() => setHover(i)}
                 onBlur={() => setHover(null)}
               >
-                <span className="truncate text-[11.5px] font-medium text-white/65">
+                <span className="truncate text-[11.5px] font-medium text-picks-fg/65">
                   {d.label}
                 </span>
-                <div className="relative h-5 overflow-hidden rounded-md bg-white/[0.04]">
+                <div className="relative h-5 overflow-hidden rounded-md bg-picks-fg/[0.04]">
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: pct }}
@@ -115,7 +115,7 @@ export function BarChart({
                     }}
                   />
                 </div>
-                <span className="w-14 text-right font-mono text-[11px] tabular-nums text-white/60">
+                <span className="w-14 text-right font-mono text-[11px] tabular-nums text-picks-fg/60">
                   {formatValue(d.value)}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export function BarChart({
       role="group"
       aria-label={a11yTitle}
       className={cn(
-        'w-full overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] p-4',
+        'w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-fg/[0.02] p-4',
         className,
       )}
     >
@@ -153,10 +153,10 @@ export function BarChart({
                 className="absolute inset-x-0 flex items-center"
                 style={{ top: `${(1 - t) * 100}%`, transform: 'translateY(-50%)' }}
               >
-                <span className="w-10 pr-2 text-right font-mono text-[10px] tabular-nums text-white/35">
+                <span className="w-10 pr-2 text-right font-mono text-[10px] tabular-nums text-picks-fg/35">
                   {formatValue(niceMax * t)}
                 </span>
-                <div className="flex-1 border-t border-white/[0.06]" />
+                <div className="flex-1 border-t border-picks-fg/[0.06]" />
               </div>
             ))}
           </div>
@@ -178,14 +178,14 @@ export function BarChart({
                 onMouseLeave={() => setHover(null)}
                 onFocus={() => setHover(i)}
                 onBlur={() => setHover(null)}
-                className="group relative flex h-full flex-1 cursor-pointer flex-col items-center justify-end rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                className="group relative flex h-full flex-1 cursor-pointer flex-col items-center justify-end rounded-md outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/40"
               >
                 {/* Value-on-top label */}
                 {showValues && (
                   <span
                     className={cn(
                       'mb-1 font-mono text-[10.5px] tabular-nums transition-colors',
-                      isHover ? 'text-white' : 'text-white/65',
+                      isHover ? 'text-picks-fg' : 'text-picks-fg/65',
                     )}
                   >
                     {formatValue(d.value)}
@@ -224,7 +224,7 @@ export function BarChart({
                 key={i}
                 className={cn(
                   'flex-1 truncate text-center text-[10.5px] transition-colors',
-                  isHover ? 'text-white/85' : 'text-white/45',
+                  isHover ? 'text-picks-fg/85' : 'text-picks-fg/45',
                 )}
               >
                 {d.label}
@@ -237,14 +237,14 @@ export function BarChart({
       {/* Tooltip — inline below the chart so it doesn't overflow */}
       <div className="mt-3 min-h-[24px]">
         {hover !== null && data[hover] && (
-          <div className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px]">
+          <div className="inline-flex items-center gap-2 rounded-md border border-picks-fg/10 bg-picks-fg/[0.04] px-2.5 py-1 text-[11px]">
             <span
               aria-hidden
               className="block h-2 w-2 rounded-full"
               style={{ background: data[hover].color ?? accent }}
             />
-            <span className="font-medium text-white/85">{data[hover].label}</span>
-            <span className="font-mono tabular-nums text-white/55">
+            <span className="font-medium text-picks-fg/85">{data[hover].label}</span>
+            <span className="font-mono tabular-nums text-picks-fg/55">
               {formatValue(data[hover].value)}
             </span>
           </div>

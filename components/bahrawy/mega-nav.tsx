@@ -204,7 +204,7 @@ export function MegaNav({
           {logo && (
             <a
               href="/"
-              className="shrink-0 text-white transition-opacity hover:opacity-80"
+              className="shrink-0 text-picks-fg transition-opacity hover:opacity-80"
               onMouseEnter={queueClose}
               aria-label="Home"
             >
@@ -231,7 +231,7 @@ export function MegaNav({
                     {item.href && !mega ? (
                       <a
                         href={item.href}
-                        className={cn(cls, 'text-white/85 hover:text-white')}
+                        className={cn(cls, 'text-picks-fg/85 hover:text-picks-fg')}
                       >
                         {item.label}
                       </a>
@@ -261,7 +261,7 @@ export function MegaNav({
                         aria-controls={mega ? panelId : undefined}
                         className={cn(
                           cls,
-                          isOpen ? 'text-white' : 'text-white/85 hover:text-white',
+                          isOpen ? 'text-picks-fg' : 'text-picks-fg/85 hover:text-picks-fg',
                         )}
                       >
                         {item.label}
@@ -283,7 +283,7 @@ export function MegaNav({
             type="button"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setMobileOpen((v) => !v)}
-            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white md:hidden"
+            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-picks-fg/10 bg-picks-fg/[0.04] text-picks-fg/85 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg md:hidden"
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <MenuIcon className="h-4 w-4" />}
           </button>
@@ -304,7 +304,7 @@ export function MegaNav({
               className="absolute inset-x-0 top-full hidden overflow-hidden md:block"
             >
               <div
-                className="border-b border-white/[0.06]"
+                className="border-b border-picks-fg/[0.06]"
                 style={{
                   background: 'rgba(12,12,14,0.92)',
                   backdropFilter: 'blur(40px) saturate(180%)',
@@ -322,7 +322,7 @@ export function MegaNav({
                   >
                     {active!.sections!.map((section, j) => (
                       <div key={j} className="flex flex-col gap-3">
-                        <p className="text-[11px] font-normal tracking-tight text-white/40">
+                        <p className="text-[11px] font-normal tracking-tight text-picks-fg/40">
                           {section.heading}
                         </p>
                         <ul className="flex flex-col gap-2">
@@ -333,7 +333,7 @@ export function MegaNav({
                                 href={link.href ?? '#'}
                                 target={link.external ? '_blank' : undefined}
                                 rel={link.external ? 'noopener noreferrer' : undefined}
-                                className="block text-[22px] font-semibold tracking-tight text-white/95 transition-opacity hover:opacity-70 sm:text-[24px]"
+                                className="block text-[22px] font-semibold tracking-tight text-picks-fg/95 transition-opacity hover:opacity-70 sm:text-[24px]"
                               >
                                 {link.label}
                               </a>
@@ -361,7 +361,7 @@ export function MegaNav({
               className="overflow-hidden md:hidden"
             >
               <div
-                className="border-b border-white/[0.06]"
+                className="border-b border-picks-fg/[0.06]"
                 style={{
                   background: 'rgba(12,12,14,0.95)',
                   backdropFilter: 'blur(28px) saturate(180%)',
@@ -372,19 +372,19 @@ export function MegaNav({
                   {items.map((item, i) => (
                     <details
                       key={i}
-                      className="group rounded-lg border border-white/[0.06] bg-white/[0.02] open:bg-white/[0.04]"
+                      className="group rounded-lg border border-picks-fg/[0.06] bg-picks-fg/[0.02] open:bg-picks-fg/[0.04]"
                     >
-                      <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-[13px] font-medium tracking-tight text-white/90 [&::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2.5 text-[13px] font-medium tracking-tight text-picks-fg/90 [&::-webkit-details-marker]:hidden">
                         {item.label}
                         {item.sections && (
-                          <ChevronRight className="h-3.5 w-3.5 text-white/45 transition-transform group-open:rotate-90" />
+                          <ChevronRight className="h-3.5 w-3.5 text-picks-fg/45 transition-transform group-open:rotate-90" />
                         )}
                       </summary>
                       {item.sections && (
                         <div className="flex flex-col gap-4 px-3 pb-3">
                           {item.sections.map((section, j) => (
                             <div key={j} className="flex flex-col gap-2">
-                              <p className="text-[10.5px] font-normal tracking-tight text-white/40">
+                              <p className="text-[10.5px] font-normal tracking-tight text-picks-fg/40">
                                 {section.heading}
                               </p>
                               <ul className="flex flex-col gap-1.5">
@@ -394,7 +394,7 @@ export function MegaNav({
                                       href={link.href ?? '#'}
                                       target={link.external ? '_blank' : undefined}
                                       rel={link.external ? 'noopener noreferrer' : undefined}
-                                      className="block rounded-md px-2 py-1.5 text-[15px] font-semibold tracking-tight text-white/85 transition-colors hover:bg-white/[0.06] hover:text-white"
+                                      className="block rounded-md px-2 py-1.5 text-[15px] font-semibold tracking-tight text-picks-fg/85 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
                                     >
                                       {link.label}
                                     </a>
@@ -409,7 +409,7 @@ export function MegaNav({
                   ))}
 
                   {actions && (
-                    <div className="mt-2 flex items-center justify-end gap-2 border-t border-white/[0.06] pt-3">
+                    <div className="mt-2 flex items-center justify-end gap-2 border-t border-picks-fg/[0.06] pt-3">
                       {actions}
                     </div>
                   )}

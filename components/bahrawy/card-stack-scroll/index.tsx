@@ -85,7 +85,7 @@ export function CardStackScroll({
   topStep = 18,
   scaleStep = 0.04,
   opacityFloor = 1,
-  backgroundClassName = 'bg-zinc-950',
+  backgroundClassName = 'bg-picks-surface',
   className,
 }: CardStackScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -174,7 +174,7 @@ function CardScene({
   // px lower than the previous, leaving the top edge of older cards
   // peeking out from under newer ones.
   const stickyTop = index * topStep
-  const fg = card.foreground ?? '#FFFFFF'
+  const fg = card.foreground ?? 'var(--picks-fg)'
 
   return (
     <section
@@ -185,7 +185,7 @@ function CardScene({
         style={{ scale, opacity, background: card.background, color: fg }}
         className={cn(
           'relative mx-auto mt-12 w-full max-w-5xl overflow-hidden',
-          'rounded-[28px] border border-white/10',
+          'rounded-[28px] border border-picks-fg/10',
           'shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]',
           'origin-top',
         )}

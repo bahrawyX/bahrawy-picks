@@ -108,9 +108,9 @@ export function RollingButton({
     <button
       className={cn(
         'group flex items-center gap-3 rounded-full py-2 pl-5 pr-2 text-[13px] font-medium',
-        variant === 'dark' && 'bg-neutral-900 text-white',
-        variant === 'light' && 'bg-white text-neutral-900',
-        isAccent && 'text-white',
+        variant === 'dark' && 'bg-picks-panel text-picks-fg',
+        variant === 'light' && 'bg-picks-fg text-picks-surface',
+        isAccent && 'text-picks-fg',
         className,
       )}
       style={isAccent ? { backgroundColor: accentColor, ...style } : style}
@@ -120,9 +120,9 @@ export function RollingButton({
       <span
         className={cn(
           'flex h-7 w-7 items-center justify-center rounded-full',
-          variant === 'dark' && 'bg-white text-neutral-900',
-          variant === 'light' && 'bg-neutral-900 text-white',
-          isAccent && 'bg-white',
+          variant === 'dark' && 'bg-picks-fg text-picks-surface',
+          variant === 'light' && 'bg-picks-panel text-picks-fg',
+          isAccent && 'bg-picks-fg',
         )}
         style={isAccent ? { color: accentColor } : undefined}
       >

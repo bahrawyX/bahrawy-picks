@@ -25,7 +25,7 @@ export interface ScrollProgressProps {
 
 export function ScrollProgress({
   position = 'top',
-  color = 'bg-white',
+  color = 'bg-picks-fg',
   height = 3,
   showPercentage = false,
   className,
@@ -96,7 +96,7 @@ export function ScrollProgress({
       {showPercentage && (
         <div
           className={cn(
-            'fixed z-50 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm',
+            'fixed z-50 flex items-center justify-center rounded-full bg-picks-fg/10 backdrop-blur-sm',
             position === 'top' && 'right-4 top-4',
             position === 'bottom' && 'bottom-4 right-4',
             position === 'left' && 'bottom-4 left-4',

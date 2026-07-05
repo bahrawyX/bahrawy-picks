@@ -15,8 +15,8 @@ export function Empty({ message = 'No results found' }: EmptyProps) {
       transition={springGentle}
       className="flex flex-col items-center justify-center gap-1.5 py-6"
     >
-      <SearchX className="h-4 w-4 text-white/25" />
-      <span className="text-sm text-white/40">{message}</span>
+      <SearchX className="h-4 w-4 text-picks-fg/25" />
+      <span className="text-sm text-picks-fg/40">{message}</span>
     </motion.div>
   )
 }

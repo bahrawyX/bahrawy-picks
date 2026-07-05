@@ -303,7 +303,7 @@ export function HeroScrollGrow({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-black', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       // +1 viewport of "release room" past the pin so the next section can
       // ease into view instead of jump-cutting from the full-bleed image.
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
@@ -312,7 +312,7 @@ export function HeroScrollGrow({
         {/* Image wrap — fills the viewport at scale 1, sits inset at scale<1 */}
         <div
           ref={imageWrapRef}
-          className="absolute inset-0 overflow-hidden bg-zinc-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-white/[0.04]"
+          className="absolute inset-0 overflow-hidden bg-picks-panel shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] ring-1 ring-picks-fg/[0.04]"
         >
           <img
             src={image}
@@ -336,14 +336,14 @@ export function HeroScrollGrow({
           {eyebrow && (
             <span
               ref={eyebrowRef}
-              className="pointer-events-auto rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/85 backdrop-blur"
+              className="pointer-events-auto rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.05] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/85 backdrop-blur"
             >
               {eyebrow}
             </span>
           )}
           <h1
             ref={titleRef}
-            className="font-display text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl"
+            className="font-display text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl md:text-6xl"
           >
             {titleIsString && titleWords ? (
               titleWords.map((word, i) =>
@@ -367,7 +367,7 @@ export function HeroScrollGrow({
           {description && (
             <p
               ref={descRef}
-              className="max-w-xl text-pretty text-base leading-relaxed text-white/80 sm:text-lg"
+              className="max-w-xl text-pretty text-base leading-relaxed text-picks-fg/80 sm:text-lg"
             >
               {description}
             </p>
@@ -381,7 +381,7 @@ export function HeroScrollGrow({
                 <a
                   href={primaryCta.href ?? '#'}
                   onClick={primaryCta.onClick}
-                  className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                  className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                 >
                   {primaryCta.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -391,7 +391,7 @@ export function HeroScrollGrow({
                 <a
                   href={secondaryCta.href ?? '#'}
                   onClick={secondaryCta.onClick}
-                  className="inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white/90 backdrop-blur transition-colors hover:bg-white/10"
+                  className="inline-flex items-center justify-center rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] px-5 py-2.5 text-sm font-medium text-picks-fg/90 backdrop-blur transition-colors hover:bg-picks-fg/10"
                 >
                   {secondaryCta.label}
                 </a>
@@ -406,7 +406,7 @@ export function HeroScrollGrow({
             ref={overlayRef}
             className="pointer-events-none absolute inset-x-0 bottom-20 z-20 mx-auto max-w-3xl px-6 text-center"
           >
-            <p className="text-balance text-2xl font-semibold leading-tight text-white drop-shadow-lg sm:text-3xl">
+            <p className="text-balance text-2xl font-semibold leading-tight text-picks-fg drop-shadow-lg sm:text-3xl">
               {overlayCaption}
             </p>
           </div>
@@ -415,10 +415,10 @@ export function HeroScrollGrow({
         {/* Tiny "scroll" hint at the very bottom — only visible early */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 text-[10px] font-medium uppercase tracking-[0.28em] text-white/55"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 text-[10px] font-medium uppercase tracking-[0.28em] text-picks-fg/55"
         >
           Scroll
-          <span className="block h-3 w-px bg-white/40" />
+          <span className="block h-3 w-px bg-picks-fg/40" />
         </div>
       </div>
     </div>

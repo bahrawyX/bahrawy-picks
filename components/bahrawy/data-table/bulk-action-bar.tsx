@@ -31,13 +31,13 @@ export function BulkActionBar<TData>({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 60, opacity: 0 }}
       transition={springGentle}
-      className="fixed inset-x-0 bottom-6 z-50 mx-auto flex w-fit items-center gap-3 rounded-xl border border-white/10 bg-black/90 px-4 py-2.5 shadow-2xl shadow-black/50 backdrop-blur-xl"
+      className="fixed inset-x-0 bottom-6 z-50 mx-auto flex w-fit items-center gap-3 rounded-xl border border-picks-fg/10 bg-picks-surface/90 px-4 py-2.5 shadow-2xl shadow-black/50 backdrop-blur-xl"
     >
-      <span className="text-sm font-medium text-white/70">
+      <span className="text-sm font-medium text-picks-fg/70">
         {selectedCount} row{selectedCount !== 1 ? 's' : ''} selected
       </span>
 
-      <span className="h-4 w-px bg-white/10" />
+      <span className="h-4 w-px bg-picks-fg/10" />
 
       {actions.map((action) => (
         <Button
@@ -48,7 +48,7 @@ export function BulkActionBar<TData>({
           className={
             action.variant === 'destructive'
               ? 'gap-1.5 border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20'
-              : 'gap-1.5 border-white/10 bg-white/[0.04] text-white/80 hover:bg-white/[0.08]'
+              : 'gap-1.5 border-picks-fg/10 bg-picks-fg/[0.04] text-picks-fg/80 hover:bg-picks-fg/[0.08]'
           }
         >
           {action.icon && (
@@ -64,7 +64,7 @@ export function BulkActionBar<TData>({
         size="sm"
         variant="ghost"
         onClick={onClearSelection}
-        className="text-white/40 hover:bg-white/[0.06] hover:text-white/70"
+        className="text-picks-fg/40 hover:bg-picks-fg/[0.06] hover:text-picks-fg/70"
       >
         Clear
       </Button>

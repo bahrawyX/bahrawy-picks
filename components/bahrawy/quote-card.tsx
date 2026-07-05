@@ -35,7 +35,7 @@ export function QuoteCard({
   quote,
   author,
   showGlyph = true,
-  accentColor = 'rgba(255,255,255,0.25)',
+  accentColor = 'rgb(var(--picks-fg-rgb) / 0.25)',
   className,
 }: QuoteCardProps) {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -48,7 +48,7 @@ export function QuoteCard({
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={SPRING}
       className={cn(
-        'relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6',
+        'relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-fg/[0.02] p-5 sm:p-6',
         className,
       )}
     >
@@ -69,7 +69,7 @@ export function QuoteCard({
         initial={{ opacity: 0, y: 8 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ ...SPRING, delay: 0.12 }}
-        className="text-balance text-lg leading-snug text-white sm:text-xl"
+        className="text-balance text-lg leading-snug text-picks-fg sm:text-xl"
       >
         "{quote}"
       </motion.blockquote>
@@ -88,14 +88,14 @@ export function QuoteCard({
             draggable={false}
           />
         ) : (
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-picks-fg/10 text-sm font-semibold text-picks-fg">
             {author.fallback ?? author.name.slice(0, 1).toUpperCase()}
           </div>
         )}
         <div className="flex flex-col leading-tight">
-          <span className="text-sm font-medium text-white">{author.name}</span>
+          <span className="text-sm font-medium text-picks-fg">{author.name}</span>
           {author.role && (
-            <span className="text-xs text-white/55">{author.role}</span>
+            <span className="text-xs text-picks-fg/55">{author.role}</span>
           )}
         </div>
       </motion.figcaption>

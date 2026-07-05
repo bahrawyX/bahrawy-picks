@@ -198,7 +198,7 @@ export function FloatingToolbar({
           onMouseDown={(e) => e.preventDefault()}
           onPointerDown={(e) => e.preventDefault()}
           className={cn(
-            'flex items-center gap-0.5 rounded-[14px] border border-white/[0.08] p-1',
+            'flex items-center gap-0.5 rounded-[14px] border border-picks-fg/[0.08] p-1',
             className,
           )}
         >
@@ -223,7 +223,7 @@ export function FloatingToolbar({
           {/* Caret pointing toward selection */}
           <span
             aria-hidden
-            className="absolute left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border border-white/[0.08]"
+            className="absolute left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 border border-picks-fg/[0.08]"
             style={{
               top: pos.flipped ? -4 : undefined,
               bottom: pos.flipped ? undefined : -4,
@@ -232,10 +232,10 @@ export function FloatingToolbar({
                 : 'linear-gradient(315deg, rgba(22,22,26,0.9) 0%, rgba(22,22,26,0.9) 50%, transparent 50%)',
               backdropFilter: 'blur(40px) saturate(180%)',
               WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-              borderTop: pos.flipped ? '0.5px solid rgba(255,255,255,0.08)' : 'none',
-              borderLeft: pos.flipped ? '0.5px solid rgba(255,255,255,0.08)' : 'none',
-              borderRight: pos.flipped ? 'none' : '0.5px solid rgba(255,255,255,0.08)',
-              borderBottom: pos.flipped ? 'none' : '0.5px solid rgba(255,255,255,0.08)',
+              borderTop: pos.flipped ? '0.5px solid rgb(var(--picks-fg-rgb) / 0.08)' : 'none',
+              borderLeft: pos.flipped ? '0.5px solid rgb(var(--picks-fg-rgb) / 0.08)' : 'none',
+              borderRight: pos.flipped ? 'none' : '0.5px solid rgb(var(--picks-fg-rgb) / 0.08)',
+              borderBottom: pos.flipped ? 'none' : '0.5px solid rgb(var(--picks-fg-rgb) / 0.08)',
             }}
           />
 
@@ -244,7 +244,7 @@ export function FloatingToolbar({
               {action.divider && i > 0 && (
                 <span
                   aria-hidden
-                  className="relative mx-0.5 h-5 w-px bg-white/[0.08]"
+                  className="relative mx-0.5 h-5 w-px bg-picks-fg/[0.08]"
                 />
               )}
               <motion.button
@@ -262,8 +262,8 @@ export function FloatingToolbar({
                 className={cn(
                   'relative inline-flex h-7 items-center justify-center gap-1 rounded-[8px] px-2 text-[12px] font-medium tracking-tight transition-colors',
                   action.active
-                    ? 'text-white'
-                    : 'text-white/75 hover:bg-white/[0.08] hover:text-white',
+                    ? 'text-picks-fg'
+                    : 'text-picks-fg/75 hover:bg-picks-fg/[0.08] hover:text-picks-fg',
                 )}
                 style={
                   action.active

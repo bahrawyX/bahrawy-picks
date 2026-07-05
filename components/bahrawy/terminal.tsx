@@ -211,20 +211,20 @@ export function Terminal({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-xl border border-white/[0.08] bg-[#08080b] shadow-2xl shadow-black/40',
+        'w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-[#08080b] shadow-2xl shadow-black/40',
         className,
       )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {showHeader && (
-        <header className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-3 py-2">
+        <header className="flex items-center gap-2 border-b border-picks-fg/[0.06] bg-picks-fg/[0.02] px-3 py-2">
           <span aria-hidden className="flex items-center gap-1.5">
             <span className="block h-2.5 w-2.5 rounded-full bg-rose-400/80" />
             <span className="block h-2.5 w-2.5 rounded-full bg-amber-400/80" />
             <span className="block h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
           </span>
-          <span className="ml-2 truncate text-[11px] font-medium text-white/55">
+          <span className="ml-2 truncate text-[11px] font-medium text-picks-fg/55">
             {title ?? 'bash'}
           </span>
           {showControls && (
@@ -233,7 +233,7 @@ export function Terminal({
                 type="button"
                 onClick={() => setPlaying((p) => !p)}
                 aria-label={playing ? 'Pause' : 'Play'}
-                className="inline-flex h-6 w-6 items-center justify-center rounded text-white/55 hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex h-6 w-6 items-center justify-center rounded text-picks-fg/55 hover:bg-picks-fg/[0.06] hover:text-picks-fg"
               >
                 {playing ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
               </button>
@@ -244,7 +244,7 @@ export function Terminal({
                   setPlaying(true)
                 }}
                 aria-label="Replay"
-                className="inline-flex h-6 w-6 items-center justify-center rounded text-white/55 hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex h-6 w-6 items-center justify-center rounded text-picks-fg/55 hover:bg-picks-fg/[0.06] hover:text-picks-fg"
               >
                 <RotateCcw className="h-3 w-3" />
               </button>

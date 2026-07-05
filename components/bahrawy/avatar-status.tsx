@@ -106,7 +106,7 @@ export function AvatarStatus({
       <span
         className={cn(
           'relative inline-block shrink-0 select-none',
-          outerRing && 'rounded-full ring-2 ring-white/15 ring-offset-2 ring-offset-[var(--ring-bg,transparent)]',
+          outerRing && 'rounded-full ring-2 ring-picks-fg/15 ring-offset-2 ring-offset-[var(--ring-bg,transparent)]',
         )}
         style={{
           width: dims.box,
@@ -136,7 +136,7 @@ export function AvatarStatus({
             />
           ) : (
             <span
-              className="font-semibold tracking-tight text-white/95"
+              className="font-semibold tracking-tight text-picks-fg/95"
               style={{ fontSize: dims.textPx, lineHeight: 1 }}
             >
               {initialsFrom(name)}
@@ -175,14 +175,14 @@ export function AvatarStatus({
       {showName && (
         <span className="flex min-w-0 flex-col leading-tight">
           <span
-            className="truncate font-display font-semibold tracking-tight text-white"
+            className="truncate font-display font-semibold tracking-tight text-picks-fg"
             style={{ fontSize: dims.textPx }}
           >
             {name}
           </span>
           {role && (
             <span
-              className="truncate text-white/55"
+              className="truncate text-picks-fg/55"
               style={{ fontSize: dims.textPx - 2 }}
             >
               {role}

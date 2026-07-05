@@ -195,23 +195,23 @@ export function SignaturePad({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-xl border border-white/[0.08]',
+        'w-full overflow-hidden rounded-xl border border-picks-fg/[0.08]',
         disabled && 'pointer-events-none opacity-50',
         className,
       )}
     >
       {/* Toolbar */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-3 py-2">
+      <div className="flex items-center justify-between border-b border-picks-fg/[0.06] bg-picks-fg/[0.02] px-3 py-2">
         {/* Mode toggle */}
-        <div className="flex items-center gap-1 rounded-lg bg-white/[0.04] p-0.5">
+        <div className="flex items-center gap-1 rounded-lg bg-picks-fg/[0.04] p-0.5">
           <button
             type="button"
             onClick={() => setActiveMode('draw')}
             className={cn(
               'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
               activeMode === 'draw'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-white/40 hover:text-white/60',
+                ? 'bg-picks-fg/[0.1] text-picks-fg'
+                : 'text-picks-fg/40 hover:text-picks-fg/60',
             )}
           >
             <Pen className="h-3.5 w-3.5" />
@@ -223,8 +223,8 @@ export function SignaturePad({
             className={cn(
               'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
               activeMode === 'type'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-white/40 hover:text-white/60',
+                ? 'bg-picks-fg/[0.1] text-picks-fg'
+                : 'text-picks-fg/40 hover:text-picks-fg/60',
             )}
           >
             <Type className="h-3.5 w-3.5" />
@@ -240,7 +240,7 @@ export function SignaturePad({
               onClick={handleUndo}
               disabled={isEmpty}
               className={cn(
-                'rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+                'rounded-md p-1.5 text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
                 isEmpty && 'opacity-30',
               )}
               aria-label="Undo"
@@ -254,7 +254,7 @@ export function SignaturePad({
             onClick={handleClear}
             disabled={isEmpty}
             className={cn(
-              'rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+              'rounded-md p-1.5 text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
               isEmpty && 'opacity-30',
             )}
             aria-label="Clear"
@@ -267,7 +267,7 @@ export function SignaturePad({
             onClick={handleExport}
             disabled={isEmpty}
             className={cn(
-              'rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+              'rounded-md p-1.5 text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
               isEmpty && 'opacity-30',
             )}
             aria-label="Export signature"
@@ -289,13 +289,13 @@ export function SignaturePad({
               transition={tweenSmooth}
               className="pointer-events-none absolute inset-0 flex items-center justify-center"
             >
-              <p className="select-none text-sm text-white/15">{placeholder}</p>
+              <p className="select-none text-sm text-picks-fg/15">{placeholder}</p>
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Signature line */}
-        <div className="absolute bottom-8 left-6 right-6 border-b border-dashed border-white/[0.08]" />
+        <div className="absolute bottom-8 left-6 right-6 border-b border-dashed border-picks-fg/[0.08]" />
 
         {/* Draw mode */}
         <div className={cn(activeMode !== 'draw' && 'hidden', 'h-full')}>

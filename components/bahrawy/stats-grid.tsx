@@ -42,30 +42,30 @@ export function StatsGrid({
   return (
     <section
       ref={ref}
-      className={cn('w-full bg-black px-6 py-24 sm:py-32', className)}
+      className={cn('w-full bg-picks-surface px-6 py-24 sm:py-32', className)}
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         {(eyebrow || heading || description) && (
           <div className="flex max-w-2xl flex-col gap-3">
             {eyebrow && (
-              <span className="self-start rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80">
+              <span className="self-start rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+              <h2 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl">
                 {heading}
               </h2>
             )}
             {description && (
-              <p className="text-pretty text-sm leading-relaxed text-white/60 sm:text-base">
+              <p className="text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base">
                 {description}
               </p>
             )}
           </div>
         )}
 
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-fg/10 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item, i) => (
             <StatTile key={i} item={item} active={inView} delay={i * 0.08} />
           ))}
@@ -100,7 +100,7 @@ function StatTile({
       animate={active ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay, ease: [0.2, 0, 0, 1] }}
       // overflow-hidden keeps wide numbers (e.g. "97%") inside their tile.
-      className="overflow-hidden bg-black p-6 sm:p-8"
+      className="overflow-hidden bg-picks-surface p-6 sm:p-8"
     >
       <div
         className="flex items-baseline whitespace-nowrap font-semibold leading-none tracking-[-0.04em]"
@@ -108,7 +108,7 @@ function StatTile({
         // "97%" never push past the column. tracking-[-0.04em] tightens the
         // gap between the digits and the suffix without needing a gap class.
         style={{
-          color: item.tint ?? '#FFFFFF',
+          color: item.tint ?? 'var(--picks-fg)',
           fontSize: 'clamp(40px, 5vw, 72px)',
         }}
       >
@@ -116,7 +116,7 @@ function StatTile({
         <motion.span>{text}</motion.span>
         {item.suffix && <span>{item.suffix}</span>}
       </div>
-      <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-white/55">
+      <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-picks-fg/55">
         {item.label}
       </p>
     </motion.div>

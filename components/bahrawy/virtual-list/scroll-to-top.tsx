@@ -23,7 +23,7 @@ export function ScrollToTop({ visible, onClick, className }: ScrollToTopProps) {
           whileTap={{ scale: 0.93 }}
           onClick={onClick}
           className={cn(
-            'absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-white/70 shadow-lg hover:bg-zinc-700 hover:text-white transition-colors',
+            'absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-picks-fg/70 shadow-lg hover:bg-zinc-700 hover:text-picks-fg transition-colors',
             className
           )}
           aria-label="Scroll to top"

@@ -142,12 +142,12 @@ export function PortalScroll({
     null,
   )
   // Faint cue color for the outer scroll hint. Default is plain white.
-  const hintColor = accentColor ?? 'rgba(255,255,255,0.7)'
+  const hintColor = accentColor ?? 'rgb(var(--picks-fg-rgb) / 0.7)'
   // Rim tint — hairline outline stays faint, scan dot stays solid.
   const rimBorderStyle = accentColor
     ? { borderColor: `color-mix(in srgb, ${accentColor} 35%, transparent)` }
     : undefined
-  const scanDotColor = accentColor ?? '#ffffff'
+  const scanDotColor = accentColor ?? 'var(--picks-fg)'
 
   useGSAP(
     () => {
@@ -447,13 +447,13 @@ export function PortalScroll({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-black', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
       aria-label={ariaLabel}
     >
       <div
         ref={pinRef}
-        className="relative h-screen w-full overflow-hidden bg-black"
+        className="relative h-screen w-full overflow-hidden bg-picks-surface"
       >
         {/* ─────────────────────────────────────────────────────────
             OUTER scene — what you see before the portal opens.
@@ -481,15 +481,15 @@ export function PortalScroll({
             className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center sm:px-10"
           >
             {outer.eyebrow && (
-              <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-white/55">
+              <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.32em] text-picks-fg/55">
                 {outer.eyebrow}
               </p>
             )}
-            <h2 className="text-balance font-display text-3xl font-semibold leading-tight tracking-tight text-white/80 sm:text-5xl">
+            <h2 className="text-balance font-display text-3xl font-semibold leading-tight tracking-tight text-picks-fg/80 sm:text-5xl">
               {outer.title}
             </h2>
             {outer.subtitle && (
-              <p className="mt-4 max-w-md text-pretty text-sm leading-relaxed text-white/55 sm:text-base">
+              <p className="mt-4 max-w-md text-pretty text-sm leading-relaxed text-picks-fg/55 sm:text-base">
                 {outer.subtitle}
               </p>
             )}
@@ -498,7 +498,7 @@ export function PortalScroll({
           <div
             ref={outerHintRef}
             aria-hidden
-            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55"
+            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55"
           >
             <span
               className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full"
@@ -545,11 +545,11 @@ export function PortalScroll({
             {inner.eyebrow && (
               <div
                 ref={innerEyebrowRef}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-black/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/85 backdrop-blur sm:mb-6"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-picks-fg/[0.12] bg-black/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-picks-fg/85 backdrop-blur sm:mb-6"
               >
                 <span
                   aria-hidden
-                  className="block h-1.5 w-1.5 rounded-full bg-white/80"
+                  className="block h-1.5 w-1.5 rounded-full bg-picks-fg/80"
                 />
                 {inner.eyebrow}
               </div>
@@ -557,7 +557,7 @@ export function PortalScroll({
 
             {chars.length > 0 ? (
               <h2
-                className="text-balance font-display text-5xl font-semibold leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl"
+                className="text-balance font-display text-5xl font-semibold leading-[0.95] tracking-tight text-picks-fg sm:text-6xl lg:text-7xl"
                 style={{ letterSpacing: '-0.025em' }}
               >
                 {chars.map((ch, i) => (
@@ -578,7 +578,7 @@ export function PortalScroll({
                 ))}
               </h2>
             ) : (
-              <h2 className="text-balance font-display text-5xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
+              <h2 className="text-balance font-display text-5xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-6xl">
                 {inner.title}
               </h2>
             )}
@@ -586,7 +586,7 @@ export function PortalScroll({
             {inner.subtitle && (
               <p
                 ref={innerSubRef}
-                className="mt-5 max-w-lg text-pretty text-sm leading-relaxed text-white/80 sm:text-base"
+                className="mt-5 max-w-lg text-pretty text-sm leading-relaxed text-picks-fg/80 sm:text-base"
               >
                 {inner.subtitle}
               </p>
@@ -597,7 +597,7 @@ export function PortalScroll({
                 <a
                   href={cta.href ?? '#'}
                   onClick={cta.onClick}
-                  className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                  className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                 >
                   {cta.label}
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -621,7 +621,7 @@ export function PortalScroll({
           {shape === 'diamond' ? (
             <>
               <div
-                className="absolute left-1/2 top-1/2 border border-white/[0.1]"
+                className="absolute left-1/2 top-1/2 border border-picks-fg/[0.1]"
                 style={{
                   width: '70.71%',
                   height: '70.71%',
@@ -645,7 +645,7 @@ export function PortalScroll({
             <>
               {/* Single hairline outline. */}
               <div
-                className="absolute inset-0 rounded-full border border-white/[0.1]"
+                className="absolute inset-0 rounded-full border border-picks-fg/[0.1]"
                 style={rimBorderStyle}
               />
               {/* Scan dot orbiting the rim via a rotating wrapper. */}

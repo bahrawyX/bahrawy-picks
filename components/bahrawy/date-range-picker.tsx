@@ -217,7 +217,7 @@ export function DateRangePicker({
             onChange(preset.range())
             setOpen(false)
           }}
-          className="rounded-md px-2 py-1.5 text-left text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+          className="rounded-md px-2 py-1.5 text-left text-xs text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-picks-fg"
         >
           {preset.label}
         </motion.button>
@@ -271,7 +271,7 @@ export function DateRangePicker({
       {label && (
         <label
           htmlFor={triggerId}
-          className="mb-1.5 block text-sm font-medium text-white/70"
+          className="mb-1.5 block text-sm font-medium text-picks-fg/70"
         >
           {label}
         </label>

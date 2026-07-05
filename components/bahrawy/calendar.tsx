@@ -250,7 +250,7 @@ export function Calendar(props: CalendarProps) {
   return (
     <div
       className={cn(
-        'inline-block rounded-2xl border border-white/[0.08] p-3 backdrop-blur-xl',
+        'inline-block rounded-2xl border border-picks-fg/[0.08] p-3 backdrop-blur-xl',
         className,
       )}
       style={{
@@ -266,18 +266,18 @@ export function Calendar(props: CalendarProps) {
           type="button"
           onClick={() => setView((v) => addMonths(v, -1))}
           aria-label="Previous month"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/[0.06] hover:text-white"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-picks-fg/65 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
         >
           <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.25} />
         </button>
-        <span className="font-display text-[13px] font-semibold tracking-tight text-white">
+        <span className="font-display text-[13px] font-semibold tracking-tight text-picks-fg">
           {monthName}
         </span>
         <button
           type="button"
           onClick={() => setView((v) => addMonths(v, 1))}
           aria-label="Next month"
-          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/[0.06] hover:text-white"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-picks-fg/65 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
         >
           <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.25} />
         </button>
@@ -291,7 +291,7 @@ export function Calendar(props: CalendarProps) {
             <span
               key={d}
               role="columnheader"
-              className="py-1 text-center text-[10.5px] font-medium uppercase tracking-[0.12em] text-white/35"
+              className="py-1 text-center text-[10.5px] font-medium uppercase tracking-[0.12em] text-picks-fg/35"
             >
               {d}
             </span>
@@ -327,11 +327,11 @@ export function Calendar(props: CalendarProps) {
                     aria-selected={selected}
                     aria-label={dayLabelFmt.format(d)}
                     className={cn(
-                      'relative inline-flex h-9 w-9 items-center justify-center rounded-full text-[12.5px] tabular-nums tracking-tight transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/60',
+                      'relative inline-flex h-9 w-9 items-center justify-center rounded-full text-[12.5px] tabular-nums tracking-tight transition-colors outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/60',
                       disabled && 'cursor-not-allowed opacity-30',
-                      !inMonth && 'text-white/25',
-                      inMonth && !selected && !disabled && 'text-white/85 hover:bg-white/[0.06]',
-                      selected && 'text-white',
+                      !inMonth && 'text-picks-fg/25',
+                      inMonth && !selected && !disabled && 'text-picks-fg/85 hover:bg-picks-fg/[0.06]',
+                      selected && 'text-picks-fg',
                       isToday && !selected && 'text-[#5E5CE6]',
                     )}
                   >

@@ -611,7 +611,7 @@ export function SpreadsheetInput({
       animate={fadeUp.animate}
       transition={springGentle}
       className={cn(
-        'flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-black/40',
+        'flex flex-col overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-surface/40',
         className,
       )}
     >
@@ -664,10 +664,10 @@ export function SpreadsheetInput({
         {/* Inner for total scroll area */}
         <div style={{ minWidth: totalWidth }}>
           {/* Column headers */}
-          <div className="sticky top-0 z-20 flex bg-neutral-950" role="row">
+          <div className="sticky top-0 z-20 flex bg-picks-surface" role="row">
             {/* Corner cell */}
             <div
-              className="flex h-8 flex-shrink-0 items-center justify-center border-b border-r border-white/[0.06] bg-neutral-950 text-xs text-white/30"
+              className="flex h-8 flex-shrink-0 items-center justify-center border-b border-r border-picks-fg/[0.06] bg-picks-surface text-xs text-picks-fg/30"
               style={{ width: ROW_NUM_WIDTH }}
               role="columnheader"
               aria-label="Row number"
@@ -732,8 +732,8 @@ export function SpreadsheetInput({
                     {/* Row number */}
                     <div
                       className={cn(
-                        'flex flex-shrink-0 cursor-pointer items-center justify-center border-b border-r border-white/[0.04] text-[10px] text-white/25 hover:bg-white/[0.03]',
-                        selectedCell?.row === rowIdx && 'bg-blue-500/10 text-white/50',
+                        'flex flex-shrink-0 cursor-pointer items-center justify-center border-b border-r border-picks-fg/[0.04] text-[10px] text-picks-fg/25 hover:bg-picks-fg/[0.03]',
+                        selectedCell?.row === rowIdx && 'bg-blue-500/10 text-picks-fg/50',
                       )}
                       style={{ width: ROW_NUM_WIDTH, height: rowHeight }}
                       onClick={() => {
@@ -820,7 +820,7 @@ export function SpreadsheetInput({
         <button
           type="button"
           onClick={() => addRow()}
-          className="flex h-8 items-center gap-1.5 border-t border-white/[0.06] px-3 text-xs text-white/30 transition-colors hover:bg-white/[0.03] hover:text-white/50"
+          className="flex h-8 items-center gap-1.5 border-t border-picks-fg/[0.06] px-3 text-xs text-picks-fg/30 transition-colors hover:bg-picks-fg/[0.03] hover:text-picks-fg/50"
         >
           <Plus className="h-3 w-3" />
           Add row

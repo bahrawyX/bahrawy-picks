@@ -76,17 +76,17 @@ export function CurrencySelector({
         }}
         disabled={disabled}
         className={cn(
-          'flex items-center gap-1.5 border-r border-white/[0.08] bg-transparent px-3 py-2.5 text-sm transition-colors hover:bg-white/[0.06]',
+          'flex items-center gap-1.5 border-r border-picks-fg/[0.08] bg-transparent px-3 py-2.5 text-sm transition-colors hover:bg-picks-fg/[0.06]',
           disabled && 'cursor-not-allowed opacity-50',
         )}
       >
         {selected && (
           <span className="text-base leading-none">{selected.flag}</span>
         )}
-        <span className="font-medium text-white">{value}</span>
+        <span className="font-medium text-picks-fg">{value}</span>
         <ChevronDown
           className={cn(
-            'h-3.5 w-3.5 text-white/40 transition-transform',
+            'h-3.5 w-3.5 text-picks-fg/40 transition-transform',
             open && 'rotate-180',
           )}
         />
@@ -99,19 +99,19 @@ export function CurrencySelector({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={springSnappy}
-            className="absolute left-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-900/95 shadow-xl backdrop-blur-md"
+            className="absolute left-0 top-full z-50 mt-1 w-64 overflow-hidden rounded-lg border border-picks-fg/[0.08] bg-picks-panel/95 shadow-xl backdrop-blur-md"
           >
             {/* Search */}
-            <div className="border-b border-white/[0.08] p-2">
-              <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-2.5 py-1.5">
-                <Search className="h-3.5 w-3.5 text-white/30" />
+            <div className="border-b border-picks-fg/[0.08] p-2">
+              <div className="flex items-center gap-2 rounded-md bg-picks-fg/[0.04] px-2.5 py-1.5">
+                <Search className="h-3.5 w-3.5 text-picks-fg/30" />
                 <input
                   ref={searchRef}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search currencies..."
-                  className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/25"
+                  className="w-full bg-transparent text-sm text-picks-fg outline-none placeholder:text-picks-fg/25"
                 />
               </div>
             </div>
@@ -124,11 +124,11 @@ export function CurrencySelector({
               className="max-h-60 overflow-y-auto overscroll-contain p-1"
               style={{
                 scrollbarWidth: 'thin',
-                scrollbarColor: 'rgba(255,255,255,0.18) transparent',
+                scrollbarColor: 'rgb(var(--picks-fg-rgb) / 0.18) transparent',
               }}
             >
               {currencyList.length === 0 ? (
-                <p className="px-3 py-4 text-center text-sm text-white/30">
+                <p className="px-3 py-4 text-center text-sm text-picks-fg/30">
                   No currencies found
                 </p>
               ) : (
@@ -169,14 +169,14 @@ function CurrencyOption({
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-sm transition-colors',
         isSelected
-          ? 'bg-white/[0.08] text-white'
-          : 'text-white/70 hover:bg-white/[0.04] hover:text-white',
+          ? 'bg-picks-fg/[0.08] text-picks-fg'
+          : 'text-picks-fg/70 hover:bg-picks-fg/[0.04] hover:text-picks-fg',
       )}
     >
       <span className="text-base leading-none">{currency.flag}</span>
       <span className="font-medium">{currency.code}</span>
-      <span className="truncate text-white/40">{currency.name}</span>
-      <span className="ml-auto text-white/30">{currency.symbol}</span>
+      <span className="truncate text-picks-fg/40">{currency.name}</span>
+      <span className="ml-auto text-picks-fg/30">{currency.symbol}</span>
     </button>
   )
 }

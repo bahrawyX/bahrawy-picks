@@ -62,7 +62,7 @@ export function ScrollRail({
   stiffness = 260,
   damping = 38,
   showProgress = true,
-  backgroundClassName = 'bg-zinc-950',
+  backgroundClassName = 'bg-picks-surface',
   maskColor = 'var(--picks-surface, rgb(9 9 11))',
   className,
 }: ScrollRailProps) {
@@ -150,11 +150,11 @@ export function ScrollRail({
         </motion.div>
 
         {showProgress && (
-          <div className="pointer-events-none absolute inset-x-10 bottom-10 z-20 h-px overflow-hidden rounded-full bg-white/10">
+          <div className="pointer-events-none absolute inset-x-10 bottom-10 z-20 h-px overflow-hidden rounded-full bg-picks-fg/10">
             <motion.div
               aria-hidden
               style={{ scaleX: progressScaleX, transformOrigin: '0% 50%' }}
-              className="h-full origin-left bg-white"
+              className="h-full origin-left bg-picks-fg"
             />
           </div>
         )}

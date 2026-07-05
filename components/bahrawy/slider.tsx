@@ -200,7 +200,7 @@ export function Slider(props: SliderProps) {
         className="relative flex h-5 w-full cursor-pointer items-center"
       >
         {/* Track */}
-        <div className="h-[6px] w-full overflow-hidden rounded-full bg-white/[0.08]" />
+        <div className="h-[6px] w-full overflow-hidden rounded-full bg-picks-fg/[0.08]" />
         {/* Filled range */}
         <div
           className="pointer-events-none absolute inset-y-0 my-auto h-[6px] rounded-full"
@@ -216,7 +216,7 @@ export function Slider(props: SliderProps) {
             {Array.from({ length: tickCount }).map((_, i) => (
               <span
                 key={i}
-                className="h-1 w-px bg-white/20"
+                className="h-1 w-px bg-picks-fg/20"
               />
             ))}
           </div>
@@ -315,7 +315,7 @@ function Thumb({
       onBlur={() => setFocused(false)}
       onPointerEnter={onHoverStart}
       onPointerLeave={onHoverEnd}
-      className="absolute top-1/2 h-4 w-4 rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+      className="absolute top-1/2 h-4 w-4 rounded-full bg-picks-fg outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
       style={{
         // Inset the X position so the disc stays fully on the track:
         // at pct=0 → left edge of handle on track's left; at pct=100 →

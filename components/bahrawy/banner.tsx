@@ -67,10 +67,10 @@ function CtaAction({
 }
 
 const INTENT_STYLES: Record<BannerIntent, string> = {
-  info: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#0A84FF]',
-  success: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#30D158]',
-  warning: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#FF9F0A]',
-  promo: 'bg-white/[0.04] text-white/90 border-white/[0.08] [&_svg]:text-[#5E5CE6]',
+  info: 'bg-picks-fg/[0.04] text-picks-fg/90 border-picks-fg/[0.08] [&_svg]:text-[#0A84FF]',
+  success: 'bg-picks-fg/[0.04] text-picks-fg/90 border-picks-fg/[0.08] [&_svg]:text-[#30D158]',
+  warning: 'bg-picks-fg/[0.04] text-picks-fg/90 border-picks-fg/[0.08] [&_svg]:text-[#FF9F0A]',
+  promo: 'bg-picks-fg/[0.04] text-picks-fg/90 border-picks-fg/[0.08] [&_svg]:text-[#5E5CE6]',
 }
 
 export function Banner({
@@ -121,7 +121,7 @@ export function Banner({
           {cta && (
             <CtaAction
               cta={cta}
-              className="shrink-0 rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 text-[11.5px] font-semibold tracking-tight text-white transition-colors hover:bg-white/[0.1]"
+              className="shrink-0 rounded-full border border-picks-fg/[0.12] bg-picks-fg/[0.04] px-2.5 py-1 text-[11.5px] font-semibold tracking-tight text-picks-fg transition-colors hover:bg-picks-fg/[0.1]"
             />
           )}
           {dismissible && (
@@ -129,7 +129,7 @@ export function Banner({
               type="button"
               onClick={dismiss}
               aria-label="Dismiss"
-              className="shrink-0 rounded-md p-1 text-white/55 transition-colors hover:bg-white/[0.08] hover:text-white"
+              className="shrink-0 rounded-md p-1 text-picks-fg/55 transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2.25} />
             </button>

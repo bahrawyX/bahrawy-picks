@@ -108,8 +108,8 @@ export function ToggleGroup<V extends string = string>({
                 'inline-flex items-center rounded-full border font-medium tracking-tight backdrop-blur-xl transition-colors',
                 SIZE[size],
                 selected
-                  ? 'border-white/15 bg-white/[0.1] text-white'
-                  : 'border-white/[0.08] bg-white/[0.02] text-white/65 hover:bg-white/[0.06] hover:text-white',
+                  ? 'border-picks-fg/15 bg-picks-fg/[0.1] text-picks-fg'
+                  : 'border-picks-fg/[0.08] bg-picks-fg/[0.02] text-picks-fg/65 hover:bg-picks-fg/[0.06] hover:text-picks-fg',
               )}
             >
               {opt.icon}
@@ -126,7 +126,7 @@ export function ToggleGroup<V extends string = string>({
     <div
       role="group"
       className={cn(
-        'inline-flex items-stretch overflow-hidden rounded-full border border-white/[0.08] backdrop-blur-xl',
+        'inline-flex items-stretch overflow-hidden rounded-full border border-picks-fg/[0.08] backdrop-blur-xl',
         disabled && 'opacity-50',
         className,
       )}
@@ -140,7 +140,7 @@ export function ToggleGroup<V extends string = string>({
         return (
           <React.Fragment key={opt.value}>
             {i > 0 && (
-              <span aria-hidden className="w-px self-stretch bg-white/[0.06]" />
+              <span aria-hidden className="w-px self-stretch bg-picks-fg/[0.06]" />
             )}
             <motion.button
               type="button"
@@ -154,7 +154,7 @@ export function ToggleGroup<V extends string = string>({
               className={cn(
                 'inline-flex items-center font-medium tracking-tight transition-colors',
                 SIZE[size],
-                selected ? 'bg-white/[0.1] text-white' : 'text-white/65 hover:bg-white/[0.04] hover:text-white',
+                selected ? 'bg-picks-fg/[0.1] text-picks-fg' : 'text-picks-fg/65 hover:bg-picks-fg/[0.04] hover:text-picks-fg',
               )}
             >
               {opt.icon}

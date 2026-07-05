@@ -255,7 +255,7 @@ export function TimeDial({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#07080b]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -273,7 +273,7 @@ export function TimeDial({
         {eyebrow && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center px-6 pt-14 sm:pt-16">
             <div ref={eyebrowRef} className="pointer-events-auto">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur">
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
@@ -311,7 +311,7 @@ export function TimeDial({
                     }}
                     className="absolute inset-0 flex flex-col items-start justify-center"
                   >
-                    <p className="mb-4 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+                    <p className="mb-4 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55">
                       <span
                         aria-hidden
                         className="block h-1 w-6 rounded-full"
@@ -319,16 +319,16 @@ export function TimeDial({
                       />
                       {c.eyebrow ?? c.label ?? `Chapter ${String(i + 1).padStart(2, '0')}`}
                     </p>
-                    <h2 className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
+                    <h2 className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-picks-fg sm:text-4xl lg:text-5xl">
                       {c.title}
                     </h2>
                     {c.body && (
-                      <p className="mt-4 max-w-sm text-pretty text-sm leading-relaxed text-white/65 sm:text-base">
+                      <p className="mt-4 max-w-sm text-pretty text-sm leading-relaxed text-picks-fg/65 sm:text-base">
                         {c.body}
                       </p>
                     )}
                     {c.image && (
-                      <div className="relative mt-6 h-32 w-48 overflow-hidden rounded-lg border border-white/10 sm:h-40 sm:w-64">
+                      <div className="relative mt-6 h-32 w-48 overflow-hidden rounded-lg border border-picks-fg/10 sm:h-40 sm:w-64">
                         <img
                           src={c.image}
                           alt=""
@@ -354,7 +354,7 @@ export function TimeDial({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black shadow-lg shadow-black/30 transition-colors hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface shadow-lg shadow-black/30 transition-colors hover:bg-picks-fg/90"
               >
                 {cta.label}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -365,7 +365,7 @@ export function TimeDial({
 
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll · time advances
         </div>
@@ -452,7 +452,7 @@ function ClockFace({
                 y1={-45}
                 x2="0"
                 y2={isHour ? -41 : -43.5}
-                stroke={isHour ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.32)'}
+                stroke={isHour ? 'rgb(var(--picks-fg-rgb) / 0.85)' : 'rgb(var(--picks-fg-rgb) / 0.32)'}
                 strokeWidth={isHour ? 0.55 : 0.22}
                 strokeLinecap="round"
                 transform={`rotate(${angle})`}
@@ -473,7 +473,7 @@ function ClockFace({
           return (
             <div
               key={h}
-              className="absolute select-none font-semibold text-white/85"
+              className="absolute select-none font-semibold text-picks-fg/85"
               style={{
                 left: `${x}%`,
                 top: `${y}%`,
@@ -496,7 +496,7 @@ function ClockFace({
           return (
             <div
               key={h}
-              className="absolute select-none font-mono text-white/40"
+              className="absolute select-none font-mono text-picks-fg/40"
               style={{
                 left: `${x}%`,
                 top: `${y}%`,
@@ -552,7 +552,7 @@ function ClockFace({
         {/* Centre axle — small polished cap, no glow */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+          className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-picks-fg"
           style={{
             boxShadow: 'inset 0 -1px 1px rgba(0,0,0,0.4)',
           }}
@@ -572,16 +572,16 @@ function ClockFace({
                   ref={(el) => {
                     digitRefs.current[i] = el
                   }}
-                  className="absolute inset-0 flex flex-col items-center justify-center rounded-full border border-white/15 bg-black/70 backdrop-blur"
+                  className="absolute inset-0 flex flex-col items-center justify-center rounded-full border border-picks-fg/15 bg-picks-surface/70 backdrop-blur"
                   style={{
                     boxShadow:
                       'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -8px 16px rgba(0,0,0,0.4)',
                   }}
                 >
-                  <span className="font-mono text-lg font-semibold tabular-nums text-white sm:text-xl">
+                  <span className="font-mono text-lg font-semibold tabular-nums text-picks-fg sm:text-xl">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[8px] font-medium uppercase tracking-[0.28em] text-white/55 sm:text-[9px]">
+                  <span className="text-[8px] font-medium uppercase tracking-[0.28em] text-picks-fg/55 sm:text-[9px]">
                     of {String(chapters.length).padStart(2, '0')}
                   </span>
                 </div>

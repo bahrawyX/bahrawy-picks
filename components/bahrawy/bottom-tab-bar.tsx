@@ -72,7 +72,7 @@ export function BottomTabBar<V extends string = string>({
   return (
     <nav
       className={cn(
-        'flex items-center gap-1 rounded-full border border-white/[0.08] p-1 backdrop-blur-2xl',
+        'flex items-center gap-1 rounded-full border border-picks-fg/[0.08] p-1 backdrop-blur-2xl',
         floating && 'fixed bottom-4 left-1/2 z-50 -translate-x-1/2',
         className,
       )}
@@ -101,13 +101,13 @@ export function BottomTabBar<V extends string = string>({
             transition={SPRING}
             className={cn(
               'group relative inline-flex flex-col items-center justify-center gap-0.5 rounded-full px-3.5 py-2 text-[10.5px] font-medium tracking-tight transition-colors',
-              selected ? 'text-white' : 'text-white/55 hover:text-white/85',
+              selected ? 'text-picks-fg' : 'text-picks-fg/55 hover:text-picks-fg/85',
             )}
           >
             {selected && (
               <motion.span
                 layoutId={idRef.current}
-                className="absolute inset-0 rounded-full bg-white/[0.1]"
+                className="absolute inset-0 rounded-full bg-picks-fg/[0.1]"
                 style={{
                   boxShadow:
                     '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(255,255,255,0.08)',
@@ -123,7 +123,7 @@ export function BottomTabBar<V extends string = string>({
               {item.icon}
               {item.badge != null && (
                 <span
-                  className="absolute -right-1.5 -top-1 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#FF453A] px-1 text-[9px] font-bold tabular-nums text-white"
+                  className="absolute -right-1.5 -top-1 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#FF453A] px-1 text-[9px] font-bold tabular-nums text-picks-fg"
                   aria-hidden
                 >
                   {item.badge}

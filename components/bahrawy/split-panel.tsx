@@ -204,7 +204,7 @@ export function SplitPanel({
     <div
       ref={containerRef}
       className={cn(
-        'relative flex h-full w-full overflow-hidden rounded-xl border border-white/[0.08] bg-zinc-950/40',
+        'relative flex h-full w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-surface/40',
         isHorizontal ? 'flex-row' : 'flex-col',
         className,
       )}
@@ -243,7 +243,7 @@ export function SplitPanel({
         <span
           aria-hidden
           className={cn(
-            'absolute bg-white/10 transition-colors',
+            'absolute bg-picks-fg/10 transition-colors',
             isHorizontal ? 'inset-y-0 left-1/2 w-px -translate-x-1/2' : 'inset-x-0 top-1/2 h-px -translate-y-1/2',
             (dragging || 'group-hover:bg-violet-400/60') && 'group-hover:bg-violet-400/60',
             dragging && 'bg-violet-400',
@@ -252,12 +252,12 @@ export function SplitPanel({
         {/* Grip on hover */}
         <span
           aria-hidden
-          className="pointer-events-none flex h-7 w-3 items-center justify-center rounded-md bg-white/[0.04] opacity-0 transition-opacity group-hover:opacity-100"
+          className="pointer-events-none flex h-7 w-3 items-center justify-center rounded-md bg-picks-fg/[0.04] opacity-0 transition-opacity group-hover:opacity-100"
         >
           {isHorizontal ? (
-            <GripVertical className="h-3 w-3 text-white/55" strokeWidth={2} />
+            <GripVertical className="h-3 w-3 text-picks-fg/55" strokeWidth={2} />
           ) : (
-            <GripHorizontal className="h-3 w-3 text-white/55" strokeWidth={2} />
+            <GripHorizontal className="h-3 w-3 text-picks-fg/55" strokeWidth={2} />
           )}
         </span>
       </div>

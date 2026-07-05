@@ -173,8 +173,8 @@ export function NotificationStack({
           {/* Empty state */}
           {items.length === 0 && (
             <div className="flex flex-col items-center gap-2 py-10 text-center">
-              <Bell className="h-4 w-4 text-white/30" strokeWidth={2} />
-              <p className="text-[12px] text-white/40">No notifications</p>
+              <Bell className="h-4 w-4 text-picks-fg/30" strokeWidth={2} />
+              <p className="text-[12px] text-picks-fg/40">No notifications</p>
             </div>
           )}
 
@@ -182,7 +182,7 @@ export function NotificationStack({
           {!expanded && hiddenBehind > 0 && (
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] tabular-nums text-white/45"
+              className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-picks-fg/[0.06] px-2 py-0.5 font-mono text-[10px] tabular-nums text-picks-fg/45"
             >
               +{hiddenBehind} more
             </div>
@@ -203,7 +203,7 @@ export function NotificationStack({
               <button
                 type="button"
                 onClick={clearAll}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/65 transition-colors hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+                className="rounded-full border border-picks-fg/10 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium text-picks-fg/65 transition-colors hover:border-picks-fg/25 hover:bg-picks-fg/[0.08] hover:text-picks-fg"
               >
                 Clear all
               </button>
@@ -229,7 +229,7 @@ function NotificationCard({
   showDismiss: boolean
 }) {
   return (
-    <div className="relative flex items-start gap-3 rounded-2xl border border-white/10 bg-zinc-950/80 px-3.5 py-3 shadow-2xl shadow-black/40 backdrop-blur">
+    <div className="relative flex items-start gap-3 rounded-2xl border border-picks-fg/10 bg-picks-surface/80 px-3.5 py-3 shadow-2xl shadow-black/40 backdrop-blur">
       {/* Leading icon */}
       <span
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ring-1"
@@ -245,7 +245,7 @@ function NotificationCard({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <p className="truncate font-display text-[12.5px] font-semibold tracking-tight text-white/90">
+          <p className="truncate font-display text-[12.5px] font-semibold tracking-tight text-picks-fg/90">
             {notification.title}
           </p>
           {notification.unread && (
@@ -257,12 +257,12 @@ function NotificationCard({
           )}
         </div>
         {notification.description && (
-          <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-white/55">
+          <p className="mt-0.5 line-clamp-2 text-[11.5px] leading-snug text-picks-fg/55">
             {notification.description}
           </p>
         )}
         {notification.timestamp && (
-          <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-white/30">
+          <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-picks-fg/30">
             {notification.timestamp}
           </p>
         )}
@@ -273,7 +273,7 @@ function NotificationCard({
           type="button"
           onClick={onDismiss}
           aria-label="Dismiss"
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-white/35 transition-colors hover:bg-white/[0.06] hover:text-white"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-picks-fg/35 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
         >
           <X className="h-3 w-3" strokeWidth={2.5} />
         </button>

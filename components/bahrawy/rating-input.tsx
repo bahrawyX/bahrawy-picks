@@ -129,7 +129,7 @@ export function RatingInput({
                 whileTap={interactive ? { scale: 0.85 } : undefined}
                 className={cn(
                   'flex items-center justify-center rounded-md p-1 transition-all',
-                  interactive && 'cursor-pointer hover:bg-white/[0.06]',
+                  interactive && 'cursor-pointer hover:bg-picks-fg/[0.06]',
                   disabled && 'cursor-not-allowed opacity-50',
                   readOnly && 'cursor-default',
                 )}
@@ -209,7 +209,7 @@ export function RatingInput({
                 <div className="relative p-0.5">
                   {/* Background (empty) */}
                   <IconComponent
-                    className={cn(iconSize, 'text-white/15')}
+                    className={cn(iconSize, 'text-picks-fg/15')}
                     fill="currentColor"
                     strokeWidth={0}
                   />
@@ -257,7 +257,7 @@ export function RatingInput({
               whileTap={interactive ? { scale: 0.8 } : undefined}
               className={cn(
                 'rounded-md p-0.5 transition-colors',
-                interactive && 'cursor-pointer hover:bg-white/[0.06]',
+                interactive && 'cursor-pointer hover:bg-picks-fg/[0.06]',
                 disabled && 'cursor-not-allowed opacity-50',
                 readOnly && 'cursor-default',
               )}
@@ -279,7 +279,7 @@ export function RatingInput({
                         : variant === 'thumb'
                           ? 'text-blue-400'
                           : 'text-amber-400'
-                      : 'text-white/15',
+                      : 'text-picks-fg/15',
                   )}
                   fill={isActive ? 'currentColor' : 'currentColor'}
                   strokeWidth={0}
@@ -296,7 +296,7 @@ export function RatingInput({
           key={activeLabel}
           initial={{ opacity: 0, x: -4 }}
           animate={{ opacity: 1, x: 0 }}
-          className="text-xs text-white/50"
+          className="text-xs text-picks-fg/50"
         >
           {activeLabel}
         </motion.span>

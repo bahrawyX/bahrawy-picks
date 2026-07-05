@@ -157,7 +157,7 @@ export function AudioPlayer({
   return (
     <div
       className={cn(
-        'flex w-full max-w-xl items-center gap-4 rounded-[20px] border border-white/[0.07] p-3.5 backdrop-blur-2xl',
+        'flex w-full max-w-xl items-center gap-4 rounded-[20px] border border-picks-fg/[0.07] p-3.5 backdrop-blur-2xl',
         className,
       )}
       style={{
@@ -174,7 +174,7 @@ export function AudioPlayer({
         type="button"
         onClick={toggle}
         aria-label={playing ? 'Pause' : 'Play'}
-        className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-zinc-900 transition-transform duration-150 ease-out hover:scale-[1.03] active:scale-[0.96]"
+        className="relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-picks-fg text-picks-surface transition-transform duration-150 ease-out hover:scale-[1.03] active:scale-[0.96]"
         style={{
           boxShadow:
             '0 1px 0 rgba(255,255,255,0.6) inset, 0 -1px 0 rgba(0,0,0,0.08) inset, 0 6px 14px -6px rgba(0,0,0,0.45)',
@@ -193,7 +193,7 @@ export function AudioPlayer({
         <img
           src={coverArt}
           alt=""
-          className="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-white/10"
+          className="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-picks-fg/10"
         />
       )}
 
@@ -202,12 +202,12 @@ export function AudioPlayer({
         {(title || artist) && (
           <div className="flex items-baseline gap-2">
             {title && (
-              <span className="font-display truncate text-[13px] font-semibold tracking-tight text-white">
+              <span className="font-display truncate text-[13px] font-semibold tracking-tight text-picks-fg">
                 {title}
               </span>
             )}
             {artist && (
-              <span className="truncate text-[11px] text-white/45">{artist}</span>
+              <span className="truncate text-[11px] text-picks-fg/45">{artist}</span>
             )}
           </div>
         )}
@@ -221,7 +221,7 @@ export function AudioPlayer({
           onPointerCancel={onWavePointerUp}
           onKeyDown={onWaveKeyDown}
           tabIndex={0}
-          className="mt-1.5 flex h-9 cursor-pointer items-end gap-[2px] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          className="mt-1.5 flex h-9 cursor-pointer items-end gap-[2px] rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30"
           role="slider"
           aria-label="Seek"
           aria-valuemin={0}
@@ -240,7 +240,7 @@ export function AudioPlayer({
                   height: `${Math.max(8, amp * 100)}%`,
                   background: isPlayed
                     ? `${accent}E6`
-                    : 'rgba(255,255,255,0.25)',
+                    : 'rgb(var(--picks-fg-rgb) / 0.25)',
                 }}
               />
             )
@@ -249,9 +249,9 @@ export function AudioPlayer({
 
         {/* Time + volume row */}
         <div className="mt-1 flex items-center justify-between gap-2">
-          <span className="font-mono text-[10.5px] tabular-nums text-white/60">
+          <span className="font-mono text-[10.5px] tabular-nums text-picks-fg/60">
             {formatTime(current)}{' '}
-            <span className="text-white/30">/ {formatTime(duration)}</span>
+            <span className="text-picks-fg/30">/ {formatTime(duration)}</span>
           </span>
           <VolumeControl
             volume={volume}
@@ -290,7 +290,7 @@ function VolumeControl({
         type="button"
         onClick={onToggleMute}
         aria-label={muted ? 'Unmute' : 'Mute'}
-        className="inline-flex h-6 w-6 items-center justify-center rounded-md text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+        className="inline-flex h-6 w-6 items-center justify-center rounded-md text-picks-fg/45 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
       >
         {muted || volume === 0 ? (
           <VolumeX className="h-3 w-3" strokeWidth={2.5} />
@@ -298,7 +298,7 @@ function VolumeControl({
           <Volume2 className="h-3 w-3" strokeWidth={2.5} />
         )}
       </button>
-      <div className="relative h-1 w-16 overflow-hidden rounded-full bg-white/[0.06]">
+      <div className="relative h-1 w-16 overflow-hidden rounded-full bg-picks-fg/[0.06]">
         <motion.div
           aria-hidden
           className="absolute inset-y-0 left-0 rounded-full"

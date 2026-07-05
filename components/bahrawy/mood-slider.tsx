@@ -149,24 +149,24 @@ export function MoodSlider({
   return (
     <div
       className={cn(
-        'relative w-full max-w-[460px] overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] px-7 pt-7 pb-7 backdrop-blur-xl',
+        'relative w-full max-w-[460px] overflow-hidden rounded-3xl border border-picks-fg/[0.08] bg-picks-fg/[0.03] px-7 pt-7 pb-7 backdrop-blur-xl',
         className,
       )}
       aria-label={label}
     >
       {/* Header — label + value */}
       <div className="flex items-baseline justify-between">
-        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/45">
+        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45">
           {label}
         </span>
-        <span className="font-mono text-[11px] tabular-nums text-white/40">
+        <span className="font-mono text-[11px] tabular-nums text-picks-fg/40">
           {Math.round(value * 100)}%
         </span>
       </div>
 
       {/* Mood word — morphs */}
       <div className="mt-6 flex items-baseline gap-2">
-        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-white/35">
+        <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/35">
           feeling
         </span>
         <AnimatePresence mode="popLayout" initial={false}>
@@ -176,7 +176,7 @@ export function MoodSlider({
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
             transition={{ duration: 0.18 }}
-            className="font-display text-2xl font-semibold tracking-tight text-white"
+            className="font-display text-2xl font-semibold tracking-tight text-picks-fg"
           >
             {moodWord}
           </motion.span>
@@ -186,7 +186,7 @@ export function MoodSlider({
       {/* Track */}
       <div className="relative mt-7 pt-5">
         {/* Tick marks above the track */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-between px-[2px] text-white/15">
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-end justify-between px-[2px] text-picks-fg/15">
           {Array.from({ length: steps }).map((_, i) => (
             <span
               key={i}
@@ -216,7 +216,7 @@ export function MoodSlider({
           aria-valuemax={1}
           aria-valuenow={value}
           aria-valuetext={`${Math.round(value * 100)}% — ${moodWord}`}
-          className="relative flex h-5 w-full cursor-grab items-center outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          className="relative flex h-5 w-full cursor-grab items-center outline-none active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-picks-fg/30 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
           onKeyDown={(e) => {
             const segs = Math.max(2, steps) - 1
             const stepSize = 1 / segs
@@ -240,7 +240,7 @@ export function MoodSlider({
               track via the parent rail's `items-center`. X inset so
               the disc stays inside the rail at both extremes. */}
           <motion.div
-            className="pointer-events-none absolute top-1/2 h-4 w-4 rounded-full bg-white"
+            className="pointer-events-none absolute top-1/2 h-4 w-4 rounded-full bg-picks-fg"
             style={{
               left: `calc(${value} * (100% - 16px) + 8px)`,
               // Compose the -50% centering into framer-motion's transform so
@@ -257,7 +257,7 @@ export function MoodSlider({
         </div>
 
         {/* Endpoint labels */}
-        <div className="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
+        <div className="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-picks-fg/30">
           <span>worst</span>
           <span>best</span>
         </div>

@@ -26,9 +26,9 @@ export function FormulaBar({
       : ''
 
   return (
-    <div className="flex h-8 items-center border-b border-white/[0.06] bg-white/[0.02]">
+    <div className="flex h-8 items-center border-b border-picks-fg/[0.06] bg-picks-fg/[0.02]">
       {/* Cell address */}
-      <div className="flex h-full w-16 flex-shrink-0 items-center justify-center border-r border-white/[0.06] text-xs font-mono text-white/50">
+      <div className="flex h-full w-16 flex-shrink-0 items-center justify-center border-r border-picks-fg/[0.06] text-xs font-mono text-picks-fg/50">
         {address}
       </div>
       {/* Formula / value input */}
@@ -43,7 +43,7 @@ export function FormulaBar({
             inputRef.current?.blur()
           }
         }}
-        className="h-full flex-1 bg-transparent px-2 text-xs text-white outline-none placeholder:text-white/20"
+        className="h-full flex-1 bg-transparent px-2 text-xs text-picks-fg outline-none placeholder:text-picks-fg/20"
         placeholder="Enter value or formula (e.g. =SUM(A1:A5))"
       />
     </div>

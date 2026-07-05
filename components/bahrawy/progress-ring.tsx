@@ -37,8 +37,8 @@ export function ProgressRing({
   value,
   size = 96,
   strokeWidth = 8,
-  color = '#FFFFFF',
-  trackColor = 'rgba(255,255,255,0.10)',
+  color = 'var(--picks-fg)',
+  trackColor = 'rgb(var(--picks-fg-rgb) / 0.10)',
   showLabel = true,
   label,
   ariaLabel = 'Progress',
@@ -105,9 +105,9 @@ export function ProgressRing({
       {showLabel && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           {label ?? (
-            <span className="flex items-baseline gap-0.5 text-sm font-semibold tabular-nums text-white">
+            <span className="flex items-baseline gap-0.5 text-sm font-semibold tabular-nums text-picks-fg">
               <motion.span>{rounded}</motion.span>
-              <span className="text-xs text-white/50">%</span>
+              <span className="text-xs text-picks-fg/50">%</span>
             </span>
           )}
         </div>

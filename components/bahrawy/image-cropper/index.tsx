@@ -405,7 +405,7 @@ export function ImageCropper({
           <img
             src={previewSrc || initialSrc}
             alt="Cropped preview"
-            className="h-40 w-40 rounded-lg border border-white/10 object-cover"
+            className="h-40 w-40 rounded-lg border border-picks-fg/10 object-cover"
           />
           <motion.button
             type="button"
@@ -429,20 +429,20 @@ export function ImageCropper({
           whileTap={{ scale: 0.99 }}
           transition={springSnappy}
           className={cn(
-            'flex h-40 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-white/10 bg-white/[0.02] transition-colors hover:border-white/20 hover:bg-white/[0.04]',
+            'flex h-40 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-picks-fg/10 bg-picks-fg/[0.02] transition-colors hover:border-picks-fg/20 hover:bg-picks-fg/[0.04]',
             className,
           )}
         >
-          <Upload className="h-6 w-6 text-white/30" />
-          <span className="text-sm text-white/40">Upload image</span>
+          <Upload className="h-6 w-6 text-picks-fg/30" />
+          <span className="text-sm text-picks-fg/40">Upload image</span>
         </motion.button>
       )}
 
       {/* Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl gap-0 overflow-hidden border-white/[0.08] bg-neutral-950 p-0">
-          <DialogHeader className="border-b border-white/[0.06] px-4 py-3">
-            <DialogTitle className="text-sm font-medium text-white/80">
+        <DialogContent className="max-w-2xl gap-0 overflow-hidden border-picks-fg/[0.08] bg-picks-surface p-0">
+          <DialogHeader className="border-b border-picks-fg/[0.06] px-4 py-3">
+            <DialogTitle className="text-sm font-medium text-picks-fg/80">
               Crop Image
             </DialogTitle>
           </DialogHeader>
@@ -450,7 +450,7 @@ export function ImageCropper({
           {/* Canvas area */}
           <div
             ref={containerRef}
-            className="relative h-[400px] w-full select-none overflow-hidden bg-neutral-900"
+            className="relative h-[400px] w-full select-none overflow-hidden bg-picks-panel"
             onWheel={handleWheel}
             onDoubleClick={handleDoubleClick}
             onPointerDown={handleBgPointerDown}
@@ -573,10 +573,10 @@ export function ImageCropper({
           </div>
 
           {/* Controls */}
-          <div className="space-y-3 border-t border-white/[0.06] px-4 py-3">
+          <div className="space-y-3 border-t border-picks-fg/[0.06] px-4 py-3">
             {/* Aspect presets */}
             <div className="flex items-center gap-1">
-              <ImageIcon className="mr-2 h-3.5 w-3.5 text-white/30" />
+              <ImageIcon className="mr-2 h-3.5 w-3.5 text-picks-fg/30" />
               {ASPECT_PRESETS.map((preset) => (
                 <motion.button
                   key={preset.label}
@@ -587,8 +587,8 @@ export function ImageCropper({
                   className={cn(
                     'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
                     aspect === preset.value
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/30 hover:text-white/50',
+                      ? 'bg-picks-fg/10 text-picks-fg'
+                      : 'text-picks-fg/30 hover:text-picks-fg/50',
                   )}
                 >
                   {preset.label}
@@ -598,7 +598,7 @@ export function ImageCropper({
 
             {/* Zoom */}
             <div className="flex items-center gap-3">
-              <ZoomIn className="h-3.5 w-3.5 shrink-0 text-white/30" />
+              <ZoomIn className="h-3.5 w-3.5 shrink-0 text-picks-fg/30" />
               <Slider
                 value={[zoom]}
                 min={1}
@@ -607,7 +607,7 @@ export function ImageCropper({
                 onValueChange={([v]) => setZoom(v)}
                 className="flex-1"
               />
-              <span className="w-10 text-right font-mono text-xs text-white/30">
+              <span className="w-10 text-right font-mono text-xs text-picks-fg/30">
                 {zoom.toFixed(1)}x
               </span>
             </div>
@@ -615,7 +615,7 @@ export function ImageCropper({
             {/* Rotation */}
             {allowRotation && (
               <div className="flex items-center gap-3">
-                <RotateCcw className="h-3.5 w-3.5 shrink-0 text-white/30" />
+                <RotateCcw className="h-3.5 w-3.5 shrink-0 text-picks-fg/30" />
                 <Slider
                   value={[rotation]}
                   min={-180}
@@ -627,7 +627,7 @@ export function ImageCropper({
                 <button
                   type="button"
                   onClick={() => setRotation(0)}
-                  className="w-10 text-right font-mono text-xs text-white/30 hover:text-white/50"
+                  className="w-10 text-right font-mono text-xs text-picks-fg/30 hover:text-picks-fg/50"
                 >
                   {rotation}°
                 </button>
@@ -642,7 +642,7 @@ export function ImageCropper({
                   variant="outline"
                   size="sm"
                   onClick={() => setFlipH((f) => !f)}
-                  className={cn('gap-1.5 text-xs', flipH && 'bg-white/10')}
+                  className={cn('gap-1.5 text-xs', flipH && 'bg-picks-fg/10')}
                 >
                   <FlipHorizontal className="h-3.5 w-3.5" />
                   Flip H
@@ -652,7 +652,7 @@ export function ImageCropper({
                   variant="outline"
                   size="sm"
                   onClick={() => setFlipV((f) => !f)}
-                  className={cn('gap-1.5 text-xs', flipV && 'bg-white/10')}
+                  className={cn('gap-1.5 text-xs', flipV && 'bg-picks-fg/10')}
                 >
                   <FlipVertical className="h-3.5 w-3.5" />
                   Flip V
@@ -661,7 +661,7 @@ export function ImageCropper({
             )}
           </div>
 
-          <DialogFooter className="border-t border-white/[0.06] px-4 py-3">
+          <DialogFooter className="border-t border-picks-fg/[0.06] px-4 py-3">
             <Button
               variant="ghost"
               size="sm"

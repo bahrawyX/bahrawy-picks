@@ -46,20 +46,20 @@ export function EnvVars({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015]',
+        'w-full overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.015]',
         className,
       )}
     >
       {/* Header */}
-      <header className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
-        <h3 className="text-[13px] font-medium tracking-tight text-white/85">
+      <header className="flex items-center justify-between gap-3 border-b border-picks-fg/[0.06] px-4 py-3">
+        <h3 className="text-[13px] font-medium tracking-tight text-picks-fg/85">
           {title}
         </h3>
         <RevealToggle visible={visible} onChange={setVisible} />
       </header>
 
       {/* Rows */}
-      <ul className="divide-y divide-white/[0.04]">
+      <ul className="divide-y divide-picks-fg/[0.04]">
         {vars.map((v, i) => (
           <EnvVarRow
             key={v.name}
@@ -87,7 +87,7 @@ function RevealToggle({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-white/35">
+      <span className="text-picks-fg/35">
         {visible ? (
           <Eye className="h-3.5 w-3.5" strokeWidth={2} />
         ) : (
@@ -102,16 +102,16 @@ function RevealToggle({
         onClick={() => onChange(!visible)}
         className={cn(
           'relative flex h-5 w-9 shrink-0 items-center rounded-full border px-0.5 py-0.5 transition-colors duration-150',
-          'outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+          'outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
           visible
-            ? 'border-white/40 bg-white/30'
-            : 'border-white/15 bg-white/[0.04]',
+            ? 'border-picks-fg/40 bg-picks-fg/30'
+            : 'border-picks-fg/15 bg-picks-fg/[0.04]',
         )}
       >
         <span
           aria-hidden
           className={cn(
-            'block h-3.5 w-3.5 rounded-full bg-white shadow-md transition-transform duration-200 ease-out',
+            'block h-3.5 w-3.5 rounded-full bg-picks-fg shadow-md transition-transform duration-200 ease-out',
             visible ? 'translate-x-4' : 'translate-x-0',
           )}
         />
@@ -151,13 +151,13 @@ function EnvVarRow({
   }
 
   return (
-    <li className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02]">
+    <li className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-picks-fg/[0.02]">
       <div className="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden">
-        <code className="shrink-0 font-mono text-[12px] tracking-tight text-white/90">
+        <code className="shrink-0 font-mono text-[12px] tracking-tight text-picks-fg/90">
           {envVar.name}
         </code>
         {envVar.required && (
-          <span className="shrink-0 rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-white/55">
+          <span className="shrink-0 rounded-md bg-picks-fg/[0.06] px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-picks-fg/55">
             Required
           </span>
         )}
@@ -167,7 +167,7 @@ function EnvVarRow({
         <span
           className={cn(
             'block max-w-[200px] truncate font-mono text-[12px] tabular-nums',
-            visible ? 'text-white/80' : 'text-white/45',
+            visible ? 'text-picks-fg/80' : 'text-picks-fg/45',
           )}
         >
           {visible ? envVar.value : masked}
@@ -177,9 +177,9 @@ function EnvVarRow({
           onClick={handleCopy}
           aria-label={`Copy ${envVar.name}`}
           className={cn(
-            'relative inline-flex h-7 w-7 items-center justify-center rounded-md text-white/40 transition-colors',
-            'hover:bg-white/[0.06] hover:text-white/80',
-            'outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+            'relative inline-flex h-7 w-7 items-center justify-center rounded-md text-picks-fg/40 transition-colors',
+            'hover:bg-picks-fg/[0.06] hover:text-picks-fg/80',
+            'outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30',
           )}
         >
           <AnimatePresence mode="wait" initial={false}>

@@ -274,7 +274,7 @@ export function Popover({
             opacity: pos ? undefined : 0,
           }}
           className={cn(
-            'rounded-[14px] border border-white/[0.08] outline-none backdrop-blur-2xl',
+            'rounded-[14px] border border-picks-fg/[0.08] outline-none backdrop-blur-2xl',
             className,
           )}
         >
@@ -300,7 +300,7 @@ export function Popover({
           {arrow && pos && (
             <span
               aria-hidden
-              className="absolute h-3 w-3 rotate-45 border-white/[0.08]"
+              className="absolute h-3 w-3 rotate-45 border-picks-fg/[0.08]"
               style={{
                 ...pos.arrow,
                 background: arrowBg,

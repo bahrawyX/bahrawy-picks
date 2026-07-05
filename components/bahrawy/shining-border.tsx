@@ -19,7 +19,7 @@
  * @param meteorSize       — Meteor head size in px. Default 60.
  * @param glowIntensity    — Ambient glow strength 0-1. Default 0.35.
  * @param pauseOnHover     — Pause the orbit on hover. Default false.
- * @param innerBackground  — Tailwind class for inner bg. Default "bg-black".
+ * @param innerBackground  — Tailwind class for inner bg. Default "bg-picks-surface".
  * @param className        — Additional classes for the outer wrapper.
  * @param innerClassName   — Additional classes for the inner content wrapper.
  */
@@ -79,7 +79,7 @@ export const ShiningBorder = React.forwardRef<HTMLDivElement, ShiningBorderProps
       meteorSize = 60,
       glowIntensity = 0.35,
       pauseOnHover = false,
-      innerBackground = 'bg-black',
+      innerBackground = 'bg-picks-surface',
       className,
       innerClassName,
     },
@@ -123,7 +123,7 @@ export const ShiningBorder = React.forwardRef<HTMLDivElement, ShiningBorderProps
           className="pointer-events-none absolute inset-0"
           style={{
             borderRadius,
-            border: `${borderWidth}px solid rgba(255,255,255,0.10)`,
+            border: `${borderWidth}px solid rgb(var(--picks-fg-rgb) / 0.10)`,
           }}
         />
 

@@ -228,7 +228,7 @@ function Avatar({
   return (
     <motion.div
       className={cn(
-        'flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base font-bold text-white',
+        'flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base font-bold text-picks-fg',
         colorClass,
       )}
       whileHover={{ scale: 1.08 }}
@@ -253,7 +253,7 @@ function MetricItem({ icon, value, hoverColor }: MetricItemProps) {
   return (
     <motion.div
       className={cn(
-        'group/metric flex items-center gap-1.5 text-[13px] text-white/40 transition-colors',
+        'group/metric flex items-center gap-1.5 text-[13px] text-picks-fg/40 transition-colors',
         hoverColor,
       )}
       variants={fadeUp}
@@ -306,7 +306,7 @@ export function TwitterCard({
   return (
     <motion.div
       className={cn(
-        'relative overflow-hidden rounded-xl border border-white/[0.08] bg-black p-4',
+        'relative overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-black p-4',
         href && 'cursor-pointer',
         className,
       )}
@@ -332,17 +332,17 @@ export function TwitterCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-1">
-            <span className="min-w-0 truncate text-[15px] font-bold text-white">
+            <span className="min-w-0 truncate text-[15px] font-bold text-picks-fg">
               {name}
             </span>
             {verified && <VerifiedBadge variant={verified} />}
           </div>
-          <div className="min-w-0 truncate text-[13px] leading-tight text-white/50">
+          <div className="min-w-0 truncate text-[13px] leading-tight text-picks-fg/50">
             @{handle}
           </div>
         </div>
 
-        <div className="shrink-0 text-white/40">
+        <div className="shrink-0 text-picks-fg/40">
           {platform === 'twitter' ? (
             <TwitterBird className="h-5 w-5" />
           ) : (
@@ -352,10 +352,10 @@ export function TwitterCard({
       </div>
 
       {/* Content */}
-      <div className="mt-3 text-[15px] leading-relaxed text-white/90 whitespace-pre-wrap">
+      <div className="mt-3 text-[15px] leading-relaxed text-picks-fg/90 whitespace-pre-wrap">
         {parseContent(displayContent)}
         {shouldShowMore && !expanded && (
-          <span className="text-white/40">...</span>
+          <span className="text-picks-fg/40">...</span>
         )}
       </div>
 
@@ -401,7 +401,7 @@ export function TwitterCard({
 
       {/* Timestamp */}
       {timestamp && (
-        <div className="mt-3 text-[13px] text-white/40">
+        <div className="mt-3 text-[13px] text-picks-fg/40">
           {formatTimestamp(timestamp)} · {platformLabel}
         </div>
       )}
@@ -409,7 +409,7 @@ export function TwitterCard({
       {/* Metrics */}
       {hasMetrics && (
         <>
-          <div className="mt-3 border-t border-white/[0.08]" />
+          <div className="mt-3 border-t border-picks-fg/[0.08]" />
           <motion.div
             className="mt-3 flex items-center gap-6"
             variants={staggerContainer}
@@ -446,10 +446,10 @@ export function TwitterCard({
             {views !== undefined && (
               <MetricItem
                 icon={
-                  <Eye className="h-4 w-4 transition-colors group-hover/metric:text-white/60" />
+                  <Eye className="h-4 w-4 transition-colors group-hover/metric:text-picks-fg/60" />
                 }
                 value={views}
-                hoverColor="hover:text-white/60"
+                hoverColor="hover:text-picks-fg/60"
               />
             )}
           </motion.div>

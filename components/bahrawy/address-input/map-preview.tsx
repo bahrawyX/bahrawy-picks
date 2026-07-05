@@ -24,7 +24,7 @@ export function MapPreview({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-200',
+        'relative overflow-hidden rounded-lg border border-picks-fg/[0.08] bg-neutral-200',
         className,
       )}
       style={{ height }}

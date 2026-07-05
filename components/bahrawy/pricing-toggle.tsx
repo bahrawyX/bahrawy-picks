@@ -46,27 +46,27 @@ export function PricingToggle({
   eyebrow,
   heading = 'Pick a plan. Change it any time.',
   description,
-  accentColor = '#FFFFFF',
+  accentColor = 'var(--picks-fg)',
   className,
 }: PricingToggleProps) {
   const id = React.useId()
   const [annual, setAnnual] = React.useState(false)
 
   return (
-    <section className={cn('w-full bg-black px-6 py-24 sm:py-32', className)}>
+    <section className={cn('w-full bg-picks-surface px-6 py-24 sm:py-32', className)}>
       <div className="mx-auto flex max-w-6xl flex-col gap-12">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 text-center">
           {eyebrow && (
-            <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80">
+            <span className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80">
               {eyebrow}
             </span>
           )}
-          <h2 className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+          <h2 className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl">
             {heading}
           </h2>
           {description && (
-            <p className="max-w-xl text-pretty text-sm leading-relaxed text-white/60 sm:text-base">
+            <p className="max-w-xl text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base">
               {description}
             </p>
           )}
@@ -74,7 +74,7 @@ export function PricingToggle({
           {/* Billing toggle */}
           <div
             role="tablist"
-            className="relative mt-2 inline-flex rounded-full border border-white/10 bg-white/[0.04] p-1"
+            className="relative mt-2 inline-flex rounded-full border border-picks-fg/10 bg-picks-fg/[0.04] p-1"
           >
             {(['monthly', 'annual'] as const).map((mode) => {
               const isActive = (mode === 'annual') === annual
@@ -85,7 +85,7 @@ export function PricingToggle({
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setAnnual(mode === 'annual')}
-                  className="relative z-10 rounded-full px-4 py-1.5 text-xs font-medium capitalize text-white/70 transition-colors data-[active=true]:text-black"
+                  className="relative z-10 rounded-full px-4 py-1.5 text-xs font-medium capitalize text-picks-fg/70 transition-colors data-[active=true]:text-picks-surface"
                   data-active={isActive}
                 >
                   {isActive && (
@@ -102,7 +102,7 @@ export function PricingToggle({
             })}
             <span
               className={cn(
-                'ml-1 self-center rounded-full bg-white/[0.06] px-2 py-1 text-[10px] font-semibold tracking-wide text-emerald-300 transition-opacity',
+                'ml-1 self-center rounded-full bg-picks-fg/[0.06] px-2 py-1 text-[10px] font-semibold tracking-wide text-emerald-300 transition-opacity',
                 annual ? 'opacity-100' : 'opacity-50',
               )}
             >
@@ -117,10 +117,10 @@ export function PricingToggle({
             <article
               key={plan.id}
               className={cn(
-                'relative flex flex-col rounded-2xl border bg-white/[0.02] p-6',
+                'relative flex flex-col rounded-2xl border bg-picks-fg/[0.02] p-6',
                 plan.featured
-                  ? '-translate-y-2 border-white/40'
-                  : 'border-white/10',
+                  ? '-translate-y-2 border-picks-fg/40'
+                  : 'border-picks-fg/10',
               )}
               style={
                 plan.featured
@@ -130,7 +130,7 @@ export function PricingToggle({
             >
               {plan.featured && (
                 <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-black"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-picks-surface"
                   style={{ background: accentColor }}
                 >
                   Recommended
@@ -138,23 +138,23 @@ export function PricingToggle({
               )}
 
               <header className="mb-6">
-                <p className="text-sm font-medium uppercase tracking-[0.14em] text-white/60">
+                <p className="text-sm font-medium uppercase tracking-[0.14em] text-picks-fg/60">
                   {plan.name}
                 </p>
                 <div className="mt-3 flex items-baseline gap-1.5">
-                  <span className="text-2xl font-semibold text-white/60">{currency}</span>
+                  <span className="text-2xl font-semibold text-picks-fg/60">{currency}</span>
                   <AnimatedNumber value={annual ? plan.annual : plan.monthly} />
-                  <span className="text-sm text-white/50">/mo</span>
+                  <span className="text-sm text-picks-fg/50">/mo</span>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">{plan.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-picks-fg/60">{plan.description}</p>
               </header>
 
-              <ul className="mb-6 flex flex-col gap-2.5 text-sm text-white/80">
+              <ul className="mb-6 flex flex-col gap-2.5 text-sm text-picks-fg/80">
                 {plan.features.map((f, j) => (
                   <li key={j} className="flex items-start gap-2.5">
                     <Check
                       className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                      style={{ color: plan.featured ? accentColor : 'rgba(255,255,255,0.7)' }}
+                      style={{ color: plan.featured ? accentColor : 'rgb(var(--picks-fg-rgb) / 0.7)' }}
                       strokeWidth={2.5}
                     />
                     <span>{f}</span>
@@ -169,8 +169,8 @@ export function PricingToggle({
                   className={cn(
                     'inline-flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors',
                     plan.featured
-                      ? 'text-black'
-                      : 'border border-white/15 bg-white/[0.04] text-white hover:bg-white/10',
+                      ? 'text-picks-surface'
+                      : 'border border-picks-fg/15 bg-picks-fg/[0.04] text-picks-fg hover:bg-picks-fg/10',
                   )}
                   style={plan.featured ? { background: accentColor } : undefined}
                 >
@@ -199,7 +199,7 @@ function AnimatedNumber({ value }: { value: number }) {
   }, [value, raw])
 
   return (
-    <motion.span className="text-5xl font-semibold tabular-nums text-white">
+    <motion.span className="text-5xl font-semibold tabular-nums text-picks-fg">
       {text}
     </motion.span>
   )

@@ -76,7 +76,7 @@ export function LikeBurst({
   size = 24,
   particles = 8,
   color = '#FF3B30',
-  idleColor = 'rgba(255,255,255,0.55)',
+  idleColor = 'rgb(var(--picks-fg-rgb) / 0.55)',
   label = 'Like',
   className,
 }: LikeBurstProps) {
@@ -107,8 +107,8 @@ export function LikeBurst({
       aria-label={label}
       className={cn(
         'group relative inline-flex items-center gap-1.5 rounded-full px-2 py-1 transition-colors',
-        'outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
-        liked ? 'text-white' : 'text-white/65 hover:text-white',
+        'outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+        liked ? 'text-picks-fg' : 'text-picks-fg/65 hover:text-picks-fg',
         className,
       )}
     >
@@ -199,7 +199,7 @@ function BurstRing({
           height: size,
           marginLeft: -size / 2,
           marginTop: -size / 2,
-          border: '1.5px solid rgba(255,255,255,0.55)',
+          border: '1.5px solid rgb(var(--picks-fg-rgb) / 0.55)',
         }}
         initial={{ scale: 0.5, opacity: 0.55 }}
         animate={{ scale: 1.9, opacity: 0 }}

@@ -25,7 +25,7 @@ export interface ShineSweepProps {
 
 export function ShineSweep({
   children,
-  shineColor = 'rgba(255,255,255,0.85)',
+  shineColor = 'rgb(var(--picks-fg-rgb) / 0.85)',
   duration = 3.5,
   mode = 'always',
   className,

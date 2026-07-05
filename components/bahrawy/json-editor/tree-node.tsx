@@ -216,7 +216,7 @@ export function TreeNodeRow({
               if (e.key === 'Enter') commitEdit()
               if (e.key === 'Escape') cancelEdit()
             }}
-            className="min-w-[80px] rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none focus:border-white/40"
+            className="min-w-[80px] rounded-md border border-picks-fg/20 bg-picks-fg/[0.06] px-2 py-0.5 text-xs text-picks-fg outline-none focus:border-picks-fg/40"
           />
           <button type="button" onClick={commitEdit} className="rounded-md p-0.5 text-green-400 hover:bg-green-500/10">
             <Check className="h-3 w-3" />
@@ -230,7 +230,7 @@ export function TreeNodeRow({
 
     if (isExpandable) {
       return (
-        <span className="text-xs text-white/30">
+        <span className="text-xs text-picks-fg/30">
           {type === 'array' ? `[${childCount}]` : `{${childCount}}`}
         </span>
       )
@@ -267,7 +267,7 @@ export function TreeNodeRow({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={cn(
-          'group flex items-center gap-1 rounded-md py-0.5 pr-2 transition-colors hover:bg-white/[0.03]',
+          'group flex items-center gap-1 rounded-md py-0.5 pr-2 transition-colors hover:bg-picks-fg/[0.03]',
         )}
         style={{ paddingLeft: depth * 16 + 4 }}
       >
@@ -276,7 +276,7 @@ export function TreeNodeRow({
           <button
             type="button"
             onClick={onToggle}
-            className="flex h-4 w-4 items-center justify-center rounded-sm text-white/30 transition-colors hover:text-white/60"
+            className="flex h-4 w-4 items-center justify-center rounded-sm text-picks-fg/30 transition-colors hover:text-picks-fg/60"
           >
             {animate ? (
               <motion.div
@@ -296,10 +296,10 @@ export function TreeNodeRow({
         )}
 
         {/* Key */}
-        <span className="text-xs font-medium text-white/70">
+        <span className="text-xs font-medium text-picks-fg/70">
           {typeof keyName === 'number' ? keyName : `"${keyName}"`}
         </span>
-        <span className="text-xs text-white/20">:</span>
+        <span className="text-xs text-picks-fg/20">:</span>
 
         {/* Value */}
         <span className="ml-1">{renderValue()}</span>
@@ -316,7 +316,7 @@ export function TreeNodeRow({
               <button
                 type="button"
                 onClick={startEdit}
-                className="rounded-md p-1 text-white/20 transition-colors hover:bg-white/[0.06] hover:text-white/50"
+                className="rounded-md p-1 text-picks-fg/20 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/50"
                 aria-label="Edit"
               >
                 <Pencil className="h-3 w-3" />
@@ -326,7 +326,7 @@ export function TreeNodeRow({
               <button
                 type="button"
                 onClick={startAdd}
-                className="rounded-md p-1 text-white/20 transition-colors hover:bg-white/[0.06] hover:text-white/50"
+                className="rounded-md p-1 text-picks-fg/20 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/50"
                 aria-label="Add"
               >
                 <Plus className="h-3 w-3" />
@@ -336,7 +336,7 @@ export function TreeNodeRow({
               <button
                 type="button"
                 onClick={() => onDelete(path)}
-                className="rounded-md p-1 text-white/20 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                className="rounded-md p-1 text-picks-fg/20 transition-colors hover:bg-red-500/10 hover:text-red-400"
                 aria-label="Delete"
               >
                 <Trash2 className="h-3 w-3" />
@@ -362,10 +362,10 @@ export function TreeNodeRow({
               placeholder="key"
               value={newKey}
               onChange={(e) => setNewKey(e.target.value)}
-              className="w-20 rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
+              className="w-20 rounded-md border border-picks-fg/20 bg-picks-fg/[0.06] px-2 py-0.5 text-xs text-picks-fg outline-none"
             />
           )}
-          <span className="text-xs text-white/20">:</span>
+          <span className="text-xs text-picks-fg/20">:</span>
           <input
             autoFocus={type === 'array'}
             placeholder="value"
@@ -375,7 +375,7 @@ export function TreeNodeRow({
               if (e.key === 'Enter') commitAdd()
               if (e.key === 'Escape') setAdding(false)
             }}
-            className="min-w-[80px] rounded-md border border-white/20 bg-white/[0.06] px-2 py-0.5 text-xs text-white outline-none"
+            className="min-w-[80px] rounded-md border border-picks-fg/20 bg-picks-fg/[0.06] px-2 py-0.5 text-xs text-picks-fg outline-none"
           />
           <button type="button" onClick={commitAdd} className="rounded-md p-0.5 text-green-400 hover:bg-green-500/10">
             <Check className="h-3 w-3" />

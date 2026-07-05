@@ -99,11 +99,11 @@ export function TableList<T extends Record<string, unknown>>({
   return (
     <div className={cn('flex flex-col', className)} style={{ height }}>
       {/* Sticky header */}
-      <div className="flex shrink-0 border-b border-white/[0.08] bg-white/[0.03]">
+      <div className="flex shrink-0 border-b border-picks-fg/[0.08] bg-picks-fg/[0.03]">
         {tableColumns.map((col) => (
           <div
             key={col.key}
-            className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-white/50"
+            className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-picks-fg/50"
             style={{ width: col.width ?? 150, flexShrink: 0 }}
           >
             {col.header}
@@ -147,13 +147,13 @@ export function TableList<T extends Record<string, unknown>>({
             return (
               <div
                 key={virtualItem.index}
-                className="flex items-center border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                className="flex items-center border-b border-picks-fg/[0.04] hover:bg-picks-fg/[0.02] transition-colors"
                 style={itemStyle}
               >
                 {tableColumns.map((col) => (
                   <div
                     key={col.key}
-                    className="truncate px-4 text-sm text-white/70"
+                    className="truncate px-4 text-sm text-picks-fg/70"
                     style={{ width: col.width ?? 150, flexShrink: 0 }}
                   >
                     {String(item[col.key] ?? '')}
@@ -166,7 +166,7 @@ export function TableList<T extends Record<string, unknown>>({
 
         {isLoadingMore && (
           <div className="flex items-center justify-center py-4">
-            <Loader2 className="h-5 w-5 animate-spin text-white/40" />
+            <Loader2 className="h-5 w-5 animate-spin text-picks-fg/40" />
           </div>
         )}
       </div>

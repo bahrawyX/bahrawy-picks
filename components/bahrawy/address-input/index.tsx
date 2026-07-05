@@ -283,13 +283,13 @@ export function AddressInput({
       <div className="relative">
         <div
           className={cn(
-            'flex items-center rounded-lg border bg-white/[0.03] transition-colors',
-            focused && !error ? 'border-white/30' : 'border-white/[0.08]',
+            'flex items-center rounded-lg border bg-picks-fg/[0.03] transition-colors',
+            focused && !error ? 'border-picks-fg/30' : 'border-picks-fg/[0.08]',
             error && 'border-red-500/60',
             disabled && 'cursor-not-allowed opacity-50',
           )}
         >
-          <div className="flex items-center pl-3 text-white/30">
+          <div className="flex items-center pl-3 text-picks-fg/30">
             <Search className="h-4 w-4" />
           </div>
           <input
@@ -318,7 +318,7 @@ export function AddressInput({
                 : undefined
             }
             autoComplete="off"
-            className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/25"
+            className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-picks-fg outline-none placeholder:text-picks-fg/25"
           />
 
           {/* Geolocation button */}
@@ -328,7 +328,7 @@ export function AddressInput({
               onClick={handleGeolocate}
               disabled={disabled || geoLoading}
               className={cn(
-                'mr-2 rounded-md p-1.5 text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/60',
+                'mr-2 rounded-md p-1.5 text-picks-fg/30 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/60',
                 geoLoading && 'animate-pulse',
               )}
               aria-label="Use current location"

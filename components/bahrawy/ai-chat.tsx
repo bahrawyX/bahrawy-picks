@@ -96,18 +96,18 @@ export function AIChat({
   return (
     <div
       className={cn(
-        'flex w-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-950/60',
+        'flex w-full flex-col overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-surface/60',
         className,
       )}
     >
-      <header className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
+      <header className="flex items-center gap-2 border-b border-picks-fg/[0.06] bg-picks-fg/[0.02] px-4 py-2.5">
         {avatar ?? (
           <Sparkles className="h-3.5 w-3.5 text-violet-300" strokeWidth={2.5} />
         )}
-        <span className="font-display text-[11.5px] font-semibold tracking-tight text-white/85">
+        <span className="font-display text-[11.5px] font-semibold tracking-tight text-picks-fg/85">
           {title}
         </span>
-        <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/35">
+        <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-picks-fg/35">
           <span aria-hidden className="block h-1 w-1 animate-pulse rounded-full bg-emerald-400" />
           {status}
         </span>
@@ -178,7 +178,7 @@ export function AIChat({
               className="flex items-start gap-2.5"
             >
               <DefaultAssistantAvatar custom={assistantAvatar} />
-              <div className="rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.04] px-3.5 py-2.5">
+              <div className="rounded-2xl rounded-bl-md border border-picks-fg/10 bg-picks-fg/[0.04] px-3.5 py-2.5">
                 <ThinkingDots />
               </div>
             </motion.div>
@@ -233,8 +233,8 @@ function MessageRow({
         className={cn(
           'max-w-[78%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-[1.55]',
           isUser
-            ? 'rounded-br-md bg-white/[0.07] text-white/90'
-            : 'rounded-bl-md border border-white/10 bg-white/[0.025] text-white/85',
+            ? 'rounded-br-md bg-picks-fg/[0.07] text-picks-fg/90'
+            : 'rounded-bl-md border border-picks-fg/10 bg-picks-fg/[0.025] text-picks-fg/85',
         )}
       >
         <span className="whitespace-pre-wrap break-words">
@@ -284,7 +284,7 @@ function Caret() {
   return (
     <motion.span
       aria-hidden
-      className="ml-0.5 inline-block h-[1em] w-[6px] translate-y-[2px] rounded-sm bg-white/75"
+      className="ml-0.5 inline-block h-[1em] w-[6px] translate-y-[2px] rounded-sm bg-picks-fg/75"
       animate={{ opacity: [1, 0.2, 1] }}
       transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
     />
@@ -297,7 +297,7 @@ function ThinkingDots() {
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
-          className="block h-1.5 w-1.5 rounded-full bg-white/70"
+          className="block h-1.5 w-1.5 rounded-full bg-picks-fg/70"
           animate={{ opacity: [0.25, 1, 0.25], y: [0, -2, 0] }}
           transition={{ duration: 1.0, delay: i * 0.18, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -318,7 +318,7 @@ function DefaultAssistantAvatar({ custom }: { custom?: React.ReactNode }) {
 function DefaultUserAvatar({ custom }: { custom?: React.ReactNode }) {
   if (custom) return <>{custom}</>
   return (
-    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-semibold tracking-tight text-white/80 ring-1 ring-white/10">
+    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-picks-fg/[0.06] text-[10px] font-semibold tracking-tight text-picks-fg/80 ring-1 ring-picks-fg/10">
       You
     </span>
   )

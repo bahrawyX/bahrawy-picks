@@ -55,7 +55,7 @@ export function EmptyState({
   description,
   primaryCta,
   secondaryCta,
-  accentColor = 'rgba(255,255,255,0.08)',
+  accentColor = 'rgb(var(--picks-fg-rgb) / 0.08)',
   className,
 }: EmptyStateProps) {
   return (
@@ -64,7 +64,7 @@ export function EmptyState({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: [0.2, 0, 0, 1] }}
       className={cn(
-        'flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-10 text-center',
+        'flex flex-col items-center justify-center gap-4 rounded-2xl border border-picks-fg/10 bg-picks-fg/[0.02] p-10 text-center',
         className,
       )}
     >
@@ -72,16 +72,16 @@ export function EmptyState({
         initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={SPRING}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.08]"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full border border-picks-fg/[0.08]"
         style={{ background: accentColor }}
       >
-        <div className="text-white/75">{icon ?? <Inbox className="h-6 w-6" strokeWidth={1.75} />}</div>
+        <div className="text-picks-fg/75">{icon ?? <Inbox className="h-6 w-6" strokeWidth={1.75} />}</div>
       </motion.div>
 
       <div className="flex max-w-sm flex-col gap-1.5">
-        <h3 className="font-display text-[17px] font-semibold tracking-tight text-white">{title}</h3>
+        <h3 className="font-display text-[17px] font-semibold tracking-tight text-picks-fg">{title}</h3>
         {description && (
-          <p className="text-[13.5px] leading-relaxed tracking-tight text-white/60">{description}</p>
+          <p className="text-[13.5px] leading-relaxed tracking-tight text-picks-fg/60">{description}</p>
         )}
       </div>
 
@@ -90,13 +90,13 @@ export function EmptyState({
           {primaryCta && (
             <CtaAction
               cta={primaryCta}
-              className="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+              className="inline-flex items-center justify-center rounded-full bg-picks-fg px-4 py-2 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/85"
             />
           )}
           {secondaryCta && (
             <CtaAction
               cta={secondaryCta}
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white/85 transition-colors hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-full border border-picks-fg/20 px-4 py-2 text-sm font-medium text-picks-fg/85 transition-colors hover:bg-picks-fg/10"
             />
           )}
         </div>

@@ -306,7 +306,7 @@ export function SpotlightTour({
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={SPRING}
             className={cn(
-              'pointer-events-auto absolute w-[320px] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-4 shadow-2xl shadow-black/60 outline-none backdrop-blur',
+              'pointer-events-auto absolute w-[320px] overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-surface/95 p-4 shadow-2xl shadow-black/60 outline-none backdrop-blur',
             )}
             style={{
               top: tooltipPos.top,
@@ -316,10 +316,10 @@ export function SpotlightTour({
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/40">
+                <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-picks-fg/40">
                   Step {step + 1} / {steps.length}
                 </p>
-                <h3 className="mt-1 font-display text-[14px] font-semibold tracking-tight text-white">
+                <h3 className="mt-1 font-display text-[14px] font-semibold tracking-tight text-picks-fg">
                   {current.title}
                 </h3>
               </div>
@@ -327,13 +327,13 @@ export function SpotlightTour({
                 type="button"
                 onClick={() => close('skip')}
                 aria-label="Close tour"
-                className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg"
               >
                 <X className="h-3.5 w-3.5" strokeWidth={2.5} />
               </button>
             </div>
             {current.description && (
-              <p className="mt-2 text-[12.5px] leading-snug text-white/65">
+              <p className="mt-2 text-[12.5px] leading-snug text-picks-fg/65">
                 {current.description}
               </p>
             )}
@@ -353,7 +353,7 @@ export function SpotlightTour({
                           ? accent
                           : i < step
                             ? `${accent}66`
-                            : 'rgba(255,255,255,0.12)',
+                            : 'rgb(var(--picks-fg-rgb) / 0.12)',
                     }}
                   />
                 ))}
@@ -362,7 +362,7 @@ export function SpotlightTour({
                 <button
                   type="button"
                   onClick={() => close('skip')}
-                  className="rounded-md px-2 py-1 text-[11px] font-medium text-white/45 transition-colors hover:text-white/85"
+                  className="rounded-md px-2 py-1 text-[11px] font-medium text-picks-fg/45 transition-colors hover:text-picks-fg/85"
                 >
                   {skipLabel}
                 </button>
@@ -372,9 +372,9 @@ export function SpotlightTour({
                   disabled={step === 0}
                   aria-label="Previous step"
                   className={cn(
-                    'inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-white/65 transition-colors',
-                    'hover:border-white/25 hover:bg-white/[0.08] hover:text-white',
-                    'disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/10 disabled:hover:bg-white/[0.04] disabled:hover:text-white/65',
+                    'inline-flex h-7 w-7 items-center justify-center rounded-md border border-picks-fg/10 bg-picks-fg/[0.04] text-picks-fg/65 transition-colors',
+                    'hover:border-picks-fg/25 hover:bg-picks-fg/[0.08] hover:text-picks-fg',
+                    'disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-picks-fg/10 disabled:hover:bg-picks-fg/[0.04] disabled:hover:text-picks-fg/65',
                   )}
                 >
                   <ArrowLeft className="h-3 w-3" strokeWidth={2.5} />
@@ -382,7 +382,7 @@ export function SpotlightTour({
                 <button
                   type="button"
                   onClick={next}
-                  className="inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-[11.5px] font-semibold tracking-tight text-black transition-transform hover:scale-[1.03]"
+                  className="inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-[11.5px] font-semibold tracking-tight text-picks-surface transition-transform hover:scale-[1.03]"
                   style={{ background: accent }}
                 >
                   {isLast ? doneLabel : 'Next'}

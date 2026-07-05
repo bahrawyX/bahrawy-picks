@@ -157,7 +157,7 @@ export function OrbitalMenu({
         aria-expanded={open}
         aria-haspopup="menu"
         className={cn(
-          'relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/15 text-white shadow-lg shadow-black/40 transition-transform active:scale-95',
+          'relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-picks-fg/15 text-picks-fg shadow-lg shadow-black/40 transition-transform active:scale-95',
         )}
         style={{
           // Solid fill with a subtle radial highlight at the top-left
@@ -206,7 +206,7 @@ export function OrbitalMenu({
                   animate={{ x: dx, y: dy, opacity: 1, scale: 1 }}
                   exit={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
                   transition={{ ...SPRING, delay: i * 0.035 }}
-                  className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-zinc-900/90 text-white/85 shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-white/25 hover:bg-zinc-800 hover:text-white"
+                  className="group/oi pointer-events-auto absolute inline-flex h-11 w-11 items-center justify-center rounded-full border border-picks-fg/15 bg-picks-panel/90 text-picks-fg/85 shadow-lg shadow-black/40 backdrop-blur-md transition-colors hover:border-picks-fg/25 hover:bg-zinc-800 hover:text-picks-fg"
                 >
                   {/* Optional accent dot in the corner — sets the item
                       apart by colour without painting a neon halo. */}
@@ -219,7 +219,7 @@ export function OrbitalMenu({
                   {/* Floating label */}
                   {item.label && (
                     <span
-                      className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-white/75 opacity-0 backdrop-blur transition-opacity group-hover/oi:opacity-100"
+                      className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-picks-fg/10 bg-picks-surface/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-picks-fg/75 opacity-0 backdrop-blur transition-opacity group-hover/oi:opacity-100"
                     >
                       {item.label}
                     </span>

@@ -280,7 +280,7 @@ export function CinemaReel({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#06070a]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div
@@ -300,7 +300,7 @@ export function CinemaReel({
         {eyebrow && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex justify-center px-6 pt-14 sm:pt-16">
             <div ref={eyebrowRef} className="pointer-events-auto">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+              <div className="inline-flex items-center gap-2 rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur">
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
@@ -356,7 +356,7 @@ export function CinemaReel({
                   ref={(el) => {
                     frameRefs.current[i] = el
                   }}
-                  className="relative shrink-0 overflow-hidden rounded-md border border-white/15"
+                  className="relative shrink-0 overflow-hidden rounded-md border border-picks-fg/15"
                   style={{
                     width: `${frameWidth}vh`,
                     height: `${frameWidth * 0.6}vh`,
@@ -387,7 +387,7 @@ export function CinemaReel({
                   )}
                   <div className="absolute inset-0 flex flex-col items-start justify-end p-5 sm:p-6">
                     {frame.eyebrow && (
-                      <p className="mb-2 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-white/75">
+                      <p className="mb-2 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.28em] text-picks-fg/75">
                         <span
                           aria-hidden
                           className="block h-1.5 w-1.5 rounded-full"
@@ -400,19 +400,19 @@ export function CinemaReel({
                       </p>
                     )}
                     <h3
-                      className="text-balance text-xl font-semibold leading-tight tracking-tight text-white sm:text-2xl"
+                      className="text-balance text-xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-2xl"
                       style={{ textShadow: `0 0 18px rgba(0,0,0,0.6)` }}
                     >
                       {frame.title}
                     </h3>
                     {frame.body && (
-                      <p className="mt-2 max-w-sm text-pretty text-xs leading-relaxed text-white/75 sm:text-sm">
+                      <p className="mt-2 max-w-sm text-pretty text-xs leading-relaxed text-picks-fg/75 sm:text-sm">
                         {frame.body}
                       </p>
                     )}
                   </div>
                   {/* Frame number, top-right */}
-                  <div className="absolute right-3 top-3 font-mono text-[10px] tabular-nums text-white/65">
+                  <div className="absolute right-3 top-3 font-mono text-[10px] tabular-nums text-picks-fg/65">
                     {String(i + 1).padStart(3, '0')} ·{' '}
                     {String(N).padStart(3, '0')}
                   </div>
@@ -442,7 +442,7 @@ export function CinemaReel({
             }}
           />
           <div
-            className="absolute left-1/2 top-[15%] -translate-x-1/2 inline-flex whitespace-nowrap items-center rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.28em] text-white/80 backdrop-blur"
+            className="absolute left-1/2 top-[15%] -translate-x-1/2 inline-flex whitespace-nowrap items-center rounded-full border border-picks-fg/15 bg-black/55 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.28em] text-picks-fg/80 backdrop-blur"
           >
             <span
               aria-hidden
@@ -463,7 +463,7 @@ export function CinemaReel({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                 style={{
                   boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
                 }}
@@ -478,7 +478,7 @@ export function CinemaReel({
         {/* Scroll hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll to unspool
         </div>
@@ -554,7 +554,7 @@ const ReelHub = React.forwardRef<
       aria-hidden
     >
       <div
-        className="relative h-full w-full rounded-full border border-white/10"
+        className="relative h-full w-full rounded-full border border-picks-fg/10"
         style={{
           background:
             'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, transparent 70%)',
@@ -563,7 +563,7 @@ const ReelHub = React.forwardRef<
       >
         <div
           ref={ref}
-          className="absolute inset-[12%] flex items-center justify-center text-white/40"
+          className="absolute inset-[12%] flex items-center justify-center text-picks-fg/40"
           style={{
             willChange: 'transform',
             transformOrigin: '50% 50%',

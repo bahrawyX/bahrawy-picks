@@ -59,7 +59,7 @@ export function Queue({
   return (
     <div
       className={cn(
-        'flex w-full flex-col gap-1.5 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] p-1.5',
+        'flex w-full flex-col gap-1.5 overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.015] p-1.5',
         className,
       )}
     >
@@ -100,20 +100,20 @@ function QueueGroupBlock({
   const unchecked = group.items.filter((i) => !isItemChecked(i)).length
 
   return (
-    <section className="overflow-hidden rounded-xl bg-white/[0.025]">
+    <section className="overflow-hidden rounded-xl bg-picks-fg/[0.025]">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="group flex w-full items-center gap-2 px-3.5 py-2.5 text-left transition-colors hover:bg-white/[0.03]"
+        className="group flex w-full items-center gap-2 px-3.5 py-2.5 text-left transition-colors hover:bg-picks-fg/[0.03]"
       >
         <motion.span
           animate={{ rotate: open ? 0 : -90 }}
           transition={SECTION_SPRING}
-          className="text-white/45"
+          className="text-picks-fg/45"
         >
           <ChevronDown className="h-3.5 w-3.5" strokeWidth={2.5} />
         </motion.span>
-        <span className="text-[13px] font-medium tracking-tight text-white/90">
+        <span className="text-[13px] font-medium tracking-tight text-picks-fg/90">
           {showCount ? `${unchecked} ` : ''}
           {group.title}
         </span>
@@ -174,7 +174,7 @@ function QueueRow({
         onClick={() => onToggle(!checked)}
         className={cn(
           'group flex w-full items-start gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors',
-          'hover:bg-white/[0.04] focus-visible:bg-white/[0.04] focus-visible:outline-none',
+          'hover:bg-picks-fg/[0.04] focus-visible:bg-picks-fg/[0.04] focus-visible:outline-none',
           item.disabled && 'cursor-not-allowed opacity-50',
         )}
       >
@@ -188,7 +188,7 @@ function QueueRow({
             }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              'text-[13px] leading-snug text-white/85 transition-all duration-200',
+              'text-[13px] leading-snug text-picks-fg/85 transition-all duration-200',
               checked && 'line-through decoration-white/30 decoration-1',
             )}
           >
@@ -198,7 +198,7 @@ function QueueRow({
             <motion.div
               animate={{ opacity: checked ? 0.3 : 0.55 }}
               className={cn(
-                'mt-0.5 text-[11.5px] leading-snug text-white/55',
+                'mt-0.5 text-[11.5px] leading-snug text-picks-fg/55',
                 checked && 'line-through decoration-white/20',
               )}
             >
@@ -226,8 +226,8 @@ function Checkbox({ checked }: { checked: boolean }) {
       className={cn(
         'relative mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors',
         checked
-          ? 'border-white/70 bg-white/85'
-          : 'border-white/25 bg-transparent group-hover:border-white/45',
+          ? 'border-picks-fg/70 bg-picks-fg/85'
+          : 'border-picks-fg/25 bg-transparent group-hover:border-picks-fg/45',
       )}
     >
       <AnimatePresence>
@@ -238,7 +238,7 @@ function Checkbox({ checked }: { checked: boolean }) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.4, opacity: 0 }}
             transition={{ duration: 0.14, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center justify-center text-black"
+            className="flex items-center justify-center text-picks-surface"
           >
             <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
           </motion.span>

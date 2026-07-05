@@ -144,7 +144,7 @@ export const TypeCanvas = forwardRef<TypeCanvasHandle, TypeCanvasProps>(
     return (
       <div className={cn('flex h-full flex-col', className)}>
         {/* Font selector */}
-        <div className="flex gap-1.5 border-b border-white/[0.06] p-2">
+        <div className="flex gap-1.5 border-b border-picks-fg/[0.06] p-2">
           {SIGNATURE_FONTS.map((f) => (
             <button
               key={f.name}
@@ -153,8 +153,8 @@ export const TypeCanvas = forwardRef<TypeCanvasHandle, TypeCanvasProps>(
               className={cn(
                 'rounded-md px-2.5 py-1 text-xs transition-colors',
                 selectedFont === f.value
-                  ? 'bg-white/[0.1] text-white'
-                  : 'text-white/40 hover:bg-white/[0.04] hover:text-white/60',
+                  ? 'bg-picks-fg/[0.1] text-picks-fg'
+                  : 'text-picks-fg/40 hover:bg-picks-fg/[0.04] hover:text-picks-fg/60',
               )}
               style={{ fontFamily: f.value }}
             >
@@ -173,7 +173,7 @@ export const TypeCanvas = forwardRef<TypeCanvasHandle, TypeCanvasProps>(
               onChange?.(!e.target.value.trim())
             }}
             placeholder="Type your signature..."
-            className="w-full border-b border-dashed border-white/10 bg-transparent pb-2 text-center text-lg text-white outline-none placeholder:text-white/20"
+            className="w-full border-b border-dashed border-picks-fg/10 bg-transparent pb-2 text-center text-lg text-picks-fg outline-none placeholder:text-picks-fg/20"
             style={{ fontFamily: selectedFont, fontSize: `${Math.max(20, fontSize * 0.6)}px` }}
           />
         </div>

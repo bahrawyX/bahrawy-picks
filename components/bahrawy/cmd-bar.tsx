@@ -206,7 +206,7 @@ export function CmdBar({
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -8, opacity: 0, scale: 0.97 }}
             transition={APPLE_SPRING}
-            className="relative isolate grid w-full max-w-3xl grid-cols-[1fr_300px] overflow-hidden rounded-[24px] border border-white/[0.08]"
+            className="relative isolate grid w-full max-w-3xl grid-cols-[1fr_300px] overflow-hidden rounded-[24px] border border-picks-fg/[0.08]"
             style={{
               height: 460,
               // Vibrancy panel
@@ -225,10 +225,10 @@ export function CmdBar({
             }}
           >
             {/* Left column — search + list */}
-            <div className="flex min-h-0 flex-col border-r border-white/[0.06]">
+            <div className="flex min-h-0 flex-col border-r border-picks-fg/[0.06]">
               {/* Search */}
-              <div className="flex items-center gap-3 border-b border-white/[0.06] px-5">
-                <Search className="h-4 w-4 shrink-0 text-white/50" strokeWidth={2.25} />
+              <div className="flex items-center gap-3 border-b border-picks-fg/[0.06] px-5">
+                <Search className="h-4 w-4 shrink-0 text-picks-fg/50" strokeWidth={2.25} />
                 <input
                   ref={inputRef}
                   value={query}
@@ -241,7 +241,7 @@ export function CmdBar({
                   aria-activedescendant={
                     flat.length > 0 ? optionId(activeIdx) : undefined
                   }
-                  className="h-14 w-full bg-transparent text-[15px] tracking-tight text-white placeholder:text-white/40 focus:outline-none"
+                  className="h-14 w-full bg-transparent text-[15px] tracking-tight text-picks-fg placeholder:text-picks-fg/40 focus:outline-none"
                 />
                 {query && (
                   <motion.button
@@ -250,7 +250,7 @@ export function CmdBar({
                     whileTap={{ scale: 0.88 }}
                     transition={APPLE_SPRING}
                     aria-label="Clear"
-                    className="rounded-full border border-white/[0.08] bg-white/[0.04] p-1 text-white/55 backdrop-blur transition-colors hover:bg-white/[0.1] hover:text-white"
+                    className="rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] p-1 text-picks-fg/55 backdrop-blur transition-colors hover:bg-picks-fg/[0.1] hover:text-picks-fg"
                   >
                     <X className="h-3 w-3" strokeWidth={2.5} />
                   </motion.button>
@@ -267,14 +267,14 @@ export function CmdBar({
                 data-lenis-prevent
               >
                 {flat.length === 0 ? (
-                  <p className="px-3 py-12 text-center text-[13px] tracking-tight text-white/45">
+                  <p className="px-3 py-12 text-center text-[13px] tracking-tight text-picks-fg/45">
                     {emptyMessage}
                   </p>
                 ) : (
                   filtered.map((group, gi) => (
                     <div key={gi} role="presentation" className="mb-2 last:mb-0">
                       {group.label && (
-                        <p className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
+                        <p className="px-3 pb-1.5 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-picks-fg/35">
                           {group.label}
                         </p>
                       )}
@@ -299,8 +299,8 @@ export function CmdBar({
                                 className={cn(
                                   'group relative flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2 text-left text-[13px] tracking-tight transition-colors',
                                   active
-                                    ? 'text-white'
-                                    : 'text-white/75 hover:text-white',
+                                    ? 'text-picks-fg'
+                                    : 'text-picks-fg/75 hover:text-picks-fg',
                                 )}
                               >
                                 {active && (
@@ -319,7 +319,7 @@ export function CmdBar({
                                   <span
                                     className={cn(
                                       'relative inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md [&>svg]:h-3.5 [&>svg]:w-3.5',
-                                      active ? 'text-white' : 'text-white/70',
+                                      active ? 'text-picks-fg' : 'text-picks-fg/70',
                                     )}
                                   >
                                     {item.icon}
@@ -329,7 +329,7 @@ export function CmdBar({
                                   {item.label}
                                 </span>
                                 {item.hint && (
-                                  <span className="relative shrink-0 text-[11.5px] tracking-tight text-white/40">
+                                  <span className="relative shrink-0 text-[11.5px] tracking-tight text-picks-fg/40">
                                     {item.hint}
                                   </span>
                                 )}
@@ -357,7 +357,7 @@ export function CmdBar({
 
               {/* Footer */}
               <div
-                className="flex items-center justify-between gap-3 border-t border-white/[0.06] px-5 py-2.5 text-[10.5px] tracking-tight text-white/45 backdrop-blur"
+                className="flex items-center justify-between gap-3 border-t border-picks-fg/[0.06] px-5 py-2.5 text-[10.5px] tracking-tight text-picks-fg/45 backdrop-blur"
                 style={{
                   background:
                     'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 100%)',
@@ -379,7 +379,7 @@ export function CmdBar({
                     close
                   </span>
                 </div>
-                <span className="font-medium tabular-nums text-white/55">
+                <span className="font-medium tabular-nums text-picks-fg/55">
                   {flat.length}
                 </span>
               </div>
@@ -406,7 +406,7 @@ export function CmdBar({
                     <div className="flex items-center gap-2.5">
                       {current.icon && (
                         <span
-                          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] text-white [&>svg]:h-4 [&>svg]:w-4"
+                          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] text-picks-fg [&>svg]:h-4 [&>svg]:w-4"
                           style={{
                             background: `linear-gradient(180deg, ${accent}33 0%, ${accent}22 100%)`,
                             border: `0.5px solid ${accent}55`,
@@ -417,11 +417,11 @@ export function CmdBar({
                         </span>
                       )}
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-display text-[13px] font-semibold tracking-tight text-white">
+                        <p className="truncate font-display text-[13px] font-semibold tracking-tight text-picks-fg">
                           {current.label}
                         </p>
                         {current.hint && (
-                          <p className="truncate text-[11px] tracking-tight text-white/45">
+                          <p className="truncate text-[11px] tracking-tight text-picks-fg/45">
                             {current.hint}
                           </p>
                         )}
@@ -430,14 +430,14 @@ export function CmdBar({
 
                     {/* Preview body — vibrancy well */}
                     <div
-                      className="mt-3 min-h-0 flex-1 overflow-auto rounded-[14px] border border-white/[0.06] p-3.5 backdrop-blur"
+                      className="mt-3 min-h-0 flex-1 overflow-auto rounded-[14px] border border-picks-fg/[0.06] p-3.5 backdrop-blur"
                       style={{
                         background:
                           'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
                       }}
                     >
                       {current.preview ?? (
-                        <p className="text-[12px] leading-relaxed tracking-tight text-white/55">
+                        <p className="text-[12px] leading-relaxed tracking-tight text-picks-fg/55">
                           No additional preview for this action.
                         </p>
                       )}
@@ -446,7 +446,7 @@ export function CmdBar({
                     {/* Meta footer */}
                     {current.meta && current.meta.length > 0 && (
                       <ul
-                        className="mt-3 divide-y divide-white/[0.05] overflow-hidden rounded-[12px] border border-white/[0.06] backdrop-blur"
+                        className="mt-3 divide-y divide-picks-fg/[0.05] overflow-hidden rounded-[12px] border border-picks-fg/[0.06] backdrop-blur"
                         style={{
                           background:
                             'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
@@ -457,8 +457,8 @@ export function CmdBar({
                             key={i}
                             className="flex items-center justify-between gap-3 px-3 py-2 text-[11px] tracking-tight"
                           >
-                            <span className="text-white/45">{m.label}</span>
-                            <span className="truncate font-mono text-white/80">
+                            <span className="text-picks-fg/45">{m.label}</span>
+                            <span className="truncate font-mono text-picks-fg/80">
                               {m.value}
                             </span>
                           </li>
@@ -469,7 +469,7 @@ export function CmdBar({
                 ) : (
                   <div
                     key="empty"
-                    className="flex h-full items-center justify-center p-6 text-center text-[12px] tracking-tight text-white/40"
+                    className="flex h-full items-center justify-center p-6 text-center text-[12px] tracking-tight text-picks-fg/40"
                   >
                     Highlight a command to preview it.
                   </div>
@@ -487,7 +487,7 @@ export function CmdBar({
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
     <kbd
-      className="inline-flex h-[18px] min-w-[18px] items-center justify-center gap-0.5 rounded-[5px] border border-white/[0.1] px-1 font-mono text-[9.5px] font-medium text-white/70"
+      className="inline-flex h-[18px] min-w-[18px] items-center justify-center gap-0.5 rounded-[5px] border border-picks-fg/[0.1] px-1 font-mono text-[9.5px] font-medium text-picks-fg/70"
       style={{
         background:
           'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',

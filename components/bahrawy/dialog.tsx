@@ -129,7 +129,7 @@ export function Dialog({
             transition={APPLE_SPRING}
             tabIndex={-1}
             className={cn(
-              'relative isolate flex max-h-[80vh] w-full flex-col overflow-hidden rounded-[20px] border border-white/[0.08] outline-none',
+              'relative isolate flex max-h-[80vh] w-full flex-col overflow-hidden rounded-[20px] border border-picks-fg/[0.08] outline-none',
               className,
             )}
             style={{
@@ -154,7 +154,7 @@ export function Dialog({
                 whileTap={{ scale: 0.9 }}
                 transition={APPLE_SPRING}
                 aria-label="Close"
-                className="absolute right-3 top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/65 backdrop-blur transition-colors hover:bg-white/[0.1] hover:text-white"
+                className="absolute right-3 top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] text-picks-fg/65 backdrop-blur transition-colors hover:bg-picks-fg/[0.1] hover:text-picks-fg"
               >
                 <X className="h-3.5 w-3.5" strokeWidth={2.5} />
               </motion.button>
@@ -168,7 +168,7 @@ export function Dialog({
                     id={titleId}
                     className={cn(
                       'font-display text-[17px] font-semibold tracking-tight',
-                      intent === 'destructive' ? 'text-[#FF453A]' : 'text-white',
+                      intent === 'destructive' ? 'text-[#FF453A]' : 'text-picks-fg',
                     )}
                   >
                     {title}
@@ -177,7 +177,7 @@ export function Dialog({
                 {description && (
                   <p
                     id={descId}
-                    className="mt-1.5 text-[13px] leading-[1.5] tracking-tight text-white/65"
+                    className="mt-1.5 text-[13px] leading-[1.5] tracking-tight text-picks-fg/65"
                   >
                     {description}
                   </p>
@@ -194,7 +194,7 @@ export function Dialog({
 
             {/* Footer */}
             {footer && (
-              <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-white/[0.06] px-6 py-4">
+              <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-picks-fg/[0.06] px-6 py-4">
                 {footer}
               </footer>
             )}

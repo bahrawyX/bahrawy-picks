@@ -53,9 +53,9 @@ export function RawEditor({ value, onChange, error, readOnly, className }: RawEd
   return (
     <div className={cn('relative flex overflow-hidden', className)}>
       {/* Line numbers */}
-      <div className="flex-shrink-0 select-none border-r border-white/[0.06] bg-white/[0.02] px-3 py-3 text-right">
+      <div className="flex-shrink-0 select-none border-r border-picks-fg/[0.06] bg-picks-fg/[0.02] px-3 py-3 text-right">
         {Array.from({ length: lineNumbers }).map((_, i) => (
-          <div key={i} className="font-mono text-[11px] leading-[1.6] text-white/20">
+          <div key={i} className="font-mono text-[11px] leading-[1.6] text-picks-fg/20">
             {i + 1}
           </div>
         ))}
@@ -70,7 +70,7 @@ export function RawEditor({ value, onChange, error, readOnly, className }: RawEd
         readOnly={readOnly}
         spellCheck={false}
         className={cn(
-          'min-h-[200px] w-full resize-none bg-transparent px-3 py-3 font-mono text-[12px] leading-[1.6] text-white/85 outline-none placeholder:text-white/20',
+          'min-h-[200px] w-full resize-none bg-transparent px-3 py-3 font-mono text-[12px] leading-[1.6] text-picks-fg/85 outline-none placeholder:text-picks-fg/20',
           error && 'text-red-400',
           readOnly && 'cursor-default',
         )}

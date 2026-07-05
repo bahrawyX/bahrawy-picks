@@ -184,7 +184,7 @@ export function Carousel3D({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-black', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -201,12 +201,12 @@ export function Carousel3D({
             className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-3xl flex-col items-center gap-3 px-6 pt-20 text-center sm:px-10"
           >
             {eyebrow && (
-              <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-white/80 backdrop-blur">
+              <span className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-picks-fg/80 backdrop-blur">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
+              <h2 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-4xl">
                 {heading}
               </h2>
             )}
@@ -228,10 +228,10 @@ export function Carousel3D({
                 ref={(el) => {
                   cardRefs.current[i] = el
                 }}
-                className="absolute inset-0 overflow-hidden rounded-2xl border border-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]"
+                className="absolute inset-0 overflow-hidden rounded-2xl border border-picks-fg/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]"
                 style={{
                   background: card.background ?? '#0f172a',
-                  color: card.foreground ?? '#FFFFFF',
+                  color: card.foreground ?? 'var(--picks-fg)',
                   // Keep cards facing the camera even with rotateY so text stays readable
                   backfaceVisibility: 'hidden',
                 }}
@@ -250,15 +250,15 @@ export function Carousel3D({
                 />
                 <div className="absolute inset-x-0 bottom-0 p-6">
                   {card.eyebrow && (
-                    <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/65">
+                    <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-picks-fg/65">
                       {card.eyebrow}
                     </p>
                   )}
-                  <h3 className="mt-2 text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+                  <h3 className="mt-2 text-balance text-2xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-3xl">
                     {card.title}
                   </h3>
                   {card.description && (
-                    <p className="mt-2 text-sm leading-relaxed text-white/80">
+                    <p className="mt-2 text-sm leading-relaxed text-picks-fg/80">
                       {card.description}
                     </p>
                   )}
@@ -269,9 +269,9 @@ export function Carousel3D({
         </div>
 
         {/* Counter + scroll hint */}
-        <div className="absolute inset-x-0 bottom-10 z-30 flex flex-col items-center gap-1 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+        <div className="absolute inset-x-0 bottom-10 z-30 flex flex-col items-center gap-1 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55">
           <span ref={counterRef}>01 / {String(cards.length).padStart(2, '0')}</span>
-          <span className="text-white/30">Scroll</span>
+          <span className="text-picks-fg/30">Scroll</span>
         </div>
       </div>
     </div>

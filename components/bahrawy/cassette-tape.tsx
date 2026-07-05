@@ -192,7 +192,7 @@ function CassetteFace({
       {/* Side badge — A or B */}
       <span
         aria-hidden
-        className="absolute left-3 top-3 rounded-md border border-white/15 bg-black/40 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/75 backdrop-blur"
+        className="absolute left-3 top-3 rounded-md border border-picks-fg/15 bg-black/40 px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-picks-fg/75 backdrop-blur"
       >
         Side {face}
       </span>
@@ -205,7 +205,7 @@ function CassetteFace({
           onFlip()
         }}
         aria-label={`Flip to side ${face === 'A' ? 'B' : 'A'}`}
-        className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md border border-white/15 bg-black/40 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-white/85 backdrop-blur transition-colors hover:bg-black/60"
+        className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md border border-picks-fg/15 bg-black/40 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-picks-fg/85 backdrop-blur transition-colors hover:bg-black/60"
       >
         flip → {face === 'A' ? 'B' : 'A'}
       </button>
@@ -271,12 +271,12 @@ function CassetteFace({
         type="button"
         onClick={onTogglePlay}
         aria-label={playing ? 'Pause' : 'Play'}
-        className="absolute bottom-2 left-1/2 inline-flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full border border-white/15 bg-black/55 text-white/90 transition-colors hover:bg-black/70"
+        className="absolute bottom-2 left-1/2 inline-flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full border border-picks-fg/15 bg-black/55 text-picks-fg/90 transition-colors hover:bg-black/70"
       >
         {playing ? (
           <span className="flex items-center gap-[2px]">
-            <span className="block h-2.5 w-0.5 bg-white" />
-            <span className="block h-2.5 w-0.5 bg-white" />
+            <span className="block h-2.5 w-0.5 bg-picks-fg" />
+            <span className="block h-2.5 w-0.5 bg-picks-fg" />
           </span>
         ) : (
           // Play triangle

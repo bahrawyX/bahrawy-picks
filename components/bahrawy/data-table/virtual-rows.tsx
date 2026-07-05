@@ -58,15 +58,15 @@ export function VirtualRows<TData>({
             data-state={row.getIsSelected() ? 'selected' : undefined}
             onClick={() => onRowClick?.(row)}
             className={cn(
-              'border-white/[0.06]',
-              row.getIsSelected() && 'bg-white/[0.04]'
+              'border-picks-fg/[0.06]',
+              row.getIsSelected() && 'bg-picks-fg/[0.04]'
             )}
             style={{ height: virtualRow.size }}
           >
             {row.getVisibleCells().map((cell) => (
               <TableCell
                 key={cell.id}
-                className="text-sm text-white/70 px-4"
+                className="text-sm text-picks-fg/70 px-4"
                 style={{ width: cell.column.getSize() }}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}

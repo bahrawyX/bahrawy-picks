@@ -162,9 +162,9 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
       layout
       transition={spring}
       className={cn(
-        'overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]',
+        'overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.02]',
         'backdrop-blur-sm transition-colors',
-        open ? 'border-white/15 bg-white/[0.04]' : 'hover:bg-white/[0.035]',
+        open ? 'border-picks-fg/15 bg-picks-fg/[0.04]' : 'hover:bg-picks-fg/[0.035]',
       )}
     >
       <button
@@ -176,9 +176,9 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
         className="flex w-full items-center gap-3 px-5 py-4 text-left"
       >
         {item.icon && (
-          <span className="shrink-0 text-white/70">{item.icon}</span>
+          <span className="shrink-0 text-picks-fg/70">{item.icon}</span>
         )}
-        <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-white">
+        <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-picks-fg">
           {item.title}
         </span>
         {chevron && (
@@ -191,7 +191,7 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
             <ChevronDown
               className={cn(
                 'h-4 w-4 transition-colors',
-                open ? 'text-white' : 'text-white/40',
+                open ? 'text-picks-fg' : 'text-picks-fg/40',
               )}
             />
           </motion.span>
@@ -217,7 +217,7 @@ function AccordionRow({ item, open, chevron, spring, onToggle }: AccordionRowPro
               animate={{ y: 0 }}
               exit={{ y: -8 }}
               transition={spring}
-              className="px-5 pb-5 pt-1 text-sm leading-relaxed text-white/70"
+              className="px-5 pb-5 pt-1 text-sm leading-relaxed text-picks-fg/70"
             >
               {item.content}
             </motion.div>

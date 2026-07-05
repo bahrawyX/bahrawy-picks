@@ -80,11 +80,11 @@ export function Switch({
         aria-checked={isOn}
         disabled={disabled}
         onClick={toggle}
-        className="relative shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+        className="relative shrink-0 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/40"
         style={{
           width: w,
           height: h,
-          background: isOn ? accentColor : 'rgba(255,255,255,0.12)',
+          background: isOn ? accentColor : 'rgb(var(--picks-fg-rgb) / 0.12)',
         }}
       >
         <motion.span
@@ -96,7 +96,7 @@ export function Switch({
             height: thumb,
             top: pad,
             left: pad,
-            background: isOn ? '#0A0A0A' : '#FFFFFF',
+            background: isOn ? '#0A0A0A' : 'var(--picks-fg)',
           }}
           className="absolute rounded-full shadow-md"
         />
@@ -114,7 +114,7 @@ export function Switch({
           className="sr-only"
         />
       )}
-      {label && <span className="text-sm text-white/80">{label}</span>}
+      {label && <span className="text-sm text-picks-fg/80">{label}</span>}
     </label>
   )
 }

@@ -59,7 +59,7 @@ export const ExpandButton = React.forwardRef<HTMLButtonElement, ExpandButtonProp
         ref={ref}
         className={cn(
           'flex h-9 min-w-9 items-center justify-center rounded-full px-[11px]',
-          tone === 'light' ? 'bg-white text-neutral-900' : 'bg-neutral-900 text-white',
+          tone === 'light' ? 'bg-picks-fg text-picks-surface' : 'bg-picks-panel text-picks-fg',
           !groupTrigger && 'group/eb',
           className,
         )}

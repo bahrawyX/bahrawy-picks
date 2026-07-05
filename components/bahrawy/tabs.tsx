@@ -42,7 +42,7 @@ export function Tabs({
   defaultId,
   value,
   onValueChange,
-  accentColor = '#FFFFFF',
+  accentColor = 'var(--picks-fg)',
   className,
 }: TabsProps) {
   const [internal, setInternal] = React.useState<string>(
@@ -73,7 +73,7 @@ export function Tabs({
     <div className={cn('w-full', className)}>
       <div
         role="tablist"
-        className="relative flex items-center gap-1 border-b border-white/10"
+        className="relative flex items-center gap-1 border-b border-picks-fg/10"
       >
         {items.map((item, index) => {
           const isActive = item.id === active
@@ -87,7 +87,7 @@ export function Tabs({
               aria-controls={`${uid}-panel-${item.id}`}
               onClick={() => select(item.id)}
               {...roving.getItemProps(index)}
-              className="relative px-4 py-2.5 text-sm font-medium text-white/60 transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              className="relative px-4 py-2.5 text-sm font-medium text-picks-fg/60 transition-colors hover:text-picks-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/30"
               style={{ color: isActive ? accentColor : undefined }}
             >
               {item.label}
@@ -115,7 +115,7 @@ export function Tabs({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
-            className="text-sm leading-relaxed text-white/80"
+            className="text-sm leading-relaxed text-picks-fg/80"
           >
             {activeItem?.content}
           </motion.div>

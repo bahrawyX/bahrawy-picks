@@ -71,8 +71,8 @@ const COLORS: Record<TokenKind, string> = {
   builtin: 'text-[#7AC7CC]',      // muted teal
   tag: 'text-[#B0B0B5]',          // soft gray — JSX tags read but don't pop
   attr: 'text-[#9CDCFE]',         // VS Code blue
-  punct: 'text-white/40',
-  text: 'text-white/85',
+  punct: 'text-picks-fg/40',
+  text: 'text-picks-fg/85',
 }
 
 const JS_KEYWORDS = new Set([
@@ -312,7 +312,7 @@ export function CodeWindow({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={APPLE_SPRING}
       className={cn(
-        'relative isolate overflow-hidden rounded-[20px] border border-white/[0.08]',
+        'relative isolate overflow-hidden rounded-[20px] border border-picks-fg/[0.08]',
         // Layered vibrancy background
         'bg-[linear-gradient(180deg,rgba(28,28,30,0.97)_0%,rgba(18,18,20,0.99)_100%)]',
         className,
@@ -330,7 +330,7 @@ export function CodeWindow({
       {/* Chrome — macOS Big Sur / Sequoia style */}
       {!bare && (
         <header
-          className="flex items-center gap-3 border-b border-white/[0.06] px-3.5 py-2.5 backdrop-blur-xl"
+          className="flex items-center gap-3 border-b border-picks-fg/[0.06] px-3.5 py-2.5 backdrop-blur-xl"
           style={{
             background:
               'linear-gradient(180deg, rgba(46,46,50,0.5) 0%, rgba(32,32,36,0.5) 100%)',
@@ -364,12 +364,12 @@ export function CodeWindow({
             ))}
           </div>
           {filename && (
-            <span className="min-w-0 flex-1 truncate text-center font-display text-[12px] font-medium tracking-tight text-white/55">
+            <span className="min-w-0 flex-1 truncate text-center font-display text-[12px] font-medium tracking-tight text-picks-fg/55">
               {filename}
             </span>
           )}
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.12em] text-white/55 sm:inline">
+            <span className="hidden rounded-md border border-picks-fg/[0.08] bg-picks-fg/[0.04] px-2 py-0.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.12em] text-picks-fg/55 sm:inline">
               {language}
             </span>
             {showCopy && (
@@ -379,7 +379,7 @@ export function CodeWindow({
                 whileTap={{ scale: 0.92 }}
                 transition={APPLE_SPRING}
                 aria-label="Copy code"
-                className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-white/[0.06] bg-white/[0.04] text-white/55 backdrop-blur transition-colors hover:bg-white/[0.08] hover:text-white"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-picks-fg/[0.06] bg-picks-fg/[0.04] text-picks-fg/55 backdrop-blur transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {copied ? (
@@ -436,7 +436,7 @@ export function CodeWindow({
                     aria-hidden
                     className={cn(
                       'sticky left-0 inline-block w-11 shrink-0 select-none px-2.5 text-right font-mono text-[11px] tabular-nums',
-                      hit ? 'text-white/55' : 'text-white/25',
+                      hit ? 'text-picks-fg/55' : 'text-picks-fg/25',
                     )}
                   >
                     {lineNum}

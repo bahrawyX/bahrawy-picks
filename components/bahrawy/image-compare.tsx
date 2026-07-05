@@ -118,7 +118,7 @@ export function ImageCompare({
     <div
       ref={containerRef}
       className={cn(
-        'relative select-none overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-950',
+        'relative select-none overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-surface',
         !disabled && (isHorizontal ? 'cursor-ew-resize' : 'cursor-ns-resize'),
         className,
       )}
@@ -157,7 +157,7 @@ export function ImageCompare({
       {beforeLabel && (
         <span
           className={cn(
-            'pointer-events-none absolute rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur',
+            'pointer-events-none absolute rounded-full border border-picks-fg/15 bg-black/55 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-picks-fg/90 backdrop-blur',
             isHorizontal ? 'left-3 top-3' : 'left-3 top-3',
           )}
         >
@@ -167,7 +167,7 @@ export function ImageCompare({
       {afterLabel && (
         <span
           className={cn(
-            'pointer-events-none absolute rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur',
+            'pointer-events-none absolute rounded-full border border-picks-fg/15 bg-black/55 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-picks-fg/90 backdrop-blur',
             isHorizontal ? 'right-3 top-3' : 'right-3 bottom-3',
           )}
         >
@@ -179,7 +179,7 @@ export function ImageCompare({
       <div
         aria-hidden
         className={cn(
-          'pointer-events-none absolute bg-white/85 shadow-[0_0_20px_rgba(255,255,255,0.45)]',
+          'pointer-events-none absolute bg-picks-fg/85 shadow-[0_0_20px_rgba(255,255,255,0.45)]',
           isHorizontal
             ? 'top-0 h-full w-[2px]'
             : 'left-0 w-full h-[2px]',
@@ -203,7 +203,7 @@ export function ImageCompare({
         onKeyDown={onKeyDown}
         disabled={disabled}
         className={cn(
-          'absolute z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white text-zinc-900 shadow-2xl ring-1 ring-black/10 transition-transform',
+          'absolute z-10 flex h-10 w-10 items-center justify-center rounded-full bg-picks-fg text-picks-surface shadow-2xl ring-1 ring-black/10 transition-transform',
           dragging && 'scale-110',
           !disabled && (isHorizontal ? 'cursor-ew-resize' : 'cursor-ns-resize'),
         )}

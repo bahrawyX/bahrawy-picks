@@ -37,7 +37,7 @@ export interface BentoFeaturesProps {
 }
 
 const ACCENT_BG: Record<NonNullable<BentoFeatureItem['accent']>, string> = {
-  neutral: 'bg-white/[0.02]',
+  neutral: 'bg-picks-fg/[0.02]',
   purple:
     'bg-[radial-gradient(ellipse_at_top_right,rgba(167,139,250,0.18),transparent_55%)]',
   cyan:
@@ -75,17 +75,17 @@ export function BentoFeatures({
         {(eyebrow || heading || description) && (
           <div className="flex max-w-2xl flex-col gap-3">
             {eyebrow && (
-              <span className="self-start rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80">
+              <span className="self-start rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+              <h2 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl">
                 {heading}
               </h2>
             )}
             {description && (
-              <p className="text-pretty text-sm leading-relaxed text-white/60 sm:text-base">
+              <p className="text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base">
                 {description}
               </p>
             )}
@@ -104,26 +104,26 @@ export function BentoFeatures({
                 ease: [0.2, 0, 0, 1],
               }}
               className={cn(
-                'relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-white/10 p-6',
+                'relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-picks-fg/10 p-6',
                 ACCENT_BG[item.accent ?? 'neutral'],
                 SPAN_CLASS[item.span ?? 1],
                 item.tall && 'lg:row-span-2',
               )}
             >
               {item.icon && (
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-picks-fg/10 text-picks-fg">
                   {item.icon}
                 </div>
               )}
               {item.eyebrow && (
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/55">
+                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-picks-fg/55">
                   {item.eyebrow}
                 </p>
               )}
-              <h3 className="text-lg font-semibold tracking-tight text-white">
+              <h3 className="text-lg font-semibold tracking-tight text-picks-fg">
                 {item.title}
               </h3>
-              <p className="text-sm leading-relaxed text-white/60">{item.body}</p>
+              <p className="text-sm leading-relaxed text-picks-fg/60">{item.body}</p>
             </motion.article>
           ))}
         </div>

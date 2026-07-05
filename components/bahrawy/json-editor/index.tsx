@@ -306,22 +306,22 @@ export function JsonEditor({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-xl border border-white/[0.08]',
+        'overflow-hidden rounded-xl border border-picks-fg/[0.08]',
         className,
       )}
     >
       {/* Toolbar */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-3 py-2">
+      <div className="flex items-center justify-between border-b border-picks-fg/[0.06] bg-picks-fg/[0.02] px-3 py-2">
         {/* Mode toggle */}
-        <div className="flex items-center gap-1 rounded-lg bg-white/[0.04] p-0.5">
+        <div className="flex items-center gap-1 rounded-lg bg-picks-fg/[0.04] p-0.5">
           <button
             type="button"
             onClick={() => setMode('tree')}
             className={cn(
               'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
               mode === 'tree'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-white/40 hover:text-white/60',
+                ? 'bg-picks-fg/[0.1] text-picks-fg'
+                : 'text-picks-fg/40 hover:text-picks-fg/60',
             )}
           >
             <Braces className="h-3.5 w-3.5" />
@@ -333,8 +333,8 @@ export function JsonEditor({
             className={cn(
               'flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
               mode === 'raw'
-                ? 'bg-white/[0.1] text-white'
-                : 'text-white/40 hover:text-white/60',
+                ? 'bg-picks-fg/[0.1] text-picks-fg'
+                : 'text-picks-fg/40 hover:text-picks-fg/60',
             )}
           >
             <Code2 className="h-3.5 w-3.5" />
@@ -348,7 +348,7 @@ export function JsonEditor({
           onClick={handleCopy}
           className={cn(
             'flex items-center gap-1.5 rounded-md px-2 py-1 text-xs transition-colors',
-            copied ? 'text-white' : 'text-white/40 hover:bg-white/[0.04] hover:text-white/60',
+            copied ? 'text-picks-fg' : 'text-picks-fg/40 hover:bg-picks-fg/[0.04] hover:text-picks-fg/60',
           )}
         >
           {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
@@ -362,7 +362,7 @@ export function JsonEditor({
           virtualization). Below the threshold everything animates. */}
       <div
         ref={scrollRef}
-        className="max-h-[500px] overflow-auto bg-black/40 scrollbar-hide"
+        className="max-h-[500px] overflow-auto bg-picks-surface/40 scrollbar-hide"
         data-lenis-prevent={virtualized ? true : undefined}
       >
         {mode === 'tree' ? (

@@ -67,7 +67,7 @@ export function TestimonialsSlider({
 
   return (
     <section
-      className={cn('relative w-full bg-black px-6 py-24 sm:py-32', className)}
+      className={cn('relative w-full bg-picks-surface px-6 py-24 sm:py-32', className)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setFocusWithin(true)}
@@ -81,12 +81,12 @@ export function TestimonialsSlider({
         {(eyebrow || heading) && (
           <div className="flex flex-col items-center gap-3">
             {eyebrow && (
-              <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
+              <span className="rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.03] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/70">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="font-display text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
+              <h2 className="font-display text-balance text-3xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-4xl">
                 {heading}
               </h2>
             )}
@@ -112,13 +112,13 @@ export function TestimonialsSlider({
                   !active && 'pointer-events-none',
                 )}
               >
-                <blockquote className="text-pretty text-xl font-medium leading-snug text-white sm:text-2xl">
+                <blockquote className="text-pretty text-xl font-medium leading-snug text-picks-fg sm:text-2xl">
                   "{item.quote}"
                 </blockquote>
                 <figcaption className="flex flex-col items-center gap-2">
                   <Avatar item={item} />
-                  <p className="text-sm font-medium text-white">{item.name}</p>
-                  <p className="text-xs text-white/55">{item.role}</p>
+                  <p className="text-sm font-medium text-picks-fg">{item.name}</p>
+                  <p className="text-xs text-picks-fg/55">{item.role}</p>
                 </figcaption>
               </motion.figure>
             )
@@ -142,7 +142,7 @@ export function TestimonialsSlider({
                   className="block h-1.5 rounded-full transition-all"
                   style={{
                     width: active ? 28 : 6,
-                    background: active ? accentColor : 'rgba(255,255,255,0.25)',
+                    background: active ? accentColor : 'rgb(var(--picks-fg-rgb) / 0.25)',
                   }}
                 />
               </button>
@@ -184,7 +184,7 @@ function ArrowButton({
       whileTap={{ scale: 0.94 }}
       transition={APPLE_SPRING}
       className={cn(
-        'absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white/80 backdrop-blur-2xl transition-colors hover:bg-white/[0.08] hover:text-white',
+        'absolute top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] text-picks-fg/80 backdrop-blur-2xl transition-colors hover:bg-picks-fg/[0.08] hover:text-picks-fg',
         side === 'left' ? 'left-4 sm:left-8' : 'right-4 sm:right-8',
       )}
       style={{
@@ -215,7 +215,7 @@ function Avatar({ item }: { item: Testimonial }) {
     )
   }
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-picks-fg/10 text-sm font-semibold text-picks-fg">
       {item.fallback ?? item.name.slice(0, 1).toUpperCase()}
     </div>
   )

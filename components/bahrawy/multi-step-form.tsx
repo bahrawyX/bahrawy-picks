@@ -264,7 +264,7 @@ export function MultiStepForm<T extends FieldValues>({
         </div>
 
         {/* Navigation buttons */}
-        <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-6">
+        <div className="flex items-center justify-between gap-3 border-t border-picks-fg/10 pt-6">
           <motion.div whileTap={{ scale: 0.97 }} transition={springSnappy}>
             <Button
               type="button"

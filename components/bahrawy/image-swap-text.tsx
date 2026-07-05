@@ -116,7 +116,7 @@ export function ImageSwapText({
   const displayText =
     active !== null && items[active] ? items[active].label : defaultLabel
   const isActive = active !== null
-  const headlineColor = isActive ? accentColor : '#FFFFFF'
+  const headlineColor = isActive ? accentColor : 'var(--picks-fg)'
 
   return (
     <div
@@ -145,9 +145,9 @@ export function ImageSwapText({
             transition={reduced ? { duration: 0 } : THUMB_SPRING}
             style={{ width: thumbSize, height: thumbSize }}
             className={cn(
-              'relative shrink-0 overflow-hidden rounded-2xl border border-white/15',
+              'relative shrink-0 overflow-hidden rounded-2xl border border-picks-fg/15',
               'shadow-[0_10px_28px_-14px_rgba(0,0,0,0.7)]',
-              'transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
+              'transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/40',
             )}
             aria-label={item.label}
           >
@@ -173,7 +173,7 @@ export function ImageSwapText({
           className="pointer-events-none absolute left-0 top-full -translate-x-1/2"
         >
           <span
-            className="flex items-center justify-center rounded-full text-white"
+            className="flex items-center justify-center rounded-full text-picks-fg"
             style={{
               width: 52,
               height: 52,

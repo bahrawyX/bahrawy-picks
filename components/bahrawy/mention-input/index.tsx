@@ -57,8 +57,8 @@ const MENTION_STYLES = `
   padding: 1px 6px;
   margin: 0 1px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgb(var(--picks-fg-rgb) / 0.08);
+  color: rgb(var(--picks-fg-rgb) / 0.9);
   font-weight: 500;
   font-size: 0.875em;
   user-select: all;
@@ -66,7 +66,7 @@ const MENTION_STYLES = `
   vertical-align: baseline;
 }
 .mention-chip:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgb(var(--picks-fg-rgb) / 0.12);
 }
 `
 
@@ -298,9 +298,9 @@ export function MentionInput({
         aria-placeholder={placeholder}
         data-placeholder={placeholder}
         className={cn(
-          'relative min-h-[42px] w-full rounded-lg border bg-white/[0.03] px-3 py-2.5 text-sm text-white outline-none transition-colors',
-          'empty:before:pointer-events-none empty:before:text-white/25 empty:before:content-[attr(data-placeholder)]',
-          focused && !error ? 'border-white/30' : 'border-white/[0.08]',
+          'relative min-h-[42px] w-full rounded-lg border bg-picks-fg/[0.03] px-3 py-2.5 text-sm text-picks-fg outline-none transition-colors',
+          'empty:before:pointer-events-none empty:before:text-picks-fg/25 empty:before:content-[attr(data-placeholder)]',
+          focused && !error ? 'border-picks-fg/30' : 'border-picks-fg/[0.08]',
           error && 'border-red-500/60',
           disabled && 'cursor-not-allowed opacity-50',
           multiline && 'min-h-[100px]',

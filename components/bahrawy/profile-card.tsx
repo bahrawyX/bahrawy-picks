@@ -115,7 +115,7 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={APPLE_SPRING}
         className={cn(
-          'relative isolate overflow-hidden rounded-[28px] border border-white/[0.08] backdrop-blur-2xl',
+          'relative isolate overflow-hidden rounded-[28px] border border-picks-fg/[0.08] backdrop-blur-2xl',
           'bg-[linear-gradient(180deg,rgba(28,28,30,0.92)_0%,rgba(18,18,20,0.96)_100%)]',
           className,
         )}
@@ -158,7 +158,7 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
                     draggable={false}
                   />
                 ) : (
-                  <span className="text-[22px] font-semibold tracking-tight text-white">
+                  <span className="text-[22px] font-semibold tracking-tight text-picks-fg">
                     {initialsFrom(name)}
                   </span>
                 )}
@@ -193,16 +193,16 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
 
           {/* Name + handle */}
           <div className="min-w-0">
-            <h3 className="truncate font-display text-[18px] font-semibold leading-[1.15] tracking-[-0.02em] text-white">
+            <h3 className="truncate font-display text-[18px] font-semibold leading-[1.15] tracking-[-0.02em] text-picks-fg">
               {name}
             </h3>
             {handle && (
-              <p className="mt-0.5 truncate text-[12.5px] leading-[1.3] tracking-tight text-white/55">
+              <p className="mt-0.5 truncate text-[12.5px] leading-[1.3] tracking-tight text-picks-fg/55">
                 {handle}
               </p>
             )}
             {role && (
-              <p className="mt-1.5 truncate text-[12.5px] font-medium leading-[1.3] tracking-tight text-white/75">
+              <p className="mt-1.5 truncate text-[12.5px] font-medium leading-[1.3] tracking-tight text-picks-fg/75">
                 {role}
               </p>
             )}
@@ -210,7 +210,7 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
 
           {/* Bio */}
           {bio && (
-            <p className="mt-3.5 text-[12.5px] leading-[1.5] tracking-tight text-white/65">
+            <p className="mt-3.5 text-[12.5px] leading-[1.5] tracking-tight text-picks-fg/65">
               {bio}
             </p>
           )}
@@ -221,10 +221,10 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
               {meta.map((m, i) => (
                 <li
                   key={i}
-                  className="flex items-center gap-2 text-[12.5px] leading-[1.4] tracking-tight text-white/55"
+                  className="flex items-center gap-2 text-[12.5px] leading-[1.4] tracking-tight text-picks-fg/55"
                 >
                   {m.icon && (
-                    <span className="shrink-0 text-white/40 [&>svg]:h-3.5 [&>svg]:w-3.5">
+                    <span className="shrink-0 text-picks-fg/40 [&>svg]:h-3.5 [&>svg]:w-3.5">
                       {m.icon}
                     </span>
                   )}
@@ -236,20 +236,20 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
 
           {/* Stats — hairline grid, no inner gradients */}
           {stats && stats.length > 0 && (
-            <div className="mt-4 flex overflow-hidden rounded-2xl border border-white/[0.08]">
+            <div className="mt-4 flex overflow-hidden rounded-2xl border border-picks-fg/[0.08]">
               {stats.map((s, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && (
                     <span
                       aria-hidden
-                      className="my-2 w-px bg-white/[0.08]"
+                      className="my-2 w-px bg-picks-fg/[0.08]"
                     />
                   )}
                   <div className="flex-1 px-3 py-2.5 text-center">
-                    <p className="text-[15px] font-semibold tracking-tight tabular-nums text-white">
+                    <p className="text-[15px] font-semibold tracking-tight tabular-nums text-picks-fg">
                       {typeof s.value === 'number' ? s.value.toLocaleString() : s.value}
                     </p>
-                    <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-white/40">
+                    <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-picks-fg/40">
                       {s.label}
                     </p>
                   </div>
@@ -268,8 +268,8 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
                   className={cn(
                     'inline-flex flex-1 items-center justify-center gap-1.5 rounded-full py-2 text-[13px] font-semibold tracking-tight transition-colors',
                     isFollowed
-                      ? 'border border-white/15 bg-white/[0.06] text-white hover:bg-white/[0.1]'
-                      : 'border border-white/10 bg-white text-black hover:bg-white/90',
+                      ? 'border border-picks-fg/15 bg-picks-fg/[0.06] text-picks-fg hover:bg-picks-fg/[0.1]'
+                      : 'border border-picks-fg/10 bg-picks-fg text-picks-surface hover:bg-picks-fg/90',
                   )}
                 >
                   {isFollowed && <Check className="h-3 w-3" strokeWidth={3} />}
@@ -280,7 +280,7 @@ export const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
                 <button
                   type="button"
                   onClick={secondaryAction.onClick}
-                  className="inline-flex flex-1 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] py-2 text-[13px] font-medium tracking-tight text-white/90 transition-colors hover:bg-white/[0.08]"
+                  className="inline-flex flex-1 items-center justify-center rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] py-2 text-[13px] font-medium tracking-tight text-picks-fg/90 transition-colors hover:bg-picks-fg/[0.08]"
                 >
                   {secondaryAction.label}
                 </button>

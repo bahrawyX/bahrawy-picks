@@ -271,7 +271,7 @@ export function VinylPlayer({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#0a0810]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -288,7 +288,7 @@ export function VinylPlayer({
         {eyebrow && (
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center px-6 pt-14 sm:pt-16">
             <div ref={eyebrowRef} className="pointer-events-auto">
-              <div className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+              <div className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur">
                 <span
                   aria-hidden
                   className="block h-1.5 w-1.5 rounded-full"
@@ -326,29 +326,29 @@ export function VinylPlayer({
                       }}
                       className="absolute inset-0 flex flex-col items-start justify-center"
                     >
-                      <p className="mb-3 inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/55">
+                      <p className="mb-3 inline-flex items-center gap-2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55">
                         <span
                           aria-hidden
                           className="block h-1 w-6 rounded-full"
                           style={{ background: accent }}
                         />
                         Track {String(i + 1).padStart(2, '0')}
-                        <span className="text-white/30">/</span>
+                        <span className="text-picks-fg/30">/</span>
                         {String(tracks.length).padStart(2, '0')}
                       </p>
                       <h2
-                        className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl"
+                        className="max-w-md text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-picks-fg sm:text-4xl lg:text-5xl"
                         style={{ textShadow: `0 0 30px ${accent}33` }}
                       >
                         {t.title}
                       </h2>
                       {t.artist && (
-                        <p className="mt-3 text-sm font-medium uppercase tracking-[0.18em] text-white/65">
+                        <p className="mt-3 text-sm font-medium uppercase tracking-[0.18em] text-picks-fg/65">
                           {t.artist}
                         </p>
                       )}
                       {t.runtime && (
-                        <p className="mt-2 font-mono text-xs tabular-nums text-white/45">
+                        <p className="mt-2 font-mono text-xs tabular-nums text-picks-fg/45">
                           {t.runtime}
                         </p>
                       )}
@@ -364,7 +364,7 @@ export function VinylPlayer({
                   <a
                     href={cta.href ?? '#'}
                     onClick={cta.onClick}
-                    className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                    className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                     style={{
                       boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
                     }}
@@ -399,7 +399,7 @@ export function VinylPlayer({
 
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll · drop the needle
         </div>

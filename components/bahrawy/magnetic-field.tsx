@@ -497,7 +497,7 @@ export function MagneticField({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#06070a]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div
@@ -527,7 +527,7 @@ export function MagneticField({
           {eyebrow && (
             <div
               ref={eyebrowRef}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/85 backdrop-blur"
+              className="inline-flex items-center gap-2 rounded-full border border-picks-fg/15 bg-picks-surface/50 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/85 backdrop-blur"
             >
               <span
                 aria-hidden
@@ -549,7 +549,7 @@ export function MagneticField({
                 ref={(el) => {
                   lineRefs.current[i] = el
                 }}
-                className="text-balance font-semibold leading-[0.95] tracking-tight text-white"
+                className="text-balance font-semibold leading-[0.95] tracking-tight text-picks-fg"
                 style={{
                   fontSize: 'clamp(38px, 7.4vw, 100px)',
                   letterSpacing: '-0.035em',
@@ -558,7 +558,7 @@ export function MagneticField({
               >
                 {line.eyebrow && (
                   <span
-                    className="mb-1 block text-[10px] font-medium uppercase tracking-[0.32em] text-white/55"
+                    className="mb-1 block text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55"
                     style={{ textShadow: 'none' }}
                   >
                     {line.eyebrow}
@@ -572,7 +572,7 @@ export function MagneticField({
           {description && (
             <p
               ref={descRef}
-              className="max-w-lg text-pretty text-sm leading-relaxed text-white/65 sm:text-base"
+              className="max-w-lg text-pretty text-sm leading-relaxed text-picks-fg/65 sm:text-base"
             >
               {description}
             </p>
@@ -583,7 +583,7 @@ export function MagneticField({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                 style={{
                   boxShadow: `0 0 30px ${accentColor}40, 0 0 60px ${accentColor}22`,
                 }}
@@ -598,7 +598,7 @@ export function MagneticField({
         {/* Tiny hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Move + scroll
         </div>

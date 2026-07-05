@@ -189,7 +189,7 @@ export function DragToConfirm({
     <div
       ref={trackRef}
       className={cn(
-        'relative isolate inline-flex w-full max-w-md select-none items-center overflow-hidden rounded-full border border-white/[0.06] backdrop-blur-xl',
+        'relative isolate inline-flex w-full max-w-md select-none items-center overflow-hidden rounded-full border border-picks-fg/[0.06] backdrop-blur-xl',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
@@ -225,7 +225,7 @@ export function DragToConfirm({
       <motion.span
         aria-hidden
         style={{ opacity: isConfirmed ? 0 : labelOpacity }}
-        className="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight text-white/70"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center font-display text-[13.5px] font-semibold tracking-tight text-picks-fg/70"
       >
         {label}
       </motion.span>
@@ -266,7 +266,7 @@ export function DragToConfirm({
         whileTap={{ scale: 0.96 }}
         transition={APPLE_SPRING}
         className={cn(
-          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
+          'relative z-10 flex shrink-0 items-center justify-center rounded-full bg-picks-fg outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
           !disabled && !isConfirmed && 'cursor-grab active:cursor-grabbing',
           disabled && 'cursor-not-allowed',
         )}
@@ -283,7 +283,7 @@ export function DragToConfirm({
               'inset 0 1px 0 rgba(255,255,255,0.5), 0 4px 12px -2px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.5)',
           }}
         />
-        <span className="relative flex items-center justify-center text-black/65">
+        <span className="relative flex items-center justify-center text-picks-surface/65">
           {isConfirmed ? (
             <Check className="h-4 w-4" strokeWidth={2.75} />
           ) : (

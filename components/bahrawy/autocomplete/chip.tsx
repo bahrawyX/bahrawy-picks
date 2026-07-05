@@ -19,7 +19,7 @@ export function Chip({ label, icon, onRemove, disabled }: ChipProps) {
       {...scaleIn}
       exit={{ ...scaleIn.exit, transition: tweenExit }}
       transition={springSnappy}
-      className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/[0.06] px-2 py-0.5 text-xs font-medium text-white/80"
+      className="inline-flex items-center gap-1 rounded-md border border-picks-fg/10 bg-picks-fg/[0.06] px-2 py-0.5 text-xs font-medium text-picks-fg/80"
     >
       {icon && <span className="flex shrink-0 [&_svg]:h-3 [&_svg]:w-3">{icon}</span>}
       <span className="max-w-[120px] truncate">{label}</span>
@@ -30,7 +30,7 @@ export function Chip({ label, icon, onRemove, disabled }: ChipProps) {
             e.stopPropagation()
             onRemove()
           }}
-          className="flex shrink-0 items-center justify-center rounded-sm text-white/30 transition-colors hover:text-white/70"
+          className="flex shrink-0 items-center justify-center rounded-sm text-picks-fg/30 transition-colors hover:text-picks-fg/70"
         >
           <X className="h-3 w-3" />
         </button>

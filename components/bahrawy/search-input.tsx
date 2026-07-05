@@ -78,7 +78,7 @@ export function SearchInput({
   return (
     <label
       className={cn(
-        'group inline-flex w-full items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] transition-colors focus-within:border-white/30 focus-within:bg-white/[0.06]',
+        'group inline-flex w-full items-center gap-2 rounded-full border border-picks-fg/10 bg-picks-fg/[0.03] transition-colors focus-within:border-picks-fg/30 focus-within:bg-picks-fg/[0.06]',
         SIZE_CLASSES[size],
         disabled && 'opacity-60',
         className,
@@ -90,7 +90,7 @@ export function SearchInput({
           scale: v.length > 0 ? 1.05 : 1,
         }}
         transition={{ type: 'spring', stiffness: 380, damping: 22 }}
-        className="shrink-0 text-white/50 group-focus-within:text-white/80"
+        className="shrink-0 text-picks-fg/50 group-focus-within:text-picks-fg/80"
       >
         <Search className="h-4 w-4" />
       </motion.span>
@@ -104,7 +104,7 @@ export function SearchInput({
         placeholder={placeholder}
         autoFocus={autoFocus}
         disabled={disabled}
-        className="min-w-0 flex-1 bg-transparent text-white placeholder:text-white/40 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+        className="min-w-0 flex-1 bg-transparent text-picks-fg placeholder:text-picks-fg/40 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
       />
 
       <span className="flex h-5 w-5 shrink-0 items-center justify-center">
@@ -117,7 +117,7 @@ export function SearchInput({
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ duration: 0.15 }}
             >
-              <Loader2 className="h-4 w-4 animate-spin text-white/60" />
+              <Loader2 className="h-4 w-4 animate-spin text-picks-fg/60" />
             </motion.span>
           ) : v.length > 0 ? (
             <motion.button
@@ -132,7 +132,7 @@ export function SearchInput({
                 inputRef.current?.focus()
               }}
               aria-label="Clear"
-              className="rounded-full p-0.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+              className="rounded-full p-0.5 text-picks-fg/55 transition-colors hover:bg-picks-fg/10 hover:text-picks-fg"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2.5} />
             </motion.button>

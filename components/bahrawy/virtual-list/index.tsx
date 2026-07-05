@@ -183,7 +183,7 @@ function VirtualListInner<T>(
       animate={fadeUp.animate}
       transition={springGentle}
       className={cn(
-        'relative rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden',
+        'relative rounded-xl border border-picks-fg/[0.06] bg-picks-fg/[0.02] overflow-hidden',
         className
       )}
     >
@@ -209,7 +209,7 @@ function VirtualListInner<T>(
           initial={fadeUp.initial}
           animate={fadeUp.animate}
           transition={springGentle}
-          className="flex items-center justify-center text-sm text-white/40"
+          className="flex items-center justify-center text-sm text-picks-fg/40"
           style={{
             height: typeof height === 'number' ? height : 400,
           }}

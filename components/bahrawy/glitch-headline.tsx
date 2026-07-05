@@ -69,7 +69,7 @@ export function GlitchHeadline({
   mode = 'hover',
   channelA = '#22D3EE',
   channelB = '#F472B6',
-  baseColor = '#ffffff',
+  baseColor = 'var(--picks-fg)',
   scanlines = true,
   speed = 1,
   intensity = 6,

@@ -13,7 +13,7 @@ export function SkeletonRows({ columnCount, rowCount = 10 }: SkeletonRowsProps) 
   return (
     <TableBody>
       {Array.from({ length: rowCount }).map((_, i) => (
-        <TableRow key={i} className="border-white/[0.06] hover:bg-transparent">
+        <TableRow key={i} className="border-picks-fg/[0.06] hover:bg-transparent">
           {Array.from({ length: columnCount }).map((_, j) => (
             <TableCell key={j} className="py-3 px-4">
               <motion.div
@@ -24,7 +24,7 @@ export function SkeletonRows({ columnCount, rowCount = 10 }: SkeletonRowsProps) 
                   repeat: Infinity,
                   delay: i * 0.06 + j * 0.03,
                 }}
-                className="h-3.5 rounded-md bg-white/[0.06]"
+                className="h-3.5 rounded-md bg-picks-fg/[0.06]"
                 style={{
                   width: j === 0 ? '55%' : j === columnCount - 1 ? '35%' : '75%',
                 }}

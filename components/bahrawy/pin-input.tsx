@@ -208,29 +208,29 @@ export function PinInput({
                   sizeStyle.box,
                   shape === 'circle' ? 'rounded-full' : 'rounded-lg',
                   disabled
-                    ? 'cursor-not-allowed border-white/[0.06] bg-white/[0.02] opacity-50'
+                    ? 'cursor-not-allowed border-picks-fg/[0.06] bg-picks-fg/[0.02] opacity-50'
                     : hasError
                       ? 'border-red-500/60 bg-red-500/[0.05]'
                       : isFocused
-                        ? 'border-white/30 bg-white/[0.06]'
+                        ? 'border-picks-fg/30 bg-picks-fg/[0.06]'
                         : filled
-                          ? 'border-white/20 bg-white/[0.04]'
-                          : 'border-white/[0.08] bg-white/[0.03]',
+                          ? 'border-picks-fg/20 bg-picks-fg/[0.04]'
+                          : 'border-picks-fg/[0.08] bg-picks-fg/[0.03]',
                 )}
               >
                 {filled ? (
                   <span
                     className={cn(
-                      'select-none font-medium text-white',
+                      'select-none font-medium text-picks-fg',
                       masked && 'text-xl leading-none',
                     )}
                   >
                     {masked ? maskChar : digit}
                   </span>
                 ) : isFocused ? (
-                  <span className="inline-block h-5 w-0.5 animate-pulse rounded-full bg-white" />
+                  <span className="inline-block h-5 w-0.5 animate-pulse rounded-full bg-picks-fg" />
                 ) : placeholder ? (
-                  <span className="select-none text-white/20">{placeholder}</span>
+                  <span className="select-none text-picks-fg/20">{placeholder}</span>
                 ) : null}
               </div>
             )
@@ -244,7 +244,7 @@ export function PinInput({
             onClick={() => setMasked((m) => !m)}
             disabled={disabled}
             className={cn(
-              'relative z-20 ml-1 rounded-md p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70',
+              'relative z-20 ml-1 rounded-md p-1.5 text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
               disabled && 'cursor-not-allowed opacity-50',
             )}
             aria-label={masked ? 'Show PIN' : 'Hide PIN'}

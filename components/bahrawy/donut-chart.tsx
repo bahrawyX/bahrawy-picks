@@ -207,12 +207,12 @@ export function DonutChart({
         {(centerLabel || centerSubLabel) && (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
             {centerLabel && (
-              <p className="font-display text-[24px] font-semibold tracking-tight text-white">
+              <p className="font-display text-[24px] font-semibold tracking-tight text-picks-fg">
                 {centerLabel}
               </p>
             )}
             {centerSubLabel && (
-              <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.16em] text-white/40">
+              <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.16em] text-picks-fg/40">
                 {centerSubLabel}
               </p>
             )}
@@ -228,7 +228,7 @@ export function DonutChart({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 4, scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 480, damping: 32, mass: 0.5 }}
-              className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-[10px] border border-white/[0.08] px-2.5 py-1.5 text-center backdrop-blur-xl"
+              className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-[10px] border border-picks-fg/[0.08] px-2.5 py-1.5 text-center backdrop-blur-xl"
               style={{
                 top: 0,
                 background:
@@ -242,13 +242,13 @@ export function DonutChart({
                   className="inline-block h-2 w-2 rounded-full"
                   style={{ background: hoverDatum.color }}
                 />
-                <p className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-white/55">
+                <p className="text-[10.5px] font-medium uppercase tracking-[0.14em] text-picks-fg/55">
                   {hoverDatum.label}
                 </p>
               </div>
-              <p className="mt-0.5 font-display text-[14px] font-semibold tabular-nums tracking-tight text-white">
+              <p className="mt-0.5 font-display text-[14px] font-semibold tabular-nums tracking-tight text-picks-fg">
                 {format(hoverDatum.value)}
-                <span className="ml-1 font-mono text-[10.5px] font-normal text-white/45">
+                <span className="ml-1 font-mono text-[10.5px] font-normal text-picks-fg/45">
                   {hoverDatum.percent.toFixed(1)}%
                 </span>
               </p>
@@ -270,7 +270,7 @@ export function DonutChart({
               onPointerLeave={() => setHover(null)}
               className={cn(
                 'flex cursor-default items-center justify-between gap-3 rounded-[8px] px-2 py-1.5 transition-colors',
-                hover === i ? 'bg-white/[0.04]' : 'hover:bg-white/[0.025]',
+                hover === i ? 'bg-picks-fg/[0.04]' : 'hover:bg-picks-fg/[0.025]',
               )}
             >
               <div className="flex min-w-0 items-center gap-2">
@@ -278,15 +278,15 @@ export function DonutChart({
                   className="inline-block h-2 w-2 shrink-0 rounded-full"
                   style={{ background: s.color }}
                 />
-                <span className="truncate text-[12px] font-medium tracking-tight text-white/80">
+                <span className="truncate text-[12px] font-medium tracking-tight text-picks-fg/80">
                   {s.label}
                 </span>
               </div>
               <div className="flex shrink-0 items-baseline gap-1.5">
-                <span className="font-mono text-[12px] font-medium tabular-nums text-white/90">
+                <span className="font-mono text-[12px] font-medium tabular-nums text-picks-fg/90">
                   {format(s.value)}
                 </span>
-                <span className="font-mono text-[10.5px] tabular-nums text-white/45">
+                <span className="font-mono text-[10.5px] tabular-nums text-picks-fg/45">
                   {s.percent.toFixed(0)}%
                 </span>
               </div>

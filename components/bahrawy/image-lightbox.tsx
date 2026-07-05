@@ -125,7 +125,7 @@ export function ImageLightbox({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
               transition={APPLE_SPRING}
-              className="group relative overflow-hidden rounded-[14px] border border-white/[0.06]"
+              className="group relative overflow-hidden rounded-[14px] border border-picks-fg/[0.06]"
               style={{
                 aspectRatio: '1 / 1',
                 boxShadow:
@@ -187,7 +187,7 @@ export function ImageLightbox({
                   whileTap={{ scale: 0.9 }}
                   transition={APPLE_SPRING}
                   aria-label="Close"
-                  className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] text-white/85 backdrop-blur-xl transition-colors hover:bg-white/10"
+                  className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-picks-fg/[0.1] text-picks-fg/85 backdrop-blur-xl transition-colors hover:bg-picks-fg/10"
                   style={{
                     background:
                       'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
@@ -199,13 +199,13 @@ export function ImageLightbox({
                 {/* Counter (top left) */}
                 {images.length > 1 && (
                   <span
-                    className="absolute left-4 top-4 z-10 rounded-full border border-white/[0.1] px-3 py-1.5 font-mono text-[11px] font-medium tabular-nums text-white/85 backdrop-blur-xl"
+                    className="absolute left-4 top-4 z-10 rounded-full border border-picks-fg/[0.1] px-3 py-1.5 font-mono text-[11px] font-medium tabular-nums text-picks-fg/85 backdrop-blur-xl"
                     style={{
                       background:
                         'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
                     }}
                   >
-                    {index + 1} <span className="text-white/40">/</span>{' '}
+                    {index + 1} <span className="text-picks-fg/40">/</span>{' '}
                     {images.length}
                   </span>
                 )}
@@ -219,7 +219,7 @@ export function ImageLightbox({
                       whileTap={{ scale: 0.9 }}
                       transition={APPLE_SPRING}
                       aria-label="Previous image"
-                      className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.1] text-white/85 backdrop-blur-xl transition-colors hover:bg-white/10 sm:left-8"
+                      className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-picks-fg/[0.1] text-picks-fg/85 backdrop-blur-xl transition-colors hover:bg-picks-fg/10 sm:left-8"
                       style={{
                         background:
                           'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
@@ -233,7 +233,7 @@ export function ImageLightbox({
                       whileTap={{ scale: 0.9 }}
                       transition={APPLE_SPRING}
                       aria-label="Next image"
-                      className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.1] text-white/85 backdrop-blur-xl transition-colors hover:bg-white/10 sm:right-8"
+                      className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-picks-fg/[0.1] text-picks-fg/85 backdrop-blur-xl transition-colors hover:bg-picks-fg/10 sm:right-8"
                       style={{
                         background:
                           'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%)',
@@ -282,7 +282,7 @@ export function ImageLightbox({
                     animate={{ y: 0, opacity: 1 }}
                     transition={APPLE_SPRING}
                     className={cn(
-                      'absolute bottom-5 left-1/2 z-10 max-w-[90vw] -translate-x-1/2 rounded-full border border-white/[0.1] px-4 py-2 text-[12.5px] tracking-tight text-white/90 backdrop-blur-xl',
+                      'absolute bottom-5 left-1/2 z-10 max-w-[90vw] -translate-x-1/2 rounded-full border border-picks-fg/[0.1] px-4 py-2 text-[12.5px] tracking-tight text-picks-fg/90 backdrop-blur-xl',
                     )}
                     style={{
                       background:

@@ -34,15 +34,15 @@ const VARIANT_STROKE: Record<
   Exclude<ScrollPathRevealVariant, 'gradient'>,
   string
 > = {
-  primary: '#FFFFFF',
-  muted: 'rgba(255, 255, 255, 0.55)',
+  primary: 'var(--picks-fg)',
+  muted: 'rgb(var(--picks-fg-rgb) / 0.55)',
   warm: '#FCD34D', // amber-300 — matches favorite-button accent
 }
 
 const GRADIENT_STOPS: Array<[string, string]> = [
-  ['0%', '#FFFFFF'],
+  ['0%', 'var(--picks-fg)'],
   ['50%', '#FCD34D'],
-  ['100%', '#FFFFFF'],
+  ['100%', 'var(--picks-fg)'],
 ]
 
 const DEFAULT_CAPTIONS = ['The Stroke', 'That follows the', 'Scroll Progress']
@@ -73,7 +73,7 @@ export function ScrollPathReveal({
   pathD = BAHRAWY_PATH,
   viewBox = BAHRAWY_VIEWBOX,
   heightVh = 350,
-  backgroundClassName = 'bg-black',
+  backgroundClassName = 'bg-picks-surface',
   className,
   captions = DEFAULT_CAPTIONS,
   captionClassName,
@@ -238,7 +238,7 @@ function CaptionLine({
     <motion.h2
       style={{ opacity, y, filter }}
       className={cn(
-        'text-balance text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl md:text-6xl lg:text-7xl',
+        'text-balance text-4xl font-semibold tracking-[-0.04em] text-picks-fg sm:text-5xl md:text-6xl lg:text-7xl',
         captionClassName,
       )}
     >

@@ -425,11 +425,11 @@ export function Autocomplete({
             aria-activedescendant={multiple ? undefined : activeDescendant}
             onKeyDown={multiple ? undefined : handleTriggerKeyDown}
             className={cn(
-              'flex w-full min-h-[40px] cursor-pointer items-center rounded-lg border bg-white/[0.03] px-3 text-sm text-white/80 outline-none transition-colors',
-              'hover:bg-white/[0.05] focus:border-white/20 focus:bg-white/[0.05]',
+              'flex w-full min-h-[40px] cursor-pointer items-center rounded-lg border bg-picks-fg/[0.03] px-3 text-sm text-picks-fg/80 outline-none transition-colors',
+              'hover:bg-picks-fg/[0.05] focus:border-picks-fg/20 focus:bg-picks-fg/[0.05]',
               error
                 ? 'border-red-500/60 focus:border-red-500/80'
-                : 'border-white/[0.08]',
+                : 'border-picks-fg/[0.08]',
               disabled && 'pointer-events-none opacity-50',
               multiple && 'flex-wrap gap-1.5 py-1.5'
             )}
@@ -473,13 +473,13 @@ export function Autocomplete({
                 }}
                 placeholder={hasSelection ? '' : placeholder}
                 disabled={disabled}
-                className="min-w-[60px] flex-1 bg-transparent text-sm text-white/80 outline-none placeholder:text-white/25"
+                className="min-w-[60px] flex-1 bg-transparent text-sm text-picks-fg/80 outline-none placeholder:text-picks-fg/25"
               />
             ) : (
               <span
                 className={cn(
                   'flex-1 truncate text-left',
-                  !triggerLabel && 'text-white/25'
+                  !triggerLabel && 'text-picks-fg/25'
                 )}
               >
                 {triggerLabel ?? placeholder}
@@ -496,7 +496,7 @@ export function Autocomplete({
                     exit={{ ...scaleIn.exit, transition: tweenExit }}
                     transition={springSnappy}
                     onClick={handleClear}
-                    className="flex h-5 w-5 items-center justify-center rounded-sm text-white/30 transition-colors hover:text-white/60"
+                    className="flex h-5 w-5 items-center justify-center rounded-sm text-picks-fg/30 transition-colors hover:text-picks-fg/60"
                   >
                     <X className="h-3.5 w-3.5" />
                   </motion.button>
@@ -504,7 +504,7 @@ export function Autocomplete({
               </AnimatePresence>
               <ChevronDown
                 className={cn(
-                  'h-4 w-4 text-white/25 transition-transform',
+                  'h-4 w-4 text-picks-fg/25 transition-transform',
                   open && 'rotate-180'
                 )}
               />
@@ -514,7 +514,7 @@ export function Autocomplete({
 
         <PopoverContent
           id={`${instanceId}-list`}
-          className="p-0 border-white/[0.08]"
+          className="p-0 border-picks-fg/[0.08]"
           align="start"
           style={
             popoverWidth === 'trigger'
@@ -528,7 +528,7 @@ export function Autocomplete({
         >
           {/* Search input — single select shows it in popover, multi shows inline */}
           {!multiple && (
-            <div className="flex items-center border-b border-white/[0.06] px-3">
+            <div className="flex items-center border-b border-picks-fg/[0.06] px-3">
               <input
                 ref={inputRef}
                 role="combobox"
@@ -547,7 +547,7 @@ export function Autocomplete({
                   composingRef.current = false
                 }}
                 placeholder={searchPlaceholder ?? 'Search...'}
-                className="flex h-10 w-full bg-transparent py-3 text-sm text-white/80 outline-none placeholder:text-white/25"
+                className="flex h-10 w-full bg-transparent py-3 text-sm text-picks-fg/80 outline-none placeholder:text-picks-fg/25"
               />
             </div>
           )}
@@ -555,7 +555,7 @@ export function Autocomplete({
           <CommandList ref={listRef}>
               {/* Max items message */}
               {atLimit && (
-                <div className="py-3 text-center text-xs text-white/35">
+                <div className="py-3 text-center text-xs text-picks-fg/35">
                   Max {maxItems} items selected
                 </div>
               )}
@@ -568,7 +568,7 @@ export function Autocomplete({
                 onSearch &&
                 search.length < minChars &&
                 displayOptions.length === 0 && (
-                <div className="py-6 text-center text-sm text-white/25">
+                <div className="py-6 text-center text-sm text-picks-fg/25">
                   Type to search...
                 </div>
               )}
@@ -588,9 +588,9 @@ export function Autocomplete({
                     <button
                       type="button"
                       onClick={handleCreate}
-                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-white/70 transition-colors hover:bg-white/[0.06]"
+                      className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-picks-fg/70 transition-colors hover:bg-picks-fg/[0.06]"
                     >
-                      <Plus className="h-4 w-4 text-white/40" />
+                      <Plus className="h-4 w-4 text-picks-fg/40" />
                       Create &ldquo;{search.trim()}&rdquo;
                     </button>
                   </motion.div>

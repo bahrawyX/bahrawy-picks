@@ -82,7 +82,7 @@ export function FooterNewsletter({
   return (
     <footer
       className={cn(
-        'w-full border-t border-white/10 bg-black px-6 py-16',
+        'w-full border-t border-picks-fg/10 bg-picks-surface px-6 py-16',
         className,
       )}
     >
@@ -90,17 +90,17 @@ export function FooterNewsletter({
         {/* Newsletter row */}
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div className="flex flex-col gap-3">
-            <h3 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl">
+            <h3 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-4xl">
               {newsletterHeading}
             </h3>
             {newsletterCopy && (
-              <p className="max-w-md text-sm leading-relaxed text-white/55">{newsletterCopy}</p>
+              <p className="max-w-md text-sm leading-relaxed text-picks-fg/55">{newsletterCopy}</p>
             )}
           </div>
 
           <form
             onSubmit={handleSubmit}
-            className="flex w-full max-w-md items-stretch gap-2 rounded-full border border-white/10 bg-white/[0.03] p-1.5 lg:ml-auto"
+            className="flex w-full max-w-md items-stretch gap-2 rounded-full border border-picks-fg/10 bg-picks-fg/[0.03] p-1.5 lg:ml-auto"
           >
             <input
               type="email"
@@ -110,7 +110,7 @@ export function FooterNewsletter({
               placeholder={placeholder}
               disabled={state === 'loading'}
               aria-label="Email address"
-              className="min-w-0 flex-1 bg-transparent px-4 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none"
+              className="min-w-0 flex-1 bg-transparent px-4 py-2 text-sm text-picks-fg placeholder:text-picks-fg/40 focus:outline-none"
             />
             <button
               type="submit"
@@ -118,8 +118,8 @@ export function FooterNewsletter({
               className={cn(
                 'inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors',
                 state === 'success'
-                  ? 'bg-emerald-400 text-black'
-                  : 'bg-white text-black hover:bg-white/90',
+                  ? 'bg-emerald-400 text-picks-surface'
+                  : 'bg-picks-fg text-picks-surface hover:bg-picks-fg/90',
                 state === 'loading' && 'opacity-70',
               )}
             >
@@ -165,11 +165,11 @@ export function FooterNewsletter({
         </div>
 
         {/* Brand + columns */}
-        <div className="grid gap-12 border-t border-white/[0.06] pt-10 lg:grid-cols-[1fr_2fr]">
+        <div className="grid gap-12 border-t border-picks-fg/[0.06] pt-10 lg:grid-cols-[1fr_2fr]">
           <div className="flex flex-col gap-3">
-            <div className="text-lg font-semibold text-white">{logo}</div>
+            <div className="text-lg font-semibold text-picks-fg">{logo}</div>
             {tagline && (
-              <p className="max-w-xs text-sm leading-relaxed text-white/55">{tagline}</p>
+              <p className="max-w-xs text-sm leading-relaxed text-picks-fg/55">{tagline}</p>
             )}
           </div>
 
@@ -177,7 +177,7 @@ export function FooterNewsletter({
             <div className="grid gap-8 sm:grid-cols-3">
               {columns.map((col) => (
                 <div key={col.heading} className="flex flex-col gap-3">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/40">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/40">
                     {col.heading}
                   </p>
                   <ul className="flex flex-col gap-2">
@@ -187,7 +187,7 @@ export function FooterNewsletter({
                           href={link.href}
                           target={link.external ? '_blank' : undefined}
                           rel={link.external ? 'noopener noreferrer' : undefined}
-                          className="text-sm text-white/70 transition-colors hover:text-white"
+                          className="text-sm text-picks-fg/70 transition-colors hover:text-picks-fg"
                         >
                           {link.label}
                         </a>
@@ -202,7 +202,7 @@ export function FooterNewsletter({
 
         {/* Bottom bar */}
         {(copyright || bottomRight) && (
-          <div className="flex flex-col gap-2 border-t border-white/[0.06] pt-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 border-t border-picks-fg/[0.06] pt-6 text-xs text-picks-fg/40 sm:flex-row sm:items-center sm:justify-between">
             {copyright && <p>{copyright}</p>}
             {bottomRight && <div className="flex items-center gap-3">{bottomRight}</div>}
           </div>

@@ -185,7 +185,7 @@ function SaturationCanvas({
       aria-valuemax={100}
       aria-valuenow={saturation}
       aria-valuetext={`Saturation ${saturation}%, brightness ${brightness}%`}
-      className="relative h-40 w-full cursor-crosshair rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+      className="relative h-40 w-full cursor-crosshair rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/60"
       style={{
         background: `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ${hueColor})`,
       }}
@@ -196,7 +196,7 @@ function SaturationCanvas({
     >
       {/* Handle */}
       <motion.div
-        className="pointer-events-none absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md"
+        className="pointer-events-none absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-picks-fg shadow-md"
         style={{ left: handleX, top: handleY }}
         whileHover={{ scale: 1.2 }}
         transition={springSnappy}
@@ -288,8 +288,8 @@ function SwatchGrid({
           className={cn(
             'h-7 w-7 rounded-md border transition-shadow',
             selected?.toUpperCase() === color.toUpperCase()
-              ? 'border-white ring-2 ring-white/30'
-              : 'border-white/10',
+              ? 'border-picks-fg ring-2 ring-picks-fg/30'
+              : 'border-picks-fg/10',
           )}
           style={{ backgroundColor: color }}
         />
@@ -431,23 +431,23 @@ export function ColorPicker({
         <button
           type="button"
           className={cn(
-            'flex items-center gap-2.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm transition-colors hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-white/20',
+            'flex items-center gap-2.5 rounded-lg border border-picks-fg/[0.08] bg-picks-fg/[0.03] px-3 py-2 text-sm transition-colors hover:border-picks-fg/20 focus:outline-none focus:ring-2 focus:ring-picks-fg/20',
             disabled && 'cursor-not-allowed opacity-50',
             className,
           )}
         >
           <div
-            className="h-5 w-5 rounded-md border border-white/10"
+            className="h-5 w-5 rounded-md border border-picks-fg/10"
             style={{
               background: `linear-gradient(${rawValue}, ${rawValue}), repeating-conic-gradient(rgba(255,255,255,0.18) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px`,
             }}
           />
-          <span className="font-mono text-white/70">{rawValue.toUpperCase()}</span>
+          <span className="font-mono text-picks-fg/70">{rawValue.toUpperCase()}</span>
         </button>
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-72 border-white/[0.08] bg-neutral-900/95 p-0 backdrop-blur-xl"
+        className="w-72 border-picks-fg/[0.08] bg-picks-panel/95 p-0 backdrop-blur-xl"
         align="start"
         sideOffset={8}
       >
@@ -458,7 +458,7 @@ export function ColorPicker({
           className="p-3"
         >
           <Tabs defaultValue="picker" className="w-full">
-            <TabsList className="mb-3 w-full bg-white/[0.04]">
+            <TabsList className="mb-3 w-full bg-picks-fg/[0.04]">
               <TabsTrigger value="picker" className="flex-1 text-xs">Picker</TabsTrigger>
               {showSwatches && (
                 <TabsTrigger value="swatches" className="flex-1 text-xs">Swatches</TabsTrigger>
@@ -490,7 +490,7 @@ export function ColorPicker({
               <div className="flex items-center gap-3">
                 {/* Color preview */}
                 <div
-                  className="h-10 w-10 shrink-0 rounded-lg border border-white/10"
+                  className="h-10 w-10 shrink-0 rounded-lg border border-picks-fg/10"
                   style={{
                     background: `linear-gradient(${rawValue}, ${rawValue}), repeating-conic-gradient(rgba(255,255,255,0.18) 0% 25%, transparent 0% 50%) 0 0 / 8px 8px`,
                   }}
@@ -508,8 +508,8 @@ export function ColorPicker({
                         className={cn(
                           'rounded px-2 py-0.5 text-[10px] font-medium uppercase transition-colors',
                           activeFormat === f
-                            ? 'bg-white/10 text-white'
-                            : 'text-white/30 hover:text-white/50',
+                            ? 'bg-picks-fg/10 text-picks-fg'
+                            : 'text-picks-fg/30 hover:text-picks-fg/50',
                         )}
                       >
                         {f}
@@ -523,10 +523,10 @@ export function ColorPicker({
                       type="text"
                       value={hexInput}
                       onChange={(e) => handleHexInput(e.target.value)}
-                      className="w-full rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 font-mono text-xs text-white outline-none focus:border-white/20"
+                      className="w-full rounded-md border border-picks-fg/[0.08] bg-picks-fg/[0.04] px-2 py-1 font-mono text-xs text-picks-fg outline-none focus:border-picks-fg/20"
                     />
                   ) : (
-                    <div className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-1 font-mono text-xs text-white/60">
+                    <div className="rounded-md border border-picks-fg/[0.08] bg-picks-fg/[0.04] px-2 py-1 font-mono text-xs text-picks-fg/60">
                       {formattedColor}
                     </div>
                   )}
@@ -550,8 +550,8 @@ export function ColorPicker({
               <TabsContent value="history" className="mt-0">
                 {history.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-6">
-                    <Pipette className="mb-2 h-5 w-5 text-white/20" />
-                    <p className="text-xs text-white/30">No colors yet</p>
+                    <Pipette className="mb-2 h-5 w-5 text-picks-fg/20" />
+                    <p className="text-xs text-picks-fg/30">No colors yet</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -563,7 +563,7 @@ export function ColorPicker({
                     <button
                       type="button"
                       onClick={clearHistory}
-                      className="text-xs text-white/30 transition-colors hover:text-white/50"
+                      className="text-xs text-picks-fg/30 transition-colors hover:text-picks-fg/50"
                     >
                       Clear history
                     </button>

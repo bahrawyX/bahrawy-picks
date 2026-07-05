@@ -240,7 +240,7 @@ export function LineChart({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="block w-full rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+        className="block w-full rounded-md outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/40"
         role="img"
         aria-labelledby={`${titleId} ${descId}`}
         tabIndex={0}
@@ -275,7 +275,7 @@ export function LineChart({
                     x2={plotW}
                     y1={y}
                     y2={y}
-                    stroke="rgba(255,255,255,0.05)"
+                    stroke="rgb(var(--picks-fg-rgb) / 0.05)"
                     strokeDasharray="2 4"
                     strokeWidth={1}
                   />
@@ -339,7 +339,7 @@ export function LineChart({
                 x2={hover.x}
                 y1={0}
                 y2={plotH}
-                stroke="rgba(255,255,255,0.18)"
+                stroke="rgb(var(--picks-fg-rgb) / 0.18)"
                 strokeWidth={1}
                 strokeDasharray="3 3"
               />
@@ -374,7 +374,7 @@ export function LineChart({
                   x={x}
                   y={plotH + 18}
                   textAnchor="middle"
-                  className="fill-white/40"
+                  className="fill-picks-fg/40"
                   style={{ font: '500 10.5px/1 ui-sans-serif, system-ui' }}
                 >
                   {d.label}
@@ -393,7 +393,7 @@ export function LineChart({
                 x={padL - 8}
                 y={y + 3.5}
                 textAnchor="end"
-                className="fill-white/40"
+                className="fill-picks-fg/40"
                 style={{ font: '500 10.5px/1 ui-sans-serif, system-ui' }}
               >
                 {format(tv)}
@@ -411,7 +411,7 @@ export function LineChart({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 480, damping: 32, mass: 0.5 }}
-            className="pointer-events-none absolute -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-[10px] border border-white/[0.08] px-2.5 py-1.5 text-center backdrop-blur-xl"
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-[10px] border border-picks-fg/[0.08] px-2.5 py-1.5 text-center backdrop-blur-xl"
             style={{
               left: `${tooltipLeftPct}%`,
               top: `${tooltipTopPct}%`,
@@ -421,7 +421,7 @@ export function LineChart({
                 '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(255,255,255,0.05), 0 10px 24px -10px rgba(0,0,0,0.6)',
             }}
           >
-            <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-picks-fg/45">
               {hoverDatum.label}
             </p>
             <p
@@ -430,7 +430,7 @@ export function LineChart({
             >
               {format(hoverDatum.value)}
               {valueSuffix && (
-                <span className="ml-0.5 text-white/45">{valueSuffix}</span>
+                <span className="ml-0.5 text-picks-fg/45">{valueSuffix}</span>
               )}
             </p>
           </motion.div>

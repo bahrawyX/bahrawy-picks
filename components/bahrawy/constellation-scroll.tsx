@@ -379,7 +379,7 @@ export function ConstellationScroll({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-[#06070a]', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
@@ -399,7 +399,7 @@ export function ConstellationScroll({
           {(eyebrow || heading) && (
             <div ref={headerRef} className="max-w-2xl">
               {eyebrow && (
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur">
                   <span
                     aria-hidden
                     className="block h-1.5 w-1.5 rounded-full"
@@ -409,7 +409,7 @@ export function ConstellationScroll({
                 </div>
               )}
               {heading && (
-                <h2 className="font-display text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+                <h2 className="font-display text-balance text-2xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-3xl">
                   {heading}
                 </h2>
               )}
@@ -417,7 +417,7 @@ export function ConstellationScroll({
           )}
           {description && (
             <div ref={descRef} className="mt-3 max-w-xl">
-              <p className="text-pretty text-sm leading-relaxed text-white/65 sm:text-base">
+              <p className="text-pretty text-sm leading-relaxed text-picks-fg/65 sm:text-base">
                 {description}
               </p>
             </div>
@@ -466,7 +466,7 @@ export function ConstellationScroll({
                       y2={y2}
                       // Plain white at low opacity — no per-node colored
                       // glow. Apple-style restraint.
-                      stroke="rgba(255,255,255,0.55)"
+                      stroke="rgb(var(--picks-fg-rgb) / 0.55)"
                       strokeWidth="0.3"
                       vectorEffect="non-scaling-stroke"
                       strokeLinecap="round"
@@ -502,7 +502,7 @@ export function ConstellationScroll({
                         hairline white border at ~8% opacity, deep but
                         non-colored drop shadow. The accent only shows
                         up in the tiny dot inside, never as a glow. */}
-                    <div className="relative flex h-full w-full items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.04] text-white shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+                    <div className="relative flex h-full w-full items-center justify-center rounded-full border border-picks-fg/[0.08] bg-picks-fg/[0.04] text-picks-fg shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)] backdrop-blur-xl">
                       <span className="relative">
                         {node.icon ?? (
                           <span
@@ -517,7 +517,7 @@ export function ConstellationScroll({
                         ref={(el) => {
                           labelRefs.current[i] = el
                         }}
-                        className="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.18em] text-white/70"
+                        className="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/70"
                         style={{ willChange: 'transform, opacity' }}
                       >
                         {node.label}
@@ -535,7 +535,7 @@ export function ConstellationScroll({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-center gap-4 pb-14">
             {finale && (
               <div ref={finaleRef} className="max-w-xl px-6 text-center">
-                <p className="font-display text-balance text-base font-semibold leading-snug text-white sm:text-lg">
+                <p className="font-display text-balance text-base font-semibold leading-snug text-picks-fg sm:text-lg">
                   {finale}
                 </p>
               </div>
@@ -544,7 +544,7 @@ export function ConstellationScroll({
               <a
                 href={cta.href ?? '#'}
                 onClick={cta.onClick}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
               >
                 {cta.label}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -558,7 +558,7 @@ export function ConstellationScroll({
         {finale && !cta && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-center pb-16">
             <div ref={finaleRef} className="max-w-xl px-6 text-center">
-              <p className="font-display text-balance text-base font-semibold leading-snug text-white sm:text-lg">
+              <p className="font-display text-balance text-base font-semibold leading-snug text-picks-fg sm:text-lg">
                 {finale}
               </p>
             </div>
@@ -568,7 +568,7 @@ export function ConstellationScroll({
         {/* Scroll hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll to form
         </div>

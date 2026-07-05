@@ -22,7 +22,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <TableBody>
-      <TableRow className="border-white/[0.04] hover:bg-transparent">
+      <TableRow className="border-picks-fg/[0.04] hover:bg-transparent">
         <TableCell colSpan={columnCount} className="h-60">
           {children ?? (
             <motion.div
@@ -30,15 +30,15 @@ export function EmptyState({
               transition={springGentle}
               className="flex flex-col items-center justify-center gap-3 text-center"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03]">
-                <Inbox className="h-6 w-6 text-white/30" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-picks-fg/10 bg-picks-fg/[0.03]">
+                <Inbox className="h-6 w-6 text-picks-fg/30" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white/60">
+                <p className="text-sm font-medium text-picks-fg/60">
                   No results found
                 </p>
                 {hasActiveFilters && (
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="mt-1 text-xs text-picks-fg/40">
                     Try adjusting your filters
                   </p>
                 )}
@@ -48,7 +48,7 @@ export function EmptyState({
                   size="sm"
                   variant="outline"
                   onClick={onClearFilters}
-                  className="mt-1 border-white/10 bg-white/[0.04] text-white/70 hover:bg-white/[0.08]"
+                  className="mt-1 border-picks-fg/10 bg-picks-fg/[0.04] text-picks-fg/70 hover:bg-picks-fg/[0.08]"
                 >
                   Clear all filters
                 </Button>

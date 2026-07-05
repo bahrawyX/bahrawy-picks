@@ -75,13 +75,13 @@ export function Toolbar<TData>({
       <div className="flex items-center gap-2">
         {/* Always-visible search */}
         <div className="relative flex items-center">
-          <Search className="pointer-events-none absolute left-3 h-4 w-4 text-white/25" />
+          <Search className="pointer-events-none absolute left-3 h-4 w-4 text-picks-fg/25" />
           <input
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Search..."
-            className="h-9 w-[220px] rounded-lg border border-white/[0.08] bg-white/[0.03] pl-9 pr-8 text-sm text-white/80 outline-none placeholder:text-white/25 transition-colors focus:border-white/20 focus:bg-white/[0.05]"
+            className="h-9 w-[220px] rounded-lg border border-picks-fg/[0.08] bg-picks-fg/[0.03] pl-9 pr-8 text-sm text-picks-fg/80 outline-none placeholder:text-picks-fg/25 transition-colors focus:border-picks-fg/20 focus:bg-picks-fg/[0.05]"
           />
           {localSearch && (
             <button
@@ -90,7 +90,7 @@ export function Toolbar<TData>({
                 setLocalSearch('')
                 onGlobalFilterChange('')
               }}
-              className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-sm text-white/30 transition-colors hover:text-white/60"
+              className="absolute right-2.5 flex h-4 w-4 items-center justify-center rounded-sm text-picks-fg/30 transition-colors hover:text-picks-fg/60"
             >
               <X className="h-3 w-3" />
             </button>
@@ -107,7 +107,7 @@ export function Toolbar<TData>({
           type="button"
           onClick={nextDensity}
           title={`Density: ${density}`}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-white/35 transition-colors hover:bg-white/[0.06] hover:text-white/60"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-picks-fg/35 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/60"
         >
           <DensityIcon className="h-4 w-4" />
         </button>
@@ -117,7 +117,7 @@ export function Toolbar<TData>({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/60"
+              className="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs text-picks-fg/40 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg/60"
             >
               <Columns3 className="h-3.5 w-3.5" />
               Columns
@@ -125,7 +125,7 @@ export function Toolbar<TData>({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-[180px] border-white/10 bg-black/90 backdrop-blur-xl"
+            className="w-[180px] border-picks-fg/10 bg-picks-surface/90 backdrop-blur-xl"
           >
             {table
               .getAllColumns()
@@ -139,7 +139,7 @@ export function Toolbar<TData>({
                     key={col.id}
                     checked={col.getIsVisible()}
                     onCheckedChange={(v) => col.toggleVisibility(!!v)}
-                    className="text-xs text-white/70 focus:bg-white/[0.06]"
+                    className="text-xs text-picks-fg/70 focus:bg-picks-fg/[0.06]"
                   >
                     {meta?.headerLabel ?? col.id}
                   </DropdownMenuCheckboxItem>
@@ -195,7 +195,7 @@ export function Toolbar<TData>({
                 onGlobalFilterChange('')
               }}
               className={cn(
-                'h-6 px-2 text-[10px] uppercase tracking-wider text-white/35 transition-colors hover:text-white/60',
+                'h-6 px-2 text-[10px] uppercase tracking-wider text-picks-fg/35 transition-colors hover:text-picks-fg/60',
                 columnFilters.length === 0 && !globalFilter && 'hidden'
               )}
             >

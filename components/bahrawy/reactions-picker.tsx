@@ -66,7 +66,7 @@ export function ReactionsPicker({
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusWithin(false)
       }}
       className={cn(
-        'inline-flex items-center gap-1 rounded-full border border-white/[0.08] px-2 py-1.5 backdrop-blur-xl',
+        'inline-flex items-center gap-1 rounded-full border border-picks-fg/[0.08] px-2 py-1.5 backdrop-blur-xl',
         className,
       )}
       style={{
@@ -167,7 +167,7 @@ function EmojiButton({
       whileTap={{ scale: scale * 0.9 }}
       className={cn(
         'inline-flex h-8 w-8 origin-bottom items-center justify-center rounded-full text-[20px] leading-none transition-colors',
-        isSelected ? 'bg-white/[0.12]' : 'hover:bg-white/[0.06]',
+        isSelected ? 'bg-picks-fg/[0.12]' : 'hover:bg-picks-fg/[0.06]',
       )}
       aria-label={`React with ${emoji}`}
     >

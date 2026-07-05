@@ -28,13 +28,13 @@ const statusConfig: Record<EventStatus, {
     icon: <Check className="h-3.5 w-3.5" strokeWidth={2.25} />,
   },
   current: {
-    border: 'border-white/[0.18]',
-    iconColor: 'text-white/85',
+    border: 'border-picks-fg/[0.18]',
+    iconColor: 'text-picks-fg/85',
     icon: <Circle className="h-2 w-2 fill-current" strokeWidth={0} />,
   },
   upcoming: {
-    border: 'border-white/[0.08]',
-    iconColor: 'text-white/40',
+    border: 'border-picks-fg/[0.08]',
+    iconColor: 'text-picks-fg/40',
     icon: null,
   },
   error: {
@@ -68,7 +68,7 @@ export function TimelineDot({
       {/* Pulse ring for current — hairline, no color flash */}
       {status === 'current' && (
         <div
-          className="absolute h-8 w-8 rounded-full border border-white/[0.12] animate-tl-pulse-ring"
+          className="absolute h-8 w-8 rounded-full border border-picks-fg/[0.12] animate-tl-pulse-ring"
         />
       )}
 
@@ -77,7 +77,7 @@ export function TimelineDot({
       <div
         className={cn(
           'flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-md',
-          'bg-white/[0.04]',
+          'bg-picks-fg/[0.04]',
           config.border,
           config.iconColor,
           status === 'error' && 'animate-tl-shake',

@@ -234,7 +234,7 @@ export function PinnedStory({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-black', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
     >
       <div
         ref={pinRef}
@@ -289,7 +289,7 @@ export function PinnedStory({
         {/* Top progress bar ------------------------------------------ */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-10 top-10 z-30 h-px overflow-hidden rounded-full bg-white/10 sm:inset-x-16 lg:inset-x-24"
+          className="pointer-events-none absolute inset-x-10 top-10 z-30 h-px overflow-hidden rounded-full bg-picks-fg/10 sm:inset-x-16 lg:inset-x-24"
         >
           <div
             ref={progressRef}
@@ -315,18 +315,18 @@ export function PinnedStory({
                   )}
                 >
                   {step.eyebrow && (
-                    <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/60">
-                      <span className="font-mono tabular-nums text-white/40">
+                    <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-picks-fg/60">
+                      <span className="font-mono tabular-nums text-picks-fg/40">
                         {String(i + 1).padStart(2, '0')}
                       </span>
-                      <span className="mx-2 text-white/20">·</span>
+                      <span className="mx-2 text-picks-fg/20">·</span>
                       {step.eyebrow}
                     </p>
                   )}
-                  <h3 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+                  <h3 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl">
                     {step.title}
                   </h3>
-                  <p className="text-pretty text-base leading-relaxed text-white/65 sm:text-lg">
+                  <p className="text-pretty text-base leading-relaxed text-picks-fg/65 sm:text-lg">
                     {step.body}
                   </p>
                 </div>
@@ -336,7 +336,7 @@ export function PinnedStory({
 
           {/* Right — overlapping image cards */}
           <div className="relative flex items-center justify-center">
-            <div className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+            <div className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-panel shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
               {steps.map((step, i) => (
                 <div
                   key={step.id}
@@ -369,8 +369,8 @@ export function PinnedStory({
               ))}
 
               {/* Step counter inside the image card */}
-              <div className="pointer-events-none absolute bottom-5 left-5 text-xs font-mono tabular-nums text-white/85">
-                <span className="text-white/55">Step</span>{' '}
+              <div className="pointer-events-none absolute bottom-5 left-5 text-xs font-mono tabular-nums text-picks-fg/85">
+                <span className="text-picks-fg/55">Step</span>{' '}
                 <CounterDisplay
                   total={steps.length}
                   progressRef={tlProgressRef}
@@ -435,7 +435,7 @@ function CounterDisplay({
   return (
     <span>
       {String(current).padStart(2, '0')}{' '}
-      <span className="text-white/40">/ {String(total).padStart(2, '0')}</span>
+      <span className="text-picks-fg/40">/ {String(total).padStart(2, '0')}</span>
     </span>
   )
 }

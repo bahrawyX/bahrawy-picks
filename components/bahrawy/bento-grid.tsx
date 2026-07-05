@@ -102,7 +102,7 @@ export function BentoCard({
       {...fadeUp}
       transition={springGentle}
       className={cn(
-        'overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-6',
+        'overflow-hidden rounded-xl border border-picks-fg/10 bg-picks-fg/[0.03] p-6',
         colSpanMap[colSpan],
         rowSpanMap[rowSpan],
         className

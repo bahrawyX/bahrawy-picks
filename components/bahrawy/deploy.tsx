@@ -49,9 +49,9 @@ const STATUS_META: Record<
 > = {
   queued: {
     label: 'Queued',
-    color: 'text-white/65',
-    dot: 'bg-white/40',
-    ring: 'ring-white/15',
+    color: 'text-picks-fg/65',
+    dot: 'bg-picks-fg/40',
+    ring: 'ring-picks-fg/15',
     Icon: null,
   },
   building: {
@@ -77,9 +77,9 @@ const STATUS_META: Record<
   },
   cancelled: {
     label: 'Cancelled',
-    color: 'text-white/45',
-    dot: 'bg-white/30',
-    ring: 'ring-white/10',
+    color: 'text-picks-fg/45',
+    dot: 'bg-picks-fg/30',
+    ring: 'ring-picks-fg/10',
     Icon: X,
   },
 }
@@ -126,7 +126,7 @@ export function Deploy({
       animate={status === 'failed' ? { x: [0, -3, 3, -2, 2, 0] } : { x: 0 }}
       transition={{ duration: 0.4 }}
       className={cn(
-        'relative w-full overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]',
+        'relative w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-fg/[0.02]',
         className,
       )}
     >
@@ -169,37 +169,37 @@ export function Deploy({
               {environment}
             </span>
             {(elapsed > 0 || status === 'building') && (
-              <span className="font-mono text-[10.5px] tabular-nums text-white/40">
+              <span className="font-mono text-[10.5px] tabular-nums text-picks-fg/40">
                 {formatElapsed(elapsed)}
               </span>
             )}
           </div>
 
           {/* Commit message — truncated */}
-          <p className="mt-1 truncate text-[12.5px] leading-tight text-white/85">
+          <p className="mt-1 truncate text-[12.5px] leading-tight text-picks-fg/85">
             {commit.message}
           </p>
 
           {/* Branch + SHA + author */}
-          <div className="mt-1.5 flex items-center gap-2 text-[11px] text-white/45">
+          <div className="mt-1.5 flex items-center gap-2 text-[11px] text-picks-fg/45">
             <span className="inline-flex items-center gap-1">
               <GitBranch className="h-3 w-3" strokeWidth={2} />
-              <span className="font-mono text-white/65">{branch}</span>
+              <span className="font-mono text-picks-fg/65">{branch}</span>
             </span>
-            <span className="text-white/20">·</span>
+            <span className="text-picks-fg/20">·</span>
             <span className="inline-flex items-center gap-1 font-mono">
               <GitCommit className="h-3 w-3" strokeWidth={2} />
               {sha}
             </span>
             {commit.author && (
               <>
-                <span className="text-white/20">·</span>
+                <span className="text-picks-fg/20">·</span>
                 <span className="inline-flex items-center gap-1.5">
                   <Avatar
                     name={commit.author.name}
                     avatarUrl={commit.author.avatarUrl}
                   />
-                  <span className="text-white/55">{commit.author.name}</span>
+                  <span className="text-picks-fg/55">{commit.author.name}</span>
                 </span>
               </>
             )}
@@ -212,7 +212,7 @@ export function Deploy({
             href={href}
             target="_blank"
             rel="noreferrer noopener"
-            className="group inline-flex shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-white/85 transition-colors hover:border-white/25 hover:bg-white/[0.08]"
+            className="group inline-flex shrink-0 items-center gap-1 rounded-full border border-picks-fg/10 bg-picks-fg/[0.04] px-2.5 py-1 text-[11px] font-medium text-picks-fg/85 transition-colors hover:border-picks-fg/25 hover:bg-picks-fg/[0.08]"
           >
             Visit
             <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -232,7 +232,7 @@ function StatusIndicator({ status }: { status: DeployStatus }) {
     <span
       aria-hidden
       className={cn(
-        'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.04] ring-1',
+        'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-picks-fg/[0.04] ring-1',
         meta.ring,
       )}
     >
@@ -272,7 +272,7 @@ function Avatar({ name, avatarUrl }: { name: string; avatarUrl?: string }) {
     .map((p) => p[0]?.toUpperCase())
     .join('')
   return (
-    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-br from-violet-400/45 to-rose-400/45 text-[8px] font-semibold text-white/95">
+    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-br from-violet-400/45 to-rose-400/45 text-[8px] font-semibold text-picks-fg/95">
       {initials}
     </span>
   )

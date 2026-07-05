@@ -144,7 +144,7 @@ const INTENT_ICONS: Record<ToastIntent, LucideIcon> = {
 }
 
 const INTENT_COLORS: Record<ToastIntent, string> = {
-  default: 'text-white/70',
+  default: 'text-picks-fg/70',
   info: 'text-sky-400',
   success: 'text-emerald-400',
   error: 'text-rose-400',
@@ -165,14 +165,14 @@ function ToastCard({ toast, onDismiss, fromLeft, fromTop }: ToastCardProps) {
         transition: { duration: 0.18 },
       }}
       transition={SPRING}
-      className="pointer-events-auto flex w-full items-start gap-3 rounded-xl border border-white/10 bg-zinc-900/95 p-3.5 shadow-2xl shadow-black/40 backdrop-blur"
+      className="pointer-events-auto flex w-full items-start gap-3 rounded-xl border border-picks-fg/10 bg-picks-panel/95 p-3.5 shadow-2xl shadow-black/40 backdrop-blur"
       role="status"
     >
       <Icon className={cn('mt-0.5 h-4 w-4 shrink-0', INTENT_COLORS[toast.intent ?? 'default'])} />
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-white">{toast.title}</p>
+        <p className="text-sm font-medium text-picks-fg">{toast.title}</p>
         {toast.description && (
-          <p className="mt-0.5 text-xs leading-relaxed text-white/60">
+          <p className="mt-0.5 text-xs leading-relaxed text-picks-fg/60">
             {toast.description}
           </p>
         )}
@@ -181,7 +181,7 @@ function ToastCard({ toast, onDismiss, fromLeft, fromTop }: ToastCardProps) {
         type="button"
         onClick={onDismiss}
         aria-label="Dismiss"
-        className="shrink-0 rounded-md p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+        className="shrink-0 rounded-md p-1 text-picks-fg/40 transition-colors hover:bg-picks-fg/10 hover:text-picks-fg"
       >
         <X className="h-3.5 w-3.5" />
       </button>

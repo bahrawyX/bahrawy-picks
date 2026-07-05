@@ -69,7 +69,7 @@ export function PricingTier({
   eyebrow,
   heading = 'Simple, honest pricing.',
   description,
-  accentColor = '#FFFFFF',
+  accentColor = 'var(--picks-fg)',
   className,
 }: PricingTierProps) {
   const wrapperRef = React.useRef<HTMLDivElement>(null)
@@ -79,7 +79,7 @@ export function PricingTier({
     <section
       ref={wrapperRef}
       className={cn(
-        'relative w-full bg-black px-6 py-24 sm:py-32',
+        'relative w-full bg-picks-surface px-6 py-24 sm:py-32',
         className,
       )}
     >
@@ -91,7 +91,7 @@ export function PricingTier({
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5 }}
-              className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80"
+              className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80"
             >
               {eyebrow}
             </motion.span>
@@ -100,7 +100,7 @@ export function PricingTier({
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
-            className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl"
+            className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl"
           >
             {heading}
           </motion.h2>
@@ -109,7 +109,7 @@ export function PricingTier({
               initial={{ opacity: 0, y: 14 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.06, ease: [0.2, 0, 0, 1] }}
-              className="max-w-xl text-pretty text-sm leading-relaxed text-white/60 sm:text-base"
+              className="max-w-xl text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base"
             >
               {description}
             </motion.p>
@@ -125,10 +125,10 @@ export function PricingTier({
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...ITEM_SPRING, delay: 0.1 + i * 0.08 }}
               className={cn(
-                'relative flex flex-col rounded-2xl border bg-white/[0.02] p-6',
+                'relative flex flex-col rounded-2xl border bg-picks-fg/[0.02] p-6',
                 plan.featured
-                  ? '-translate-y-2 border-white/40 shadow-[0_30px_80px_-30px_rgba(255,255,255,0.18)]'
-                  : 'border-white/10',
+                  ? '-translate-y-2 border-picks-fg/40 shadow-[0_30px_80px_-30px_rgba(255,255,255,0.18)]'
+                  : 'border-picks-fg/10',
               )}
               style={
                 plan.featured
@@ -138,7 +138,7 @@ export function PricingTier({
             >
               {plan.featured && (
                 <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-black"
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-picks-surface"
                   style={{ background: accentColor }}
                 >
                   Recommended
@@ -146,28 +146,28 @@ export function PricingTier({
               )}
 
               <header className="mb-6">
-                <p className="text-sm font-medium uppercase tracking-[0.14em] text-white/60">
+                <p className="text-sm font-medium uppercase tracking-[0.14em] text-picks-fg/60">
                   {plan.name}
                 </p>
                 <div className="mt-3 flex items-baseline gap-1.5">
-                  <span className="text-5xl font-semibold tabular-nums text-white">
+                  <span className="text-5xl font-semibold tabular-nums text-picks-fg">
                     {plan.price}
                   </span>
                   {plan.priceSuffix && (
-                    <span className="text-sm text-white/50">{plan.priceSuffix}</span>
+                    <span className="text-sm text-picks-fg/50">{plan.priceSuffix}</span>
                   )}
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
+                <p className="mt-3 text-sm leading-relaxed text-picks-fg/60">
                   {plan.description}
                 </p>
               </header>
 
-              <ul className="mb-6 flex flex-col gap-2.5 text-sm text-white/80">
+              <ul className="mb-6 flex flex-col gap-2.5 text-sm text-picks-fg/80">
                 {plan.features.map((f, j) => (
                   <li key={j} className="flex items-start gap-2.5">
                     <Check
                       className="mt-0.5 h-3.5 w-3.5 shrink-0"
-                      style={{ color: plan.featured ? accentColor : 'rgba(255,255,255,0.7)' }}
+                      style={{ color: plan.featured ? accentColor : 'rgb(var(--picks-fg-rgb) / 0.7)' }}
                       strokeWidth={2.5}
                     />
                     <span>{f}</span>
@@ -181,8 +181,8 @@ export function PricingTier({
                   className={cn(
                     'inline-flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition-colors',
                     plan.featured
-                      ? 'text-black'
-                      : 'border border-white/15 bg-white/[0.04] text-white hover:bg-white/10',
+                      ? 'text-picks-surface'
+                      : 'border border-picks-fg/15 bg-picks-fg/[0.04] text-picks-fg hover:bg-picks-fg/10',
                   )}
                   style={plan.featured ? { background: accentColor } : undefined}
                 />

@@ -181,7 +181,7 @@ export function Tooltip({
     WebkitBackdropFilter: 'blur(40px) saturate(180%)',
     transform: 'rotate(45deg)',
     borderStyle: 'solid',
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: 'rgb(var(--picks-fg-rgb) / 0.08)',
     borderTopWidth: side === 'bottom' ? '0.5px' : 0,
     borderLeftWidth: side === 'right' ? '0.5px' : 0,
     borderRightWidth: side === 'left' ? '0.5px' : 0,
@@ -222,7 +222,7 @@ export function Tooltip({
                   opacity: pos ? undefined : 0,
                 }}
                 className={cn(
-                  'pointer-events-none rounded-[8px] border border-white/[0.08]',
+                  'pointer-events-none rounded-[8px] border border-picks-fg/[0.08]',
                   className,
                 )}
               >
@@ -248,7 +248,7 @@ export function Tooltip({
                 {showTail && pos && <span aria-hidden style={arrowStyle} />}
 
                 {/* Content */}
-                <span className="relative block whitespace-nowrap px-2.5 py-1.5 text-[12px] font-medium leading-none text-white/95">
+                <span className="relative block whitespace-nowrap px-2.5 py-1.5 text-[12px] font-medium leading-none text-picks-fg/95">
                   {content}
                 </span>
               </motion.div>

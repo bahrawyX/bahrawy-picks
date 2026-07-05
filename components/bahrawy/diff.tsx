@@ -50,21 +50,21 @@ export function Diff({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]',
+        'w-full overflow-hidden rounded-xl border border-picks-fg/[0.08] bg-picks-fg/[0.02]',
         className,
       )}
     >
       {/* Header */}
-      <header className="flex items-center gap-3 border-b border-white/[0.06] px-3.5 py-2.5">
+      <header className="flex items-center gap-3 border-b border-picks-fg/[0.06] px-3.5 py-2.5">
         <FileIcon
-          className="h-3.5 w-3.5 shrink-0 text-white/45"
+          className="h-3.5 w-3.5 shrink-0 text-picks-fg/45"
           strokeWidth={2}
         />
-        <code className="min-w-0 flex-1 truncate font-mono text-[12px] tracking-tight text-white/85">
+        <code className="min-w-0 flex-1 truncate font-mono text-[12px] tracking-tight text-picks-fg/85">
           {filename}
         </code>
         {language && (
-          <span className="hidden shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white/55 sm:inline">
+          <span className="hidden shrink-0 rounded-md border border-picks-fg/10 bg-picks-fg/[0.04] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-picks-fg/55 sm:inline">
             {language}
           </span>
         )}
@@ -116,13 +116,13 @@ function DiffRow({
       ? 'text-emerald-400/80'
       : line.type === 'removed'
         ? 'text-rose-400/80'
-        : 'text-white/25'
+        : 'text-picks-fg/25'
   const numColor =
     line.type === 'added'
       ? 'text-emerald-400/55'
       : line.type === 'removed'
         ? 'text-rose-400/55'
-        : 'text-white/30'
+        : 'text-picks-fg/30'
 
   const glyph = line.type === 'added' ? '+' : line.type === 'removed' ? '−' : ' '
 
@@ -132,7 +132,7 @@ function DiffRow({
         <span
           aria-hidden
           className={cn(
-            'sticky left-0 inline-flex shrink-0 select-none border-r border-white/[0.05] px-2.5 py-0 text-right tabular-nums',
+            'sticky left-0 inline-flex shrink-0 select-none border-r border-picks-fg/[0.05] px-2.5 py-0 text-right tabular-nums',
             numColor,
           )}
         >
@@ -146,7 +146,7 @@ function DiffRow({
       >
         {glyph}
       </span>
-      <code className="flex-1 pr-3 text-white/85">{line.content || ' '}</code>
+      <code className="flex-1 pr-3 text-picks-fg/85">{line.content || ' '}</code>
     </div>
   )
 }

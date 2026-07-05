@@ -156,7 +156,7 @@ export function LiquidLetters({
     <div
       ref={containerRef}
       className={cn(
-        'relative w-full overflow-hidden rounded-2xl border border-white/10',
+        'relative w-full overflow-hidden rounded-2xl border border-picks-fg/10',
         'select-none touch-none',
         className,
       )}
@@ -226,10 +226,10 @@ export function LiquidLetters({
       {showHint && (
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/55"
+          className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/55"
         >
           <span
-            className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-white/85"
+            className="mr-2 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-picks-fg/85"
             style={{ boxShadow: '0 0 8px rgba(255,255,255,0.7)' }}
           />
           Move the goo

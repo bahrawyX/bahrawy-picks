@@ -186,12 +186,12 @@ export function ActivityRings({
         {(centerLabel || centerSubLabel) && (
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
             {centerLabel && (
-              <p className="font-display text-[17px] font-semibold tracking-tight text-white">
+              <p className="font-display text-[17px] font-semibold tracking-tight text-picks-fg">
                 {centerLabel}
               </p>
             )}
             {centerSubLabel && (
-              <p className="mt-0.5 text-[11.5px] tracking-tight text-white/55">
+              <p className="mt-0.5 text-[11.5px] tracking-tight text-picks-fg/55">
                 {centerSubLabel}
               </p>
             )}
@@ -206,7 +206,7 @@ export function ActivityRings({
             return (
               <li
                 key={i}
-                className="flex items-center justify-between gap-3 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-white/[0.025]"
+                className="flex items-center justify-between gap-3 rounded-[8px] px-2 py-1.5 transition-colors hover:bg-picks-fg/[0.025]"
               >
                 <div className="flex min-w-0 items-center gap-2">
                   <span
@@ -215,21 +215,21 @@ export function ActivityRings({
                       background: r.color,
                     }}
                   />
-                  <span className="truncate text-[12px] font-medium tracking-tight text-white/85">
+                  <span className="truncate text-[12px] font-medium tracking-tight text-picks-fg/85">
                     {r.label}
                   </span>
                 </div>
                 <div className="flex shrink-0 items-baseline gap-1.5">
-                  <span className="font-mono text-[12px] font-medium tabular-nums text-white/90">
+                  <span className="font-mono text-[12px] font-medium tabular-nums text-picks-fg/90">
                     {r.value.toLocaleString()}
-                    <span className="text-white/45">
+                    <span className="text-picks-fg/45">
                       <span aria-hidden>/</span>
                       <span className="sr-only"> of </span>
                       {r.goal.toLocaleString()}
                       {r.unit ?? ''}
                     </span>
                   </span>
-                  <span className="font-mono text-[10.5px] tabular-nums text-white/55">
+                  <span className="font-mono text-[10.5px] tabular-nums text-picks-fg/55">
                     {pct}%<span className="sr-only"> complete</span>
                   </span>
                 </div>

@@ -49,7 +49,7 @@ export function FooterBrandMark({
   columns = [],
   copyright,
   bottomRight,
-  markColor = '#FFFFFF',
+  markColor = 'var(--picks-fg)',
   fontClassName = '',
   className,
 }: FooterBrandMarkProps) {
@@ -74,7 +74,7 @@ export function FooterBrandMark({
     <footer
       ref={sectionRef}
       className={cn(
-        'relative w-full overflow-hidden border-t border-white/10 bg-black px-6 pt-16',
+        'relative w-full overflow-hidden border-t border-picks-fg/10 bg-picks-surface px-6 pt-16',
         className,
       )}
     >
@@ -82,7 +82,7 @@ export function FooterBrandMark({
         {/* Tagline + columns row */}
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
           {tagline ? (
-            <p className="max-w-sm text-sm leading-relaxed text-white/65">
+            <p className="max-w-sm text-sm leading-relaxed text-picks-fg/65">
               {tagline}
             </p>
           ) : (
@@ -93,7 +93,7 @@ export function FooterBrandMark({
             <div className="grid gap-8 sm:grid-cols-3">
               {columns.map((col) => (
                 <div key={col.heading} className="flex flex-col gap-3">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/40">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/40">
                     {col.heading}
                   </p>
                   <ul className="flex flex-col gap-2">
@@ -103,7 +103,7 @@ export function FooterBrandMark({
                           href={link.href}
                           target={link.external ? '_blank' : undefined}
                           rel={link.external ? 'noopener noreferrer' : undefined}
-                          className="text-sm text-white/70 transition-colors hover:text-white"
+                          className="text-sm text-picks-fg/70 transition-colors hover:text-picks-fg"
                         >
                           {link.label}
                         </a>
@@ -118,7 +118,7 @@ export function FooterBrandMark({
 
         {/* Copyright bar */}
         {(copyright || bottomRight) && (
-          <div className="flex flex-col gap-2 border-t border-white/[0.06] pt-6 text-xs text-white/40 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 border-t border-picks-fg/[0.06] pt-6 text-xs text-picks-fg/40 sm:flex-row sm:items-center sm:justify-between">
             {copyright && <p>{copyright}</p>}
             {bottomRight && <div className="flex items-center gap-3">{bottomRight}</div>}
           </div>

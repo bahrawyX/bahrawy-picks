@@ -48,8 +48,8 @@ function ToolbarButton({
       className={cn(
         'flex h-7 w-7 items-center justify-center rounded-md transition-colors',
         active
-          ? 'bg-white/10 text-white'
-          : 'text-white/40 hover:bg-white/[0.06] hover:text-white/70',
+          ? 'bg-picks-fg/10 text-picks-fg'
+          : 'text-picks-fg/40 hover:bg-picks-fg/[0.06] hover:text-picks-fg/70',
         disabled && 'cursor-not-allowed opacity-30',
       )}
       aria-label={label}
@@ -68,7 +68,7 @@ export function SpreadsheetToolbar({
   onImportClick,
 }: ToolbarProps) {
   return (
-    <div className="flex h-9 items-center gap-0.5 border-b border-white/[0.06] bg-white/[0.02] px-2">
+    <div className="flex h-9 items-center gap-0.5 border-b border-picks-fg/[0.06] bg-picks-fg/[0.02] px-2">
       {/* Undo / Redo */}
       <ToolbarButton onClick={onUndo} disabled={!canUndo} label="Undo">
         <Undo2 className="h-3.5 w-3.5" />
@@ -77,7 +77,7 @@ export function SpreadsheetToolbar({
         <Redo2 className="h-3.5 w-3.5" />
       </ToolbarButton>
 
-      <div className="mx-1 h-4 w-px bg-white/[0.06]" />
+      <div className="mx-1 h-4 w-px bg-picks-fg/[0.06]" />
 
       {/* Import / Export */}
       {onImportClick && (

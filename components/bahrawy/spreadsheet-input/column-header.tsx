@@ -64,8 +64,8 @@ export function ColumnHeader({
   return (
     <div
       className={cn(
-        'relative flex h-8 flex-shrink-0 select-none items-center border-b border-r border-white/[0.06] px-2 text-xs font-medium text-white/50',
-        isSelected && 'bg-blue-500/10 text-white/70',
+        'relative flex h-8 flex-shrink-0 select-none items-center border-b border-r border-picks-fg/[0.06] px-2 text-xs font-medium text-picks-fg/50',
+        isSelected && 'bg-blue-500/10 text-picks-fg/70',
       )}
       style={{ width }}
       onClick={onSelect}
@@ -79,9 +79,9 @@ export function ColumnHeader({
       {sortDir && (
         <span className="ml-auto">
           {sortDir === 'asc' ? (
-            <ArrowUp className="h-3 w-3 text-white/40" />
+            <ArrowUp className="h-3 w-3 text-picks-fg/40" />
           ) : (
-            <ArrowDown className="h-3 w-3 text-white/40" />
+            <ArrowDown className="h-3 w-3 text-picks-fg/40" />
           )}
         </span>
       )}

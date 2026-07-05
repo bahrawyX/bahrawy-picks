@@ -216,10 +216,10 @@ export function PhraseSlots({
   return (
     <div
       ref={sectionRef}
-      className={cn('relative w-full bg-black', className)}
+      className={cn('relative w-full bg-picks-surface', className)}
       style={{ height: `${(scrollLength + 1) * 100}vh` }}
     >
-      <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-[#070708]">
+      <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-picks-surface">
         {/* ──────────────────────────────────────────────────────────────
             Background — a layered atmosphere.
             (a) deep vignette so the edges fall off
@@ -318,7 +318,7 @@ export function PhraseSlots({
               {eyebrow && (
                 <div
                   ref={eyebrowRef}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-white/80 backdrop-blur"
+                  className="inline-flex items-center gap-2 rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-picks-fg/80 backdrop-blur"
                 >
                   <span
                     aria-hidden
@@ -332,7 +332,7 @@ export function PhraseSlots({
               {heading && (
                 <h2
                   ref={headingRef}
-                  className="text-balance text-xl font-medium leading-snug tracking-tight text-white/85 sm:text-2xl"
+                  className="text-balance text-xl font-medium leading-snug tracking-tight text-picks-fg/85 sm:text-2xl"
                 >
                   {heading}
                 </h2>
@@ -373,7 +373,7 @@ export function PhraseSlots({
                         columnRefs.current[i] = el
                       }}
                       className={cn(
-                        'flex flex-col items-center uppercase tracking-tight text-white',
+                        'flex flex-col items-center uppercase tracking-tight text-picks-fg',
                         fontClassName,
                       )}
                       style={{
@@ -410,7 +410,7 @@ export function PhraseSlots({
               {description && (
                 <p
                   ref={descRef}
-                  className="max-w-xl text-pretty text-sm leading-relaxed text-white/65 sm:text-base"
+                  className="max-w-xl text-pretty text-sm leading-relaxed text-picks-fg/65 sm:text-base"
                 >
                   {description}
                 </p>
@@ -421,7 +421,7 @@ export function PhraseSlots({
                   <a
                     href={cta.href ?? '#'}
                     onClick={cta.onClick}
-                    className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+                    className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
                   >
                     {cta.label}
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -435,7 +435,7 @@ export function PhraseSlots({
         {/* Tiny scroll hint */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-white/45"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/45"
         >
           Scroll
         </div>

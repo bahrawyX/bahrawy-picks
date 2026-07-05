@@ -88,7 +88,7 @@ export function FloatingDock({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        'inline-flex h-[52px] items-end gap-2 rounded-2xl border border-white/10 bg-black/60 px-3 pb-[6px] shadow-2xl shadow-black/50 backdrop-blur-xl',
+        'inline-flex h-[52px] items-end gap-2 rounded-2xl border border-picks-fg/10 bg-picks-surface/60 px-3 pb-[6px] shadow-2xl shadow-black/50 backdrop-blur-xl',
         className
       )}
       style={{ overflow: 'visible' }}
@@ -149,7 +149,7 @@ function DockIcon({
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
-            className="absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/10 bg-black/80 px-2 py-1 text-[11px] font-medium text-white/80 backdrop-blur-sm"
+            className="absolute -top-10 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md border border-picks-fg/10 bg-picks-surface/80 px-2 py-1 text-[11px] font-medium text-picks-fg/80 backdrop-blur-sm"
           >
             {label}
           </motion.span>
@@ -159,7 +159,7 @@ function DockIcon({
       <motion.div
         ref={ref}
         style={{ width: size, height: size }}
-        className="flex items-center justify-center rounded-xl border border-white/[0.08] bg-[#1a1a1a] text-white/80 transition-colors hover:bg-[#222]"
+        className="flex items-center justify-center rounded-xl border border-picks-fg/[0.08] bg-[#1a1a1a] text-picks-fg/80 transition-colors hover:bg-[#222]"
       >
         {icon}
       </motion.div>

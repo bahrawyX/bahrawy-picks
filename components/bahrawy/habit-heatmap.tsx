@@ -216,7 +216,7 @@ export function HabitHeatmap({
   // Cell colour — uses CSS color-mix where supported, falls back to
   // straight hex+alpha.
   const colorAt = (level: number) => {
-    if (level === 0) return 'rgba(255,255,255,0.05)'
+    if (level === 0) return 'rgb(var(--picks-fg-rgb) / 0.05)'
     const stops = ['', '33', '66', 'aa', 'ee']
     return `${accentColor}${stops[level]}`
   }
@@ -228,22 +228,22 @@ export function HabitHeatmap({
         {(title || meta) && (
           <div className="mb-4 flex flex-wrap items-baseline gap-3">
             {title && (
-              <h3 className="text-sm font-semibold tracking-tight text-white">
+              <h3 className="text-sm font-semibold tracking-tight text-picks-fg">
                 {title}
               </h3>
             )}
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-picks-fg/45">
               no activity
               {meta && (
                 <>
-                  <span className="mx-1.5 text-white/20">·</span>
+                  <span className="mx-1.5 text-picks-fg/20">·</span>
                   {meta}
                 </>
               )}
             </p>
           </div>
         )}
-        <div className="flex h-28 items-center justify-center rounded-lg border border-dashed border-white/10 text-xs text-white/40">
+        <div className="flex h-28 items-center justify-center rounded-lg border border-dashed border-picks-fg/10 text-xs text-picks-fg/40">
           No activity data
         </div>
       </div>
@@ -257,22 +257,22 @@ export function HabitHeatmap({
         <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
           <div className="flex flex-wrap items-baseline gap-3">
             {title && (
-              <h3 className="text-sm font-semibold tracking-tight text-white">
+              <h3 className="text-sm font-semibold tracking-tight text-picks-fg">
                 {title}
               </h3>
             )}
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-picks-fg/45">
               {total > 0 ? `${total} contributions` : 'no activity'}
               {meta && (
                 <>
-                  <span className="mx-1.5 text-white/20">·</span>
+                  <span className="mx-1.5 text-picks-fg/20">·</span>
                   {meta}
                 </>
               )}
             </p>
           </div>
           {showLegend && (
-            <div className="flex items-center gap-1.5 text-[10px] text-white/45">
+            <div className="flex items-center gap-1.5 text-[10px] text-picks-fg/45">
               <span>Less</span>
               {[0, 1, 2, 3, 4].map((lvl) => (
                 <span
@@ -290,7 +290,7 @@ export function HabitHeatmap({
       <div className="flex gap-2">
         {/* Weekday axis */}
         {showWeekdays && (
-          <div className="flex flex-col justify-between pt-[18px] text-[10px] text-white/35">
+          <div className="flex flex-col justify-between pt-[18px] text-[10px] text-picks-fg/35">
             {/* Only show every other weekday to avoid clutter */}
             {WEEKDAY_LABELS.map((d, i) => (
               <span
@@ -310,7 +310,7 @@ export function HabitHeatmap({
         <div className="min-w-0 flex-1">
           {showMonths && (
             <div
-              className="relative mb-1.5 h-[14px] text-[10px] text-white/45"
+              className="relative mb-1.5 h-[14px] text-[10px] text-picks-fg/45"
               aria-hidden
             >
               {monthMarkers.map((m) => (

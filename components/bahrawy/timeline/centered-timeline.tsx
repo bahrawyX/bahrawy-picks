@@ -84,7 +84,7 @@ export function CenteredTimeline({
   return (
     <div className={cn('relative', className)}>
       {/* Horizontal connector — hairline aligned to the dot center (top-5 + 16px dot half = mid) */}
-      <div className="absolute left-0 right-0 top-[36px] z-0 h-px bg-white/[0.06]" />
+      <div className="absolute left-0 right-0 top-[36px] z-0 h-px bg-picks-fg/[0.06]" />
 
       {/* Scrollable row */}
       <div

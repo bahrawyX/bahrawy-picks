@@ -266,8 +266,8 @@ export function TagsInput({
             : springSnappy
         }
         className={cn(
-          'relative flex min-h-[42px] cursor-text flex-wrap items-center gap-1.5 rounded-lg border bg-white/[0.03] px-3 py-1.5 transition-colors',
-          focused && !displayError ? 'border-white/30' : 'border-white/[0.08]',
+          'relative flex min-h-[42px] cursor-text flex-wrap items-center gap-1.5 rounded-lg border bg-picks-fg/[0.03] px-3 py-1.5 transition-colors',
+          focused && !displayError ? 'border-picks-fg/30' : 'border-picks-fg/[0.08]',
           displayError && 'border-red-500/60',
           disabled && 'cursor-not-allowed opacity-50',
         )}
@@ -292,7 +292,7 @@ export function TagsInput({
                   variant="secondary"
                   className={cn(
                     'flex items-center gap-1 whitespace-nowrap text-xs',
-                    highlightLast && index === tags.length - 1 && 'ring-2 ring-white/20',
+                    highlightLast && index === tags.length - 1 && 'ring-2 ring-picks-fg/20',
                   )}
                 >
                   {tag}
@@ -303,7 +303,7 @@ export function TagsInput({
                         e.stopPropagation()
                         removeTag(index)
                       }}
-                      className="ml-0.5 rounded-sm outline-none transition-colors hover:text-white"
+                      className="ml-0.5 rounded-sm outline-none transition-colors hover:text-picks-fg"
                       aria-label={`Remove ${tag}`}
                     >
                       <X className="h-3 w-3" />
@@ -341,12 +341,12 @@ export function TagsInput({
                   ? optionId(selectedSuggestion)
                   : undefined
               }
-              className="min-w-[140px] flex-1 border-none bg-transparent py-1 text-sm text-white outline-none placeholder:text-white/25"
+              className="min-w-[140px] flex-1 border-none bg-transparent py-1 text-sm text-picks-fg outline-none placeholder:text-picks-fg/25"
             />
           )}
 
           {reachedMax && (
-            <span className="py-1 text-xs text-white/25">
+            <span className="py-1 text-xs text-picks-fg/25">
               Max {maxTags} tags
             </span>
           )}
@@ -363,7 +363,7 @@ export function TagsInput({
               id={listboxId}
               role="listbox"
               aria-label="Tag suggestions"
-              className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-white/[0.08] bg-neutral-900/95 p-1 shadow-xl backdrop-blur-md"
+              className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-picks-fg/[0.08] bg-picks-panel/95 p-1 shadow-xl backdrop-blur-md"
             >
               {filteredSuggestions.map((suggestion, i) => (
                 <button
@@ -379,10 +379,10 @@ export function TagsInput({
                     inputRef.current?.focus()
                   }}
                   className={cn(
-                    'flex w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm text-white/70 transition-colors',
+                    'flex w-full items-center rounded-md px-2.5 py-1.5 text-left text-sm text-picks-fg/70 transition-colors',
                     i === selectedSuggestion
-                      ? 'bg-white/[0.08] text-white'
-                      : 'hover:bg-white/[0.04]',
+                      ? 'bg-picks-fg/[0.08] text-picks-fg'
+                      : 'hover:bg-picks-fg/[0.04]',
                   )}
                 >
                   {suggestion}

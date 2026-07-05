@@ -81,7 +81,7 @@ export function Cell({
     return (
       <div
         className={cn(
-          'flex flex-shrink-0 items-center justify-center border-b border-r border-white/[0.04] transition-colors',
+          'flex flex-shrink-0 items-center justify-center border-b border-r border-picks-fg/[0.04] transition-colors',
           isSelected && 'bg-blue-500/10',
         )}
         style={{ width, height: rowHeight }}
@@ -123,12 +123,12 @@ export function Cell({
           }}
           onKeyDown={handleEditKeyDown}
           onBlur={onCommitEdit}
-          className="h-full w-full bg-transparent px-2 text-xs text-white outline-none"
+          className="h-full w-full bg-transparent px-2 text-xs text-picks-fg outline-none"
           autoFocus
         >
-          <option value="" className="bg-neutral-900">—</option>
+          <option value="" className="bg-picks-panel">—</option>
           {column.options.map((opt) => (
-            <option key={opt} value={opt} className="bg-neutral-900">
+            <option key={opt} value={opt} className="bg-picks-panel">
               {opt}
             </option>
           ))}
@@ -160,7 +160,7 @@ export function Cell({
             onCommitEdit()
           }}
           className={cn(
-            'h-full w-full bg-transparent px-2 text-xs text-white outline-none',
+            'h-full w-full bg-transparent px-2 text-xs text-picks-fg outline-none',
             align === 'right' && 'text-right',
             align === 'center' && 'text-center',
           )}
@@ -173,11 +173,11 @@ export function Cell({
   return (
     <div
       className={cn(
-        'flex flex-shrink-0 cursor-default items-center overflow-hidden border-b border-r border-white/[0.04] px-2 text-xs transition-colors',
-        isSelected ? 'bg-blue-500/10' : 'hover:bg-white/[0.02]',
+        'flex flex-shrink-0 cursor-default items-center overflow-hidden border-b border-r border-picks-fg/[0.04] px-2 text-xs transition-colors',
+        isSelected ? 'bg-blue-500/10' : 'hover:bg-picks-fg/[0.02]',
         isError && 'text-red-400',
-        column.type === 'readonly' && 'text-white/30',
-        !isError && !column.type?.includes('readonly') && 'text-white/70',
+        column.type === 'readonly' && 'text-picks-fg/30',
+        !isError && !column.type?.includes('readonly') && 'text-picks-fg/70',
       )}
       style={{
         width,

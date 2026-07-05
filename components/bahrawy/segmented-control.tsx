@@ -128,7 +128,7 @@ export function SegmentedControl<V extends string = string>({
         sz.h,
         sz.p,
         sz.outerRadius,
-        'border border-white/[0.06] backdrop-blur-xl',
+        'border border-picks-fg/[0.06] backdrop-blur-xl',
         fullWidth && 'w-full',
         disabled && 'opacity-50',
         className,
@@ -160,7 +160,7 @@ export function SegmentedControl<V extends string = string>({
               sz.radius,
               'font-medium tracking-tight',
               fullWidth && 'flex-1',
-              active ? 'text-white' : 'text-white/65 hover:text-white/85',
+              active ? 'text-picks-fg' : 'text-picks-fg/65 hover:text-picks-fg/85',
               (opt.disabled || disabled) && 'cursor-not-allowed',
             )}
           >

@@ -69,7 +69,7 @@ export function HeroSpotlight({
   const spotlight = useTransform(
     bgPos,
     (pos) =>
-      `radial-gradient(circle 600px at ${pos}, rgba(255,255,255,0.16), transparent 60%)`,
+      `radial-gradient(circle 600px at ${pos}, rgb(var(--picks-fg-rgb) / 0.16), transparent 60%)`,
   )
 
   const handleMove = (e: React.MouseEvent) => {
@@ -90,7 +90,7 @@ export function HeroSpotlight({
       }}
       style={{ minHeight }}
       className={cn(
-        'relative isolate flex w-full items-center justify-center overflow-hidden bg-black',
+        'relative isolate flex w-full items-center justify-center overflow-hidden bg-picks-surface',
         className,
       )}
     >
@@ -104,7 +104,7 @@ export function HeroSpotlight({
       {/* Subtle grid */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:48px_48px]"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgb(var(--picks-fg-rgb)/0.5)_1px,transparent_1px),linear-gradient(90deg,rgb(var(--picks-fg-rgb)/0.5)_1px,transparent_1px)] [background-size:48px_48px]"
       />
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 py-24 text-center">
@@ -113,7 +113,7 @@ export function HeroSpotlight({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
-            className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/80 backdrop-blur"
+            className="rounded-full border border-picks-fg/15 bg-picks-fg/[0.04] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-picks-fg/80 backdrop-blur"
           >
             {eyebrow}
           </motion.span>
@@ -122,7 +122,7 @@ export function HeroSpotlight({
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.06, ease: [0.2, 0, 0, 1] }}
-          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl"
+          className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight text-picks-fg sm:text-6xl md:text-7xl"
         >
           {title}
         </motion.h1>
@@ -131,7 +131,7 @@ export function HeroSpotlight({
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.2, 0, 0, 1] }}
-            className="max-w-xl text-pretty text-base leading-relaxed text-white/65 sm:text-lg"
+            className="max-w-xl text-pretty text-base leading-relaxed text-picks-fg/65 sm:text-lg"
           >
             {description}
           </motion.p>
@@ -146,13 +146,13 @@ export function HeroSpotlight({
             {primaryCta && (
               <CtaAction
                 cta={primaryCta}
-                className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+                className="inline-flex items-center justify-center rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/85"
               />
             )}
             {secondaryCta && (
               <CtaAction
                 cta={secondaryCta}
-                className="inline-flex items-center justify-center rounded-full border border-white/20 px-5 py-2.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-full border border-picks-fg/20 px-5 py-2.5 text-sm font-medium text-picks-fg/90 transition-colors hover:bg-picks-fg/10"
               />
             )}
           </motion.div>

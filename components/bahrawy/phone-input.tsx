@@ -236,7 +236,7 @@ export function PhoneInput({
       {label && (
         <label
           htmlFor={inputId}
-          className="mb-1.5 block text-sm font-medium text-white/70"
+          className="mb-1.5 block text-sm font-medium text-picks-fg/70"
         >
           {label}
         </label>
@@ -253,10 +253,10 @@ export function PhoneInput({
               aria-label="Select country"
               disabled={disabled}
               className={cn(
-                'flex h-10 shrink-0 items-center gap-1.5 rounded-lg border border-zinc-800 bg-transparent px-2.5 text-sm text-white/80',
+                'flex h-10 shrink-0 items-center gap-1.5 rounded-lg border border-zinc-800 bg-transparent px-2.5 text-sm text-picks-fg/80',
                 'transition-colors',
-                'hover:bg-white/[0.06]',
-                'focus-visible:outline-none focus-visible:border-zinc-600 focus-visible:bg-white/[0.05]',
+                'hover:bg-picks-fg/[0.06]',
+                'focus-visible:outline-none focus-visible:border-zinc-600 focus-visible:bg-picks-fg/[0.05]',
                 'disabled:cursor-not-allowed disabled:opacity-50',
                 error &&
                   'border-rose-500/60 bg-rose-500/[0.04] focus-visible:border-rose-400',

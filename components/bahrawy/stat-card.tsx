@@ -64,19 +64,19 @@ export function StatCard({
     <div
       ref={ref}
       className={cn(
-        'flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.02] p-5',
+        'flex flex-col gap-2 rounded-2xl border border-picks-fg/10 bg-picks-fg/[0.02] p-5',
         className,
       )}
     >
-      <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/55">
+      <p className="text-xs font-medium uppercase tracking-[0.16em] text-picks-fg/55">
         {label}
       </p>
 
       <div className="flex items-end justify-between gap-3">
-        <div className="flex items-baseline gap-1 text-3xl font-semibold tabular-nums tracking-tight text-white">
-          {prefix && <span className="text-white/60">{prefix}</span>}
+        <div className="flex items-baseline gap-1 text-3xl font-semibold tabular-nums tracking-tight text-picks-fg">
+          {prefix && <span className="text-picks-fg/60">{prefix}</span>}
           <motion.span>{text}</motion.span>
-          {suffix && <span className="text-white/60">{suffix}</span>}
+          {suffix && <span className="text-picks-fg/60">{suffix}</span>}
         </div>
 
         {delta !== undefined && (

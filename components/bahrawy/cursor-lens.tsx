@@ -278,7 +278,7 @@ export function CursorLens({
     <div className={cn('flex flex-col items-center gap-6', className)}>
       <div
         ref={containerRef}
-        className="group relative w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 select-none"
+        className="group relative w-full overflow-hidden rounded-2xl border border-picks-fg/10 bg-picks-surface select-none"
         style={{
           aspectRatio: aspect,
           cursor: clickToLock ? 'crosshair' : 'none',
@@ -305,20 +305,20 @@ export function CursorLens({
         />
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-6 text-center sm:px-10">
           {outer.eyebrow && (
-            <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.32em] text-white/55">
+            <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.32em] text-picks-fg/55">
               {outer.eyebrow}
             </p>
           )}
           {outer.title && (
             <h3
-              className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white/90 sm:text-5xl"
+              className="text-balance text-3xl font-semibold leading-tight tracking-tight text-picks-fg/90 sm:text-5xl"
               style={{ letterSpacing: '-0.025em' }}
             >
               {outer.title}
             </h3>
           )}
           {outer.subtitle && (
-            <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-white/60 sm:text-base">
+            <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-picks-fg/60 sm:text-base">
               {outer.subtitle}
             </p>
           )}
@@ -364,7 +364,7 @@ export function CursorLens({
           <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center sm:px-10">
             {inner.eyebrow && (
               <div
-                className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-white/90 backdrop-blur"
+                className="mb-4 inline-flex items-center gap-2 rounded-full border border-picks-fg/20 bg-picks-surface/55 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-picks-fg/90 backdrop-blur"
               >
                 <span
                   aria-hidden
@@ -379,7 +379,7 @@ export function CursorLens({
             )}
             {inner.title && (
               <h3
-                className="text-balance text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl"
+                className="text-balance text-3xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-5xl"
                 style={{
                   letterSpacing: '-0.025em',
                   textShadow: `0 0 30px ${accentColor}66, 0 0 70px ${accentColor}33`,
@@ -389,7 +389,7 @@ export function CursorLens({
               </h3>
             )}
             {inner.subtitle && (
-              <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-white/85 sm:text-base">
+              <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-picks-fg/85 sm:text-base">
                 {inner.subtitle}
               </p>
             )}
@@ -432,7 +432,7 @@ export function CursorLens({
           <div
             ref={hintRef}
             aria-hidden
-            className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 select-none text-[10px] font-medium uppercase tracking-[0.32em] text-white/75"
+            className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 select-none text-[10px] font-medium uppercase tracking-[0.32em] text-picks-fg/75"
             style={{ opacity: 0.85 }}
           >
             <span
@@ -441,7 +441,7 @@ export function CursorLens({
             />
             {hint}
             {clickToLock && (
-              <span className="ml-3 text-white/40">· click to pin</span>
+              <span className="ml-3 text-picks-fg/40">· click to pin</span>
             )}
           </div>
         )}
@@ -452,7 +452,7 @@ export function CursorLens({
         <a
           href={cta.href ?? '#'}
           onClick={cta.onClick}
-          className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-white/90"
+          className="group inline-flex items-center gap-2 rounded-full bg-picks-fg px-5 py-2.5 text-sm font-semibold text-picks-surface transition-colors hover:bg-picks-fg/90"
           style={{
             boxShadow: `0 0 26px ${accentColor}40, 0 0 60px ${accentColor}1f`,
           }}

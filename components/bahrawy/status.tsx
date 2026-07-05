@@ -106,16 +106,16 @@ export function Status({
   return (
     <div
       className={cn(
-        'w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015]',
+        'w-full overflow-hidden rounded-2xl border border-picks-fg/[0.08] bg-picks-fg/[0.015]',
         className,
       )}
     >
       {/* Overall banner */}
-      <header className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-4">
+      <header className="flex items-center gap-3 border-b border-picks-fg/[0.06] px-4 py-4">
         <span
           aria-hidden
           className={cn(
-            'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.04] ring-1',
+            'relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-picks-fg/[0.04] ring-1',
             meta.ring,
           )}
         >
@@ -134,10 +134,10 @@ export function Status({
           />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[10.5px] font-medium uppercase tracking-[0.18em] text-white/40">
+          <p className="text-[10.5px] font-medium uppercase tracking-[0.18em] text-picks-fg/40">
             {title}
           </p>
-          <p className="mt-0.5 font-display text-[14px] font-semibold tracking-tight text-white">
+          <p className="mt-0.5 font-display text-[14px] font-semibold tracking-tight text-picks-fg">
             {OVERALL_HEADLINE[state]}
           </p>
         </div>
@@ -145,7 +145,7 @@ export function Status({
       </header>
 
       {/* Service rows */}
-      <ul className="divide-y divide-white/[0.04]">
+      <ul className="divide-y divide-picks-fg/[0.04]">
         {services.map((svc, i) => (
           <ServiceRow
             key={svc.name}
@@ -171,17 +171,17 @@ function ServiceRow({
   index: number
 }) {
   return (
-    <li className="px-4 py-3.5 transition-colors hover:bg-white/[0.02]">
+    <li className="px-4 py-3.5 transition-colors hover:bg-picks-fg/[0.02]">
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium tracking-tight text-white/90">
+            <span className="text-[13px] font-medium tracking-tight text-picks-fg/90">
               {service.name}
             </span>
             <StatePill state={service.state} compact />
           </div>
           {service.description && (
-            <p className="mt-0.5 text-[11.5px] leading-snug text-white/45">
+            <p className="mt-0.5 text-[11.5px] leading-snug text-picks-fg/45">
               {service.description}
             </p>
           )}
@@ -211,7 +211,7 @@ function ServiceRow({
               )
             })}
           </div>
-          <div className="mt-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-white/30">
+          <div className="mt-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-picks-fg/30">
             <span>{service.history.length} days ago</span>
             <span>today</span>
           </div>
@@ -234,7 +234,7 @@ function StatePill({
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] font-medium',
+        'inline-flex shrink-0 items-center gap-1.5 rounded-full border border-picks-fg/10 bg-picks-fg/[0.04] font-medium',
         compact ? 'px-1.5 py-0.5 text-[10px]' : 'px-2.5 py-1 text-[11px]',
         meta.color,
       )}

@@ -19,7 +19,7 @@ export interface SparklineProps {
   width?: number
   /** SVG height. Default 40. */
   height?: number
-  /** Stroke color. Default #FFFFFF. */
+  /** Stroke color. Default var(--picks-fg). */
   color?: string
   /** Stroke width. Default 1.5. */
   strokeWidth?: number
@@ -46,7 +46,7 @@ export function Sparkline({
   points,
   width = 160,
   height = 40,
-  color = '#FFFFFF',
+  color = 'var(--picks-fg)',
   strokeWidth = 1.5,
   fillArea = false,
   showEndDot = true,

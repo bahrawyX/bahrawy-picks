@@ -380,7 +380,7 @@ export function FileUpload({
           <div className="text-center">
             <p className={cn(
               'text-sm font-medium',
-              zoneError ? 'text-rose-400' : 'text-white/80',
+              zoneError ? 'text-rose-400' : 'text-picks-fg/80',
             )}>
               {zoneError
                 ? 'File type not accepted'
@@ -460,14 +460,14 @@ function FileCard({
         'flex items-center gap-3 rounded-lg border px-3 py-2.5',
         isError
           ? 'border-rose-500/30 bg-rose-500/[0.06]'
-          : 'border-zinc-800 bg-zinc-900/50',
+          : 'border-picks-fg/10 bg-picks-panel/50',
       )}
     >
       {/* File icon */}
       <div
         className={cn(
           'flex h-9 w-9 shrink-0 items-center justify-center rounded-md',
-          isError ? 'bg-rose-500/10 text-rose-400' : 'bg-white/[0.06] text-zinc-400',
+          isError ? 'bg-rose-500/10 text-rose-400' : 'bg-picks-fg/[0.06] text-zinc-400',
         )}
       >
         <Icon className="h-4 w-4" strokeWidth={1.75} />
@@ -475,7 +475,7 @@ function FileCard({
 
       {/* Name + size + progress */}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-white">
+        <p className="truncate text-sm font-medium text-picks-fg">
           {tracked.file.name}
         </p>
         <p className={cn(
@@ -489,7 +489,7 @@ function FileCard({
 
         {/* Progress bar (only while uploading) */}
         {tracked.status === 'uploading' && (
-          <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-white/10">
+          <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-picks-fg/10">
             {tracked.progress === null ? (
               /* Indeterminate — no real progress reported (yet) */
               <motion.div
@@ -553,7 +553,7 @@ function FileCard({
               e.stopPropagation()
               onRemove()
             }}
-            className="h-6 w-6 rounded-md p-0 text-zinc-500 hover:text-white"
+            className="h-6 w-6 rounded-md p-0 text-zinc-500 hover:text-picks-fg"
           >
             <X className="h-3.5 w-3.5" />
           </Button>

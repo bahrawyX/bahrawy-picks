@@ -67,7 +67,7 @@ export function Pagination({
     <nav
       aria-label="Pagination"
       className={cn(
-        'inline-flex items-center gap-1 rounded-full border border-white/[0.06] p-1 backdrop-blur-xl',
+        'inline-flex items-center gap-1 rounded-full border border-picks-fg/[0.06] p-1 backdrop-blur-xl',
         className,
       )}
       style={{
@@ -97,7 +97,7 @@ export function Pagination({
           <span
             key={`gap-${i}`}
             aria-hidden
-            className="px-1.5 text-[12px] text-white/35"
+            className="px-1.5 text-[12px] text-picks-fg/35"
           >
             …
           </span>
@@ -109,13 +109,13 @@ export function Pagination({
             onClick={() => goto(it)}
             className={cn(
               'relative inline-flex h-7 min-w-[28px] items-center justify-center rounded-full px-2 font-mono text-[12px] font-medium tabular-nums tracking-tight transition-colors',
-              it === page ? 'text-white' : 'text-white/65 hover:text-white',
+              it === page ? 'text-picks-fg' : 'text-picks-fg/65 hover:text-picks-fg',
             )}
           >
             {it === page && (
               <motion.span
                 layoutId={`pagination-active-${id}`}
-                className="absolute inset-0 rounded-full bg-white/[0.1]"
+                className="absolute inset-0 rounded-full bg-picks-fg/[0.1]"
                 style={{
                   boxShadow:
                     '0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(255,255,255,0.1)',
@@ -165,7 +165,7 @@ function Btn({
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/[0.06] hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-white/65"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-picks-fg/65 transition-colors hover:bg-picks-fg/[0.06] hover:text-picks-fg disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-picks-fg/65"
     >
       {children}
     </button>

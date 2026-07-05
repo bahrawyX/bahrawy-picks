@@ -30,12 +30,12 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
           animate={scaleIn.animate}
           exit={scaleIn.exit}
           transition={springSnappy}
-          className="fixed z-50 min-w-[160px] rounded-lg border border-white/[0.08] bg-neutral-900 p-1 shadow-xl"
+          className="fixed z-50 min-w-[160px] rounded-lg border border-picks-fg/[0.08] bg-picks-panel p-1 shadow-xl"
           style={{ left: x, top: y }}
         >
           {items.map((item, i) =>
             item.separator ? (
-              <div key={i} className="my-1 h-px bg-white/[0.06]" />
+              <div key={i} className="my-1 h-px bg-picks-fg/[0.06]" />
             ) : (
               <button
                 key={i}
@@ -46,7 +46,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
                   'flex w-full items-center rounded-md px-2.5 py-1.5 text-left text-xs transition-colors',
                   item.danger
                     ? 'text-red-400 hover:bg-red-500/10'
-                    : 'text-white/70 hover:bg-white/[0.06] hover:text-white',
+                    : 'text-picks-fg/70 hover:bg-picks-fg/[0.06] hover:text-picks-fg',
                   item.disabled && 'cursor-not-allowed opacity-40',
                 )}
               >

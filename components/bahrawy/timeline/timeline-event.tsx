@@ -71,8 +71,8 @@ export function TimelineEventCard({
       transition={springSnappy}
       onClick={handleClick}
       className={cn(
-        'group rounded-xl border border-white/[0.06] bg-white/[0.02] p-4',
-        isClickable && 'cursor-pointer transition-colors hover:bg-white/[0.04]',
+        'group rounded-xl border border-picks-fg/[0.06] bg-picks-fg/[0.02] p-4',
+        isClickable && 'cursor-pointer transition-colors hover:bg-picks-fg/[0.04]',
         className
       )}
     >
@@ -80,7 +80,7 @@ export function TimelineEventCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h4 className="truncate text-sm font-medium text-white/90">
+            <h4 className="truncate text-sm font-medium text-picks-fg/90">
               {event.title}
             </h4>
             {event.badge && (
@@ -95,12 +95,12 @@ export function TimelineEventCard({
 
           {/* Timestamp */}
           {showTimestamp && (
-            <p className="mt-0.5 text-xs text-white/30" title={absoluteTime} suppressHydrationWarning>
+            <p className="mt-0.5 text-xs text-picks-fg/30" title={absoluteTime} suppressHydrationWarning>
               {timestampFormat === 'absolute'
                 ? absoluteTime
                 : relativeTime}
               {timestampFormat === 'both' && (
-                <span className="ml-1.5 text-white/15" suppressHydrationWarning>· {absoluteTime}</span>
+                <span className="ml-1.5 text-picks-fg/15" suppressHydrationWarning>· {absoluteTime}</span>
               )}
             </p>
           )}
@@ -112,14 +112,14 @@ export function TimelineEventCard({
             animate={{ rotate: expanded ? 180 : 0 }}
             transition={springSnappy}
           >
-            <ChevronDown className="h-4 w-4 text-white/25" />
+            <ChevronDown className="h-4 w-4 text-picks-fg/25" />
           </motion.div>
         )}
       </div>
 
       {/* Description — always visible if not expandable */}
       {event.description && !event.expandable && (
-        <div className="mt-2 text-sm text-white/50">
+        <div className="mt-2 text-sm text-picks-fg/50">
           {event.description}
         </div>
       )}
@@ -135,18 +135,18 @@ export function TimelineEventCard({
             className="overflow-hidden"
           >
             {event.description && (
-              <div className="mt-3 text-sm text-white/50">
+              <div className="mt-3 text-sm text-picks-fg/50">
                 {event.description}
               </div>
             )}
 
             {/* Metadata grid */}
             {event.metadata && (
-              <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 rounded-lg bg-white/[0.02] p-3">
+              <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 rounded-lg bg-picks-fg/[0.02] p-3">
                 {Object.entries(event.metadata).map(([key, val]) => (
                   <div key={key} className="flex items-baseline justify-between gap-2">
-                    <span className="text-xs text-white/25">{key}</span>
-                    <span className="text-xs font-medium text-white/60">{val}</span>
+                    <span className="text-xs text-picks-fg/25">{key}</span>
+                    <span className="text-xs font-medium text-picks-fg/60">{val}</span>
                   </div>
                 ))}
               </div>

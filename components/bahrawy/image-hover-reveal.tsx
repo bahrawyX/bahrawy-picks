@@ -104,9 +104,9 @@ export function ImageHoverReveal({
         if (e.pointerType === 'touch') setTouchRevealed((v) => !v)
       }}
       className={cn(
-        'group relative isolate overflow-hidden rounded-2xl bg-zinc-950',
-        'shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] ring-1 ring-white/10',
-        'outline-none focus-visible:ring-2 focus-visible:ring-white/60',
+        'group relative isolate overflow-hidden rounded-2xl bg-picks-surface',
+        'shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] ring-1 ring-picks-fg/10',
+        'outline-none focus-visible:ring-2 focus-visible:ring-picks-fg/60',
         align === 'center' ? 'text-center' : 'text-left',
         className,
       )}
@@ -158,7 +158,7 @@ export function ImageHoverReveal({
               hover: { opacity: 1, y: 0 },
             }}
             transition={FAST_SPRING}
-            className="mb-2 inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-white/70"
+            className="mb-2 inline-block text-[10px] font-medium uppercase tracking-[0.22em] text-picks-fg/70"
           >
             {eyebrow}
           </motion.span>
@@ -170,7 +170,7 @@ export function ImageHoverReveal({
             hover: { y: 0 },
           }}
           transition={TEXT_SPRING}
-          className="text-balance text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl"
+          className="text-balance text-2xl font-semibold leading-tight tracking-tight text-picks-fg sm:text-3xl"
         >
           {title}
         </motion.h3>
@@ -182,7 +182,7 @@ export function ImageHoverReveal({
               hover: { opacity: 1, y: 0 },
             }}
             transition={TEXT_SPRING}
-            className="mt-3 max-w-prose text-sm leading-relaxed text-white/75"
+            className="mt-3 max-w-prose text-sm leading-relaxed text-picks-fg/75"
           >
             {description}
           </motion.p>

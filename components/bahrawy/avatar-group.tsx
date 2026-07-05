@@ -89,7 +89,7 @@ export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
             ) : (
               <div
                 className={cn(
-                  'flex h-full w-full items-center justify-center text-xs font-semibold text-white',
+                  'flex h-full w-full items-center justify-center text-xs font-semibold text-picks-fg',
                   colorFor(a.name),
                 )}
               >
@@ -111,7 +111,7 @@ export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
             }}
             className="relative shrink-0 rounded-full ring-2 ring-[color:var(--picks-surface,#09090b)]"
           >
-            <div className="flex h-full w-full items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold tabular-nums text-white/80">
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-picks-fg/10 text-[11px] font-semibold tabular-nums text-picks-fg/80">
               +{hidden}
             </div>
           </motion.div>

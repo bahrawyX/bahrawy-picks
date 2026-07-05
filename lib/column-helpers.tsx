@@ -89,7 +89,7 @@ export function createDateColumn<TData>(
     header: ({ column }) => <ColumnHeader column={column} title={header} />,
     cell: ({ getValue }) => {
       const raw = getValue() as string
-      if (!raw) return <span className="text-white/30">—</span>
+      if (!raw) return <span className="text-picks-fg/30">—</span>
       const d = new Date(raw)
       return (
         <span className="tabular-nums whitespace-nowrap">
@@ -126,7 +126,7 @@ export function createBadgeColumn<TData>(
     header: ({ column }) => <ColumnHeader column={column} title={header} />,
     cell: ({ getValue }) => {
       const val = getValue() as string
-      const color = colorMap[val] ?? 'bg-white/10 text-white/70'
+      const color = colorMap[val] ?? 'bg-picks-fg/10 text-picks-fg/70'
       return (
         <Badge
           variant="outline"
@@ -170,7 +170,7 @@ export function createBooleanColumn<TData>(
     cell: ({ getValue }) => {
       const val = getValue() as boolean
       return (
-        <span className={val ? 'text-emerald-400' : 'text-white/40'}>
+        <span className={val ? 'text-emerald-400' : 'text-picks-fg/40'}>
           {val ? tLabel : fLabel}
         </span>
       )
@@ -218,7 +218,7 @@ export function createSelectionColumn<TData>(): ColumnDef<TData, unknown> {
         }
         onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
         aria-label="Select all"
-        className="border-white/30 data-[state=checked]:bg-white data-[state=checked]:text-black"
+        className="border-picks-fg/30 data-[state=checked]:bg-picks-fg data-[state=checked]:text-picks-surface"
       />
     ),
     cell: ({ row }) => (
@@ -226,7 +226,7 @@ export function createSelectionColumn<TData>(): ColumnDef<TData, unknown> {
         checked={row.getIsSelected()}
         onCheckedChange={(v) => row.toggleSelected(!!v)}
         aria-label="Select row"
-        className="border-white/30 data-[state=checked]:bg-white data-[state=checked]:text-black"
+        className="border-picks-fg/30 data-[state=checked]:bg-picks-fg data-[state=checked]:text-picks-surface"
       />
     ),
     enableSorting: false,

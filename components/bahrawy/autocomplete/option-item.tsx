@@ -34,21 +34,21 @@ export function OptionItem({
       onSelect={onSelect}
       className={cn(
         'flex items-center gap-2 px-2 py-1.5',
-        selected && 'bg-white/[0.04]'
+        selected && 'bg-picks-fg/[0.04]'
       )}
     >
       {/* Icon */}
       {icon && (
-        <span className="flex shrink-0 text-white/50 [&_svg]:h-4 [&_svg]:w-4">
+        <span className="flex shrink-0 text-picks-fg/50 [&_svg]:h-4 [&_svg]:w-4">
           {icon}
         </span>
       )}
 
       {/* Label + description */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-sm text-white/80">{label}</span>
+        <span className="truncate text-sm text-picks-fg/80">{label}</span>
         {description && (
-          <span className="truncate text-xs text-white/35">{description}</span>
+          <span className="truncate text-xs text-picks-fg/35">{description}</span>
         )}
       </div>
 
@@ -59,7 +59,7 @@ export function OptionItem({
           transition={springSnappy}
           className="flex shrink-0"
         >
-          <Check className="h-4 w-4 text-white/60" />
+          <Check className="h-4 w-4 text-picks-fg/60" />
         </motion.span>
       )}
     </CommandItem>

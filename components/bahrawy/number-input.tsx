@@ -256,7 +256,7 @@ export function NumberInput({
       }
       transition={springSnappy}
       className={cn(
-        'group relative inline-flex h-10 w-full items-stretch rounded-lg border border-zinc-800 bg-transparent text-sm text-white transition-colors',
+        'group relative inline-flex h-10 w-full items-stretch rounded-lg border border-zinc-800 bg-transparent text-sm text-picks-fg transition-colors',
         'focus-within:ring-1 focus-within:ring-zinc-600',
         hasError && 'border-rose-500/60 ring-1 ring-rose-500/30',
         disabled && 'cursor-not-allowed opacity-50',
@@ -283,7 +283,7 @@ export function NumberInput({
           if (!disabled && !atMin) startLongPress(-step)
         }}
         onTouchEnd={stopLongPress}
-        className="h-full w-10 shrink-0 rounded-none rounded-l-lg border-r border-zinc-800 text-zinc-400 hover:text-white"
+        className="h-full w-10 shrink-0 rounded-none rounded-l-lg border-r border-zinc-800 text-zinc-400 hover:text-picks-fg"
       >
         <Minus className="h-3.5 w-3.5" />
       </MotionButton>
@@ -341,7 +341,7 @@ export function NumberInput({
                     animate={fadeUp.animate}
                     exit={fadeUp.exit}
                     transition={springSnappy}
-                    className="text-white"
+                    className="text-picks-fg"
                   >
                     {displayValue}
                   </motion.span>
@@ -381,7 +381,7 @@ export function NumberInput({
           if (!disabled && !atMax) startLongPress(step)
         }}
         onTouchEnd={stopLongPress}
-        className="h-full w-10 shrink-0 rounded-none rounded-r-lg border-l border-zinc-800 text-zinc-400 hover:text-white"
+        className="h-full w-10 shrink-0 rounded-none rounded-r-lg border-l border-zinc-800 text-zinc-400 hover:text-picks-fg"
       >
         <Plus className="h-3.5 w-3.5" />
       </MotionButton>

@@ -14,7 +14,7 @@ export function SkeletonRows({ count, itemHeight, className }: SkeletonRowsProps
       {Array.from({ length: count }, (_, i) => (
         <div
           key={i}
-          className="animate-pulse rounded-lg bg-white/[0.06]"
+          className="animate-pulse rounded-lg bg-picks-fg/[0.06]"
           style={{ height: itemHeight }}
         />
       ))}
